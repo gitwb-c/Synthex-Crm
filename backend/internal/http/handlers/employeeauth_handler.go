@@ -1,25 +1,48 @@
 package handlers
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"net/http"
+
+	"crm.saas/backend/internal/dto"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 type EmployeeAuthHandler struct {
-	client *ent.Client
+	service *services.EmployeeAuthService
 }
 
-func NewEmployeeAuthHandler() *EmployeeAuthHandler {
-	return &EmployeeAuthHandler{
-		client: db.Client,
+func NewEmployeeAuthHandler(service *services.EmployeeAuthService) *EmployeeAuthHandler {
+	return &EmployeeAuthHandler{service: service}
+}
+
+func (h *EmployeeAuthHandler) Read(c *gin.Context) {
+	var req dto.ReadEmployeeAuthReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 }
 
-func (h *EmployeeAuthHandler) Read(c *gin.Context) {}
+func (h *EmployeeAuthHandler) Create(c *gin.Context) {
+	var req dto.CreateEmployeeAuthReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *EmployeeAuthHandler) Create(c *gin.Context) {}
+}
 
-func (h *EmployeeAuthHandler) Update(c *gin.Context) {}
+func (h *EmployeeAuthHandler) Update(c *gin.Context) {
+	var req dto.UpdateEmployeeAuthReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *EmployeeAuthHandler) Delete(c *gin.Context) {}
+}
+
+func (h *EmployeeAuthHandler) Delete(c *gin.Context) {
+	var req dto.DeleteEmployeeAuthReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}

@@ -1,25 +1,48 @@
 package handlers
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"net/http"
+
+	"crm.saas/backend/internal/dto"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 type QueueHandler struct {
-	client *ent.Client
+	service *services.QueueService
 }
 
-func NewQueueHandler() *QueueHandler {
-	return &QueueHandler{
-		client: db.Client,
+func NewQueueHandler(service *services.QueueService) *QueueHandler {
+	return &QueueHandler{service: service}
+}
+
+func (h *QueueHandler) Read(c *gin.Context) {
+	var req dto.ReadQueueReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 }
 
-func (h *QueueHandler) Read(c *gin.Context) {}
+func (h *QueueHandler) Create(c *gin.Context) {
+	var req dto.CreateQueueReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *QueueHandler) Create(c *gin.Context) {}
+}
 
-func (h *QueueHandler) Update(c *gin.Context) {}
+func (h *QueueHandler) Update(c *gin.Context) {
+	var req dto.UpdateQueueReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *QueueHandler) Delete(c *gin.Context) {}
+}
+
+func (h *QueueHandler) Delete(c *gin.Context) {
+	var req dto.DeleteQueueReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}

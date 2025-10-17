@@ -19,5 +19,7 @@ func main() {
 	}
 	defer db.Close()
 
-	http.GlobalRouter()
+	r := http.GlobalRouter()
+	r.Run(":8080")
+
 }

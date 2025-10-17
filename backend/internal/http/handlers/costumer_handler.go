@@ -1,25 +1,48 @@
 package handlers
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"net/http"
+
+	"crm.saas/backend/internal/dto"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 type CostumerHandler struct {
-	client *ent.Client
+	service *services.CostumerService
 }
 
-func NewCostumerHandler() *CostumerHandler {
-	return &CostumerHandler{
-		client: db.Client,
+func NewCostumerHandler(service *services.CostumerService) *CostumerHandler {
+	return &CostumerHandler{service: service}
+}
+
+func (h *CostumerHandler) Read(c *gin.Context) {
+	var req dto.ReadCostumerReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 }
 
-func (h *CostumerHandler) Read(c *gin.Context) {}
+func (h *CostumerHandler) Create(c *gin.Context) {
+	var req dto.CreateCostumerReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *CostumerHandler) Create(c *gin.Context) {}
+}
 
-func (h *CostumerHandler) Update(c *gin.Context) {}
+func (h *CostumerHandler) Update(c *gin.Context) {
+	var req dto.UpdateCostumerReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *CostumerHandler) Delete(c *gin.Context) {}
+}
+
+func (h *CostumerHandler) Delete(c *gin.Context) {
+	var req dto.DeleteCostumerReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}

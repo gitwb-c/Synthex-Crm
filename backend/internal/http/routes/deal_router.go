@@ -2,13 +2,15 @@ package routes
 
 import (
 	"crm.saas/backend/internal/http/handlers"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 func dealRouter(r *gin.Engine) {
 	deal := r.Group("/deal")
-	handler := handlers.NewDealHandler()
 
+	dealService := services.NewDealService()
+	handler := handlers.NewDealHandler(dealService)
 	{
 		deal.GET("/read", handler.Read)
 		deal.POST("/create", handler.Create)

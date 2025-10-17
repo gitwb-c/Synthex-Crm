@@ -1,25 +1,48 @@
 package handlers
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"net/http"
+
+	"crm.saas/backend/internal/dto"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 type PipelineHandler struct {
-	client *ent.Client
+	service *services.PipelineService
 }
 
-func NewPipelineHandler() *PipelineHandler {
-	return &PipelineHandler{
-		client: db.Client,
+func NewPipelineHandler(service *services.PipelineService) *PipelineHandler {
+	return &PipelineHandler{service: service}
+}
+
+func (h *PipelineHandler) Read(c *gin.Context) {
+	var req dto.ReadPipelineReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 }
 
-func (h *PipelineHandler) Read(c *gin.Context) {}
+func (h *PipelineHandler) Create(c *gin.Context) {
+	var req dto.CreatePipelineReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *PipelineHandler) Create(c *gin.Context) {}
+}
 
-func (h *PipelineHandler) Update(c *gin.Context) {}
+func (h *PipelineHandler) Update(c *gin.Context) {
+	var req dto.UpdatePipelineReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *PipelineHandler) Delete(c *gin.Context) {}
+}
+
+func (h *PipelineHandler) Delete(c *gin.Context) {
+	var req dto.DeletePipelineReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}

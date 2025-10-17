@@ -2,13 +2,15 @@ package routes
 
 import (
 	"crm.saas/backend/internal/http/handlers"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 func formRouter(r *gin.Engine) {
 	form := r.Group("/form")
-	handler := handlers.NewFormHandler()
 
+	formService := services.NewFormService()
+	handler := handlers.NewFormHandler(formService)
 	{
 		form.GET("/read", handler.Read)
 		form.POST("/create", handler.Create)

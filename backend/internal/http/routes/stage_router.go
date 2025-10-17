@@ -2,13 +2,15 @@ package routes
 
 import (
 	"crm.saas/backend/internal/http/handlers"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 func stageRouter(r *gin.Engine) {
 	stage := r.Group("/stage")
-	handler := handlers.NewStageHandler()
 
+	stageService := services.NewStageService()
+	handler := handlers.NewStageHandler(stageService)
 	{
 		stage.GET("/read", handler.Read)
 		stage.POST("/create", handler.Create)

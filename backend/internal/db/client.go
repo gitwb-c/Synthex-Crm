@@ -12,6 +12,7 @@ var Client *ent.Client
 
 func Init(connString string) error {
 	var err error
+	log.Print(connString)
 	Client, err = ent.Open("postgres", connString)
 	if err != nil {
 		return err

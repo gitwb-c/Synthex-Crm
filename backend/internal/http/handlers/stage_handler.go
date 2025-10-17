@@ -1,25 +1,48 @@
 package handlers
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"net/http"
+
+	"crm.saas/backend/internal/dto"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 type StageHandler struct {
-	client *ent.Client
+	service *services.StageService
 }
 
-func NewStageHandler() *StageHandler {
-	return &StageHandler{
-		client: db.Client,
+func NewStageHandler(service *services.StageService) *StageHandler {
+	return &StageHandler{service: service}
+}
+
+func (h *StageHandler) Read(c *gin.Context) {
+	var req dto.ReadStageReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 }
 
-func (h *StageHandler) Read(c *gin.Context) {}
+func (h *StageHandler) Create(c *gin.Context) {
+	var req dto.CreateStageReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *StageHandler) Create(c *gin.Context) {}
+}
 
-func (h *StageHandler) Update(c *gin.Context) {}
+func (h *StageHandler) Update(c *gin.Context) {
+	var req dto.UpdateStageReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *StageHandler) Delete(c *gin.Context) {}
+}
+
+func (h *StageHandler) Delete(c *gin.Context) {
+	var req dto.DeleteStageReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}

@@ -1,25 +1,48 @@
 package handlers
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"net/http"
+
+	"crm.saas/backend/internal/dto"
+	"crm.saas/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
 type FormHandler struct {
-	client *ent.Client
+	service *services.FormService
 }
 
-func NewFormHandler() *FormHandler {
-	return &FormHandler{
-		client: db.Client,
+func NewFormHandler(service *services.FormService) *FormHandler {
+	return &FormHandler{service: service}
+}
+
+func (h *FormHandler) Read(c *gin.Context) {
+	var req dto.ReadFormReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 }
 
-func (h *FormHandler) Read(c *gin.Context) {}
+func (h *FormHandler) Create(c *gin.Context) {
+	var req dto.CreateFormReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *FormHandler) Create(c *gin.Context) {}
+}
 
-func (h *FormHandler) Update(c *gin.Context) {}
+func (h *FormHandler) Update(c *gin.Context) {
+	var req dto.UpdateFormReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-func (h *FormHandler) Delete(c *gin.Context) {}
+}
+
+func (h *FormHandler) Delete(c *gin.Context) {
+	var req dto.DeleteFormReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}
