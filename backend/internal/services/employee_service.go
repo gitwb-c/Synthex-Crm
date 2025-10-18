@@ -1,26 +1,25 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type EmployeeService struct {
-	client *ent.Client
+	repository *repositories.EmployeeRepository
 }
 
-func NewEmployeeService() *EmployeeService {
+func NewEmployeeService(repository *repositories.EmployeeRepository) *EmployeeService {
 	return &EmployeeService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 
 // ([]*ent.Employee, error)
 func (s *EmployeeService) Read(data dto.ReadEmployeeReq) {}
 
-func (s *EmployeeService) Create(data dto.ReadEmployeeReq) {}
+func (s *EmployeeService) Create(data dto.CreateEmployeeReq) {}
 
-func (s *EmployeeService) Update(data dto.ReadEmployeeReq) {}
+func (s *EmployeeService) Update(data dto.UpdateEmployeeReq) {}
 
-func (s *EmployeeService) Delete(data dto.ReadEmployeeReq) {}
+func (s *EmployeeService) Delete(data dto.DeleteEmployeeReq) {}

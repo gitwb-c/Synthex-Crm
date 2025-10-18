@@ -1,20 +1,18 @@
 package routes
 
 import (
-	"crm.saas/backend/internal/http/handlers"
-	"crm.saas/backend/internal/services"
+	"crm.saas/backend/internal"
 	"github.com/gin-gonic/gin"
 )
 
 func queueRouter(r *gin.Engine) {
 	queue := r.Group("/queue")
 
-	queueService := services.NewQueueService()
-	handler := handlers.NewQueueHandler(queueService)
+	handler := internal.InitializeQueueHandler()
 	{
-		queue.GET("/read", handler.Read)
-		queue.POST("/create", handler.Create)
-		queue.PATCH("/update", handler.Update)
-		queue.DELETE("/delete", handler.Delete)
+		queue.GET("/", handler.Read)
+		queue.POST("/", handler.Create)
+		queue.PATCH("/", handler.Update)
+		queue.DELETE("/", handler.Delete)
 	}
 }

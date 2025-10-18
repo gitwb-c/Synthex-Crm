@@ -1,20 +1,18 @@
 package routes
 
 import (
-	"crm.saas/backend/internal/http/handlers"
-	"crm.saas/backend/internal/services"
+	"crm.saas/backend/internal"
 	"github.com/gin-gonic/gin"
 )
 
 func costumerRouter(r *gin.Engine) {
 	costumer := r.Group("/costumer")
 
-	costumerService := services.NewCostumerService()
-	handler := handlers.NewCostumerHandler(costumerService)
+	handler := internal.InitializeCostumerHandler()
 	{
-		costumer.GET("/read", handler.Read)
-		costumer.POST("/create", handler.Create)
-		costumer.PATCH("/update", handler.Update)
-		costumer.DELETE("/delete", handler.Delete)
+		costumer.GET("/", handler.Read)
+		costumer.POST("/", handler.Create)
+		costumer.PATCH("/", handler.Update)
+		costumer.DELETE("/", handler.Delete)
 	}
 }

@@ -4,10 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/http"
+	"github.com/joho/godotenv"
 )
 
 func main() {

@@ -1,26 +1,25 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type DealService struct {
-	client *ent.Client
+	repository *repositories.DealRepository
 }
 
-func NewDealService() *DealService {
+func NewDealService(repository *repositories.DealRepository) *DealService {
 	return &DealService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 
 // ([]*ent.Deal, error)
 func (s *DealService) Read(data dto.ReadDealReq) {}
 
-func (s *DealService) Create(data dto.ReadDealReq) {}
+func (s *DealService) Create(data dto.CreateDealReq) {}
 
-func (s *DealService) Update(data dto.ReadDealReq) {}
+func (s *DealService) Update(data dto.UpdateDealReq) {}
 
-func (s *DealService) Delete(data dto.ReadDealReq) {}
+func (s *DealService) Delete(data dto.DeleteDealReq) {}

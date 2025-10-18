@@ -1,26 +1,25 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type FieldService struct {
-	client *ent.Client
+	repository *repositories.FieldRepository
 }
 
-func NewFieldService() *FieldService {
+func NewFieldService(repository *repositories.FieldRepository) *FieldService {
 	return &FieldService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 
 // ([]*ent.Field, error)
 func (s *FieldService) Read(data dto.ReadFieldReq) {}
 
-func (s *FieldService) Create(data dto.ReadFieldReq) {}
+func (s *FieldService) Create(data dto.CreateFieldReq) {}
 
-func (s *FieldService) Update(data dto.ReadFieldReq) {}
+func (s *FieldService) Update(data dto.UpdateFieldReq) {}
 
-func (s *FieldService) Delete(data dto.ReadFieldReq) {}
+func (s *FieldService) Delete(data dto.DeleteFieldReq) {}

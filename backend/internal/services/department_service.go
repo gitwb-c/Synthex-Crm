@@ -1,26 +1,25 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type DepartmentService struct {
-	client *ent.Client
+	repository *repositories.DepartmentRepository
 }
 
-func NewDepartmentService() *DepartmentService {
+func NewDepartmentService(repository *repositories.DepartmentRepository) *DepartmentService {
 	return &DepartmentService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 
 // ([]*ent.Department, error)
 func (s *DepartmentService) Read(data dto.ReadDepartmentReq) {}
 
-func (s *DepartmentService) Create(data dto.ReadDepartmentReq) {}
+func (s *DepartmentService) Create(data dto.CreateDepartmentReq) {}
 
-func (s *DepartmentService) Update(data dto.ReadDepartmentReq) {}
+func (s *DepartmentService) Update(data dto.UpdateDepartmentReq) {}
 
-func (s *DepartmentService) Delete(data dto.ReadDepartmentReq) {}
+func (s *DepartmentService) Delete(data dto.DeleteDepartmentReq) {}

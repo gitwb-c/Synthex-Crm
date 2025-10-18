@@ -1,20 +1,18 @@
 package routes
 
 import (
-	"crm.saas/backend/internal/http/handlers"
-	"crm.saas/backend/internal/services"
+	"crm.saas/backend/internal"
 	"github.com/gin-gonic/gin"
 )
 
 func departmentRouter(r *gin.Engine) {
 	department := r.Group("/department")
 
-	departmentService := services.NewDepartmentService()
-	handler := handlers.NewDepartmentHandler(departmentService)
+	handler := internal.InitializeDepartmentHandler()
 	{
-		department.GET("/read", handler.Read)
-		department.POST("/create", handler.Create)
-		department.PATCH("/update", handler.Update)
-		department.DELETE("/delete", handler.Delete)
+		department.GET("/", handler.Read)
+		department.POST("/", handler.Create)
+		department.PATCH("/", handler.Update)
+		department.DELETE("/", handler.Delete)
 	}
 }

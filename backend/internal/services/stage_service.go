@@ -1,26 +1,25 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type StageService struct {
-	client *ent.Client
+	repository *repositories.StageRepository
 }
 
-func NewStageService() *StageService {
+func NewStageService(repository *repositories.StageRepository) *StageService {
 	return &StageService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 
 // ([]*ent.Stage, error)
 func (s *StageService) Read(data dto.ReadStageReq) {}
 
-func (s *StageService) Create(data dto.ReadStageReq) {}
+func (s *StageService) Create(data dto.CreateStageReq) {}
 
-func (s *StageService) Update(data dto.ReadStageReq) {}
+func (s *StageService) Update(data dto.UpdateStageReq) {}
 
-func (s *StageService) Delete(data dto.ReadStageReq) {}
+func (s *StageService) Delete(data dto.DeleteStageReq) {}

@@ -1,20 +1,18 @@
 package routes
 
 import (
-	"crm.saas/backend/internal/http/handlers"
-	"crm.saas/backend/internal/services"
+	"crm.saas/backend/internal"
 	"github.com/gin-gonic/gin"
 )
 
 func fieldRouter(r *gin.Engine) {
 	field := r.Group("/field")
 
-	fieldService := services.NewFieldService()
-	handler := handlers.NewFieldHandler(fieldService)
+	handler := internal.InitializeFieldHandler()
 	{
-		field.GET("/read", handler.Read)
-		field.POST("/create", handler.Create)
-		field.PATCH("/update", handler.Update)
-		field.DELETE("/delete", handler.Delete)
+		field.GET("/", handler.Read)
+		field.POST("/", handler.Create)
+		field.PATCH("/", handler.Update)
+		field.DELETE("/", handler.Delete)
 	}
 }

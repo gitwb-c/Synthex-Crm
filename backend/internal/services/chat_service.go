@@ -1,18 +1,17 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type ChatService struct {
-	client *ent.Client
+	repository *repositories.ChatRepository
 }
 
-func NewChatService() *ChatService {
+func NewChatService(repository *repositories.ChatRepository) *ChatService {
 	return &ChatService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 

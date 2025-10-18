@@ -1,21 +1,18 @@
 package routes
 
 import (
-	"crm.saas/backend/internal/http/handlers"
-	"crm.saas/backend/internal/services"
+	"crm.saas/backend/internal"
 	"github.com/gin-gonic/gin"
 )
 
 func employeeAuthRouter(r *gin.Engine) {
 	employeeAuth := r.Group("/employeeauth")
 
-	employeeService := services.NewEmployeeAuthService()
-	handler := handlers.NewEmployeeAuthHandler(employeeService)
-
+	handler := internal.InitializeEmployeeAuthHandler()
 	{
-		employeeAuth.GET("/read", handler.Read)
-		employeeAuth.POST("/create", handler.Create)
-		employeeAuth.PATCH("/update", handler.Update)
-		employeeAuth.DELETE("/delete", handler.Delete)
+		employeeAuth.GET("/", handler.Read)
+		employeeAuth.POST("/", handler.Create)
+		employeeAuth.PATCH("/", handler.Update)
+		employeeAuth.DELETE("/", handler.Delete)
 	}
 }

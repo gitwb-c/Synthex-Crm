@@ -1,26 +1,25 @@
 package services
 
 import (
-	"crm.saas/backend/internal/db"
 	"crm.saas/backend/internal/dto"
-	"crm.saas/backend/internal/ent"
+	"crm.saas/backend/internal/repositories"
 )
 
 type PipelineService struct {
-	client *ent.Client
+	repository *repositories.PipelineRepository
 }
 
-func NewPipelineService() *PipelineService {
+func NewPipelineService(repository *repositories.PipelineRepository) *PipelineService {
 	return &PipelineService{
-		client: db.Client,
+		repository: repository,
 	}
 }
 
 // ([]*ent.Pipeline, error)
 func (s *PipelineService) Read(data dto.ReadPipelineReq) {}
 
-func (s *PipelineService) Create(data dto.ReadPipelineReq) {}
+func (s *PipelineService) Create(data dto.CreatePipelineReq) {}
 
-func (s *PipelineService) Update(data dto.ReadPipelineReq) {}
+func (s *PipelineService) Update(data dto.UpdatePipelineReq) {}
 
-func (s *PipelineService) Delete(data dto.ReadPipelineReq) {}
+func (s *PipelineService) Delete(data dto.DeletePipelineReq) {}

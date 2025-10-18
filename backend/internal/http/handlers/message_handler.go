@@ -22,6 +22,7 @@ func (h *MessageHandler) Read(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 }
 
 func (h *MessageHandler) Create(c *gin.Context) {
