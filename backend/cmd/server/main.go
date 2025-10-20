@@ -13,12 +13,13 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println(".env file not found")
 	}
-	if err := db.Init(os.Getenv("DB_POSTGRES_URL")); err != nil {
+	srv, err := db.Init(os.Getenv("DB_POSTGRES_URL"))
+	if err != nil {
 		log.Fatalf("failed to init db: %v", err)
 	}
 	defer db.Close()
 
-	r := http.GlobalRouter()
+	r := http.GlobalRouter(srv)
 	r.Run(":8080")
 
 }

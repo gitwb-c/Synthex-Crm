@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewFieldService(repository *repositories.FieldRepository) *FieldService {
 }
 
 // ([]*ent.Field, error)
-func (s *FieldService) Read(data dto.ReadFieldReq) {}
+func (s *FieldService) Read() {}
 
-func (s *FieldService) Create(data dto.CreateFieldReq) {}
+func (s *FieldService) Create() {}
 
-func (s *FieldService) Update(data dto.UpdateFieldReq) {}
+func (s *FieldService) Update() {}
 
-func (s *FieldService) Delete(data dto.DeleteFieldReq) {}
+func (s *FieldService) Delete() {}

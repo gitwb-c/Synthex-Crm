@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/ent"
 )
 
@@ -17,10 +16,10 @@ func NewChatRepository() *ChatRepository {
 }
 
 // ([]*ent.Chat, error)
-func (s *ChatRepository) Read(data dto.ReadChatReq) {}
+func (s *ChatRepository) Read() {}
 
-func (s *ChatRepository) Create(data dto.CreateChatReq) {}
+func (s *ChatRepository) Create() {}
 
-func (s *ChatRepository) Update(data dto.UpdateChatReq) {}
+func (s *ChatRepository) Update() {}
 
-func (s *ChatRepository) Delete(data dto.DeleteChatReq) {}
+func (s *ChatRepository) Delete() {}

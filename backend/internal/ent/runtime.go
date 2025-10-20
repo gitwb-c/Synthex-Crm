@@ -2,8 +2,19 @@
 
 package ent
 
+import (
+	"crm.saas/backend/internal/ent/deal"
+	"crm.saas/backend/internal/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	dealFields := schema.Deal{}.Fields()
+	_ = dealFields
+	// dealDescTitle is the schema descriptor for title field.
+	dealDescTitle := dealFields[0].Descriptor()
+	// deal.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	deal.TitleValidator = dealDescTitle.Validators[0].(func(string) error)
 }

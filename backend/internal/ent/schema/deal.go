@@ -1,18 +1,25 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"entgo.io/contrib/entgql"
+	"entgo.io/ent"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/field"
+)
 
-// Deal holds the schema definition for the Deal entity.
 type Deal struct {
 	ent.Schema
 }
 
-// Fields of the Deal.
 func (Deal) Fields() []ent.Field {
-	return nil
+	return []ent.Field{
+		field.String("title").NotEmpty().Annotations(entgql.OrderField("TITLE")),
+	}
 }
 
-// Edges of the Deal.
-func (Deal) Edges() []ent.Edge {
-	return nil
+func (Deal) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.QueryField(),
+		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
+	}
 }

@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/ent"
 )
 
@@ -17,10 +16,10 @@ func NewPipelineRepository() *PipelineRepository {
 }
 
 // ([]*ent.Pipeline, error)
-func (s *PipelineRepository) Read(data dto.ReadPipelineReq) {}
+func (s *PipelineRepository) Read() {}
 
-func (s *PipelineRepository) Create(data dto.CreatePipelineReq) {}
+func (s *PipelineRepository) Create() {}
 
-func (s *PipelineRepository) Update(data dto.UpdatePipelineReq) {}
+func (s *PipelineRepository) Update() {}
 
-func (s *PipelineRepository) Delete(data dto.DeletePipelineReq) {}
+func (s *PipelineRepository) Delete() {}

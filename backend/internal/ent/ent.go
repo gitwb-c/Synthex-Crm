@@ -9,22 +9,10 @@ import (
 	"reflect"
 	"sync"
 
-	"crm.saas/backend/internal/ent/chat"
-	"crm.saas/backend/internal/ent/costumer"
 	"crm.saas/backend/internal/ent/deal"
-	"crm.saas/backend/internal/ent/department"
-	"crm.saas/backend/internal/ent/employee"
-	"crm.saas/backend/internal/ent/employeeauth"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-
-	entfield "crm.saas/backend/internal/ent/field"
-	"crm.saas/backend/internal/ent/form"
-	"crm.saas/backend/internal/ent/message"
-	"crm.saas/backend/internal/ent/pipeline"
-	"crm.saas/backend/internal/ent/queue"
-	"crm.saas/backend/internal/ent/stage"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -85,18 +73,7 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			chat.Table:         chat.ValidColumn,
-			costumer.Table:     costumer.ValidColumn,
-			deal.Table:         deal.ValidColumn,
-			department.Table:   department.ValidColumn,
-			employee.Table:     employee.ValidColumn,
-			employeeauth.Table: employeeauth.ValidColumn,
-			entfield.Table:     entfield.ValidColumn,
-			form.Table:         form.ValidColumn,
-			message.Table:      message.ValidColumn,
-			pipeline.Table:     pipeline.ValidColumn,
-			queue.Table:        queue.ValidColumn,
-			stage.Table:        stage.ValidColumn,
+			deal.Table: deal.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

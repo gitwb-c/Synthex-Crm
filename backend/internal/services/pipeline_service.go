@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewPipelineService(repository *repositories.PipelineRepository) *PipelineSe
 }
 
 // ([]*ent.Pipeline, error)
-func (s *PipelineService) Read(data dto.ReadPipelineReq) {}
+func (s *PipelineService) Read() {}
 
-func (s *PipelineService) Create(data dto.CreatePipelineReq) {}
+func (s *PipelineService) Create() {}
 
-func (s *PipelineService) Update(data dto.UpdatePipelineReq) {}
+func (s *PipelineService) Update() {}
 
-func (s *PipelineService) Delete(data dto.DeletePipelineReq) {}
+func (s *PipelineService) Delete() {}

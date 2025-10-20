@@ -27,6 +27,20 @@ func (_u *DealUpdate) Where(ps ...predicate.Deal) *DealUpdate {
 	return _u
 }
 
+// SetTitle sets the "title" field.
+func (_u *DealUpdate) SetTitle(v string) *DealUpdate {
+	_u.mutation.SetTitle(v)
+	return _u
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (_u *DealUpdate) SetNillableTitle(v *string) *DealUpdate {
+	if v != nil {
+		_u.SetTitle(*v)
+	}
+	return _u
+}
+
 // Mutation returns the DealMutation object of the builder.
 func (_u *DealUpdate) Mutation() *DealMutation {
 	return _u.mutation
@@ -59,7 +73,20 @@ func (_u *DealUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *DealUpdate) check() error {
+	if v, ok := _u.mutation.Title(); ok {
+		if err := deal.TitleValidator(v); err != nil {
+			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *DealUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -67,6 +94,9 @@ func (_u *DealUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.Title(); ok {
+		_spec.SetField(deal.FieldTitle, field.TypeString, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -86,6 +116,20 @@ type DealUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *DealMutation
+}
+
+// SetTitle sets the "title" field.
+func (_u *DealUpdateOne) SetTitle(v string) *DealUpdateOne {
+	_u.mutation.SetTitle(v)
+	return _u
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (_u *DealUpdateOne) SetNillableTitle(v *string) *DealUpdateOne {
+	if v != nil {
+		_u.SetTitle(*v)
+	}
+	return _u
 }
 
 // Mutation returns the DealMutation object of the builder.
@@ -133,7 +177,20 @@ func (_u *DealUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *DealUpdateOne) check() error {
+	if v, ok := _u.mutation.Title(); ok {
+		if err := deal.TitleValidator(v); err != nil {
+			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *DealUpdateOne) sqlSave(ctx context.Context) (_node *Deal, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -158,6 +215,9 @@ func (_u *DealUpdateOne) sqlSave(ctx context.Context) (_node *Deal, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.Title(); ok {
+		_spec.SetField(deal.FieldTitle, field.TypeString, value)
 	}
 	_node = &Deal{config: _u.config}
 	_spec.Assign = _node.assignValues

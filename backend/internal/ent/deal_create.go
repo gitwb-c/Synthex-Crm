@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"crm.saas/backend/internal/ent/deal"
@@ -16,6 +17,12 @@ type DealCreate struct {
 	config
 	mutation *DealMutation
 	hooks    []Hook
+}
+
+// SetTitle sets the "title" field.
+func (_c *DealCreate) SetTitle(v string) *DealCreate {
+	_c.mutation.SetTitle(v)
+	return _c
 }
 
 // Mutation returns the DealMutation object of the builder.
@@ -52,6 +59,14 @@ func (_c *DealCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *DealCreate) check() error {
+	if _, ok := _c.mutation.Title(); !ok {
+		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Deal.title"`)}
+	}
+	if v, ok := _c.mutation.Title(); ok {
+		if err := deal.TitleValidator(v); err != nil {
+			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -78,6 +93,10 @@ func (_c *DealCreate) createSpec() (*Deal, *sqlgraph.CreateSpec) {
 		_node = &Deal{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(deal.Table, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
 	)
+	if value, ok := _c.mutation.Title(); ok {
+		_spec.SetField(deal.FieldTitle, field.TypeString, value)
+		_node.Title = value
+	}
 	return _node, _spec
 }
 

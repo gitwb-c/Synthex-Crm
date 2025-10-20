@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewQueueService(repository *repositories.QueueRepository) *QueueService {
 }
 
 // ([]*ent.Queue, error)
-func (s *QueueService) Read(data dto.ReadQueueReq) {}
+func (s *QueueService) Read() {}
 
-func (s *QueueService) Create(data dto.CreateQueueReq) {}
+func (s *QueueService) Create() {}
 
-func (s *QueueService) Update(data dto.UpdateQueueReq) {}
+func (s *QueueService) Update() {}
 
-func (s *QueueService) Delete(data dto.DeleteQueueReq) {}
+func (s *QueueService) Delete() {}

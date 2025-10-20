@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewStageService(repository *repositories.StageRepository) *StageService {
 }
 
 // ([]*ent.Stage, error)
-func (s *StageService) Read(data dto.ReadStageReq) {}
+func (s *StageService) Read() {}
 
-func (s *StageService) Create(data dto.CreateStageReq) {}
+func (s *StageService) Create() {}
 
-func (s *StageService) Update(data dto.UpdateStageReq) {}
+func (s *StageService) Update() {}
 
-func (s *StageService) Delete(data dto.DeleteStageReq) {}
+func (s *StageService) Delete() {}

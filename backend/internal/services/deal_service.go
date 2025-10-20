@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewDealService(repository *repositories.DealRepository) *DealService {
 }
 
 // ([]*ent.Deal, error)
-func (s *DealService) Read(data dto.ReadDealReq) {}
+func (s *DealService) Read() {}
 
-func (s *DealService) Create(data dto.CreateDealReq) {}
+func (s *DealService) Create() {}
 
-func (s *DealService) Update(data dto.UpdateDealReq) {}
+func (s *DealService) Update() {}
 
-func (s *DealService) Delete(data dto.DeleteDealReq) {}
+func (s *DealService) Delete() {}

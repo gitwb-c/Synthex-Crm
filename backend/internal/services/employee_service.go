@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewEmployeeService(repository *repositories.EmployeeRepository) *EmployeeSe
 }
 
 // ([]*ent.Employee, error)
-func (s *EmployeeService) Read(data dto.ReadEmployeeReq) {}
+func (s *EmployeeService) Read() {}
 
-func (s *EmployeeService) Create(data dto.CreateEmployeeReq) {}
+func (s *EmployeeService) Create() {}
 
-func (s *EmployeeService) Update(data dto.UpdateEmployeeReq) {}
+func (s *EmployeeService) Update() {}
 
-func (s *EmployeeService) Delete(data dto.DeleteEmployeeReq) {}
+func (s *EmployeeService) Delete() {}

@@ -22,6 +22,8 @@ type DealQuery struct {
 	order      []deal.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Deal
+	modifiers  []func(*sql.Selector)
+	loadTotal  []func(context.Context, []*Deal) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -258,6 +260,18 @@ func (_q *DealQuery) Clone() *DealQuery {
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Title string `json:"title,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Deal.Query().
+//		GroupBy(deal.FieldTitle).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (_q *DealQuery) GroupBy(field string, fields ...string) *DealGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &DealGroupBy{build: _q}
@@ -269,6 +283,16 @@ func (_q *DealQuery) GroupBy(field string, fields ...string) *DealGroupBy {
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		Title string `json:"title,omitempty"`
+//	}
+//
+//	client.Deal.Query().
+//		Select(deal.FieldTitle).
+//		Scan(ctx, &v)
 func (_q *DealQuery) Select(fields ...string) *DealSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
 	sbuild := &DealSelect{DealQuery: _q}
@@ -321,6 +345,9 @@ func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, e
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
+	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
@@ -330,11 +357,19 @@ func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
 }
 
 func (_q *DealQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
+	}
 	_spec.Node.Columns = _q.ctx.Fields
 	if len(_q.ctx.Fields) > 0 {
 		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique

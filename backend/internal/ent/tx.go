@@ -12,30 +12,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Chat is the client for interacting with the Chat builders.
-	Chat *ChatClient
-	// Costumer is the client for interacting with the Costumer builders.
-	Costumer *CostumerClient
 	// Deal is the client for interacting with the Deal builders.
 	Deal *DealClient
-	// Department is the client for interacting with the Department builders.
-	Department *DepartmentClient
-	// Employee is the client for interacting with the Employee builders.
-	Employee *EmployeeClient
-	// EmployeeAuth is the client for interacting with the EmployeeAuth builders.
-	EmployeeAuth *EmployeeAuthClient
-	// Field is the client for interacting with the Field builders.
-	Field *FieldClient
-	// Form is the client for interacting with the Form builders.
-	Form *FormClient
-	// Message is the client for interacting with the Message builders.
-	Message *MessageClient
-	// Pipeline is the client for interacting with the Pipeline builders.
-	Pipeline *PipelineClient
-	// Queue is the client for interacting with the Queue builders.
-	Queue *QueueClient
-	// Stage is the client for interacting with the Stage builders.
-	Stage *StageClient
 
 	// lazily loaded.
 	client     *Client
@@ -167,18 +145,7 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Chat = NewChatClient(tx.config)
-	tx.Costumer = NewCostumerClient(tx.config)
 	tx.Deal = NewDealClient(tx.config)
-	tx.Department = NewDepartmentClient(tx.config)
-	tx.Employee = NewEmployeeClient(tx.config)
-	tx.EmployeeAuth = NewEmployeeAuthClient(tx.config)
-	tx.Field = NewFieldClient(tx.config)
-	tx.Form = NewFormClient(tx.config)
-	tx.Message = NewMessageClient(tx.config)
-	tx.Pipeline = NewPipelineClient(tx.config)
-	tx.Queue = NewQueueClient(tx.config)
-	tx.Stage = NewStageClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -188,7 +155,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Chat.QueryXXX(), the query will be executed
+// applies a query, for example: Deal.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

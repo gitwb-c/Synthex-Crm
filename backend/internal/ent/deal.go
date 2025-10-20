@@ -13,9 +13,11 @@ import (
 
 // Deal is the model entity for the Deal schema.
 type Deal struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
-	ID           int `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
+	// Title holds the value of the "title" field.
+	Title        string `json:"title,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -26,6 +28,8 @@ func (*Deal) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case deal.FieldID:
 			values[i] = new(sql.NullInt64)
+		case deal.FieldTitle:
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -47,6 +51,12 @@ func (_m *Deal) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case deal.FieldTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field title", values[i])
+			} else if value.Valid {
+				_m.Title = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -82,7 +92,9 @@ func (_m *Deal) Unwrap() *Deal {
 func (_m *Deal) String() string {
 	var builder strings.Builder
 	builder.WriteString("Deal(")
-	builder.WriteString(fmt.Sprintf("id=%v", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("title=")
+	builder.WriteString(_m.Title)
 	builder.WriteByte(')')
 	return builder.String()
 }

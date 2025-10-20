@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/ent"
 )
 
@@ -17,10 +16,10 @@ func NewFormRepository() *FormRepository {
 }
 
 // ([]*ent.Form, error)
-func (s *FormRepository) Read(data dto.ReadFormReq) {}
+func (s *FormRepository) Read() {}
 
-func (s *FormRepository) Create(data dto.CreateFormReq) {}
+func (s *FormRepository) Create() {}
 
-func (s *FormRepository) Update(data dto.UpdateFormReq) {}
+func (s *FormRepository) Update() {}
 
-func (s *FormRepository) Delete(data dto.DeleteFormReq) {}
+func (s *FormRepository) Delete() {}

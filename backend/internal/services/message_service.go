@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewMessageService(repository *repositories.MessageRepository) *MessageServi
 }
 
 // ([]*ent.Message, error)
-func (s *MessageService) Read(data dto.ReadMessageReq) {}
+func (s *MessageService) Read() {}
 
-func (s *MessageService) Create(data dto.CreateMessageReq) {}
+func (s *MessageService) Create() {}
 
-func (s *MessageService) Update(data dto.UpdateMessageReq) {}
+func (s *MessageService) Update() {}
 
-func (s *MessageService) Delete(data dto.DeleteMessageReq) {}
+func (s *MessageService) Delete() {}

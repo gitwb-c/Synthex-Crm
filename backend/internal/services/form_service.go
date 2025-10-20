@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crm.saas/backend/internal/dto"
 	"crm.saas/backend/internal/repositories"
 )
 
@@ -16,10 +15,10 @@ func NewFormService(repository *repositories.FormRepository) *FormService {
 }
 
 // ([]*ent.Form, error)
-func (s *FormService) Read(data dto.ReadFormReq) {}
+func (s *FormService) Read() {}
 
-func (s *FormService) Create(data dto.CreateFormReq) {}
+func (s *FormService) Create() {}
 
-func (s *FormService) Update(data dto.UpdateFormReq) {}
+func (s *FormService) Update() {}
 
-func (s *FormService) Delete(data dto.DeleteFormReq) {}
+func (s *FormService) Delete() {}
