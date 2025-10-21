@@ -1,25 +1,26 @@
 package repositories
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 )
 
 type PipelineRepository struct {
 	client *ent.Client
 }
 
-func NewPipelineRepository() *PipelineRepository {
+func NewPipelineRepository(client *ent.Client) *PipelineRepository {
 	return &PipelineRepository{
-		client: db.Client,
+		client: client,
 	}
 }
 
 // ([]*ent.Pipeline, error)
-func (s *PipelineRepository) Read() {}
+func (s *PipelineRepository) Read(ctx context.Context) {}
 
-func (s *PipelineRepository) Create() {}
+func (s *PipelineRepository) Create(ctx context.Context) {}
 
-func (s *PipelineRepository) Update() {}
+func (s *PipelineRepository) Update(ctx context.Context) {}
 
-func (s *PipelineRepository) Delete() {}
+func (s *PipelineRepository) Delete(ctx context.Context) {}

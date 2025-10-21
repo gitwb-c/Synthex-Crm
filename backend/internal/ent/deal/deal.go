@@ -3,7 +3,11 @@
 package deal
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 )
 
 const (
@@ -13,14 +17,67 @@ const (
 	FieldID = "id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
+	// FieldSource holds the string denoting the source field in the database.
+	FieldSource = "source"
+	// FieldCreatedAt holds the string denoting the createdat field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
+	FieldUpdatedAt = "updated_at"
+	// EdgeCostumer holds the string denoting the costumer edge name in mutations.
+	EdgeCostumer = "costumer"
+	// EdgeChat holds the string denoting the chat edge name in mutations.
+	EdgeChat = "chat"
+	// EdgeStage holds the string denoting the stage edge name in mutations.
+	EdgeStage = "stage"
+	// EdgeDealCrmFields holds the string denoting the dealcrmfields edge name in mutations.
+	EdgeDealCrmFields = "dealCrmFields"
 	// Table holds the table name of the deal in the database.
 	Table = "deals"
+	// CostumerTable is the table that holds the costumer relation/edge.
+	CostumerTable = "deals"
+	// CostumerInverseTable is the table name for the Costumer entity.
+	// It exists in this package in order to avoid circular dependency with the "costumer" package.
+	CostumerInverseTable = "costumers"
+	// CostumerColumn is the table column denoting the costumer relation/edge.
+	CostumerColumn = "deal_costumer"
+	// ChatTable is the table that holds the chat relation/edge.
+	ChatTable = "deals"
+	// ChatInverseTable is the table name for the Chat entity.
+	// It exists in this package in order to avoid circular dependency with the "chat" package.
+	ChatInverseTable = "chats"
+	// ChatColumn is the table column denoting the chat relation/edge.
+	ChatColumn = "chat_deal"
+	// StageTable is the table that holds the stage relation/edge.
+	StageTable = "deals"
+	// StageInverseTable is the table name for the Stage entity.
+	// It exists in this package in order to avoid circular dependency with the "stage" package.
+	StageInverseTable = "stages"
+	// StageColumn is the table column denoting the stage relation/edge.
+	StageColumn = "deal_stage"
+	// DealCrmFieldsTable is the table that holds the dealCrmFields relation/edge.
+	DealCrmFieldsTable = "deal_crm_fields"
+	// DealCrmFieldsInverseTable is the table name for the DealCrmField entity.
+	// It exists in this package in order to avoid circular dependency with the "dealcrmfield" package.
+	DealCrmFieldsInverseTable = "deal_crm_fields"
+	// DealCrmFieldsColumn is the table column denoting the dealCrmFields relation/edge.
+	DealCrmFieldsColumn = "deal_crm_field_deal"
 )
 
 // Columns holds all SQL columns for deal fields.
 var Columns = []string{
 	FieldID,
 	FieldTitle,
+	FieldSource,
+	FieldCreatedAt,
+	FieldUpdatedAt,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "deals"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"chat_deal",
+	"deal_costumer",
+	"deal_stage",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -30,12 +87,25 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
+			return true
+		}
+	}
 	return false
 }
 
 var (
 	// TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	TitleValidator func(string) error
+	// DefaultCreatedAt holds the default value on creation for the "createdAt" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updatedAt" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updatedAt" field.
+	UpdateDefaultUpdatedAt func() time.Time
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uuid.UUID
 )
 
 // OrderOption defines the ordering options for the Deal queries.
@@ -49,4 +119,82 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByTitle orders the results by the title field.
 func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
+}
+
+// BySource orders the results by the source field.
+func BySource(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSource, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the createdAt field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updatedAt field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCostumerField orders the results by costumer field.
+func ByCostumerField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCostumerStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByChatField orders the results by chat field.
+func ByChatField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChatStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByStageField orders the results by stage field.
+func ByStageField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStageStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByDealCrmFieldsCount orders the results by dealCrmFields count.
+func ByDealCrmFieldsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDealCrmFieldsStep(), opts...)
+	}
+}
+
+// ByDealCrmFields orders the results by dealCrmFields terms.
+func ByDealCrmFields(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDealCrmFieldsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newCostumerStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CostumerInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, CostumerTable, CostumerColumn),
+	)
+}
+func newChatStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ChatInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, true, ChatTable, ChatColumn),
+	)
+}
+func newStageStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StageInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, StageTable, StageColumn),
+	)
+}
+func newDealCrmFieldsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DealCrmFieldsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, DealCrmFieldsTable, DealCrmFieldsColumn),
+	)
 }

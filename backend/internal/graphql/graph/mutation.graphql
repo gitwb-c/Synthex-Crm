@@ -1,0 +1,33 @@
+scalar Time
+
+extend type Mutation {
+  createDeal(input: CreateDealInput!): Deal!
+  updateDeal(id: ID!, input: UpdateDealInput!): Deal!
+
+  createPipeline(input: CreatePipelineInput!): Pipeline!
+  updatePipeline(id: ID!, input: UpdatePipelineInput!): Pipeline!
+
+  createCostumer(input: CreateCostumerInput!): Costumer!
+  updateCostumer(id: ID!, input: UpdateCostumerInput!): Costumer!
+
+  createStage(input: CreateStageInput!): Stage!
+  updateStage(id: ID!, input: UpdateStageInput!): Stage!
+
+  createChat(input: CreateChatInput!): Chat!
+  updateChat(id: ID!, input: UpdateChatInput!): Chat!
+
+  createEmployee(input: CreateEmployeeInput!): Employee!
+  updateEmployee(id: ID!, input: UpdateEmployeeInput!): Employee!
+
+  createEmployeeAuth(input: CreateEmployeeAuthInput!): EmployeeAuth!
+  updateEmployeeAuth(id: ID!, input: UpdateEmployeeAuthInput!): EmployeeAuth!
+
+  createDepartment(input: CreateDepartmentInput!): Department!
+  updateDepartment(id: ID!, input: UpdateDepartmentInput!): Department!
+
+  createMessage(input: CreateMessageInput!): Message!
+  updateMessage(id: ID!, input: UpdateMessageInput!): Message!
+
+  createQueue(input: CreateQueueInput!): Queue!
+  updateQueue(id: ID!, input: UpdateQueueInput!): Queue!
+}

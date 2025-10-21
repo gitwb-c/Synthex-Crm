@@ -1,25 +1,26 @@
 package repositories
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 )
 
 type EmployeeRepository struct {
 	client *ent.Client
 }
 
-func NewEmployeeRepository() *EmployeeRepository {
+func NewEmployeeRepository(client *ent.Client) *EmployeeRepository {
 	return &EmployeeRepository{
-		client: db.Client,
+		client: client,
 	}
 }
 
 // ([]*ent.Employee, error)
-func (s *EmployeeRepository) Read() {}
+func (s *EmployeeRepository) Read(ctx context.Context) {}
 
-func (s *EmployeeRepository) Create() {}
+func (s *EmployeeRepository) Create(ctx context.Context) {}
 
-func (s *EmployeeRepository) Update() {}
+func (s *EmployeeRepository) Update(ctx context.Context) {}
 
-func (s *EmployeeRepository) Delete() {}
+func (s *EmployeeRepository) Delete(ctx context.Context) {}

@@ -1,8 +1,6 @@
 package services
 
-import (
-	"crm.saas/backend/internal/repositories"
-)
+import "github.com/gitwb-c/crm.saas/backend/internal/repositories"
 
 type ChatService struct {
 	repository *repositories.ChatRepository

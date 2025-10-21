@@ -7,80 +7,141 @@
 package wire
 
 import (
-	"crm.saas/backend/internal/repositories"
-	"crm.saas/backend/internal/services"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
+	"github.com/gitwb-c/crm.saas/backend/internal/services"
 )
 
 // Injectors from wire.go:
 
-func InitializeChatHandler() *services.ChatService {
-	chatRepository := repositories.NewChatRepository()
+func InitializeChatService(client *ent.Client) *services.ChatService {
+	chatRepository := InitializeChatRepository(client)
 	chatService := services.NewChatService(chatRepository)
 	return chatService
 }
 
-func InitializeCostumerHandler() *services.CostumerService {
-	costumerRepository := repositories.NewCostumerRepository()
+func InitializeCostumerService(client *ent.Client) *services.CostumerService {
+	costumerRepository := InitializeCostumerRepository(client)
 	costumerService := services.NewCostumerService(costumerRepository)
 	return costumerService
 }
 
-func InitializeDealHandler() *services.DealService {
-	dealRepository := repositories.NewDealRepository()
+func InitializeDealService(client *ent.Client) *services.DealService {
+	dealRepository := InitializeDealRepository(client)
 	dealService := services.NewDealService(dealRepository)
 	return dealService
 }
 
-func InitializeDepartmentHandler() *services.DepartmentService {
-	departmentRepository := repositories.NewDepartmentRepository()
+func InitializeDepartmentService(client *ent.Client) *services.DepartmentService {
+	departmentRepository := InitializeDepartmentRepository(client)
 	departmentService := services.NewDepartmentService(departmentRepository)
 	return departmentService
 }
 
-func InitializeEmployeeHandler() *services.EmployeeService {
-	employeeRepository := repositories.NewEmployeeRepository()
+func InitializeEmployeeService(client *ent.Client) *services.EmployeeService {
+	employeeRepository := InitializeEmployeeRepository(client)
 	employeeService := services.NewEmployeeService(employeeRepository)
 	return employeeService
 }
 
-func InitializeEmployeeAuthHandler() *services.EmployeeAuthService {
-	employeeAuthRepository := repositories.NewEmployeeAuthRepository()
+func InitializeEmployeeAuthService(client *ent.Client) *services.EmployeeAuthService {
+	employeeAuthRepository := InitializeEmployeeAuthRepository(client)
 	employeeAuthService := services.NewEmployeeAuthService(employeeAuthRepository)
 	return employeeAuthService
 }
 
-func InitializeFieldHandler() *services.FieldService {
-	fieldRepository := repositories.NewFieldRepository()
+func InitializeFieldService(client *ent.Client) *services.FieldService {
+	fieldRepository := InitializeFieldRepository(client)
 	fieldService := services.NewFieldService(fieldRepository)
 	return fieldService
 }
 
-func InitializeFormHandler() *services.FormService {
-	formRepository := repositories.NewFormRepository()
+func InitializeFormService(client *ent.Client) *services.FormService {
+	formRepository := InitializeFormRepository(client)
 	formService := services.NewFormService(formRepository)
 	return formService
 }
 
-func InitializeMessageHandler() *services.MessageService {
-	messageRepository := repositories.NewMessageRepository()
+func InitializeMessageService(client *ent.Client) *services.MessageService {
+	messageRepository := InitializeMessageRepository(client)
 	messageService := services.NewMessageService(messageRepository)
 	return messageService
 }
 
-func InitializePipelineHandler() *services.PipelineService {
-	pipelineRepository := repositories.NewPipelineRepository()
+func InitializePipelineService(client *ent.Client) *services.PipelineService {
+	pipelineRepository := InitializePipelineRepository(client)
 	pipelineService := services.NewPipelineService(pipelineRepository)
 	return pipelineService
 }
 
-func InitializeQueueHandler() *services.QueueService {
-	queueRepository := repositories.NewQueueRepository()
+func InitializeQueueService(client *ent.Client) *services.QueueService {
+	queueRepository := InitializeQueueRepository(client)
 	queueService := services.NewQueueService(queueRepository)
 	return queueService
 }
 
-func InitializeStageHandler() *services.StageService {
-	stageRepository := repositories.NewStageRepository()
+func InitializeStageService(client *ent.Client) *services.StageService {
+	stageRepository := InitializeStageRepository(client)
 	stageService := services.NewStageService(stageRepository)
 	return stageService
+}
+
+func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
+	chatRepository := repositories.NewChatRepository(client)
+	return chatRepository
+}
+
+func InitializeCostumerRepository(client *ent.Client) *repositories.CostumerRepository {
+	costumerRepository := repositories.NewCostumerRepository(client)
+	return costumerRepository
+}
+
+func InitializeDealRepository(client *ent.Client) *repositories.DealRepository {
+	dealRepository := repositories.NewDealRepository(client)
+	return dealRepository
+}
+
+func InitializeDepartmentRepository(client *ent.Client) *repositories.DepartmentRepository {
+	departmentRepository := repositories.NewDepartmentRepository(client)
+	return departmentRepository
+}
+
+func InitializeEmployeeRepository(client *ent.Client) *repositories.EmployeeRepository {
+	employeeRepository := repositories.NewEmployeeRepository(client)
+	return employeeRepository
+}
+
+func InitializeEmployeeAuthRepository(client *ent.Client) *repositories.EmployeeAuthRepository {
+	employeeAuthRepository := repositories.NewEmployeeAuthRepository(client)
+	return employeeAuthRepository
+}
+
+func InitializeFieldRepository(client *ent.Client) *repositories.FieldRepository {
+	fieldRepository := repositories.NewFieldRepository(client)
+	return fieldRepository
+}
+
+func InitializeFormRepository(client *ent.Client) *repositories.FormRepository {
+	formRepository := repositories.NewFormRepository(client)
+	return formRepository
+}
+
+func InitializeMessageRepository(client *ent.Client) *repositories.MessageRepository {
+	messageRepository := repositories.NewMessageRepository(client)
+	return messageRepository
+}
+
+func InitializePipelineRepository(client *ent.Client) *repositories.PipelineRepository {
+	pipelineRepository := repositories.NewPipelineRepository(client)
+	return pipelineRepository
+}
+
+func InitializeQueueRepository(client *ent.Client) *repositories.QueueRepository {
+	queueRepository := repositories.NewQueueRepository(client)
+	return queueRepository
+}
+
+func InitializeStageRepository(client *ent.Client) *repositories.StageRepository {
+	stageRepository := repositories.NewStageRepository(client)
+	return stageRepository
 }

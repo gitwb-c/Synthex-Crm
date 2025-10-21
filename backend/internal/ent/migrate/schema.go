@@ -8,22 +8,502 @@ import (
 )
 
 var (
+	// ChatsColumns holds the columns for the "chats" table.
+	ChatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "title", Type: field.TypeString},
+		{Name: "accepted", Type: field.TypeBool},
+		{Name: "locked", Type: field.TypeBool},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// ChatsTable holds the schema information for the "chats" table.
+	ChatsTable = &schema.Table{
+		Name:       "chats",
+		Columns:    ChatsColumns,
+		PrimaryKey: []*schema.Column{ChatsColumns[0]},
+	}
+	// CompaniesColumns holds the columns for the "companies" table.
+	CompaniesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// CompaniesTable holds the schema information for the "companies" table.
+	CompaniesTable = &schema.Table{
+		Name:       "companies",
+		Columns:    CompaniesColumns,
+		PrimaryKey: []*schema.Column{CompaniesColumns[0]},
+	}
+	// CostumersColumns holds the columns for the "costumers" table.
+	CostumersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString},
+		{Name: "phone", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// CostumersTable holds the schema information for the "costumers" table.
+	CostumersTable = &schema.Table{
+		Name:       "costumers",
+		Columns:    CostumersColumns,
+		PrimaryKey: []*schema.Column{CostumersColumns[0]},
+	}
+	// CrmFieldsColumns holds the columns for the "crm_fields" table.
+	CrmFieldsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "section", Type: field.TypeString},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"txt", "date", "checkbox", "dropdownList"}},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// CrmFieldsTable holds the schema information for the "crm_fields" table.
+	CrmFieldsTable = &schema.Table{
+		Name:       "crm_fields",
+		Columns:    CrmFieldsColumns,
+		PrimaryKey: []*schema.Column{CrmFieldsColumns[0]},
+	}
 	// DealsColumns holds the columns for the "deals" table.
 	DealsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "title", Type: field.TypeString},
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "title", Type: field.TypeString, Unique: true},
+		{Name: "source", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "chat_deal", Type: field.TypeUUID, Unique: true, Nullable: true},
+		{Name: "deal_costumer", Type: field.TypeUUID},
+		{Name: "deal_stage", Type: field.TypeUUID},
 	}
 	// DealsTable holds the schema information for the "deals" table.
 	DealsTable = &schema.Table{
 		Name:       "deals",
 		Columns:    DealsColumns,
 		PrimaryKey: []*schema.Column{DealsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "deals_chats_deal",
+				Columns:    []*schema.Column{DealsColumns[5]},
+				RefColumns: []*schema.Column{ChatsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "deals_costumers_costumer",
+				Columns:    []*schema.Column{DealsColumns[6]},
+				RefColumns: []*schema.Column{CostumersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "deals_stages_stage",
+				Columns:    []*schema.Column{DealsColumns[7]},
+				RefColumns: []*schema.Column{StagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// DealCrmFieldsColumns holds the columns for the "deal_crm_fields" table.
+	DealCrmFieldsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "value", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deal_crm_field_deal", Type: field.TypeUUID, Nullable: true},
+		{Name: "deal_crm_field_crm_field", Type: field.TypeUUID, Nullable: true},
+	}
+	// DealCrmFieldsTable holds the schema information for the "deal_crm_fields" table.
+	DealCrmFieldsTable = &schema.Table{
+		Name:       "deal_crm_fields",
+		Columns:    DealCrmFieldsColumns,
+		PrimaryKey: []*schema.Column{DealCrmFieldsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "deal_crm_fields_deals_deal",
+				Columns:    []*schema.Column{DealCrmFieldsColumns[4]},
+				RefColumns: []*schema.Column{DealsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "deal_crm_fields_crm_fields_crmField",
+				Columns:    []*schema.Column{DealCrmFieldsColumns[5]},
+				RefColumns: []*schema.Column{CrmFieldsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// DepartmentsColumns holds the columns for the "departments" table.
+	DepartmentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// DepartmentsTable holds the schema information for the "departments" table.
+	DepartmentsTable = &schema.Table{
+		Name:       "departments",
+		Columns:    DepartmentsColumns,
+		PrimaryKey: []*schema.Column{DepartmentsColumns[0]},
+	}
+	// DropdownListsColumns holds the columns for the "dropdown_lists" table.
+	DropdownListsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "value", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// DropdownListsTable holds the schema information for the "dropdown_lists" table.
+	DropdownListsTable = &schema.Table{
+		Name:       "dropdown_lists",
+		Columns:    DropdownListsColumns,
+		PrimaryKey: []*schema.Column{DropdownListsColumns[0]},
+	}
+	// EmployeesColumns holds the columns for the "employees" table.
+	EmployeesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "active", Type: field.TypeBool, Default: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "employee_employee_auth", Type: field.TypeUUID},
+		{Name: "employee_company", Type: field.TypeUUID},
+		{Name: "employee_department", Type: field.TypeUUID},
+	}
+	// EmployeesTable holds the schema information for the "employees" table.
+	EmployeesTable = &schema.Table{
+		Name:       "employees",
+		Columns:    EmployeesColumns,
+		PrimaryKey: []*schema.Column{EmployeesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "employees_employee_auths_employeeAuth",
+				Columns:    []*schema.Column{EmployeesColumns[5]},
+				RefColumns: []*schema.Column{EmployeeAuthsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "employees_companies_company",
+				Columns:    []*schema.Column{EmployeesColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "employees_departments_department",
+				Columns:    []*schema.Column{EmployeesColumns[7]},
+				RefColumns: []*schema.Column{DepartmentsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// EmployeeAuthsColumns holds the columns for the "employee_auths" table.
+	EmployeeAuthsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString, Unique: true},
+		{Name: "password", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// EmployeeAuthsTable holds the schema information for the "employee_auths" table.
+	EmployeeAuthsTable = &schema.Table{
+		Name:       "employee_auths",
+		Columns:    EmployeeAuthsColumns,
+		PrimaryKey: []*schema.Column{EmployeeAuthsColumns[0]},
+	}
+	// FilesColumns holds the columns for the "files" table.
+	FilesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "url", Type: field.TypeString},
+		{Name: "caption", Type: field.TypeString, Nullable: true},
+		{Name: "mime_type", Type: field.TypeString},
+		{Name: "file_name", Type: field.TypeString},
+	}
+	// FilesTable holds the schema information for the "files" table.
+	FilesTable = &schema.Table{
+		Name:       "files",
+		Columns:    FilesColumns,
+		PrimaryKey: []*schema.Column{FilesColumns[0]},
+	}
+	// MessagesColumns holds the columns for the "messages" table.
+	MessagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "sent_by", Type: field.TypeEnum, Enums: []string{"employee", "costumer"}},
+		{Name: "private", Type: field.TypeBool},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"text", "audio", "image", "file"}},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "file_message", Type: field.TypeUUID, Unique: true, Nullable: true},
+		{Name: "message_chat", Type: field.TypeUUID, Nullable: true},
+		{Name: "text_message", Type: field.TypeUUID, Unique: true, Nullable: true},
+	}
+	// MessagesTable holds the schema information for the "messages" table.
+	MessagesTable = &schema.Table{
+		Name:       "messages",
+		Columns:    MessagesColumns,
+		PrimaryKey: []*schema.Column{MessagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "messages_files_message",
+				Columns:    []*schema.Column{MessagesColumns[6]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "messages_chats_chat",
+				Columns:    []*schema.Column{MessagesColumns[7]},
+				RefColumns: []*schema.Column{ChatsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "messages_texts_message",
+				Columns:    []*schema.Column{MessagesColumns[8]},
+				RefColumns: []*schema.Column{TextsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// PipelinesColumns holds the columns for the "pipelines" table.
+	PipelinesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// PipelinesTable holds the schema information for the "pipelines" table.
+	PipelinesTable = &schema.Table{
+		Name:       "pipelines",
+		Columns:    PipelinesColumns,
+		PrimaryKey: []*schema.Column{PipelinesColumns[0]},
+	}
+	// QueuesColumns holds the columns for the "queues" table.
+	QueuesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"ring"}, Default: "ring"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// QueuesTable holds the schema information for the "queues" table.
+	QueuesTable = &schema.Table{
+		Name:       "queues",
+		Columns:    QueuesColumns,
+		PrimaryKey: []*schema.Column{QueuesColumns[0]},
+	}
+	// StagesColumns holds the columns for the "stages" table.
+	StagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "name", Type: field.TypeString},
+		{Name: "color", Type: field.TypeString, Default: "#ffffff"},
+		{Name: "loss_or_gain", Type: field.TypeBool},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "stage_pipeline", Type: field.TypeUUID},
+		{Name: "stage_queue", Type: field.TypeUUID, Nullable: true},
+	}
+	// StagesTable holds the schema information for the "stages" table.
+	StagesTable = &schema.Table{
+		Name:       "stages",
+		Columns:    StagesColumns,
+		PrimaryKey: []*schema.Column{StagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "stages_pipelines_pipeline",
+				Columns:    []*schema.Column{StagesColumns[6]},
+				RefColumns: []*schema.Column{PipelinesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "stages_queues_queue",
+				Columns:    []*schema.Column{StagesColumns[7]},
+				RefColumns: []*schema.Column{QueuesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// TextsColumns holds the columns for the "texts" table.
+	TextsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "text", Type: field.TypeString},
+	}
+	// TextsTable holds the schema information for the "texts" table.
+	TextsTable = &schema.Table{
+		Name:       "texts",
+		Columns:    TextsColumns,
+		PrimaryKey: []*schema.Column{TextsColumns[0]},
+	}
+	// ChatEmployeesColumns holds the columns for the "chat_employees" table.
+	ChatEmployeesColumns = []*schema.Column{
+		{Name: "chat_id", Type: field.TypeUUID},
+		{Name: "employee_id", Type: field.TypeUUID},
+	}
+	// ChatEmployeesTable holds the schema information for the "chat_employees" table.
+	ChatEmployeesTable = &schema.Table{
+		Name:       "chat_employees",
+		Columns:    ChatEmployeesColumns,
+		PrimaryKey: []*schema.Column{ChatEmployeesColumns[0], ChatEmployeesColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "chat_employees_chat_id",
+				Columns:    []*schema.Column{ChatEmployeesColumns[0]},
+				RefColumns: []*schema.Column{ChatsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "chat_employees_employee_id",
+				Columns:    []*schema.Column{ChatEmployeesColumns[1]},
+				RefColumns: []*schema.Column{EmployeesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// DropdownListCrmFieldColumns holds the columns for the "dropdown_list_crmField" table.
+	DropdownListCrmFieldColumns = []*schema.Column{
+		{Name: "dropdown_list_id", Type: field.TypeUUID},
+		{Name: "crm_field_id", Type: field.TypeUUID},
+	}
+	// DropdownListCrmFieldTable holds the schema information for the "dropdown_list_crmField" table.
+	DropdownListCrmFieldTable = &schema.Table{
+		Name:       "dropdown_list_crmField",
+		Columns:    DropdownListCrmFieldColumns,
+		PrimaryKey: []*schema.Column{DropdownListCrmFieldColumns[0], DropdownListCrmFieldColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dropdown_list_crmField_dropdown_list_id",
+				Columns:    []*schema.Column{DropdownListCrmFieldColumns[0]},
+				RefColumns: []*schema.Column{DropdownListsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "dropdown_list_crmField_crm_field_id",
+				Columns:    []*schema.Column{DropdownListCrmFieldColumns[1]},
+				RefColumns: []*schema.Column{CrmFieldsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// EmployeeQueuesColumns holds the columns for the "employee_queues" table.
+	EmployeeQueuesColumns = []*schema.Column{
+		{Name: "employee_id", Type: field.TypeUUID},
+		{Name: "queue_id", Type: field.TypeUUID},
+	}
+	// EmployeeQueuesTable holds the schema information for the "employee_queues" table.
+	EmployeeQueuesTable = &schema.Table{
+		Name:       "employee_queues",
+		Columns:    EmployeeQueuesColumns,
+		PrimaryKey: []*schema.Column{EmployeeQueuesColumns[0], EmployeeQueuesColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "employee_queues_employee_id",
+				Columns:    []*schema.Column{EmployeeQueuesColumns[0]},
+				RefColumns: []*schema.Column{EmployeesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "employee_queues_queue_id",
+				Columns:    []*schema.Column{EmployeeQueuesColumns[1]},
+				RefColumns: []*schema.Column{QueuesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// MessageEmployeeColumns holds the columns for the "message_employee" table.
+	MessageEmployeeColumns = []*schema.Column{
+		{Name: "message_id", Type: field.TypeUUID},
+		{Name: "employee_id", Type: field.TypeUUID},
+	}
+	// MessageEmployeeTable holds the schema information for the "message_employee" table.
+	MessageEmployeeTable = &schema.Table{
+		Name:       "message_employee",
+		Columns:    MessageEmployeeColumns,
+		PrimaryKey: []*schema.Column{MessageEmployeeColumns[0], MessageEmployeeColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "message_employee_message_id",
+				Columns:    []*schema.Column{MessageEmployeeColumns[0]},
+				RefColumns: []*schema.Column{MessagesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "message_employee_employee_id",
+				Columns:    []*schema.Column{MessageEmployeeColumns[1]},
+				RefColumns: []*schema.Column{EmployeesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// QueueDepartmentColumns holds the columns for the "queue_department" table.
+	QueueDepartmentColumns = []*schema.Column{
+		{Name: "queue_id", Type: field.TypeUUID},
+		{Name: "department_id", Type: field.TypeUUID},
+	}
+	// QueueDepartmentTable holds the schema information for the "queue_department" table.
+	QueueDepartmentTable = &schema.Table{
+		Name:       "queue_department",
+		Columns:    QueueDepartmentColumns,
+		PrimaryKey: []*schema.Column{QueueDepartmentColumns[0], QueueDepartmentColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "queue_department_queue_id",
+				Columns:    []*schema.Column{QueueDepartmentColumns[0]},
+				RefColumns: []*schema.Column{QueuesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "queue_department_department_id",
+				Columns:    []*schema.Column{QueueDepartmentColumns[1]},
+				RefColumns: []*schema.Column{DepartmentsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ChatsTable,
+		CompaniesTable,
+		CostumersTable,
+		CrmFieldsTable,
 		DealsTable,
+		DealCrmFieldsTable,
+		DepartmentsTable,
+		DropdownListsTable,
+		EmployeesTable,
+		EmployeeAuthsTable,
+		FilesTable,
+		MessagesTable,
+		PipelinesTable,
+		QueuesTable,
+		StagesTable,
+		TextsTable,
+		ChatEmployeesTable,
+		DropdownListCrmFieldTable,
+		EmployeeQueuesTable,
+		MessageEmployeeTable,
+		QueueDepartmentTable,
 	}
 )
 
 func init() {
+	DealsTable.ForeignKeys[0].RefTable = ChatsTable
+	DealsTable.ForeignKeys[1].RefTable = CostumersTable
+	DealsTable.ForeignKeys[2].RefTable = StagesTable
+	DealCrmFieldsTable.ForeignKeys[0].RefTable = DealsTable
+	DealCrmFieldsTable.ForeignKeys[1].RefTable = CrmFieldsTable
+	EmployeesTable.ForeignKeys[0].RefTable = EmployeeAuthsTable
+	EmployeesTable.ForeignKeys[1].RefTable = CompaniesTable
+	EmployeesTable.ForeignKeys[2].RefTable = DepartmentsTable
+	MessagesTable.ForeignKeys[0].RefTable = FilesTable
+	MessagesTable.ForeignKeys[1].RefTable = ChatsTable
+	MessagesTable.ForeignKeys[2].RefTable = TextsTable
+	StagesTable.ForeignKeys[0].RefTable = PipelinesTable
+	StagesTable.ForeignKeys[1].RefTable = QueuesTable
+	ChatEmployeesTable.ForeignKeys[0].RefTable = ChatsTable
+	ChatEmployeesTable.ForeignKeys[1].RefTable = EmployeesTable
+	DropdownListCrmFieldTable.ForeignKeys[0].RefTable = DropdownListsTable
+	DropdownListCrmFieldTable.ForeignKeys[1].RefTable = CrmFieldsTable
+	EmployeeQueuesTable.ForeignKeys[0].RefTable = EmployeesTable
+	EmployeeQueuesTable.ForeignKeys[1].RefTable = QueuesTable
+	MessageEmployeeTable.ForeignKeys[0].RefTable = MessagesTable
+	MessageEmployeeTable.ForeignKeys[1].RefTable = EmployeesTable
+	QueueDepartmentTable.ForeignKeys[0].RefTable = QueuesTable
+	QueueDepartmentTable.ForeignKeys[1].RefTable = DepartmentsTable
 }

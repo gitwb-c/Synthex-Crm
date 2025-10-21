@@ -1,6 +1,9 @@
 package graph
 
-import "crm.saas/backend/internal/ent"
+import (
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -8,4 +11,10 @@ import "crm.saas/backend/internal/ent"
 
 type Resolver struct {
 	Client *ent.Client
+}
+
+func NewSchema(client *ent.Client) graphql.ExecutableSchema {
+	return NewExecutableSchema(Config{
+		Resolvers: &Resolver{client},
+	})
 }

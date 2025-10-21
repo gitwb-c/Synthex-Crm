@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	// required by schema hooks.
-	_ "crm.saas/backend/internal/ent/runtime"
+	_ "github.com/gitwb-c/crm.saas/backend/internal/ent/runtime"
 
-	"crm.saas/backend/internal/ent/migrate"
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/migrate"
 )
 
 type (

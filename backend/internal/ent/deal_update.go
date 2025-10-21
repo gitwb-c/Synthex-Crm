@@ -6,12 +6,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
-	"crm.saas/backend/internal/ent/deal"
-	"crm.saas/backend/internal/ent/predicate"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/google/uuid"
 )
 
 // DealUpdate is the builder for updating Deal entities.
@@ -41,13 +47,129 @@ func (_u *DealUpdate) SetNillableTitle(v *string) *DealUpdate {
 	return _u
 }
 
+// SetSource sets the "source" field.
+func (_u *DealUpdate) SetSource(v string) *DealUpdate {
+	_u.mutation.SetSource(v)
+	return _u
+}
+
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (_u *DealUpdate) SetNillableSource(v *string) *DealUpdate {
+	if v != nil {
+		_u.SetSource(*v)
+	}
+	return _u
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (_u *DealUpdate) SetUpdatedAt(v time.Time) *DealUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetCostumerID sets the "costumer" edge to the Costumer entity by ID.
+func (_u *DealUpdate) SetCostumerID(id uuid.UUID) *DealUpdate {
+	_u.mutation.SetCostumerID(id)
+	return _u
+}
+
+// SetCostumer sets the "costumer" edge to the Costumer entity.
+func (_u *DealUpdate) SetCostumer(v *Costumer) *DealUpdate {
+	return _u.SetCostumerID(v.ID)
+}
+
+// SetChatID sets the "chat" edge to the Chat entity by ID.
+func (_u *DealUpdate) SetChatID(id uuid.UUID) *DealUpdate {
+	_u.mutation.SetChatID(id)
+	return _u
+}
+
+// SetNillableChatID sets the "chat" edge to the Chat entity by ID if the given value is not nil.
+func (_u *DealUpdate) SetNillableChatID(id *uuid.UUID) *DealUpdate {
+	if id != nil {
+		_u = _u.SetChatID(*id)
+	}
+	return _u
+}
+
+// SetChat sets the "chat" edge to the Chat entity.
+func (_u *DealUpdate) SetChat(v *Chat) *DealUpdate {
+	return _u.SetChatID(v.ID)
+}
+
+// SetStageID sets the "stage" edge to the Stage entity by ID.
+func (_u *DealUpdate) SetStageID(id uuid.UUID) *DealUpdate {
+	_u.mutation.SetStageID(id)
+	return _u
+}
+
+// SetStage sets the "stage" edge to the Stage entity.
+func (_u *DealUpdate) SetStage(v *Stage) *DealUpdate {
+	return _u.SetStageID(v.ID)
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (_u *DealUpdate) AddDealCrmFieldIDs(ids ...uuid.UUID) *DealUpdate {
+	_u.mutation.AddDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// AddDealCrmFields adds the "dealCrmFields" edges to the DealCrmField entity.
+func (_u *DealUpdate) AddDealCrmFields(v ...*DealCrmField) *DealUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDealCrmFieldIDs(ids...)
+}
+
 // Mutation returns the DealMutation object of the builder.
 func (_u *DealUpdate) Mutation() *DealMutation {
 	return _u.mutation
 }
 
+// ClearCostumer clears the "costumer" edge to the Costumer entity.
+func (_u *DealUpdate) ClearCostumer() *DealUpdate {
+	_u.mutation.ClearCostumer()
+	return _u
+}
+
+// ClearChat clears the "chat" edge to the Chat entity.
+func (_u *DealUpdate) ClearChat() *DealUpdate {
+	_u.mutation.ClearChat()
+	return _u
+}
+
+// ClearStage clears the "stage" edge to the Stage entity.
+func (_u *DealUpdate) ClearStage() *DealUpdate {
+	_u.mutation.ClearStage()
+	return _u
+}
+
+// ClearDealCrmFields clears all "dealCrmFields" edges to the DealCrmField entity.
+func (_u *DealUpdate) ClearDealCrmFields() *DealUpdate {
+	_u.mutation.ClearDealCrmFields()
+	return _u
+}
+
+// RemoveDealCrmFieldIDs removes the "dealCrmFields" edge to DealCrmField entities by IDs.
+func (_u *DealUpdate) RemoveDealCrmFieldIDs(ids ...uuid.UUID) *DealUpdate {
+	_u.mutation.RemoveDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// RemoveDealCrmFields removes "dealCrmFields" edges to DealCrmField entities.
+func (_u *DealUpdate) RemoveDealCrmFields(v ...*DealCrmField) *DealUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDealCrmFieldIDs(ids...)
+}
+
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *DealUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -73,12 +195,26 @@ func (_u *DealUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *DealUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := deal.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_u *DealUpdate) check() error {
 	if v, ok := _u.mutation.Title(); ok {
 		if err := deal.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
+	}
+	if _u.mutation.CostumerCleared() && len(_u.mutation.CostumerIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Deal.costumer"`)
+	}
+	if _u.mutation.StageCleared() && len(_u.mutation.StageIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Deal.stage"`)
 	}
 	return nil
 }
@@ -87,7 +223,7 @@ func (_u *DealUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -97,6 +233,144 @@ func (_u *DealUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(deal.FieldTitle, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Source(); ok {
+		_spec.SetField(deal.FieldSource, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(deal.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.CostumerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.CostumerTable,
+			Columns: []string{deal.CostumerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CostumerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.CostumerTable,
+			Columns: []string{deal.CostumerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ChatCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   deal.ChatTable,
+			Columns: []string{deal.ChatColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChatIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   deal.ChatTable,
+			Columns: []string{deal.ChatColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.StageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.StageTable,
+			Columns: []string{deal.StageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.StageTable,
+			Columns: []string{deal.StageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDealCrmFieldsIDs(); len(nodes) > 0 && !_u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DealCrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -132,9 +406,124 @@ func (_u *DealUpdateOne) SetNillableTitle(v *string) *DealUpdateOne {
 	return _u
 }
 
+// SetSource sets the "source" field.
+func (_u *DealUpdateOne) SetSource(v string) *DealUpdateOne {
+	_u.mutation.SetSource(v)
+	return _u
+}
+
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (_u *DealUpdateOne) SetNillableSource(v *string) *DealUpdateOne {
+	if v != nil {
+		_u.SetSource(*v)
+	}
+	return _u
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (_u *DealUpdateOne) SetUpdatedAt(v time.Time) *DealUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetCostumerID sets the "costumer" edge to the Costumer entity by ID.
+func (_u *DealUpdateOne) SetCostumerID(id uuid.UUID) *DealUpdateOne {
+	_u.mutation.SetCostumerID(id)
+	return _u
+}
+
+// SetCostumer sets the "costumer" edge to the Costumer entity.
+func (_u *DealUpdateOne) SetCostumer(v *Costumer) *DealUpdateOne {
+	return _u.SetCostumerID(v.ID)
+}
+
+// SetChatID sets the "chat" edge to the Chat entity by ID.
+func (_u *DealUpdateOne) SetChatID(id uuid.UUID) *DealUpdateOne {
+	_u.mutation.SetChatID(id)
+	return _u
+}
+
+// SetNillableChatID sets the "chat" edge to the Chat entity by ID if the given value is not nil.
+func (_u *DealUpdateOne) SetNillableChatID(id *uuid.UUID) *DealUpdateOne {
+	if id != nil {
+		_u = _u.SetChatID(*id)
+	}
+	return _u
+}
+
+// SetChat sets the "chat" edge to the Chat entity.
+func (_u *DealUpdateOne) SetChat(v *Chat) *DealUpdateOne {
+	return _u.SetChatID(v.ID)
+}
+
+// SetStageID sets the "stage" edge to the Stage entity by ID.
+func (_u *DealUpdateOne) SetStageID(id uuid.UUID) *DealUpdateOne {
+	_u.mutation.SetStageID(id)
+	return _u
+}
+
+// SetStage sets the "stage" edge to the Stage entity.
+func (_u *DealUpdateOne) SetStage(v *Stage) *DealUpdateOne {
+	return _u.SetStageID(v.ID)
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (_u *DealUpdateOne) AddDealCrmFieldIDs(ids ...uuid.UUID) *DealUpdateOne {
+	_u.mutation.AddDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// AddDealCrmFields adds the "dealCrmFields" edges to the DealCrmField entity.
+func (_u *DealUpdateOne) AddDealCrmFields(v ...*DealCrmField) *DealUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDealCrmFieldIDs(ids...)
+}
+
 // Mutation returns the DealMutation object of the builder.
 func (_u *DealUpdateOne) Mutation() *DealMutation {
 	return _u.mutation
+}
+
+// ClearCostumer clears the "costumer" edge to the Costumer entity.
+func (_u *DealUpdateOne) ClearCostumer() *DealUpdateOne {
+	_u.mutation.ClearCostumer()
+	return _u
+}
+
+// ClearChat clears the "chat" edge to the Chat entity.
+func (_u *DealUpdateOne) ClearChat() *DealUpdateOne {
+	_u.mutation.ClearChat()
+	return _u
+}
+
+// ClearStage clears the "stage" edge to the Stage entity.
+func (_u *DealUpdateOne) ClearStage() *DealUpdateOne {
+	_u.mutation.ClearStage()
+	return _u
+}
+
+// ClearDealCrmFields clears all "dealCrmFields" edges to the DealCrmField entity.
+func (_u *DealUpdateOne) ClearDealCrmFields() *DealUpdateOne {
+	_u.mutation.ClearDealCrmFields()
+	return _u
+}
+
+// RemoveDealCrmFieldIDs removes the "dealCrmFields" edge to DealCrmField entities by IDs.
+func (_u *DealUpdateOne) RemoveDealCrmFieldIDs(ids ...uuid.UUID) *DealUpdateOne {
+	_u.mutation.RemoveDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// RemoveDealCrmFields removes "dealCrmFields" edges to DealCrmField entities.
+func (_u *DealUpdateOne) RemoveDealCrmFields(v ...*DealCrmField) *DealUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDealCrmFieldIDs(ids...)
 }
 
 // Where appends a list predicates to the DealUpdate builder.
@@ -152,6 +541,7 @@ func (_u *DealUpdateOne) Select(field string, fields ...string) *DealUpdateOne {
 
 // Save executes the query and returns the updated Deal entity.
 func (_u *DealUpdateOne) Save(ctx context.Context) (*Deal, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -177,12 +567,26 @@ func (_u *DealUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *DealUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := deal.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_u *DealUpdateOne) check() error {
 	if v, ok := _u.mutation.Title(); ok {
 		if err := deal.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
+	}
+	if _u.mutation.CostumerCleared() && len(_u.mutation.CostumerIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Deal.costumer"`)
+	}
+	if _u.mutation.StageCleared() && len(_u.mutation.StageIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Deal.stage"`)
 	}
 	return nil
 }
@@ -191,7 +595,7 @@ func (_u *DealUpdateOne) sqlSave(ctx context.Context) (_node *Deal, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Deal.id" for update`)}
@@ -218,6 +622,144 @@ func (_u *DealUpdateOne) sqlSave(ctx context.Context) (_node *Deal, err error) {
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(deal.FieldTitle, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Source(); ok {
+		_spec.SetField(deal.FieldSource, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(deal.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.CostumerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.CostumerTable,
+			Columns: []string{deal.CostumerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CostumerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.CostumerTable,
+			Columns: []string{deal.CostumerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ChatCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   deal.ChatTable,
+			Columns: []string{deal.ChatColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChatIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   deal.ChatTable,
+			Columns: []string{deal.ChatColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.StageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.StageTable,
+			Columns: []string{deal.StageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.StageTable,
+			Columns: []string{deal.StageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDealCrmFieldsIDs(); len(nodes) > 0 && !_u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DealCrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Deal{config: _u.config}
 	_spec.Assign = _node.assignValues

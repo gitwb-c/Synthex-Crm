@@ -1,25 +1,26 @@
 package repositories
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 )
 
 type QueueRepository struct {
 	client *ent.Client
 }
 
-func NewQueueRepository() *QueueRepository {
+func NewQueueRepository(client *ent.Client) *QueueRepository {
 	return &QueueRepository{
-		client: db.Client,
+		client: client,
 	}
 }
 
 // ([]*ent.Queue, error)
-func (s *QueueRepository) Read() {}
+func (s *QueueRepository) Read(ctx context.Context) {}
 
-func (s *QueueRepository) Create() {}
+func (s *QueueRepository) Create(ctx context.Context) {}
 
-func (s *QueueRepository) Update() {}
+func (s *QueueRepository) Update(ctx context.Context) {}
 
-func (s *QueueRepository) Delete() {}
+func (s *QueueRepository) Delete(ctx context.Context) {}

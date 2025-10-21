@@ -1,15 +1,16 @@
+skip_validation: true
 schema:
   - graph/ent.graphql
+  - graph/mutation.graphql
 
 exec:
   filename: graph/generated.go
   package: graph
 
-model:
-  filename: graph/model/models_gen.go
-  package: model
-
 resolver:
   layout: follow-schema
   dir: graph
   package: graph
+
+autobind:
+  - github.com/gitwb-c/crm.saas/backend/internal/ent

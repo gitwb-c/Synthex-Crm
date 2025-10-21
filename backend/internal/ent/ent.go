@@ -9,10 +9,25 @@ import (
 	"reflect"
 	"sync"
 
-	"crm.saas/backend/internal/ent/deal"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +88,22 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			deal.Table: deal.ValidColumn,
+			chat.Table:         chat.ValidColumn,
+			company.Table:      company.ValidColumn,
+			costumer.Table:     costumer.ValidColumn,
+			crmfield.Table:     crmfield.ValidColumn,
+			deal.Table:         deal.ValidColumn,
+			dealcrmfield.Table: dealcrmfield.ValidColumn,
+			department.Table:   department.ValidColumn,
+			dropdownlist.Table: dropdownlist.ValidColumn,
+			employee.Table:     employee.ValidColumn,
+			employeeauth.Table: employeeauth.ValidColumn,
+			file.Table:         file.ValidColumn,
+			message.Table:      message.ValidColumn,
+			pipeline.Table:     pipeline.ValidColumn,
+			queue.Table:        queue.ValidColumn,
+			stage.Table:        stage.ValidColumn,
+			text.Table:         text.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

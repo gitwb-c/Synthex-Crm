@@ -6,5 +6,50 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Chat is the predicate function for chat builders.
+type Chat func(*sql.Selector)
+
+// Company is the predicate function for company builders.
+type Company func(*sql.Selector)
+
+// Costumer is the predicate function for costumer builders.
+type Costumer func(*sql.Selector)
+
+// CrmField is the predicate function for crmfield builders.
+type CrmField func(*sql.Selector)
+
 // Deal is the predicate function for deal builders.
 type Deal func(*sql.Selector)
+
+// DealCrmField is the predicate function for dealcrmfield builders.
+type DealCrmField func(*sql.Selector)
+
+// Department is the predicate function for department builders.
+type Department func(*sql.Selector)
+
+// DropdownList is the predicate function for dropdownlist builders.
+type DropdownList func(*sql.Selector)
+
+// Employee is the predicate function for employee builders.
+type Employee func(*sql.Selector)
+
+// EmployeeAuth is the predicate function for employeeauth builders.
+type EmployeeAuth func(*sql.Selector)
+
+// File is the predicate function for file builders.
+type File func(*sql.Selector)
+
+// Message is the predicate function for message builders.
+type Message func(*sql.Selector)
+
+// Pipeline is the predicate function for pipeline builders.
+type Pipeline func(*sql.Selector)
+
+// Queue is the predicate function for queue builders.
+type Queue func(*sql.Selector)
+
+// Stage is the predicate function for stage builders.
+type Stage func(*sql.Selector)
+
+// Text is the predicate function for text builders.
+type Text func(*sql.Selector)

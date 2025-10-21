@@ -2,22 +2,18 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/http"
-	"github.com/joho/godotenv"
+	"github.com/gitwb-c/crm.saas/backend/internal/db"
+	"github.com/gitwb-c/crm.saas/backend/internal/http"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println(".env file not found")
-	}
-	srv, err := db.Init(os.Getenv("DB_POSTGRES_URL"))
+	client, _ := db.NewClient()
+	srv, err := db.Init(client)
 	if err != nil {
 		log.Fatalf("failed to init db: %v", err)
 	}
-	defer db.Close()
+	defer db.Close(client)
 
 	r := http.GlobalRouter(srv)
 	r.Run(":8080")

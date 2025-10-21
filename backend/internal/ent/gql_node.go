@@ -5,17 +5,27 @@ package ent
 import (
 	"context"
 	"fmt"
-	"sync"
-	"sync/atomic"
 
-	"crm.saas/backend/internal/ent/deal"
 	"entgo.io/contrib/entgql"
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/schema"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
+	"github.com/google/uuid"
 	"github.com/hashicorp/go-multierror"
-	"golang.org/x/sync/semaphore"
 )
 
 // Noder wraps the basic Node method.
@@ -23,10 +33,85 @@ type Noder interface {
 	IsNode()
 }
 
+var chatImplementors = []string{"Chat", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Chat) IsNode() {}
+
+var companyImplementors = []string{"Company", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Company) IsNode() {}
+
+var costumerImplementors = []string{"Costumer", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Costumer) IsNode() {}
+
+var crmfieldImplementors = []string{"CrmField", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*CrmField) IsNode() {}
+
 var dealImplementors = []string{"Deal", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Deal) IsNode() {}
+
+var dealcrmfieldImplementors = []string{"DealCrmField", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*DealCrmField) IsNode() {}
+
+var departmentImplementors = []string{"Department", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Department) IsNode() {}
+
+var dropdownlistImplementors = []string{"DropdownList", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*DropdownList) IsNode() {}
+
+var employeeImplementors = []string{"Employee", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Employee) IsNode() {}
+
+var employeeauthImplementors = []string{"EmployeeAuth", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*EmployeeAuth) IsNode() {}
+
+var fileImplementors = []string{"File", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*File) IsNode() {}
+
+var messageImplementors = []string{"Message", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Message) IsNode() {}
+
+var pipelineImplementors = []string{"Pipeline", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Pipeline) IsNode() {}
+
+var queueImplementors = []string{"Queue", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Queue) IsNode() {}
+
+var stageImplementors = []string{"Stage", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Stage) IsNode() {}
+
+var textImplementors = []string{"Text", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Text) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -36,7 +121,7 @@ type NodeOption func(*nodeOptions)
 // WithNodeType sets the node Type resolver function (i.e. the table to query).
 // If was not provided, the table will be derived from the universal-id
 // configuration as described in: https://entgo.io/docs/migrate/#universal-ids.
-func WithNodeType(f func(context.Context, int) (string, error)) NodeOption {
+func WithNodeType(f func(context.Context, uuid.UUID) (string, error)) NodeOption {
 	return func(o *nodeOptions) {
 		o.nodeType = f
 	}
@@ -44,13 +129,13 @@ func WithNodeType(f func(context.Context, int) (string, error)) NodeOption {
 
 // WithFixedNodeType sets the Type of the node to a fixed value.
 func WithFixedNodeType(t string) NodeOption {
-	return WithNodeType(func(context.Context, int) (string, error) {
+	return WithNodeType(func(context.Context, uuid.UUID) (string, error) {
 		return t, nil
 	})
 }
 
 type nodeOptions struct {
-	nodeType func(context.Context, int) (string, error)
+	nodeType func(context.Context, uuid.UUID) (string, error)
 }
 
 func (c *Client) newNodeOpts(opts []NodeOption) *nodeOptions {
@@ -59,8 +144,8 @@ func (c *Client) newNodeOpts(opts []NodeOption) *nodeOptions {
 		opt(nopts)
 	}
 	if nopts.nodeType == nil {
-		nopts.nodeType = func(ctx context.Context, id int) (string, error) {
-			return c.tables.nodeType(ctx, c.driver, id)
+		nopts.nodeType = func(ctx context.Context, id uuid.UUID) (string, error) {
+			return "", fmt.Errorf("cannot resolve noder (%v) without its type", id)
 		}
 	}
 	return nopts
@@ -71,7 +156,7 @@ func (c *Client) newNodeOpts(opts []NodeOption) *nodeOptions {
 //
 //	c.Noder(ctx, id)
 //	c.Noder(ctx, id, ent.WithNodeType(typeResolver))
-func (c *Client) Noder(ctx context.Context, id int, opts ...NodeOption) (_ Noder, err error) {
+func (c *Client) Noder(ctx context.Context, id uuid.UUID, opts ...NodeOption) (_ Noder, err error) {
 	defer func() {
 		if IsNotFound(err) {
 			err = multierror.Append(err, entgql.ErrNodeNotFound(id))
@@ -84,8 +169,44 @@ func (c *Client) Noder(ctx context.Context, id int, opts ...NodeOption) (_ Noder
 	return c.noder(ctx, table, id)
 }
 
-func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error) {
+func (c *Client) noder(ctx context.Context, table string, id uuid.UUID) (Noder, error) {
 	switch table {
+	case chat.Table:
+		query := c.Chat.Query().
+			Where(chat.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, chatImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case company.Table:
+		query := c.Company.Query().
+			Where(company.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, companyImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case costumer.Table:
+		query := c.Costumer.Query().
+			Where(costumer.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, costumerImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case crmfield.Table:
+		query := c.CrmField.Query().
+			Where(crmfield.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, crmfieldImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case deal.Table:
 		query := c.Deal.Query().
 			Where(deal.ID(id))
@@ -95,12 +216,111 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(ctx)
+	case dealcrmfield.Table:
+		query := c.DealCrmField.Query().
+			Where(dealcrmfield.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, dealcrmfieldImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case department.Table:
+		query := c.Department.Query().
+			Where(department.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, departmentImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case dropdownlist.Table:
+		query := c.DropdownList.Query().
+			Where(dropdownlist.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, dropdownlistImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case employee.Table:
+		query := c.Employee.Query().
+			Where(employee.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, employeeImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case employeeauth.Table:
+		query := c.EmployeeAuth.Query().
+			Where(employeeauth.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, employeeauthImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case file.Table:
+		query := c.File.Query().
+			Where(file.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, fileImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case message.Table:
+		query := c.Message.Query().
+			Where(message.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, messageImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case pipeline.Table:
+		query := c.Pipeline.Query().
+			Where(pipeline.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, pipelineImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case queue.Table:
+		query := c.Queue.Query().
+			Where(queue.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, queueImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case stage.Table:
+		query := c.Stage.Query().
+			Where(stage.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, stageImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case text.Table:
+		query := c.Text.Query().
+			Where(text.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, textImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	default:
 		return nil, fmt.Errorf("cannot resolve noder from table %q: %w", table, errNodeInvalidID)
 	}
 }
 
-func (c *Client) Noders(ctx context.Context, ids []int, opts ...NodeOption) ([]Noder, error) {
+func (c *Client) Noders(ctx context.Context, ids []uuid.UUID, opts ...NodeOption) ([]Noder, error) {
 	switch len(ids) {
 	case 1:
 		noder, err := c.Noder(ctx, ids[0], opts...)
@@ -114,8 +334,8 @@ func (c *Client) Noders(ctx context.Context, ids []int, opts ...NodeOption) ([]N
 
 	noders := make([]Noder, len(ids))
 	errors := make([]error, len(ids))
-	tables := make(map[string][]int)
-	id2idx := make(map[int][]int, len(ids))
+	tables := make(map[string][]uuid.UUID)
+	id2idx := make(map[uuid.UUID][]int, len(ids))
 	nopts := c.newNodeOpts(opts)
 	for i, id := range ids {
 		table, err := nopts.nodeType(ctx, id)
@@ -161,13 +381,77 @@ func (c *Client) Noders(ctx context.Context, ids []int, opts ...NodeOption) ([]N
 	return noders, nil
 }
 
-func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, error) {
+func (c *Client) noders(ctx context.Context, table string, ids []uuid.UUID) ([]Noder, error) {
 	noders := make([]Noder, len(ids))
-	idmap := make(map[int][]*Noder, len(ids))
+	idmap := make(map[uuid.UUID][]*Noder, len(ids))
 	for i, id := range ids {
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
+	case chat.Table:
+		query := c.Chat.Query().
+			Where(chat.IDIn(ids...))
+		query, err := query.CollectFields(ctx, chatImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case company.Table:
+		query := c.Company.Query().
+			Where(company.IDIn(ids...))
+		query, err := query.CollectFields(ctx, companyImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case costumer.Table:
+		query := c.Costumer.Query().
+			Where(costumer.IDIn(ids...))
+		query, err := query.CollectFields(ctx, costumerImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case crmfield.Table:
+		query := c.CrmField.Query().
+			Where(crmfield.IDIn(ids...))
+		query, err := query.CollectFields(ctx, crmfieldImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case deal.Table:
 		query := c.Deal.Query().
 			Where(deal.IDIn(ids...))
@@ -184,60 +468,184 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
+	case dealcrmfield.Table:
+		query := c.DealCrmField.Query().
+			Where(dealcrmfield.IDIn(ids...))
+		query, err := query.CollectFields(ctx, dealcrmfieldImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case department.Table:
+		query := c.Department.Query().
+			Where(department.IDIn(ids...))
+		query, err := query.CollectFields(ctx, departmentImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case dropdownlist.Table:
+		query := c.DropdownList.Query().
+			Where(dropdownlist.IDIn(ids...))
+		query, err := query.CollectFields(ctx, dropdownlistImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case employee.Table:
+		query := c.Employee.Query().
+			Where(employee.IDIn(ids...))
+		query, err := query.CollectFields(ctx, employeeImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case employeeauth.Table:
+		query := c.EmployeeAuth.Query().
+			Where(employeeauth.IDIn(ids...))
+		query, err := query.CollectFields(ctx, employeeauthImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case file.Table:
+		query := c.File.Query().
+			Where(file.IDIn(ids...))
+		query, err := query.CollectFields(ctx, fileImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case message.Table:
+		query := c.Message.Query().
+			Where(message.IDIn(ids...))
+		query, err := query.CollectFields(ctx, messageImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case pipeline.Table:
+		query := c.Pipeline.Query().
+			Where(pipeline.IDIn(ids...))
+		query, err := query.CollectFields(ctx, pipelineImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case queue.Table:
+		query := c.Queue.Query().
+			Where(queue.IDIn(ids...))
+		query, err := query.CollectFields(ctx, queueImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case stage.Table:
+		query := c.Stage.Query().
+			Where(stage.IDIn(ids...))
+		query, err := query.CollectFields(ctx, stageImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case text.Table:
+		query := c.Text.Query().
+			Where(text.IDIn(ids...))
+		query, err := query.CollectFields(ctx, textImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	default:
 		return nil, fmt.Errorf("cannot resolve noders from table %q: %w", table, errNodeInvalidID)
 	}
 	return noders, nil
-}
-
-type tables struct {
-	once  sync.Once
-	sem   *semaphore.Weighted
-	value atomic.Value
-}
-
-func (t *tables) nodeType(ctx context.Context, drv dialect.Driver, id int) (string, error) {
-	tables, err := t.Load(ctx, drv)
-	if err != nil {
-		return "", err
-	}
-	idx := int(id / (1<<32 - 1))
-	if idx < 0 || idx >= len(tables) {
-		return "", fmt.Errorf("cannot resolve table from id %v: %w", id, errNodeInvalidID)
-	}
-	return tables[idx], nil
-}
-
-func (t *tables) Load(ctx context.Context, drv dialect.Driver) ([]string, error) {
-	if tables := t.value.Load(); tables != nil {
-		return tables.([]string), nil
-	}
-	t.once.Do(func() { t.sem = semaphore.NewWeighted(1) })
-	if err := t.sem.Acquire(ctx, 1); err != nil {
-		return nil, err
-	}
-	defer t.sem.Release(1)
-	if tables := t.value.Load(); tables != nil {
-		return tables.([]string), nil
-	}
-	tables, err := t.load(ctx, drv)
-	if err == nil {
-		t.value.Store(tables)
-	}
-	return tables, err
-}
-
-func (*tables) load(ctx context.Context, drv dialect.Driver) ([]string, error) {
-	rows := &sql.Rows{}
-	query, args := sql.Dialect(drv.Dialect()).
-		Select("type").
-		From(sql.Table(schema.TypeTable)).
-		OrderBy(sql.Asc("id")).
-		Query()
-	if err := drv.Query(ctx, query, args, rows); err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var tables []string
-	return tables, sql.ScanSlice(rows, &tables)
 }

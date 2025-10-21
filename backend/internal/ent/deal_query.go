@@ -4,26 +4,38 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
-	"crm.saas/backend/internal/ent/deal"
-	"crm.saas/backend/internal/ent/predicate"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/google/uuid"
 )
 
 // DealQuery is the builder for querying Deal entities.
 type DealQuery struct {
 	config
-	ctx        *QueryContext
-	order      []deal.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Deal
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*Deal) error
+	ctx                    *QueryContext
+	order                  []deal.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.Deal
+	withCostumer           *CostumerQuery
+	withChat               *ChatQuery
+	withStage              *StageQuery
+	withDealCrmFields      *DealCrmFieldQuery
+	withFKs                bool
+	modifiers              []func(*sql.Selector)
+	loadTotal              []func(context.Context, []*Deal) error
+	withNamedDealCrmFields map[string]*DealCrmFieldQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -60,6 +72,94 @@ func (_q *DealQuery) Order(o ...deal.OrderOption) *DealQuery {
 	return _q
 }
 
+// QueryCostumer chains the current query on the "costumer" edge.
+func (_q *DealQuery) QueryCostumer() *CostumerQuery {
+	query := (&CostumerClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deal.Table, deal.FieldID, selector),
+			sqlgraph.To(costumer.Table, costumer.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, deal.CostumerTable, deal.CostumerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryChat chains the current query on the "chat" edge.
+func (_q *DealQuery) QueryChat() *ChatQuery {
+	query := (&ChatClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deal.Table, deal.FieldID, selector),
+			sqlgraph.To(chat.Table, chat.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, deal.ChatTable, deal.ChatColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStage chains the current query on the "stage" edge.
+func (_q *DealQuery) QueryStage() *StageQuery {
+	query := (&StageClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deal.Table, deal.FieldID, selector),
+			sqlgraph.To(stage.Table, stage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, deal.StageTable, deal.StageColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDealCrmFields chains the current query on the "dealCrmFields" edge.
+func (_q *DealQuery) QueryDealCrmFields() *DealCrmFieldQuery {
+	query := (&DealCrmFieldClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deal.Table, deal.FieldID, selector),
+			sqlgraph.To(dealcrmfield.Table, dealcrmfield.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, deal.DealCrmFieldsTable, deal.DealCrmFieldsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Deal entity from the query.
 // Returns a *NotFoundError when no Deal was found.
 func (_q *DealQuery) First(ctx context.Context) (*Deal, error) {
@@ -84,8 +184,8 @@ func (_q *DealQuery) FirstX(ctx context.Context) *Deal {
 
 // FirstID returns the first Deal ID from the query.
 // Returns a *NotFoundError when no Deal ID was found.
-func (_q *DealQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (_q *DealQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+	var ids []uuid.UUID
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -97,7 +197,7 @@ func (_q *DealQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *DealQuery) FirstIDX(ctx context.Context) int {
+func (_q *DealQuery) FirstIDX(ctx context.Context) uuid.UUID {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -135,8 +235,8 @@ func (_q *DealQuery) OnlyX(ctx context.Context) *Deal {
 // OnlyID is like Only, but returns the only Deal ID in the query.
 // Returns a *NotSingularError when more than one Deal ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *DealQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (_q *DealQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+	var ids []uuid.UUID
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -152,7 +252,7 @@ func (_q *DealQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *DealQuery) OnlyIDX(ctx context.Context) int {
+func (_q *DealQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -180,7 +280,7 @@ func (_q *DealQuery) AllX(ctx context.Context) []*Deal {
 }
 
 // IDs executes the query and returns a list of Deal IDs.
-func (_q *DealQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (_q *DealQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
@@ -192,7 +292,7 @@ func (_q *DealQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *DealQuery) IDsX(ctx context.Context) []int {
+func (_q *DealQuery) IDsX(ctx context.Context) []uuid.UUID {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -247,15 +347,63 @@ func (_q *DealQuery) Clone() *DealQuery {
 		return nil
 	}
 	return &DealQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]deal.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.Deal{}, _q.predicates...),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]deal.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.Deal{}, _q.predicates...),
+		withCostumer:      _q.withCostumer.Clone(),
+		withChat:          _q.withChat.Clone(),
+		withStage:         _q.withStage.Clone(),
+		withDealCrmFields: _q.withDealCrmFields.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithCostumer tells the query-builder to eager-load the nodes that are connected to
+// the "costumer" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DealQuery) WithCostumer(opts ...func(*CostumerQuery)) *DealQuery {
+	query := (&CostumerClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCostumer = query
+	return _q
+}
+
+// WithChat tells the query-builder to eager-load the nodes that are connected to
+// the "chat" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DealQuery) WithChat(opts ...func(*ChatQuery)) *DealQuery {
+	query := (&ChatClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withChat = query
+	return _q
+}
+
+// WithStage tells the query-builder to eager-load the nodes that are connected to
+// the "stage" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DealQuery) WithStage(opts ...func(*StageQuery)) *DealQuery {
+	query := (&StageClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withStage = query
+	return _q
+}
+
+// WithDealCrmFields tells the query-builder to eager-load the nodes that are connected to
+// the "dealCrmFields" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DealQuery) WithDealCrmFields(opts ...func(*DealCrmFieldQuery)) *DealQuery {
+	query := (&DealCrmFieldClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDealCrmFields = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -334,15 +482,29 @@ func (_q *DealQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, error) {
 	var (
-		nodes = []*Deal{}
-		_spec = _q.querySpec()
+		nodes       = []*Deal{}
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
+		loadedTypes = [4]bool{
+			_q.withCostumer != nil,
+			_q.withChat != nil,
+			_q.withStage != nil,
+			_q.withDealCrmFields != nil,
+		}
 	)
+	if _q.withCostumer != nil || _q.withChat != nil || _q.withStage != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, deal.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Deal).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Deal{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(_q.modifiers) > 0 {
@@ -357,12 +519,172 @@ func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withCostumer; query != nil {
+		if err := _q.loadCostumer(ctx, query, nodes, nil,
+			func(n *Deal, e *Costumer) { n.Edges.Costumer = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withChat; query != nil {
+		if err := _q.loadChat(ctx, query, nodes, nil,
+			func(n *Deal, e *Chat) { n.Edges.Chat = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withStage; query != nil {
+		if err := _q.loadStage(ctx, query, nodes, nil,
+			func(n *Deal, e *Stage) { n.Edges.Stage = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withDealCrmFields; query != nil {
+		if err := _q.loadDealCrmFields(ctx, query, nodes,
+			func(n *Deal) { n.Edges.DealCrmFields = []*DealCrmField{} },
+			func(n *Deal, e *DealCrmField) { n.Edges.DealCrmFields = append(n.Edges.DealCrmFields, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedDealCrmFields {
+		if err := _q.loadDealCrmFields(ctx, query, nodes,
+			func(n *Deal) { n.appendNamedDealCrmFields(name) },
+			func(n *Deal, e *DealCrmField) { n.appendNamedDealCrmFields(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range _q.loadTotal {
 		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (_q *DealQuery) loadCostumer(ctx context.Context, query *CostumerQuery, nodes []*Deal, init func(*Deal), assign func(*Deal, *Costumer)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Deal)
+	for i := range nodes {
+		if nodes[i].deal_costumer == nil {
+			continue
+		}
+		fk := *nodes[i].deal_costumer
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(costumer.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "deal_costumer" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *DealQuery) loadChat(ctx context.Context, query *ChatQuery, nodes []*Deal, init func(*Deal), assign func(*Deal, *Chat)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Deal)
+	for i := range nodes {
+		if nodes[i].chat_deal == nil {
+			continue
+		}
+		fk := *nodes[i].chat_deal
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(chat.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "chat_deal" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *DealQuery) loadStage(ctx context.Context, query *StageQuery, nodes []*Deal, init func(*Deal), assign func(*Deal, *Stage)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Deal)
+	for i := range nodes {
+		if nodes[i].deal_stage == nil {
+			continue
+		}
+		fk := *nodes[i].deal_stage
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(stage.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "deal_stage" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *DealQuery) loadDealCrmFields(ctx context.Context, query *DealCrmFieldQuery, nodes []*Deal, init func(*Deal), assign func(*Deal, *DealCrmField)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Deal)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.DealCrmField(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(deal.DealCrmFieldsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.deal_crm_field_deal
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "deal_crm_field_deal" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "deal_crm_field_deal" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (_q *DealQuery) sqlCount(ctx context.Context) (int, error) {
@@ -378,7 +700,7 @@ func (_q *DealQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (_q *DealQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(deal.Table, deal.Columns, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -447,6 +769,20 @@ func (_q *DealQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedDealCrmFields tells the query-builder to eager-load the nodes that are connected to the "dealCrmFields"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *DealQuery) WithNamedDealCrmFields(name string, opts ...func(*DealCrmFieldQuery)) *DealQuery {
+	query := (&DealCrmFieldClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedDealCrmFields == nil {
+		_q.withNamedDealCrmFields = make(map[string]*DealCrmFieldQuery)
+	}
+	_q.withNamedDealCrmFields[name] = query
+	return _q
 }
 
 // DealGroupBy is the group-by builder for Deal entities.

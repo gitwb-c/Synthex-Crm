@@ -1,7 +1,7 @@
 package services
 
 import (
-	"crm.saas/backend/internal/repositories"
+	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
 )
 
 type StageService struct {

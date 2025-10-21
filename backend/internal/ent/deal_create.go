@@ -6,10 +6,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
-	"crm.saas/backend/internal/ent/deal"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/google/uuid"
 )
 
 // DealCreate is the builder for creating a Deal entity.
@@ -25,6 +31,110 @@ func (_c *DealCreate) SetTitle(v string) *DealCreate {
 	return _c
 }
 
+// SetSource sets the "source" field.
+func (_c *DealCreate) SetSource(v string) *DealCreate {
+	_c.mutation.SetSource(v)
+	return _c
+}
+
+// SetCreatedAt sets the "createdAt" field.
+func (_c *DealCreate) SetCreatedAt(v time.Time) *DealCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
+func (_c *DealCreate) SetNillableCreatedAt(v *time.Time) *DealCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (_c *DealCreate) SetUpdatedAt(v time.Time) *DealCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updatedAt" field if the given value is not nil.
+func (_c *DealCreate) SetNillableUpdatedAt(v *time.Time) *DealCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
+// SetID sets the "id" field.
+func (_c *DealCreate) SetID(v uuid.UUID) *DealCreate {
+	_c.mutation.SetID(v)
+	return _c
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (_c *DealCreate) SetNillableID(v *uuid.UUID) *DealCreate {
+	if v != nil {
+		_c.SetID(*v)
+	}
+	return _c
+}
+
+// SetCostumerID sets the "costumer" edge to the Costumer entity by ID.
+func (_c *DealCreate) SetCostumerID(id uuid.UUID) *DealCreate {
+	_c.mutation.SetCostumerID(id)
+	return _c
+}
+
+// SetCostumer sets the "costumer" edge to the Costumer entity.
+func (_c *DealCreate) SetCostumer(v *Costumer) *DealCreate {
+	return _c.SetCostumerID(v.ID)
+}
+
+// SetChatID sets the "chat" edge to the Chat entity by ID.
+func (_c *DealCreate) SetChatID(id uuid.UUID) *DealCreate {
+	_c.mutation.SetChatID(id)
+	return _c
+}
+
+// SetNillableChatID sets the "chat" edge to the Chat entity by ID if the given value is not nil.
+func (_c *DealCreate) SetNillableChatID(id *uuid.UUID) *DealCreate {
+	if id != nil {
+		_c = _c.SetChatID(*id)
+	}
+	return _c
+}
+
+// SetChat sets the "chat" edge to the Chat entity.
+func (_c *DealCreate) SetChat(v *Chat) *DealCreate {
+	return _c.SetChatID(v.ID)
+}
+
+// SetStageID sets the "stage" edge to the Stage entity by ID.
+func (_c *DealCreate) SetStageID(id uuid.UUID) *DealCreate {
+	_c.mutation.SetStageID(id)
+	return _c
+}
+
+// SetStage sets the "stage" edge to the Stage entity.
+func (_c *DealCreate) SetStage(v *Stage) *DealCreate {
+	return _c.SetStageID(v.ID)
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (_c *DealCreate) AddDealCrmFieldIDs(ids ...uuid.UUID) *DealCreate {
+	_c.mutation.AddDealCrmFieldIDs(ids...)
+	return _c
+}
+
+// AddDealCrmFields adds the "dealCrmFields" edges to the DealCrmField entity.
+func (_c *DealCreate) AddDealCrmFields(v ...*DealCrmField) *DealCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddDealCrmFieldIDs(ids...)
+}
+
 // Mutation returns the DealMutation object of the builder.
 func (_c *DealCreate) Mutation() *DealMutation {
 	return _c.mutation
@@ -32,6 +142,7 @@ func (_c *DealCreate) Mutation() *DealMutation {
 
 // Save creates the Deal in the database.
 func (_c *DealCreate) Save(ctx context.Context) (*Deal, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -57,6 +168,22 @@ func (_c *DealCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *DealCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := deal.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := deal.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := _c.mutation.ID(); !ok {
+		v := deal.DefaultID()
+		_c.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *DealCreate) check() error {
 	if _, ok := _c.mutation.Title(); !ok {
@@ -66,6 +193,21 @@ func (_c *DealCreate) check() error {
 		if err := deal.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.Source(); !ok {
+		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "Deal.source"`)}
+	}
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Deal.createdAt"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Deal.updatedAt"`)}
+	}
+	if len(_c.mutation.CostumerIDs()) == 0 {
+		return &ValidationError{Name: "costumer", err: errors.New(`ent: missing required edge "Deal.costumer"`)}
+	}
+	if len(_c.mutation.StageIDs()) == 0 {
+		return &ValidationError{Name: "stage", err: errors.New(`ent: missing required edge "Deal.stage"`)}
 	}
 	return nil
 }
@@ -81,8 +223,13 @@ func (_c *DealCreate) sqlSave(ctx context.Context) (*Deal, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+			_node.ID = *id
+		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
+			return nil, err
+		}
+	}
 	_c.mutation.id = &_node.ID
 	_c.mutation.done = true
 	return _node, nil
@@ -91,11 +238,94 @@ func (_c *DealCreate) sqlSave(ctx context.Context) (*Deal, error) {
 func (_c *DealCreate) createSpec() (*Deal, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Deal{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(deal.Table, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(deal.Table, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID))
 	)
+	if id, ok := _c.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = &id
+	}
 	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(deal.FieldTitle, field.TypeString, value)
 		_node.Title = value
+	}
+	if value, ok := _c.mutation.Source(); ok {
+		_spec.SetField(deal.FieldSource, field.TypeString, value)
+		_node.Source = value
+	}
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(deal.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(deal.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.CostumerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.CostumerTable,
+			Columns: []string{deal.CostumerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.deal_costumer = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ChatIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   deal.ChatTable,
+			Columns: []string{deal.ChatColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.chat_deal = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.StageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   deal.StageTable,
+			Columns: []string{deal.StageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.deal_stage = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.DealCrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deal.DealCrmFieldsTable,
+			Columns: []string{deal.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -118,6 +348,7 @@ func (_c *DealCreateBulk) Save(ctx context.Context) ([]*Deal, error) {
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*DealMutation)
 				if !ok {
@@ -144,10 +375,6 @@ func (_c *DealCreateBulk) Save(ctx context.Context) ([]*Deal, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

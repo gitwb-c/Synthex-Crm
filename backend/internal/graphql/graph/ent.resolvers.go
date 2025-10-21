@@ -8,9 +8,73 @@ import (
 	"context"
 	"fmt"
 
-	"crm.saas/backend/internal/ent"
-	"crm.saas/backend/internal/graphql/graph/model"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 )
+
+// ID is the resolver for the id field.
+func (r *chatResolver) ID(ctx context.Context, obj *ent.Chat) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *companyResolver) ID(ctx context.Context, obj *ent.Company) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *costumerResolver) ID(ctx context.Context, obj *ent.Costumer) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *crmFieldResolver) ID(ctx context.Context, obj *ent.CrmField) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *dealResolver) ID(ctx context.Context, obj *ent.Deal) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *dealCrmFieldResolver) ID(ctx context.Context, obj *ent.DealCrmField) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *departmentResolver) ID(ctx context.Context, obj *ent.Department) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *dropdownListResolver) ID(ctx context.Context, obj *ent.DropdownList) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *employeeResolver) ID(ctx context.Context, obj *ent.Employee) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *employeeAuthResolver) ID(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *fileResolver) ID(ctx context.Context, obj *ent.File) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *messageResolver) ID(ctx context.Context, obj *ent.Message) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *pipelineResolver) ID(ctx context.Context, obj *ent.Pipeline) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
@@ -22,12 +86,767 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 	panic(fmt.Errorf("not implemented: Nodes - nodes"))
 }
 
+// Chats is the resolver for the chats field.
+func (r *queryResolver) Chats(ctx context.Context) ([]*ent.Chat, error) {
+	panic(fmt.Errorf("not implemented: Chats - chats"))
+}
+
+// Companies is the resolver for the companies field.
+func (r *queryResolver) Companies(ctx context.Context) ([]*ent.Company, error) {
+	panic(fmt.Errorf("not implemented: Companies - companies"))
+}
+
+// Costumers is the resolver for the costumers field.
+func (r *queryResolver) Costumers(ctx context.Context) ([]*ent.Costumer, error) {
+	panic(fmt.Errorf("not implemented: Costumers - costumers"))
+}
+
+// CrmFields is the resolver for the crmFields field.
+func (r *queryResolver) CrmFields(ctx context.Context) ([]*ent.CrmField, error) {
+	panic(fmt.Errorf("not implemented: CrmFields - crmFields"))
+}
+
 // Deals is the resolver for the deals field.
-func (r *queryResolver) Deals(ctx context.Context) ([]*model.Deal, error) {
+func (r *queryResolver) Deals(ctx context.Context) ([]*ent.Deal, error) {
 	panic(fmt.Errorf("not implemented: Deals - deals"))
 }
+
+// DealCrmFields is the resolver for the dealCrmFields field.
+func (r *queryResolver) DealCrmFields(ctx context.Context) ([]*ent.DealCrmField, error) {
+	panic(fmt.Errorf("not implemented: DealCrmFields - dealCrmFields"))
+}
+
+// Departments is the resolver for the departments field.
+func (r *queryResolver) Departments(ctx context.Context) ([]*ent.Department, error) {
+	panic(fmt.Errorf("not implemented: Departments - departments"))
+}
+
+// DropdownLists is the resolver for the dropdownLists field.
+func (r *queryResolver) DropdownLists(ctx context.Context) ([]*ent.DropdownList, error) {
+	panic(fmt.Errorf("not implemented: DropdownLists - dropdownLists"))
+}
+
+// Employees is the resolver for the employees field.
+func (r *queryResolver) Employees(ctx context.Context) ([]*ent.Employee, error) {
+	panic(fmt.Errorf("not implemented: Employees - employees"))
+}
+
+// EmployeeAuths is the resolver for the employeeAuths field.
+func (r *queryResolver) EmployeeAuths(ctx context.Context) ([]*ent.EmployeeAuth, error) {
+	panic(fmt.Errorf("not implemented: EmployeeAuths - employeeAuths"))
+}
+
+// Files is the resolver for the files field.
+func (r *queryResolver) Files(ctx context.Context) ([]*ent.File, error) {
+	panic(fmt.Errorf("not implemented: Files - files"))
+}
+
+// Messages is the resolver for the messages field.
+func (r *queryResolver) Messages(ctx context.Context) ([]*ent.Message, error) {
+	panic(fmt.Errorf("not implemented: Messages - messages"))
+}
+
+// Pipelines is the resolver for the pipelines field.
+func (r *queryResolver) Pipelines(ctx context.Context) ([]*ent.Pipeline, error) {
+	panic(fmt.Errorf("not implemented: Pipelines - pipelines"))
+}
+
+// Queues is the resolver for the queues field.
+func (r *queryResolver) Queues(ctx context.Context) ([]*ent.Queue, error) {
+	panic(fmt.Errorf("not implemented: Queues - queues"))
+}
+
+// Stages is the resolver for the stages field.
+func (r *queryResolver) Stages(ctx context.Context) ([]*ent.Stage, error) {
+	panic(fmt.Errorf("not implemented: Stages - stages"))
+}
+
+// Texts is the resolver for the texts field.
+func (r *queryResolver) Texts(ctx context.Context) ([]*ent.Text, error) {
+	panic(fmt.Errorf("not implemented: Texts - texts"))
+}
+
+// ID is the resolver for the id field.
+func (r *queueResolver) ID(ctx context.Context, obj *ent.Queue) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *stageResolver) ID(ctx context.Context, obj *ent.Stage) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *textResolver) ID(ctx context.Context, obj *ent.Text) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// DealID is the resolver for the dealID field.
+func (r *createChatInputResolver) DealID(ctx context.Context, obj *ent.CreateChatInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DealID - dealID"))
+}
+
+// EmployeeIDs is the resolver for the employeeIDs field.
+func (r *createChatInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+}
+
+// MessageIDs is the resolver for the messageIDs field.
+func (r *createChatInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MessageIDs - messageIDs"))
+}
+
+// EmployeeIDs is the resolver for the employeeIDs field.
+func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+}
+
+// DealIDs is the resolver for the dealIDs field.
+func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DealIDs - dealIDs"))
+}
+
+// DropdownlistIDs is the resolver for the dropdownlistIDs field.
+func (r *createCrmFieldInputResolver) DropdownlistIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DropdownlistIDs - dropdownlistIDs"))
+}
+
+// DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
+func (r *createCrmFieldInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DealcrmfieldIDs - dealcrmfieldIDs"))
+}
+
+// DealID is the resolver for the dealID field.
+func (r *createDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DealID - dealID"))
+}
+
+// CrmfieldID is the resolver for the crmfieldID field.
+func (r *createDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data *string) error {
+	panic(fmt.Errorf("not implemented: CrmfieldID - crmfieldID"))
+}
+
+// CostumerID is the resolver for the costumerID field.
+func (r *createDealInputResolver) CostumerID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
+	panic(fmt.Errorf("not implemented: CostumerID - costumerID"))
+}
+
+// ChatID is the resolver for the chatID field.
+func (r *createDealInputResolver) ChatID(ctx context.Context, obj *ent.CreateDealInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ChatID - chatID"))
+}
+
+// StageID is the resolver for the stageID field.
+func (r *createDealInputResolver) StageID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
+	panic(fmt.Errorf("not implemented: StageID - stageID"))
+}
+
+// DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
+func (r *createDealInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateDealInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DealcrmfieldIDs - dealcrmfieldIDs"))
+}
+
+// EmployeeIDs is the resolver for the employeeIDs field.
+func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+}
+
+// QueueIDs is the resolver for the queueIDs field.
+func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: QueueIDs - queueIDs"))
+}
+
+// CrmfieldIDs is the resolver for the crmfieldIDs field.
+func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error {
+	panic(fmt.Errorf("not implemented: CrmfieldIDs - crmfieldIDs"))
+}
+
+// EmployeeauthID is the resolver for the employeeauthID field.
+func (r *createEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
+	panic(fmt.Errorf("not implemented: EmployeeauthID - employeeauthID"))
+}
+
+// CompanyID is the resolver for the companyID field.
+func (r *createEmployeeInputResolver) CompanyID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
+	panic(fmt.Errorf("not implemented: CompanyID - companyID"))
+}
+
+// DepartmentID is the resolver for the departmentID field.
+func (r *createEmployeeInputResolver) DepartmentID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
+	panic(fmt.Errorf("not implemented: DepartmentID - departmentID"))
+}
+
+// ChatIDs is the resolver for the chatIDs field.
+func (r *createEmployeeInputResolver) ChatIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ChatIDs - chatIDs"))
+}
+
+// QueueIDs is the resolver for the queueIDs field.
+func (r *createEmployeeInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: QueueIDs - queueIDs"))
+}
+
+// MessageIDs is the resolver for the messageIDs field.
+func (r *createEmployeeInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MessageIDs - messageIDs"))
+}
+
+// MessageID is the resolver for the messageID field.
+func (r *createFileInputResolver) MessageID(ctx context.Context, obj *ent.CreateFileInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MessageID - messageID"))
+}
+
+// ChatID is the resolver for the chatID field.
+func (r *createMessageInputResolver) ChatID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ChatID - chatID"))
+}
+
+// EmployeeIDs is the resolver for the employeeIDs field.
+func (r *createMessageInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateMessageInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+}
+
+// TextID is the resolver for the textID field.
+func (r *createMessageInputResolver) TextID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TextID - textID"))
+}
+
+// FileID is the resolver for the fileID field.
+func (r *createMessageInputResolver) FileID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: FileID - fileID"))
+}
+
+// StageIDs is the resolver for the stageIDs field.
+func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error {
+	panic(fmt.Errorf("not implemented: StageIDs - stageIDs"))
+}
+
+// StageIDs is the resolver for the stageIDs field.
+func (r *createQueueInputResolver) StageIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: StageIDs - stageIDs"))
+}
+
+// EmployeeIDs is the resolver for the employeeIDs field.
+func (r *createQueueInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+}
+
+// DepartmentIDs is the resolver for the departmentIDs field.
+func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DepartmentIDs - departmentIDs"))
+}
+
+// PipelineID is the resolver for the pipelineID field.
+func (r *createStageInputResolver) PipelineID(ctx context.Context, obj *ent.CreateStageInput, data string) error {
+	panic(fmt.Errorf("not implemented: PipelineID - pipelineID"))
+}
+
+// DealIDs is the resolver for the dealIDs field.
+func (r *createStageInputResolver) DealIDs(ctx context.Context, obj *ent.CreateStageInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DealIDs - dealIDs"))
+}
+
+// QueueID is the resolver for the queueID field.
+func (r *createStageInputResolver) QueueID(ctx context.Context, obj *ent.CreateStageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: QueueID - queueID"))
+}
+
+// MessageID is the resolver for the messageID field.
+func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.CreateTextInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MessageID - messageID"))
+}
+
+// DealID is the resolver for the dealID field.
+func (r *updateChatInputResolver) DealID(ctx context.Context, obj *ent.UpdateChatInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DealID - dealID"))
+}
+
+// AddEmployeeIDs is the resolver for the addEmployeeIDs field.
+func (r *updateChatInputResolver) AddEmployeeIDs(ctx context.Context, obj *ent.UpdateChatInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddEmployeeIDs - addEmployeeIDs"))
+}
+
+// RemoveEmployeeIDs is the resolver for the removeEmployeeIDs field.
+func (r *updateChatInputResolver) RemoveEmployeeIDs(ctx context.Context, obj *ent.UpdateChatInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveEmployeeIDs - removeEmployeeIDs"))
+}
+
+// AddMessageIDs is the resolver for the addMessageIDs field.
+func (r *updateChatInputResolver) AddMessageIDs(ctx context.Context, obj *ent.UpdateChatInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddMessageIDs - addMessageIDs"))
+}
+
+// RemoveMessageIDs is the resolver for the removeMessageIDs field.
+func (r *updateChatInputResolver) RemoveMessageIDs(ctx context.Context, obj *ent.UpdateChatInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveMessageIDs - removeMessageIDs"))
+}
+
+// AddEmployeeIDs is the resolver for the addEmployeeIDs field.
+func (r *updateCompanyInputResolver) AddEmployeeIDs(ctx context.Context, obj *ent.UpdateCompanyInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddEmployeeIDs - addEmployeeIDs"))
+}
+
+// RemoveEmployeeIDs is the resolver for the removeEmployeeIDs field.
+func (r *updateCompanyInputResolver) RemoveEmployeeIDs(ctx context.Context, obj *ent.UpdateCompanyInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveEmployeeIDs - removeEmployeeIDs"))
+}
+
+// AddDealIDs is the resolver for the addDealIDs field.
+func (r *updateCostumerInputResolver) AddDealIDs(ctx context.Context, obj *ent.UpdateCostumerInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddDealIDs - addDealIDs"))
+}
+
+// RemoveDealIDs is the resolver for the removeDealIDs field.
+func (r *updateCostumerInputResolver) RemoveDealIDs(ctx context.Context, obj *ent.UpdateCostumerInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveDealIDs - removeDealIDs"))
+}
+
+// AddDropdownListIDs is the resolver for the addDropdownListIDs field.
+func (r *updateCrmFieldInputResolver) AddDropdownListIDs(ctx context.Context, obj *ent.UpdateCrmFieldInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddDropdownListIDs - addDropdownListIDs"))
+}
+
+// RemoveDropdownListIDs is the resolver for the removeDropdownListIDs field.
+func (r *updateCrmFieldInputResolver) RemoveDropdownListIDs(ctx context.Context, obj *ent.UpdateCrmFieldInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveDropdownListIDs - removeDropdownListIDs"))
+}
+
+// AddDealCrmFieldIDs is the resolver for the addDealCrmFieldIDs field.
+func (r *updateCrmFieldInputResolver) AddDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateCrmFieldInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddDealCrmFieldIDs - addDealCrmFieldIDs"))
+}
+
+// RemoveDealCrmFieldIDs is the resolver for the removeDealCrmFieldIDs field.
+func (r *updateCrmFieldInputResolver) RemoveDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateCrmFieldInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveDealCrmFieldIDs - removeDealCrmFieldIDs"))
+}
+
+// DealID is the resolver for the dealID field.
+func (r *updateDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DealID - dealID"))
+}
+
+// CrmfieldID is the resolver for the crmfieldID field.
+func (r *updateDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error {
+	panic(fmt.Errorf("not implemented: CrmfieldID - crmfieldID"))
+}
+
+// CostumerID is the resolver for the costumerID field.
+func (r *updateDealInputResolver) CostumerID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error {
+	panic(fmt.Errorf("not implemented: CostumerID - costumerID"))
+}
+
+// ChatID is the resolver for the chatID field.
+func (r *updateDealInputResolver) ChatID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ChatID - chatID"))
+}
+
+// StageID is the resolver for the stageID field.
+func (r *updateDealInputResolver) StageID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error {
+	panic(fmt.Errorf("not implemented: StageID - stageID"))
+}
+
+// AddDealCrmFieldIDs is the resolver for the addDealCrmFieldIDs field.
+func (r *updateDealInputResolver) AddDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateDealInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddDealCrmFieldIDs - addDealCrmFieldIDs"))
+}
+
+// RemoveDealCrmFieldIDs is the resolver for the removeDealCrmFieldIDs field.
+func (r *updateDealInputResolver) RemoveDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateDealInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveDealCrmFieldIDs - removeDealCrmFieldIDs"))
+}
+
+// AddEmployeeIDs is the resolver for the addEmployeeIDs field.
+func (r *updateDepartmentInputResolver) AddEmployeeIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddEmployeeIDs - addEmployeeIDs"))
+}
+
+// RemoveEmployeeIDs is the resolver for the removeEmployeeIDs field.
+func (r *updateDepartmentInputResolver) RemoveEmployeeIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveEmployeeIDs - removeEmployeeIDs"))
+}
+
+// AddQueueIDs is the resolver for the addQueueIDs field.
+func (r *updateDepartmentInputResolver) AddQueueIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddQueueIDs - addQueueIDs"))
+}
+
+// RemoveQueueIDs is the resolver for the removeQueueIDs field.
+func (r *updateDepartmentInputResolver) RemoveQueueIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveQueueIDs - removeQueueIDs"))
+}
+
+// AddCrmFieldIDs is the resolver for the addCrmFieldIDs field.
+func (r *updateDropdownListInputResolver) AddCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddCrmFieldIDs - addCrmFieldIDs"))
+}
+
+// RemoveCrmFieldIDs is the resolver for the removeCrmFieldIDs field.
+func (r *updateDropdownListInputResolver) RemoveCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveCrmFieldIDs - removeCrmFieldIDs"))
+}
+
+// EmployeeauthID is the resolver for the employeeauthID field.
+func (r *updateEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error {
+	panic(fmt.Errorf("not implemented: EmployeeauthID - employeeauthID"))
+}
+
+// CompanyID is the resolver for the companyID field.
+func (r *updateEmployeeInputResolver) CompanyID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error {
+	panic(fmt.Errorf("not implemented: CompanyID - companyID"))
+}
+
+// DepartmentID is the resolver for the departmentID field.
+func (r *updateEmployeeInputResolver) DepartmentID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DepartmentID - departmentID"))
+}
+
+// AddChatIDs is the resolver for the addChatIDs field.
+func (r *updateEmployeeInputResolver) AddChatIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddChatIDs - addChatIDs"))
+}
+
+// RemoveChatIDs is the resolver for the removeChatIDs field.
+func (r *updateEmployeeInputResolver) RemoveChatIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveChatIDs - removeChatIDs"))
+}
+
+// AddQueueIDs is the resolver for the addQueueIDs field.
+func (r *updateEmployeeInputResolver) AddQueueIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddQueueIDs - addQueueIDs"))
+}
+
+// RemoveQueueIDs is the resolver for the removeQueueIDs field.
+func (r *updateEmployeeInputResolver) RemoveQueueIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveQueueIDs - removeQueueIDs"))
+}
+
+// AddMessageIDs is the resolver for the addMessageIDs field.
+func (r *updateEmployeeInputResolver) AddMessageIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddMessageIDs - addMessageIDs"))
+}
+
+// RemoveMessageIDs is the resolver for the removeMessageIDs field.
+func (r *updateEmployeeInputResolver) RemoveMessageIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveMessageIDs - removeMessageIDs"))
+}
+
+// MessageID is the resolver for the messageID field.
+func (r *updateFileInputResolver) MessageID(ctx context.Context, obj *ent.UpdateFileInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MessageID - messageID"))
+}
+
+// ChatID is the resolver for the chatID field.
+func (r *updateMessageInputResolver) ChatID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ChatID - chatID"))
+}
+
+// AddEmployeeIDs is the resolver for the addEmployeeIDs field.
+func (r *updateMessageInputResolver) AddEmployeeIDs(ctx context.Context, obj *ent.UpdateMessageInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddEmployeeIDs - addEmployeeIDs"))
+}
+
+// RemoveEmployeeIDs is the resolver for the removeEmployeeIDs field.
+func (r *updateMessageInputResolver) RemoveEmployeeIDs(ctx context.Context, obj *ent.UpdateMessageInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveEmployeeIDs - removeEmployeeIDs"))
+}
+
+// TextID is the resolver for the textID field.
+func (r *updateMessageInputResolver) TextID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TextID - textID"))
+}
+
+// FileID is the resolver for the fileID field.
+func (r *updateMessageInputResolver) FileID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: FileID - fileID"))
+}
+
+// AddStageIDs is the resolver for the addStageIDs field.
+func (r *updatePipelineInputResolver) AddStageIDs(ctx context.Context, obj *ent.UpdatePipelineInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddStageIDs - addStageIDs"))
+}
+
+// RemoveStageIDs is the resolver for the removeStageIDs field.
+func (r *updatePipelineInputResolver) RemoveStageIDs(ctx context.Context, obj *ent.UpdatePipelineInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveStageIDs - removeStageIDs"))
+}
+
+// AddStageIDs is the resolver for the addStageIDs field.
+func (r *updateQueueInputResolver) AddStageIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddStageIDs - addStageIDs"))
+}
+
+// RemoveStageIDs is the resolver for the removeStageIDs field.
+func (r *updateQueueInputResolver) RemoveStageIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveStageIDs - removeStageIDs"))
+}
+
+// AddEmployeeIDs is the resolver for the addEmployeeIDs field.
+func (r *updateQueueInputResolver) AddEmployeeIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddEmployeeIDs - addEmployeeIDs"))
+}
+
+// RemoveEmployeeIDs is the resolver for the removeEmployeeIDs field.
+func (r *updateQueueInputResolver) RemoveEmployeeIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveEmployeeIDs - removeEmployeeIDs"))
+}
+
+// AddDepartmentIDs is the resolver for the addDepartmentIDs field.
+func (r *updateQueueInputResolver) AddDepartmentIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddDepartmentIDs - addDepartmentIDs"))
+}
+
+// RemoveDepartmentIDs is the resolver for the removeDepartmentIDs field.
+func (r *updateQueueInputResolver) RemoveDepartmentIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveDepartmentIDs - removeDepartmentIDs"))
+}
+
+// PipelineID is the resolver for the pipelineID field.
+func (r *updateStageInputResolver) PipelineID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: PipelineID - pipelineID"))
+}
+
+// AddDealIDs is the resolver for the addDealIDs field.
+func (r *updateStageInputResolver) AddDealIDs(ctx context.Context, obj *ent.UpdateStageInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddDealIDs - addDealIDs"))
+}
+
+// RemoveDealIDs is the resolver for the removeDealIDs field.
+func (r *updateStageInputResolver) RemoveDealIDs(ctx context.Context, obj *ent.UpdateStageInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveDealIDs - removeDealIDs"))
+}
+
+// QueueID is the resolver for the queueID field.
+func (r *updateStageInputResolver) QueueID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error {
+	panic(fmt.Errorf("not implemented: QueueID - queueID"))
+}
+
+// MessageID is the resolver for the messageID field.
+func (r *updateTextInputResolver) MessageID(ctx context.Context, obj *ent.UpdateTextInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MessageID - messageID"))
+}
+
+// Chat returns ChatResolver implementation.
+func (r *Resolver) Chat() ChatResolver { return &chatResolver{r} }
+
+// Company returns CompanyResolver implementation.
+func (r *Resolver) Company() CompanyResolver { return &companyResolver{r} }
+
+// Costumer returns CostumerResolver implementation.
+func (r *Resolver) Costumer() CostumerResolver { return &costumerResolver{r} }
+
+// CrmField returns CrmFieldResolver implementation.
+func (r *Resolver) CrmField() CrmFieldResolver { return &crmFieldResolver{r} }
+
+// Deal returns DealResolver implementation.
+func (r *Resolver) Deal() DealResolver { return &dealResolver{r} }
+
+// DealCrmField returns DealCrmFieldResolver implementation.
+func (r *Resolver) DealCrmField() DealCrmFieldResolver { return &dealCrmFieldResolver{r} }
+
+// Department returns DepartmentResolver implementation.
+func (r *Resolver) Department() DepartmentResolver { return &departmentResolver{r} }
+
+// DropdownList returns DropdownListResolver implementation.
+func (r *Resolver) DropdownList() DropdownListResolver { return &dropdownListResolver{r} }
+
+// Employee returns EmployeeResolver implementation.
+func (r *Resolver) Employee() EmployeeResolver { return &employeeResolver{r} }
+
+// EmployeeAuth returns EmployeeAuthResolver implementation.
+func (r *Resolver) EmployeeAuth() EmployeeAuthResolver { return &employeeAuthResolver{r} }
+
+// File returns FileResolver implementation.
+func (r *Resolver) File() FileResolver { return &fileResolver{r} }
+
+// Message returns MessageResolver implementation.
+func (r *Resolver) Message() MessageResolver { return &messageResolver{r} }
+
+// Pipeline returns PipelineResolver implementation.
+func (r *Resolver) Pipeline() PipelineResolver { return &pipelineResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Queue returns QueueResolver implementation.
+func (r *Resolver) Queue() QueueResolver { return &queueResolver{r} }
+
+// Stage returns StageResolver implementation.
+func (r *Resolver) Stage() StageResolver { return &stageResolver{r} }
+
+// Text returns TextResolver implementation.
+func (r *Resolver) Text() TextResolver { return &textResolver{r} }
+
+// CreateChatInput returns CreateChatInputResolver implementation.
+func (r *Resolver) CreateChatInput() CreateChatInputResolver { return &createChatInputResolver{r} }
+
+// CreateCompanyInput returns CreateCompanyInputResolver implementation.
+func (r *Resolver) CreateCompanyInput() CreateCompanyInputResolver {
+	return &createCompanyInputResolver{r}
+}
+
+// CreateCostumerInput returns CreateCostumerInputResolver implementation.
+func (r *Resolver) CreateCostumerInput() CreateCostumerInputResolver {
+	return &createCostumerInputResolver{r}
+}
+
+// CreateCrmFieldInput returns CreateCrmFieldInputResolver implementation.
+func (r *Resolver) CreateCrmFieldInput() CreateCrmFieldInputResolver {
+	return &createCrmFieldInputResolver{r}
+}
+
+// CreateDealCrmFieldInput returns CreateDealCrmFieldInputResolver implementation.
+func (r *Resolver) CreateDealCrmFieldInput() CreateDealCrmFieldInputResolver {
+	return &createDealCrmFieldInputResolver{r}
+}
+
+// CreateDealInput returns CreateDealInputResolver implementation.
+func (r *Resolver) CreateDealInput() CreateDealInputResolver { return &createDealInputResolver{r} }
+
+// CreateDepartmentInput returns CreateDepartmentInputResolver implementation.
+func (r *Resolver) CreateDepartmentInput() CreateDepartmentInputResolver {
+	return &createDepartmentInputResolver{r}
+}
+
+// CreateDropdownListInput returns CreateDropdownListInputResolver implementation.
+func (r *Resolver) CreateDropdownListInput() CreateDropdownListInputResolver {
+	return &createDropdownListInputResolver{r}
+}
+
+// CreateEmployeeInput returns CreateEmployeeInputResolver implementation.
+func (r *Resolver) CreateEmployeeInput() CreateEmployeeInputResolver {
+	return &createEmployeeInputResolver{r}
+}
+
+// CreateFileInput returns CreateFileInputResolver implementation.
+func (r *Resolver) CreateFileInput() CreateFileInputResolver { return &createFileInputResolver{r} }
+
+// CreateMessageInput returns CreateMessageInputResolver implementation.
+func (r *Resolver) CreateMessageInput() CreateMessageInputResolver {
+	return &createMessageInputResolver{r}
+}
+
+// CreatePipelineInput returns CreatePipelineInputResolver implementation.
+func (r *Resolver) CreatePipelineInput() CreatePipelineInputResolver {
+	return &createPipelineInputResolver{r}
+}
+
+// CreateQueueInput returns CreateQueueInputResolver implementation.
+func (r *Resolver) CreateQueueInput() CreateQueueInputResolver { return &createQueueInputResolver{r} }
+
+// CreateStageInput returns CreateStageInputResolver implementation.
+func (r *Resolver) CreateStageInput() CreateStageInputResolver { return &createStageInputResolver{r} }
+
+// CreateTextInput returns CreateTextInputResolver implementation.
+func (r *Resolver) CreateTextInput() CreateTextInputResolver { return &createTextInputResolver{r} }
+
+// UpdateChatInput returns UpdateChatInputResolver implementation.
+func (r *Resolver) UpdateChatInput() UpdateChatInputResolver { return &updateChatInputResolver{r} }
+
+// UpdateCompanyInput returns UpdateCompanyInputResolver implementation.
+func (r *Resolver) UpdateCompanyInput() UpdateCompanyInputResolver {
+	return &updateCompanyInputResolver{r}
+}
+
+// UpdateCostumerInput returns UpdateCostumerInputResolver implementation.
+func (r *Resolver) UpdateCostumerInput() UpdateCostumerInputResolver {
+	return &updateCostumerInputResolver{r}
+}
+
+// UpdateCrmFieldInput returns UpdateCrmFieldInputResolver implementation.
+func (r *Resolver) UpdateCrmFieldInput() UpdateCrmFieldInputResolver {
+	return &updateCrmFieldInputResolver{r}
+}
+
+// UpdateDealCrmFieldInput returns UpdateDealCrmFieldInputResolver implementation.
+func (r *Resolver) UpdateDealCrmFieldInput() UpdateDealCrmFieldInputResolver {
+	return &updateDealCrmFieldInputResolver{r}
+}
+
+// UpdateDealInput returns UpdateDealInputResolver implementation.
+func (r *Resolver) UpdateDealInput() UpdateDealInputResolver { return &updateDealInputResolver{r} }
+
+// UpdateDepartmentInput returns UpdateDepartmentInputResolver implementation.
+func (r *Resolver) UpdateDepartmentInput() UpdateDepartmentInputResolver {
+	return &updateDepartmentInputResolver{r}
+}
+
+// UpdateDropdownListInput returns UpdateDropdownListInputResolver implementation.
+func (r *Resolver) UpdateDropdownListInput() UpdateDropdownListInputResolver {
+	return &updateDropdownListInputResolver{r}
+}
+
+// UpdateEmployeeInput returns UpdateEmployeeInputResolver implementation.
+func (r *Resolver) UpdateEmployeeInput() UpdateEmployeeInputResolver {
+	return &updateEmployeeInputResolver{r}
+}
+
+// UpdateFileInput returns UpdateFileInputResolver implementation.
+func (r *Resolver) UpdateFileInput() UpdateFileInputResolver { return &updateFileInputResolver{r} }
+
+// UpdateMessageInput returns UpdateMessageInputResolver implementation.
+func (r *Resolver) UpdateMessageInput() UpdateMessageInputResolver {
+	return &updateMessageInputResolver{r}
+}
+
+// UpdatePipelineInput returns UpdatePipelineInputResolver implementation.
+func (r *Resolver) UpdatePipelineInput() UpdatePipelineInputResolver {
+	return &updatePipelineInputResolver{r}
+}
+
+// UpdateQueueInput returns UpdateQueueInputResolver implementation.
+func (r *Resolver) UpdateQueueInput() UpdateQueueInputResolver { return &updateQueueInputResolver{r} }
+
+// UpdateStageInput returns UpdateStageInputResolver implementation.
+func (r *Resolver) UpdateStageInput() UpdateStageInputResolver { return &updateStageInputResolver{r} }
+
+// UpdateTextInput returns UpdateTextInputResolver implementation.
+func (r *Resolver) UpdateTextInput() UpdateTextInputResolver { return &updateTextInputResolver{r} }
+
+type chatResolver struct{ *Resolver }
+type companyResolver struct{ *Resolver }
+type costumerResolver struct{ *Resolver }
+type crmFieldResolver struct{ *Resolver }
+type dealResolver struct{ *Resolver }
+type dealCrmFieldResolver struct{ *Resolver }
+type departmentResolver struct{ *Resolver }
+type dropdownListResolver struct{ *Resolver }
+type employeeResolver struct{ *Resolver }
+type employeeAuthResolver struct{ *Resolver }
+type fileResolver struct{ *Resolver }
+type messageResolver struct{ *Resolver }
+type pipelineResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type queueResolver struct{ *Resolver }
+type stageResolver struct{ *Resolver }
+type textResolver struct{ *Resolver }
+type createChatInputResolver struct{ *Resolver }
+type createCompanyInputResolver struct{ *Resolver }
+type createCostumerInputResolver struct{ *Resolver }
+type createCrmFieldInputResolver struct{ *Resolver }
+type createDealCrmFieldInputResolver struct{ *Resolver }
+type createDealInputResolver struct{ *Resolver }
+type createDepartmentInputResolver struct{ *Resolver }
+type createDropdownListInputResolver struct{ *Resolver }
+type createEmployeeInputResolver struct{ *Resolver }
+type createFileInputResolver struct{ *Resolver }
+type createMessageInputResolver struct{ *Resolver }
+type createPipelineInputResolver struct{ *Resolver }
+type createQueueInputResolver struct{ *Resolver }
+type createStageInputResolver struct{ *Resolver }
+type createTextInputResolver struct{ *Resolver }
+type updateChatInputResolver struct{ *Resolver }
+type updateCompanyInputResolver struct{ *Resolver }
+type updateCostumerInputResolver struct{ *Resolver }
+type updateCrmFieldInputResolver struct{ *Resolver }
+type updateDealCrmFieldInputResolver struct{ *Resolver }
+type updateDealInputResolver struct{ *Resolver }
+type updateDepartmentInputResolver struct{ *Resolver }
+type updateDropdownListInputResolver struct{ *Resolver }
+type updateEmployeeInputResolver struct{ *Resolver }
+type updateFileInputResolver struct{ *Resolver }
+type updateMessageInputResolver struct{ *Resolver }
+type updatePipelineInputResolver struct{ *Resolver }
+type updateQueueInputResolver struct{ *Resolver }
+type updateStageInputResolver struct{ *Resolver }
+type updateTextInputResolver struct{ *Resolver }

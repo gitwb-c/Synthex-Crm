@@ -4,82 +4,140 @@
 package wire
 
 import (
-	"crm.saas/backend/internal/repositories"
-	"crm.saas/backend/internal/services"
-
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
+	"github.com/gitwb-c/crm.saas/backend/internal/services"
 	"github.com/google/wire"
 )
 
-func InitializeChatHandler() *services.ChatService {
+func InitializeChatService(client *ent.Client) *services.ChatService {
 	panic(wire.Build(
-		repositories.NewChatRepository,
 		services.NewChatService,
+		InitializeChatRepository,
 	))
 }
 
-func InitializeCostumerHandler() *services.CostumerService {
+func InitializeCostumerService(client *ent.Client) *services.CostumerService {
 	panic(wire.Build(
-		repositories.NewCostumerRepository,
 		services.NewCostumerService,
+		InitializeCostumerRepository,
 	))
 }
-func InitializeDealHandler() *services.DealService {
+
+func InitializeDealService(client *ent.Client) *services.DealService {
 	panic(wire.Build(
-		repositories.NewDealRepository,
 		services.NewDealService,
+		InitializeDealRepository,
 	))
 }
-func InitializeDepartmentHandler() *services.DepartmentService {
+
+func InitializeDepartmentService(client *ent.Client) *services.DepartmentService {
 	panic(wire.Build(
-		repositories.NewDepartmentRepository,
 		services.NewDepartmentService,
+		InitializeDepartmentRepository,
 	))
 }
-func InitializeEmployeeHandler() *services.EmployeeService {
+
+func InitializeEmployeeService(client *ent.Client) *services.EmployeeService {
 	panic(wire.Build(
-		repositories.NewEmployeeRepository,
 		services.NewEmployeeService,
+		InitializeEmployeeRepository,
 	))
 }
-func InitializeEmployeeAuthHandler() *services.EmployeeAuthService {
+
+func InitializeEmployeeAuthService(client *ent.Client) *services.EmployeeAuthService {
 	panic(wire.Build(
-		repositories.NewEmployeeAuthRepository,
 		services.NewEmployeeAuthService,
+		InitializeEmployeeAuthRepository,
 	))
 }
-func InitializeFieldHandler() *services.FieldService {
+
+func InitializeFieldService(client *ent.Client) *services.FieldService {
 	panic(wire.Build(
-		repositories.NewFieldRepository,
 		services.NewFieldService,
+		InitializeFieldRepository,
 	))
 }
-func InitializeFormHandler() *services.FormService {
+
+func InitializeFormService(client *ent.Client) *services.FormService {
 	panic(wire.Build(
-		repositories.NewFormRepository,
 		services.NewFormService,
+		InitializeFormRepository,
 	))
 }
-func InitializeMessageHandler() *services.MessageService {
+
+func InitializeMessageService(client *ent.Client) *services.MessageService {
 	panic(wire.Build(
-		repositories.NewMessageRepository,
 		services.NewMessageService,
+		InitializeMessageRepository,
 	))
 }
-func InitializePipelineHandler() *services.PipelineService {
+
+func InitializePipelineService(client *ent.Client) *services.PipelineService {
 	panic(wire.Build(
-		repositories.NewPipelineRepository,
 		services.NewPipelineService,
+		InitializePipelineRepository,
 	))
 }
-func InitializeQueueHandler() *services.QueueService {
+
+func InitializeQueueService(client *ent.Client) *services.QueueService {
 	panic(wire.Build(
-		repositories.NewQueueRepository,
 		services.NewQueueService,
+		InitializeQueueRepository,
 	))
 }
-func InitializeStageHandler() *services.StageService {
+
+func InitializeStageService(client *ent.Client) *services.StageService {
 	panic(wire.Build(
-		repositories.NewStageRepository,
 		services.NewStageService,
+		InitializeStageRepository,
 	))
+}
+
+func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
+	panic(wire.Build(repositories.NewChatRepository))
+}
+
+func InitializeCostumerRepository(client *ent.Client) *repositories.CostumerRepository {
+	panic(wire.Build(repositories.NewCostumerRepository))
+}
+
+func InitializeDealRepository(client *ent.Client) *repositories.DealRepository {
+	panic(wire.Build(repositories.NewDealRepository))
+}
+
+func InitializeDepartmentRepository(client *ent.Client) *repositories.DepartmentRepository {
+	panic(wire.Build(repositories.NewDepartmentRepository))
+}
+
+func InitializeEmployeeRepository(client *ent.Client) *repositories.EmployeeRepository {
+	panic(wire.Build(repositories.NewEmployeeRepository))
+}
+
+func InitializeEmployeeAuthRepository(client *ent.Client) *repositories.EmployeeAuthRepository {
+	panic(wire.Build(repositories.NewEmployeeAuthRepository))
+}
+
+func InitializeFieldRepository(client *ent.Client) *repositories.FieldRepository {
+	panic(wire.Build(repositories.NewFieldRepository))
+}
+
+func InitializeFormRepository(client *ent.Client) *repositories.FormRepository {
+	panic(wire.Build(repositories.NewFormRepository))
+}
+
+func InitializeMessageRepository(client *ent.Client) *repositories.MessageRepository {
+	panic(wire.Build(repositories.NewMessageRepository))
+}
+
+func InitializePipelineRepository(client *ent.Client) *repositories.PipelineRepository {
+	panic(wire.Build(repositories.NewPipelineRepository))
+}
+
+func InitializeQueueRepository(client *ent.Client) *repositories.QueueRepository {
+	panic(wire.Build(repositories.NewQueueRepository))
+}
+
+func InitializeStageRepository(client *ent.Client) *repositories.StageRepository {
+	panic(wire.Build(repositories.NewStageRepository))
 }

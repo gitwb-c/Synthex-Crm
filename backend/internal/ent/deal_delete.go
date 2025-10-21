@@ -5,11 +5,11 @@ package ent
 import (
 	"context"
 
-	"crm.saas/backend/internal/ent/deal"
-	"crm.saas/backend/internal/ent/predicate"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 )
 
 // DealDelete is the builder for deleting a Deal entity.
@@ -40,7 +40,7 @@ func (_d *DealDelete) ExecX(ctx context.Context) int {
 }
 
 func (_d *DealDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(deal.Table, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(deal.Table, sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

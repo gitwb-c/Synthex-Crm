@@ -1,7 +1,11 @@
 package services
 
 import (
-	"crm.saas/backend/internal/repositories"
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/graphql"
+	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
 )
 
 type DealService struct {
@@ -15,10 +19,17 @@ func NewDealService(repository *repositories.DealRepository) *DealService {
 }
 
 // ([]*ent.Deal, error)
-func (s *DealService) Read() {}
+func (s *DealService) Read(ctx context.Context) {}
 
-func (s *DealService) Create() {}
+func (s *DealService) Create(ctx context.Context, input *graphql.CreateDealInput) (*ent.Deal, error) {
+	createdDeal, err := s.repository.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return createdDeal, nil
 
-func (s *DealService) Update() {}
+}
+
+func (s *DealService) Update(ctx context.Context) {}
 
 func (s *DealService) Delete() {}

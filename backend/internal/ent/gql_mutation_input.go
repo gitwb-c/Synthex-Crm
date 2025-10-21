@@ -2,14 +2,391 @@
 
 package ent
 
+import (
+	"time"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/google/uuid"
+)
+
+// CreateChatInput represents a mutation input for creating chats.
+type CreateChatInput struct {
+	Title       string
+	Accepted    bool
+	Locked      bool
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	DealID      *uuid.UUID
+	EmployeeIDs []uuid.UUID
+	MessageIDs  []uuid.UUID
+}
+
+// Mutate applies the CreateChatInput on the ChatMutation builder.
+func (i *CreateChatInput) Mutate(m *ChatMutation) {
+	m.SetTitle(i.Title)
+	m.SetAccepted(i.Accepted)
+	m.SetLocked(i.Locked)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.DealID; v != nil {
+		m.SetDealID(*v)
+	}
+	if v := i.EmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.MessageIDs; len(v) > 0 {
+		m.AddMessageIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateChatInput on the ChatCreate builder.
+func (c *ChatCreate) SetInput(i CreateChatInput) *ChatCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateChatInput represents a mutation input for updating chats.
+type UpdateChatInput struct {
+	Title             *string
+	Accepted          *bool
+	Locked            *bool
+	UpdatedAt         *time.Time
+	ClearDeal         bool
+	DealID            *uuid.UUID
+	ClearEmployees    bool
+	AddEmployeeIDs    []uuid.UUID
+	RemoveEmployeeIDs []uuid.UUID
+	ClearMessages     bool
+	AddMessageIDs     []uuid.UUID
+	RemoveMessageIDs  []uuid.UUID
+}
+
+// Mutate applies the UpdateChatInput on the ChatMutation builder.
+func (i *UpdateChatInput) Mutate(m *ChatMutation) {
+	if v := i.Title; v != nil {
+		m.SetTitle(*v)
+	}
+	if v := i.Accepted; v != nil {
+		m.SetAccepted(*v)
+	}
+	if v := i.Locked; v != nil {
+		m.SetLocked(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearDeal {
+		m.ClearDeal()
+	}
+	if v := i.DealID; v != nil {
+		m.SetDealID(*v)
+	}
+	if i.ClearEmployees {
+		m.ClearEmployees()
+	}
+	if v := i.AddEmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.RemoveEmployeeIDs; len(v) > 0 {
+		m.RemoveEmployeeIDs(v...)
+	}
+	if i.ClearMessages {
+		m.ClearMessages()
+	}
+	if v := i.AddMessageIDs; len(v) > 0 {
+		m.AddMessageIDs(v...)
+	}
+	if v := i.RemoveMessageIDs; len(v) > 0 {
+		m.RemoveMessageIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateChatInput on the ChatUpdate builder.
+func (c *ChatUpdate) SetInput(i UpdateChatInput) *ChatUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateChatInput on the ChatUpdateOne builder.
+func (c *ChatUpdateOne) SetInput(i UpdateChatInput) *ChatUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateCompanyInput represents a mutation input for creating companies.
+type CreateCompanyInput struct {
+	Name        string
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	EmployeeIDs []uuid.UUID
+}
+
+// Mutate applies the CreateCompanyInput on the CompanyMutation builder.
+func (i *CreateCompanyInput) Mutate(m *CompanyMutation) {
+	m.SetName(i.Name)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.EmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateCompanyInput on the CompanyCreate builder.
+func (c *CompanyCreate) SetInput(i CreateCompanyInput) *CompanyCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateCompanyInput represents a mutation input for updating companies.
+type UpdateCompanyInput struct {
+	Name              *string
+	UpdatedAt         *time.Time
+	ClearEmployee     bool
+	AddEmployeeIDs    []uuid.UUID
+	RemoveEmployeeIDs []uuid.UUID
+}
+
+// Mutate applies the UpdateCompanyInput on the CompanyMutation builder.
+func (i *UpdateCompanyInput) Mutate(m *CompanyMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearEmployee {
+		m.ClearEmployee()
+	}
+	if v := i.AddEmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.RemoveEmployeeIDs; len(v) > 0 {
+		m.RemoveEmployeeIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateCompanyInput on the CompanyUpdate builder.
+func (c *CompanyUpdate) SetInput(i UpdateCompanyInput) *CompanyUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateCompanyInput on the CompanyUpdateOne builder.
+func (c *CompanyUpdateOne) SetInput(i UpdateCompanyInput) *CompanyUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateCostumerInput represents a mutation input for creating costumers.
+type CreateCostumerInput struct {
+	Name      string
+	Phone     string
+	Email     string
+	CreatedAt *time.Time
+	UpdatedAt time.Time
+	DealIDs   []uuid.UUID
+}
+
+// Mutate applies the CreateCostumerInput on the CostumerMutation builder.
+func (i *CreateCostumerInput) Mutate(m *CostumerMutation) {
+	m.SetName(i.Name)
+	m.SetPhone(i.Phone)
+	m.SetEmail(i.Email)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	m.SetUpdatedAt(i.UpdatedAt)
+	if v := i.DealIDs; len(v) > 0 {
+		m.AddDealIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateCostumerInput on the CostumerCreate builder.
+func (c *CostumerCreate) SetInput(i CreateCostumerInput) *CostumerCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateCostumerInput represents a mutation input for updating costumers.
+type UpdateCostumerInput struct {
+	Name          *string
+	Phone         *string
+	Email         *string
+	UpdatedAt     *time.Time
+	ClearDeals    bool
+	AddDealIDs    []uuid.UUID
+	RemoveDealIDs []uuid.UUID
+}
+
+// Mutate applies the UpdateCostumerInput on the CostumerMutation builder.
+func (i *UpdateCostumerInput) Mutate(m *CostumerMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.Phone; v != nil {
+		m.SetPhone(*v)
+	}
+	if v := i.Email; v != nil {
+		m.SetEmail(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearDeals {
+		m.ClearDeals()
+	}
+	if v := i.AddDealIDs; len(v) > 0 {
+		m.AddDealIDs(v...)
+	}
+	if v := i.RemoveDealIDs; len(v) > 0 {
+		m.RemoveDealIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateCostumerInput on the CostumerUpdate builder.
+func (c *CostumerUpdate) SetInput(i UpdateCostumerInput) *CostumerUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateCostumerInput on the CostumerUpdateOne builder.
+func (c *CostumerUpdateOne) SetInput(i UpdateCostumerInput) *CostumerUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateCrmFieldInput represents a mutation input for creating crmfields.
+type CreateCrmFieldInput struct {
+	Name            string
+	Section         string
+	Type            crmfield.Type
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	DropdownListIDs []uuid.UUID
+	DealCrmFieldIDs []uuid.UUID
+}
+
+// Mutate applies the CreateCrmFieldInput on the CrmFieldMutation builder.
+func (i *CreateCrmFieldInput) Mutate(m *CrmFieldMutation) {
+	m.SetName(i.Name)
+	m.SetSection(i.Section)
+	m.SetType(i.Type)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.DropdownListIDs; len(v) > 0 {
+		m.AddDropdownListIDs(v...)
+	}
+	if v := i.DealCrmFieldIDs; len(v) > 0 {
+		m.AddDealCrmFieldIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateCrmFieldInput on the CrmFieldCreate builder.
+func (c *CrmFieldCreate) SetInput(i CreateCrmFieldInput) *CrmFieldCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateCrmFieldInput represents a mutation input for updating crmfields.
+type UpdateCrmFieldInput struct {
+	Name                  *string
+	Section               *string
+	UpdatedAt             *time.Time
+	ClearDropdownList     bool
+	AddDropdownListIDs    []uuid.UUID
+	RemoveDropdownListIDs []uuid.UUID
+	ClearDealCrmField     bool
+	AddDealCrmFieldIDs    []uuid.UUID
+	RemoveDealCrmFieldIDs []uuid.UUID
+}
+
+// Mutate applies the UpdateCrmFieldInput on the CrmFieldMutation builder.
+func (i *UpdateCrmFieldInput) Mutate(m *CrmFieldMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.Section; v != nil {
+		m.SetSection(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearDropdownList {
+		m.ClearDropdownList()
+	}
+	if v := i.AddDropdownListIDs; len(v) > 0 {
+		m.AddDropdownListIDs(v...)
+	}
+	if v := i.RemoveDropdownListIDs; len(v) > 0 {
+		m.RemoveDropdownListIDs(v...)
+	}
+	if i.ClearDealCrmField {
+		m.ClearDealCrmField()
+	}
+	if v := i.AddDealCrmFieldIDs; len(v) > 0 {
+		m.AddDealCrmFieldIDs(v...)
+	}
+	if v := i.RemoveDealCrmFieldIDs; len(v) > 0 {
+		m.RemoveDealCrmFieldIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateCrmFieldInput on the CrmFieldUpdate builder.
+func (c *CrmFieldUpdate) SetInput(i UpdateCrmFieldInput) *CrmFieldUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateCrmFieldInput on the CrmFieldUpdateOne builder.
+func (c *CrmFieldUpdateOne) SetInput(i UpdateCrmFieldInput) *CrmFieldUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateDealInput represents a mutation input for creating deals.
 type CreateDealInput struct {
-	Title string
+	Title           string
+	Source          string
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	CostumerID      uuid.UUID
+	ChatID          *uuid.UUID
+	StageID         uuid.UUID
+	DealCrmFieldIDs []uuid.UUID
 }
 
 // Mutate applies the CreateDealInput on the DealMutation builder.
 func (i *CreateDealInput) Mutate(m *DealMutation) {
 	m.SetTitle(i.Title)
+	m.SetSource(i.Source)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetCostumerID(i.CostumerID)
+	if v := i.ChatID; v != nil {
+		m.SetChatID(*v)
+	}
+	m.SetStageID(i.StageID)
+	if v := i.DealCrmFieldIDs; len(v) > 0 {
+		m.AddDealCrmFieldIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateDealInput on the DealCreate builder.
@@ -20,13 +397,49 @@ func (c *DealCreate) SetInput(i CreateDealInput) *DealCreate {
 
 // UpdateDealInput represents a mutation input for updating deals.
 type UpdateDealInput struct {
-	Title *string
+	Title                 *string
+	Source                *string
+	UpdatedAt             *time.Time
+	CostumerID            *uuid.UUID
+	ClearChat             bool
+	ChatID                *uuid.UUID
+	StageID               *uuid.UUID
+	ClearDealCrmFields    bool
+	AddDealCrmFieldIDs    []uuid.UUID
+	RemoveDealCrmFieldIDs []uuid.UUID
 }
 
 // Mutate applies the UpdateDealInput on the DealMutation builder.
 func (i *UpdateDealInput) Mutate(m *DealMutation) {
 	if v := i.Title; v != nil {
 		m.SetTitle(*v)
+	}
+	if v := i.Source; v != nil {
+		m.SetSource(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.CostumerID; v != nil {
+		m.SetCostumerID(*v)
+	}
+	if i.ClearChat {
+		m.ClearChat()
+	}
+	if v := i.ChatID; v != nil {
+		m.SetChatID(*v)
+	}
+	if v := i.StageID; v != nil {
+		m.SetStageID(*v)
+	}
+	if i.ClearDealCrmFields {
+		m.ClearDealCrmFields()
+	}
+	if v := i.AddDealCrmFieldIDs; len(v) > 0 {
+		m.AddDealCrmFieldIDs(v...)
+	}
+	if v := i.RemoveDealCrmFieldIDs; len(v) > 0 {
+		m.RemoveDealCrmFieldIDs(v...)
 	}
 }
 
@@ -38,6 +451,918 @@ func (c *DealUpdate) SetInput(i UpdateDealInput) *DealUpdate {
 
 // SetInput applies the change-set in the UpdateDealInput on the DealUpdateOne builder.
 func (c *DealUpdateOne) SetInput(i UpdateDealInput) *DealUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateDealCrmFieldInput represents a mutation input for creating dealcrmfields.
+type CreateDealCrmFieldInput struct {
+	Value      string
+	CreatedAt  *time.Time
+	UpdatedAt  *time.Time
+	DealID     *uuid.UUID
+	CrmFieldID *uuid.UUID
+}
+
+// Mutate applies the CreateDealCrmFieldInput on the DealCrmFieldMutation builder.
+func (i *CreateDealCrmFieldInput) Mutate(m *DealCrmFieldMutation) {
+	m.SetValue(i.Value)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.DealID; v != nil {
+		m.SetDealID(*v)
+	}
+	if v := i.CrmFieldID; v != nil {
+		m.SetCrmFieldID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateDealCrmFieldInput on the DealCrmFieldCreate builder.
+func (c *DealCrmFieldCreate) SetInput(i CreateDealCrmFieldInput) *DealCrmFieldCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateDealCrmFieldInput represents a mutation input for updating dealcrmfields.
+type UpdateDealCrmFieldInput struct {
+	Value         *string
+	UpdatedAt     *time.Time
+	ClearDeal     bool
+	DealID        *uuid.UUID
+	ClearCrmField bool
+	CrmFieldID    *uuid.UUID
+}
+
+// Mutate applies the UpdateDealCrmFieldInput on the DealCrmFieldMutation builder.
+func (i *UpdateDealCrmFieldInput) Mutate(m *DealCrmFieldMutation) {
+	if v := i.Value; v != nil {
+		m.SetValue(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearDeal {
+		m.ClearDeal()
+	}
+	if v := i.DealID; v != nil {
+		m.SetDealID(*v)
+	}
+	if i.ClearCrmField {
+		m.ClearCrmField()
+	}
+	if v := i.CrmFieldID; v != nil {
+		m.SetCrmFieldID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateDealCrmFieldInput on the DealCrmFieldUpdate builder.
+func (c *DealCrmFieldUpdate) SetInput(i UpdateDealCrmFieldInput) *DealCrmFieldUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateDealCrmFieldInput on the DealCrmFieldUpdateOne builder.
+func (c *DealCrmFieldUpdateOne) SetInput(i UpdateDealCrmFieldInput) *DealCrmFieldUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateDepartmentInput represents a mutation input for creating departments.
+type CreateDepartmentInput struct {
+	Name        string
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	EmployeeIDs []uuid.UUID
+	QueueIDs    []uuid.UUID
+}
+
+// Mutate applies the CreateDepartmentInput on the DepartmentMutation builder.
+func (i *CreateDepartmentInput) Mutate(m *DepartmentMutation) {
+	m.SetName(i.Name)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.EmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.QueueIDs; len(v) > 0 {
+		m.AddQueueIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateDepartmentInput on the DepartmentCreate builder.
+func (c *DepartmentCreate) SetInput(i CreateDepartmentInput) *DepartmentCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateDepartmentInput represents a mutation input for updating departments.
+type UpdateDepartmentInput struct {
+	Name              *string
+	UpdatedAt         *time.Time
+	ClearEmployee     bool
+	AddEmployeeIDs    []uuid.UUID
+	RemoveEmployeeIDs []uuid.UUID
+	ClearQueues       bool
+	AddQueueIDs       []uuid.UUID
+	RemoveQueueIDs    []uuid.UUID
+}
+
+// Mutate applies the UpdateDepartmentInput on the DepartmentMutation builder.
+func (i *UpdateDepartmentInput) Mutate(m *DepartmentMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearEmployee {
+		m.ClearEmployee()
+	}
+	if v := i.AddEmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.RemoveEmployeeIDs; len(v) > 0 {
+		m.RemoveEmployeeIDs(v...)
+	}
+	if i.ClearQueues {
+		m.ClearQueues()
+	}
+	if v := i.AddQueueIDs; len(v) > 0 {
+		m.AddQueueIDs(v...)
+	}
+	if v := i.RemoveQueueIDs; len(v) > 0 {
+		m.RemoveQueueIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateDepartmentInput on the DepartmentUpdate builder.
+func (c *DepartmentUpdate) SetInput(i UpdateDepartmentInput) *DepartmentUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateDepartmentInput on the DepartmentUpdateOne builder.
+func (c *DepartmentUpdateOne) SetInput(i UpdateDepartmentInput) *DepartmentUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateDropdownListInput represents a mutation input for creating dropdownlists.
+type CreateDropdownListInput struct {
+	Value       string
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	CrmFieldIDs []uuid.UUID
+}
+
+// Mutate applies the CreateDropdownListInput on the DropdownListMutation builder.
+func (i *CreateDropdownListInput) Mutate(m *DropdownListMutation) {
+	m.SetValue(i.Value)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.CrmFieldIDs; len(v) > 0 {
+		m.AddCrmFieldIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateDropdownListInput on the DropdownListCreate builder.
+func (c *DropdownListCreate) SetInput(i CreateDropdownListInput) *DropdownListCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateDropdownListInput represents a mutation input for updating dropdownlists.
+type UpdateDropdownListInput struct {
+	Value             *string
+	UpdatedAt         *time.Time
+	AddCrmFieldIDs    []uuid.UUID
+	RemoveCrmFieldIDs []uuid.UUID
+}
+
+// Mutate applies the UpdateDropdownListInput on the DropdownListMutation builder.
+func (i *UpdateDropdownListInput) Mutate(m *DropdownListMutation) {
+	if v := i.Value; v != nil {
+		m.SetValue(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.AddCrmFieldIDs; len(v) > 0 {
+		m.AddCrmFieldIDs(v...)
+	}
+	if v := i.RemoveCrmFieldIDs; len(v) > 0 {
+		m.RemoveCrmFieldIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateDropdownListInput on the DropdownListUpdate builder.
+func (c *DropdownListUpdate) SetInput(i UpdateDropdownListInput) *DropdownListUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateDropdownListInput on the DropdownListUpdateOne builder.
+func (c *DropdownListUpdateOne) SetInput(i UpdateDropdownListInput) *DropdownListUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateEmployeeInput represents a mutation input for creating employees.
+type CreateEmployeeInput struct {
+	Name           string
+	Active         *bool
+	CreatedAt      *time.Time
+	UpdatedAt      *time.Time
+	EmployeeAuthID uuid.UUID
+	CompanyID      uuid.UUID
+	DepartmentID   uuid.UUID
+	ChatIDs        []uuid.UUID
+	QueueIDs       []uuid.UUID
+	MessageIDs     []uuid.UUID
+}
+
+// Mutate applies the CreateEmployeeInput on the EmployeeMutation builder.
+func (i *CreateEmployeeInput) Mutate(m *EmployeeMutation) {
+	m.SetName(i.Name)
+	if v := i.Active; v != nil {
+		m.SetActive(*v)
+	}
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetEmployeeAuthID(i.EmployeeAuthID)
+	m.SetCompanyID(i.CompanyID)
+	m.SetDepartmentID(i.DepartmentID)
+	if v := i.ChatIDs; len(v) > 0 {
+		m.AddChatIDs(v...)
+	}
+	if v := i.QueueIDs; len(v) > 0 {
+		m.AddQueueIDs(v...)
+	}
+	if v := i.MessageIDs; len(v) > 0 {
+		m.AddMessageIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateEmployeeInput on the EmployeeCreate builder.
+func (c *EmployeeCreate) SetInput(i CreateEmployeeInput) *EmployeeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateEmployeeInput represents a mutation input for updating employees.
+type UpdateEmployeeInput struct {
+	Name             *string
+	Active           *bool
+	UpdatedAt        *time.Time
+	EmployeeAuthID   *uuid.UUID
+	CompanyID        *uuid.UUID
+	DepartmentID     *uuid.UUID
+	ClearChat        bool
+	AddChatIDs       []uuid.UUID
+	RemoveChatIDs    []uuid.UUID
+	ClearQueues      bool
+	AddQueueIDs      []uuid.UUID
+	RemoveQueueIDs   []uuid.UUID
+	ClearMessages    bool
+	AddMessageIDs    []uuid.UUID
+	RemoveMessageIDs []uuid.UUID
+}
+
+// Mutate applies the UpdateEmployeeInput on the EmployeeMutation builder.
+func (i *UpdateEmployeeInput) Mutate(m *EmployeeMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.Active; v != nil {
+		m.SetActive(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.EmployeeAuthID; v != nil {
+		m.SetEmployeeAuthID(*v)
+	}
+	if v := i.CompanyID; v != nil {
+		m.SetCompanyID(*v)
+	}
+	if v := i.DepartmentID; v != nil {
+		m.SetDepartmentID(*v)
+	}
+	if i.ClearChat {
+		m.ClearChat()
+	}
+	if v := i.AddChatIDs; len(v) > 0 {
+		m.AddChatIDs(v...)
+	}
+	if v := i.RemoveChatIDs; len(v) > 0 {
+		m.RemoveChatIDs(v...)
+	}
+	if i.ClearQueues {
+		m.ClearQueues()
+	}
+	if v := i.AddQueueIDs; len(v) > 0 {
+		m.AddQueueIDs(v...)
+	}
+	if v := i.RemoveQueueIDs; len(v) > 0 {
+		m.RemoveQueueIDs(v...)
+	}
+	if i.ClearMessages {
+		m.ClearMessages()
+	}
+	if v := i.AddMessageIDs; len(v) > 0 {
+		m.AddMessageIDs(v...)
+	}
+	if v := i.RemoveMessageIDs; len(v) > 0 {
+		m.RemoveMessageIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateEmployeeInput on the EmployeeUpdate builder.
+func (c *EmployeeUpdate) SetInput(i UpdateEmployeeInput) *EmployeeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateEmployeeInput on the EmployeeUpdateOne builder.
+func (c *EmployeeUpdateOne) SetInput(i UpdateEmployeeInput) *EmployeeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateEmployeeAuthInput represents a mutation input for creating employeeauths.
+type CreateEmployeeAuthInput struct {
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+}
+
+// Mutate applies the CreateEmployeeAuthInput on the EmployeeAuthMutation builder.
+func (i *CreateEmployeeAuthInput) Mutate(m *EmployeeAuthMutation) {
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateEmployeeAuthInput on the EmployeeAuthCreate builder.
+func (c *EmployeeAuthCreate) SetInput(i CreateEmployeeAuthInput) *EmployeeAuthCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateEmployeeAuthInput represents a mutation input for updating employeeauths.
+type UpdateEmployeeAuthInput struct {
+	UpdatedAt *time.Time
+}
+
+// Mutate applies the UpdateEmployeeAuthInput on the EmployeeAuthMutation builder.
+func (i *UpdateEmployeeAuthInput) Mutate(m *EmployeeAuthMutation) {
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateEmployeeAuthInput on the EmployeeAuthUpdate builder.
+func (c *EmployeeAuthUpdate) SetInput(i UpdateEmployeeAuthInput) *EmployeeAuthUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateEmployeeAuthInput on the EmployeeAuthUpdateOne builder.
+func (c *EmployeeAuthUpdateOne) SetInput(i UpdateEmployeeAuthInput) *EmployeeAuthUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateFileInput represents a mutation input for creating files.
+type CreateFileInput struct {
+	URL       string
+	Caption   *string
+	MimeType  string
+	FileName  string
+	MessageID *uuid.UUID
+}
+
+// Mutate applies the CreateFileInput on the FileMutation builder.
+func (i *CreateFileInput) Mutate(m *FileMutation) {
+	m.SetURL(i.URL)
+	if v := i.Caption; v != nil {
+		m.SetCaption(*v)
+	}
+	m.SetMimeType(i.MimeType)
+	m.SetFileName(i.FileName)
+	if v := i.MessageID; v != nil {
+		m.SetMessageID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateFileInput on the FileCreate builder.
+func (c *FileCreate) SetInput(i CreateFileInput) *FileCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateFileInput represents a mutation input for updating files.
+type UpdateFileInput struct {
+	URL          *string
+	ClearCaption bool
+	Caption      *string
+	MimeType     *string
+	FileName     *string
+	ClearMessage bool
+	MessageID    *uuid.UUID
+}
+
+// Mutate applies the UpdateFileInput on the FileMutation builder.
+func (i *UpdateFileInput) Mutate(m *FileMutation) {
+	if v := i.URL; v != nil {
+		m.SetURL(*v)
+	}
+	if i.ClearCaption {
+		m.ClearCaption()
+	}
+	if v := i.Caption; v != nil {
+		m.SetCaption(*v)
+	}
+	if v := i.MimeType; v != nil {
+		m.SetMimeType(*v)
+	}
+	if v := i.FileName; v != nil {
+		m.SetFileName(*v)
+	}
+	if i.ClearMessage {
+		m.ClearMessage()
+	}
+	if v := i.MessageID; v != nil {
+		m.SetMessageID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateFileInput on the FileUpdate builder.
+func (c *FileUpdate) SetInput(i UpdateFileInput) *FileUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateFileInput on the FileUpdateOne builder.
+func (c *FileUpdateOne) SetInput(i UpdateFileInput) *FileUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateMessageInput represents a mutation input for creating messages.
+type CreateMessageInput struct {
+	SentBy      message.SentBy
+	Private     bool
+	Type        message.Type
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	ChatID      *uuid.UUID
+	EmployeeIDs []uuid.UUID
+	TextID      *uuid.UUID
+	FileID      *uuid.UUID
+}
+
+// Mutate applies the CreateMessageInput on the MessageMutation builder.
+func (i *CreateMessageInput) Mutate(m *MessageMutation) {
+	m.SetSentBy(i.SentBy)
+	m.SetPrivate(i.Private)
+	m.SetType(i.Type)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.ChatID; v != nil {
+		m.SetChatID(*v)
+	}
+	if v := i.EmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.TextID; v != nil {
+		m.SetTextID(*v)
+	}
+	if v := i.FileID; v != nil {
+		m.SetFileID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateMessageInput on the MessageCreate builder.
+func (c *MessageCreate) SetInput(i CreateMessageInput) *MessageCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateMessageInput represents a mutation input for updating messages.
+type UpdateMessageInput struct {
+	SentBy            *message.SentBy
+	Private           *bool
+	Type              *message.Type
+	UpdatedAt         *time.Time
+	ClearChat         bool
+	ChatID            *uuid.UUID
+	ClearEmployee     bool
+	AddEmployeeIDs    []uuid.UUID
+	RemoveEmployeeIDs []uuid.UUID
+	ClearText         bool
+	TextID            *uuid.UUID
+	ClearFile         bool
+	FileID            *uuid.UUID
+}
+
+// Mutate applies the UpdateMessageInput on the MessageMutation builder.
+func (i *UpdateMessageInput) Mutate(m *MessageMutation) {
+	if v := i.SentBy; v != nil {
+		m.SetSentBy(*v)
+	}
+	if v := i.Private; v != nil {
+		m.SetPrivate(*v)
+	}
+	if v := i.Type; v != nil {
+		m.SetType(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearChat {
+		m.ClearChat()
+	}
+	if v := i.ChatID; v != nil {
+		m.SetChatID(*v)
+	}
+	if i.ClearEmployee {
+		m.ClearEmployee()
+	}
+	if v := i.AddEmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.RemoveEmployeeIDs; len(v) > 0 {
+		m.RemoveEmployeeIDs(v...)
+	}
+	if i.ClearText {
+		m.ClearText()
+	}
+	if v := i.TextID; v != nil {
+		m.SetTextID(*v)
+	}
+	if i.ClearFile {
+		m.ClearFile()
+	}
+	if v := i.FileID; v != nil {
+		m.SetFileID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateMessageInput on the MessageUpdate builder.
+func (c *MessageUpdate) SetInput(i UpdateMessageInput) *MessageUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateMessageInput on the MessageUpdateOne builder.
+func (c *MessageUpdateOne) SetInput(i UpdateMessageInput) *MessageUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreatePipelineInput represents a mutation input for creating pipelines.
+type CreatePipelineInput struct {
+	Name      string
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	StageIDs  []uuid.UUID
+}
+
+// Mutate applies the CreatePipelineInput on the PipelineMutation builder.
+func (i *CreatePipelineInput) Mutate(m *PipelineMutation) {
+	m.SetName(i.Name)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.StageIDs; len(v) > 0 {
+		m.AddStageIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreatePipelineInput on the PipelineCreate builder.
+func (c *PipelineCreate) SetInput(i CreatePipelineInput) *PipelineCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdatePipelineInput represents a mutation input for updating pipelines.
+type UpdatePipelineInput struct {
+	Name           *string
+	UpdatedAt      *time.Time
+	ClearStages    bool
+	AddStageIDs    []uuid.UUID
+	RemoveStageIDs []uuid.UUID
+}
+
+// Mutate applies the UpdatePipelineInput on the PipelineMutation builder.
+func (i *UpdatePipelineInput) Mutate(m *PipelineMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearStages {
+		m.ClearStages()
+	}
+	if v := i.AddStageIDs; len(v) > 0 {
+		m.AddStageIDs(v...)
+	}
+	if v := i.RemoveStageIDs; len(v) > 0 {
+		m.RemoveStageIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdatePipelineInput on the PipelineUpdate builder.
+func (c *PipelineUpdate) SetInput(i UpdatePipelineInput) *PipelineUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdatePipelineInput on the PipelineUpdateOne builder.
+func (c *PipelineUpdateOne) SetInput(i UpdatePipelineInput) *PipelineUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateQueueInput represents a mutation input for creating queues.
+type CreateQueueInput struct {
+	Name          string
+	Type          *queue.Type
+	CreatedAt     *time.Time
+	UpdatedAt     *time.Time
+	StageIDs      []uuid.UUID
+	EmployeeIDs   []uuid.UUID
+	DepartmentIDs []uuid.UUID
+}
+
+// Mutate applies the CreateQueueInput on the QueueMutation builder.
+func (i *CreateQueueInput) Mutate(m *QueueMutation) {
+	m.SetName(i.Name)
+	if v := i.Type; v != nil {
+		m.SetType(*v)
+	}
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.StageIDs; len(v) > 0 {
+		m.AddStageIDs(v...)
+	}
+	if v := i.EmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.DepartmentIDs; len(v) > 0 {
+		m.AddDepartmentIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateQueueInput on the QueueCreate builder.
+func (c *QueueCreate) SetInput(i CreateQueueInput) *QueueCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateQueueInput represents a mutation input for updating queues.
+type UpdateQueueInput struct {
+	Name                *string
+	Type                *queue.Type
+	UpdatedAt           *time.Time
+	ClearStages         bool
+	AddStageIDs         []uuid.UUID
+	RemoveStageIDs      []uuid.UUID
+	ClearEmployees      bool
+	AddEmployeeIDs      []uuid.UUID
+	RemoveEmployeeIDs   []uuid.UUID
+	AddDepartmentIDs    []uuid.UUID
+	RemoveDepartmentIDs []uuid.UUID
+}
+
+// Mutate applies the UpdateQueueInput on the QueueMutation builder.
+func (i *UpdateQueueInput) Mutate(m *QueueMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.Type; v != nil {
+		m.SetType(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearStages {
+		m.ClearStages()
+	}
+	if v := i.AddStageIDs; len(v) > 0 {
+		m.AddStageIDs(v...)
+	}
+	if v := i.RemoveStageIDs; len(v) > 0 {
+		m.RemoveStageIDs(v...)
+	}
+	if i.ClearEmployees {
+		m.ClearEmployees()
+	}
+	if v := i.AddEmployeeIDs; len(v) > 0 {
+		m.AddEmployeeIDs(v...)
+	}
+	if v := i.RemoveEmployeeIDs; len(v) > 0 {
+		m.RemoveEmployeeIDs(v...)
+	}
+	if v := i.AddDepartmentIDs; len(v) > 0 {
+		m.AddDepartmentIDs(v...)
+	}
+	if v := i.RemoveDepartmentIDs; len(v) > 0 {
+		m.RemoveDepartmentIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateQueueInput on the QueueUpdate builder.
+func (c *QueueUpdate) SetInput(i UpdateQueueInput) *QueueUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateQueueInput on the QueueUpdateOne builder.
+func (c *QueueUpdateOne) SetInput(i UpdateQueueInput) *QueueUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateStageInput represents a mutation input for creating stages.
+type CreateStageInput struct {
+	Name       string
+	Color      *string
+	LossOrGain bool
+	CreatedAt  *time.Time
+	UpdatedAt  *time.Time
+	PipelineID uuid.UUID
+	DealIDs    []uuid.UUID
+	QueueID    *uuid.UUID
+}
+
+// Mutate applies the CreateStageInput on the StageMutation builder.
+func (i *CreateStageInput) Mutate(m *StageMutation) {
+	m.SetName(i.Name)
+	if v := i.Color; v != nil {
+		m.SetColor(*v)
+	}
+	m.SetLossOrGain(i.LossOrGain)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetPipelineID(i.PipelineID)
+	if v := i.DealIDs; len(v) > 0 {
+		m.AddDealIDs(v...)
+	}
+	if v := i.QueueID; v != nil {
+		m.SetQueueID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateStageInput on the StageCreate builder.
+func (c *StageCreate) SetInput(i CreateStageInput) *StageCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateStageInput represents a mutation input for updating stages.
+type UpdateStageInput struct {
+	Name          *string
+	Color         *string
+	LossOrGain    *bool
+	UpdatedAt     *time.Time
+	PipelineID    *uuid.UUID
+	ClearDeals    bool
+	AddDealIDs    []uuid.UUID
+	RemoveDealIDs []uuid.UUID
+	ClearQueue    bool
+	QueueID       *uuid.UUID
+}
+
+// Mutate applies the UpdateStageInput on the StageMutation builder.
+func (i *UpdateStageInput) Mutate(m *StageMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.Color; v != nil {
+		m.SetColor(*v)
+	}
+	if v := i.LossOrGain; v != nil {
+		m.SetLossOrGain(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.PipelineID; v != nil {
+		m.SetPipelineID(*v)
+	}
+	if i.ClearDeals {
+		m.ClearDeals()
+	}
+	if v := i.AddDealIDs; len(v) > 0 {
+		m.AddDealIDs(v...)
+	}
+	if v := i.RemoveDealIDs; len(v) > 0 {
+		m.RemoveDealIDs(v...)
+	}
+	if i.ClearQueue {
+		m.ClearQueue()
+	}
+	if v := i.QueueID; v != nil {
+		m.SetQueueID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateStageInput on the StageUpdate builder.
+func (c *StageUpdate) SetInput(i UpdateStageInput) *StageUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateStageInput on the StageUpdateOne builder.
+func (c *StageUpdateOne) SetInput(i UpdateStageInput) *StageUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateTextInput represents a mutation input for creating texts.
+type CreateTextInput struct {
+	Text      string
+	MessageID *uuid.UUID
+}
+
+// Mutate applies the CreateTextInput on the TextMutation builder.
+func (i *CreateTextInput) Mutate(m *TextMutation) {
+	m.SetText(i.Text)
+	if v := i.MessageID; v != nil {
+		m.SetMessageID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateTextInput on the TextCreate builder.
+func (c *TextCreate) SetInput(i CreateTextInput) *TextCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateTextInput represents a mutation input for updating texts.
+type UpdateTextInput struct {
+	Text         *string
+	ClearMessage bool
+	MessageID    *uuid.UUID
+}
+
+// Mutate applies the UpdateTextInput on the TextMutation builder.
+func (i *UpdateTextInput) Mutate(m *TextMutation) {
+	if v := i.Text; v != nil {
+		m.SetText(*v)
+	}
+	if i.ClearMessage {
+		m.ClearMessage()
+	}
+	if v := i.MessageID; v != nil {
+		m.SetMessageID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateTextInput on the TextUpdate builder.
+func (c *TextUpdate) SetInput(i UpdateTextInput) *TextUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateTextInput on the TextUpdateOne builder.
+func (c *TextUpdateOne) SetInput(i UpdateTextInput) *TextUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

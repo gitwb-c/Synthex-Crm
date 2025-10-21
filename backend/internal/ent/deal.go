@@ -5,20 +5,98 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
-	"crm.saas/backend/internal/ent/deal"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/google/uuid"
 )
 
 // Deal is the model entity for the Deal schema.
 type Deal struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uuid.UUID `json:"id,omitempty"`
 	// Title holds the value of the "title" field.
-	Title        string `json:"title,omitempty"`
-	selectValues sql.SelectValues
+	Title string `json:"title,omitempty"`
+	// Source holds the value of the "source" field.
+	Source string `json:"source,omitempty"`
+	// CreatedAt holds the value of the "createdAt" field.
+	CreatedAt time.Time `json:"createdAt,omitempty"`
+	// UpdatedAt holds the value of the "updatedAt" field.
+	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the DealQuery when eager-loading is set.
+	Edges         DealEdges `json:"edges"`
+	chat_deal     *uuid.UUID
+	deal_costumer *uuid.UUID
+	deal_stage    *uuid.UUID
+	selectValues  sql.SelectValues
+}
+
+// DealEdges holds the relations/edges for other nodes in the graph.
+type DealEdges struct {
+	// Costumer holds the value of the costumer edge.
+	Costumer *Costumer `json:"costumer,omitempty"`
+	// Chat holds the value of the chat edge.
+	Chat *Chat `json:"chat,omitempty"`
+	// Stage holds the value of the stage edge.
+	Stage *Stage `json:"stage,omitempty"`
+	// DealCrmFields holds the value of the dealCrmFields edge.
+	DealCrmFields []*DealCrmField `json:"dealCrmFields,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [4]bool
+	// totalCount holds the count of the edges above.
+	totalCount [4]map[string]int
+
+	namedDealCrmFields map[string][]*DealCrmField
+}
+
+// CostumerOrErr returns the Costumer value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DealEdges) CostumerOrErr() (*Costumer, error) {
+	if e.Costumer != nil {
+		return e.Costumer, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: costumer.Label}
+	}
+	return nil, &NotLoadedError{edge: "costumer"}
+}
+
+// ChatOrErr returns the Chat value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DealEdges) ChatOrErr() (*Chat, error) {
+	if e.Chat != nil {
+		return e.Chat, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: chat.Label}
+	}
+	return nil, &NotLoadedError{edge: "chat"}
+}
+
+// StageOrErr returns the Stage value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DealEdges) StageOrErr() (*Stage, error) {
+	if e.Stage != nil {
+		return e.Stage, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: stage.Label}
+	}
+	return nil, &NotLoadedError{edge: "stage"}
+}
+
+// DealCrmFieldsOrErr returns the DealCrmFields value or an error if the edge
+// was not loaded in eager-loading.
+func (e DealEdges) DealCrmFieldsOrErr() ([]*DealCrmField, error) {
+	if e.loadedTypes[3] {
+		return e.DealCrmFields, nil
+	}
+	return nil, &NotLoadedError{edge: "dealCrmFields"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -26,10 +104,18 @@ func (*Deal) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case deal.FieldID:
-			values[i] = new(sql.NullInt64)
-		case deal.FieldTitle:
+		case deal.FieldTitle, deal.FieldSource:
 			values[i] = new(sql.NullString)
+		case deal.FieldCreatedAt, deal.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
+		case deal.FieldID:
+			values[i] = new(uuid.UUID)
+		case deal.ForeignKeys[0]: // chat_deal
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
+		case deal.ForeignKeys[1]: // deal_costumer
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
+		case deal.ForeignKeys[2]: // deal_stage
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -46,16 +132,55 @@ func (_m *Deal) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case deal.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value != nil {
+				_m.ID = *value
 			}
-			_m.ID = int(value.Int64)
 		case deal.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
 				_m.Title = value.String
+			}
+		case deal.FieldSource:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field source", values[i])
+			} else if value.Valid {
+				_m.Source = value.String
+			}
+		case deal.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field createdAt", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case deal.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updatedAt", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
+		case deal.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field chat_deal", values[i])
+			} else if value.Valid {
+				_m.chat_deal = new(uuid.UUID)
+				*_m.chat_deal = *value.S.(*uuid.UUID)
+			}
+		case deal.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field deal_costumer", values[i])
+			} else if value.Valid {
+				_m.deal_costumer = new(uuid.UUID)
+				*_m.deal_costumer = *value.S.(*uuid.UUID)
+			}
+		case deal.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field deal_stage", values[i])
+			} else if value.Valid {
+				_m.deal_stage = new(uuid.UUID)
+				*_m.deal_stage = *value.S.(*uuid.UUID)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -68,6 +193,26 @@ func (_m *Deal) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Deal) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryCostumer queries the "costumer" edge of the Deal entity.
+func (_m *Deal) QueryCostumer() *CostumerQuery {
+	return NewDealClient(_m.config).QueryCostumer(_m)
+}
+
+// QueryChat queries the "chat" edge of the Deal entity.
+func (_m *Deal) QueryChat() *ChatQuery {
+	return NewDealClient(_m.config).QueryChat(_m)
+}
+
+// QueryStage queries the "stage" edge of the Deal entity.
+func (_m *Deal) QueryStage() *StageQuery {
+	return NewDealClient(_m.config).QueryStage(_m)
+}
+
+// QueryDealCrmFields queries the "dealCrmFields" edge of the Deal entity.
+func (_m *Deal) QueryDealCrmFields() *DealCrmFieldQuery {
+	return NewDealClient(_m.config).QueryDealCrmFields(_m)
 }
 
 // Update returns a builder for updating this Deal.
@@ -95,8 +240,41 @@ func (_m *Deal) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("title=")
 	builder.WriteString(_m.Title)
+	builder.WriteString(", ")
+	builder.WriteString("source=")
+	builder.WriteString(_m.Source)
+	builder.WriteString(", ")
+	builder.WriteString("createdAt=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updatedAt=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedDealCrmFields returns the DealCrmFields named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Deal) NamedDealCrmFields(name string) ([]*DealCrmField, error) {
+	if _m.Edges.namedDealCrmFields == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedDealCrmFields[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Deal) appendNamedDealCrmFields(name string, edges ...*DealCrmField) {
+	if _m.Edges.namedDealCrmFields == nil {
+		_m.Edges.namedDealCrmFields = make(map[string][]*DealCrmField)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedDealCrmFields[name] = []*DealCrmField{}
+	} else {
+		_m.Edges.namedDealCrmFields[name] = append(_m.Edges.namedDealCrmFields[name], edges...)
+	}
 }
 
 // Deals is a parsable slice of Deal.

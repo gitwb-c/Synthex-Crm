@@ -1,25 +1,26 @@
 package repositories
 
 import (
-	"crm.saas/backend/internal/db"
-	"crm.saas/backend/internal/ent"
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 )
 
 type ChatRepository struct {
 	client *ent.Client
 }
 
-func NewChatRepository() *ChatRepository {
+func NewChatRepository(client *ent.Client) *ChatRepository {
 	return &ChatRepository{
-		client: db.Client,
+		client: client,
 	}
 }
 
 // ([]*ent.Chat, error)
-func (s *ChatRepository) Read() {}
+func (s *ChatRepository) Read(ctx context.Context) {}
 
-func (s *ChatRepository) Create() {}
+func (s *ChatRepository) Create(ctx context.Context) {}
 
-func (s *ChatRepository) Update() {}
+func (s *ChatRepository) Update(ctx context.Context) {}
 
-func (s *ChatRepository) Delete() {}
+func (s *ChatRepository) Delete(ctx context.Context) {}
