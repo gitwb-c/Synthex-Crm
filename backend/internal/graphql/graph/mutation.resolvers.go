@@ -32,6 +32,16 @@ func (r *mutationResolver) UpdateDealID(ctx context.Context, id string, input en
 	return deal, nil
 }
 
+// DeleteDealID is the resolver for the deleteDealID field.
+func (r *mutationResolver) DeleteDealID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeDealService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // UpdateDealWhere is the resolver for the updateDealWhere field.
 func (r *mutationResolver) UpdateDealWhere(ctx context.Context, where ent.DealWhereInput, input ent.UpdateDealInput) ([]*ent.Deal, error) {
 	panic(fmt.Errorf("not implemented: UpdateDealWhere - updateDealWhere"))
@@ -55,6 +65,16 @@ func (r *mutationResolver) UpdatePipelineID(ctx context.Context, id string, inpu
 		return nil, err
 	}
 	return pipeline, nil
+}
+
+// DeletePipelinelID is the resolver for the deletePipelinelID field.
+func (r *mutationResolver) DeletePipelinelID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializePipelineService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // UpdatePipelineWhere is the resolver for the updatePipelineWhere field.
@@ -82,6 +102,16 @@ func (r *mutationResolver) UpdateCostumerID(ctx context.Context, id string, inpu
 	return costumer, nil
 }
 
+// DeleteCostumerID is the resolver for the deleteCostumerID field.
+func (r *mutationResolver) DeleteCostumerID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeCostumerService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // UpdateCostumerWhere is the resolver for the updateCostumerWhere field.
 func (r *mutationResolver) UpdateCostumerWhere(ctx context.Context, where ent.CostumerWhereInput, input ent.UpdateCostumerInput) ([]*ent.Costumer, error) {
 	panic(fmt.Errorf("not implemented: UpdateCostumerWhere - updateCostumerWhere"))
@@ -105,6 +135,16 @@ func (r *mutationResolver) UpdateStageID(ctx context.Context, id string, input e
 		return nil, err
 	}
 	return stage, nil
+}
+
+// DeleteStageID is the resolver for the deleteStageID field.
+func (r *mutationResolver) DeleteStageID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeStageService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // UpdateStageWhere is the resolver for the updateStageWhere field.
@@ -132,6 +172,16 @@ func (r *mutationResolver) UpdateChatID(ctx context.Context, id string, input en
 	return chat, nil
 }
 
+// DeleteChatID is the resolver for the deleteChatID field.
+func (r *mutationResolver) DeleteChatID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeChatService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // UpdateChatWhere is the resolver for the updateChatWhere field.
 func (r *mutationResolver) UpdateChatWhere(ctx context.Context, where ent.ChatWhereInput, input ent.UpdateChatInput) ([]*ent.Chat, error) {
 	panic(fmt.Errorf("not implemented: UpdateChatWhere - updateChatWhere"))
@@ -155,6 +205,16 @@ func (r *mutationResolver) UpdateEmployeeID(ctx context.Context, id string, inpu
 		return nil, err
 	}
 	return employee, nil
+}
+
+// DeleteEmployeeID is the resolver for the deleteEmployeeID field.
+func (r *mutationResolver) DeleteEmployeeID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeEmployeeService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // UpdateEmployeeWhere is the resolver for the updateEmployeeWhere field.
@@ -182,6 +242,16 @@ func (r *mutationResolver) UpdateEmployeeAuthID(ctx context.Context, id string, 
 	return employeeAuth, nil
 }
 
+// DeleteEmployeeAuthID is the resolver for the deleteEmployeeAuthID field.
+func (r *mutationResolver) DeleteEmployeeAuthID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeEmployeeAuthService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // UpdateEmployeeAuthWhere is the resolver for the updateEmployeeAuthWhere field.
 func (r *mutationResolver) UpdateEmployeeAuthWhere(ctx context.Context, where ent.EmployeeAuthWhereInput, input ent.UpdateEmployeeAuthInput) ([]*ent.EmployeeAuth, error) {
 	panic(fmt.Errorf("not implemented: UpdateEmployeeAuthWhere - updateEmployeeAuthWhere"))
@@ -205,6 +275,16 @@ func (r *mutationResolver) UpdateDepartmentID(ctx context.Context, id string, in
 		return nil, err
 	}
 	return department, nil
+}
+
+// DeleteDepartmentID is the resolver for the deleteDepartmentID field.
+func (r *mutationResolver) DeleteDepartmentID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeDepartmentService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // UpdateDepartmentWhere is the resolver for the updateDepartmentWhere field.
@@ -232,6 +312,16 @@ func (r *mutationResolver) UpdateMessageID(ctx context.Context, id string, input
 	return message, nil
 }
 
+// DeleteMessageID is the resolver for the deleteMessageID field.
+func (r *mutationResolver) DeleteMessageID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeMessageService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // UpdateMessageWhere is the resolver for the updateMessageWhere field.
 func (r *mutationResolver) UpdateMessageWhere(ctx context.Context, where ent.MessageWhereInput, input ent.UpdateMessageInput) ([]*ent.Message, error) {
 	panic(fmt.Errorf("not implemented: UpdateMessageWhere - updateMessageWhere"))
@@ -255,6 +345,16 @@ func (r *mutationResolver) UpdateQueueID(ctx context.Context, id string, input e
 		return nil, err
 	}
 	return queue, nil
+}
+
+// DeleteQueueID is the resolver for the deleteQueueID field.
+func (r *mutationResolver) DeleteQueueID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeQueueService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // UpdateQueueWhere is the resolver for the updateQueueWhere field.
@@ -282,6 +382,16 @@ func (r *mutationResolver) UpdateCrmFieldID(ctx context.Context, id string, inpu
 	return crmField, nil
 }
 
+// DeleteCrmFieldID is the resolver for the deleteCrmFieldID field.
+func (r *mutationResolver) DeleteCrmFieldID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeCrmFieldService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // UpdateCrmFieldWhere is the resolver for the updateCrmFieldWhere field.
 func (r *mutationResolver) UpdateCrmFieldWhere(ctx context.Context, where ent.CrmFieldWhereInput, input ent.UpdateCrmFieldInput) ([]*ent.CrmField, error) {
 	panic(fmt.Errorf("not implemented: UpdateCrmFieldWhere - updateCrmFieldWhere"))
@@ -305,6 +415,16 @@ func (r *mutationResolver) UpdateDealCrmFieldID(ctx context.Context, id string, 
 		return nil, err
 	}
 	return dealCrmField, nil
+}
+
+// DeleteDealCrmFieldID is the resolver for the deleteDealCrmFieldID field.
+func (r *mutationResolver) DeleteDealCrmFieldID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeDealCrmFieldService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // UpdateDealCrmFieldWhere is the resolver for the updateDealCrmFieldWhere field.

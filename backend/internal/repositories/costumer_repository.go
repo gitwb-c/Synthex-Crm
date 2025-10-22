@@ -32,4 +32,14 @@ func (s *CostumerRepository) UpdateID(ctx context.Context, id string, input ent.
 	}
 	return s.client.Costumer.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *CostumerRepository) Delete(ctx context.Context) {}
+func (s *CostumerRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.Costumer.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

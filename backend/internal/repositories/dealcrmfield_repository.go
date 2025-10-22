@@ -36,4 +36,14 @@ func (s *DealCrmFieldRepository) UpdateID(ctx context.Context, id string, input 
 	return s.client.DealCrmField.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
 
-func (s *DealCrmFieldRepository) Delete(ctx context.Context) {}
+func (s *DealCrmFieldRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.DealCrmField.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

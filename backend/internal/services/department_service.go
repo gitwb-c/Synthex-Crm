@@ -40,4 +40,10 @@ func (s *DepartmentService) UpdateID(ctx context.Context, id string, input ent.U
 	return department, nil
 }
 
-func (s *DepartmentService) Delete() {}
+func (s *DepartmentService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

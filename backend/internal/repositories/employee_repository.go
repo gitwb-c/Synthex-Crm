@@ -31,4 +31,14 @@ func (s *EmployeeRepository) UpdateID(ctx context.Context, id string, input ent.
 	}
 	return s.client.Employee.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *EmployeeRepository) Delete(ctx context.Context) {}
+func (s *EmployeeRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.Employee.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

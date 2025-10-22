@@ -32,4 +32,14 @@ func (s *PipelineRepository) UpdateID(ctx context.Context, id string, input ent.
 	}
 	return s.client.Pipeline.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *PipelineRepository) Delete(ctx context.Context) {}
+func (s *PipelineRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.Pipeline.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

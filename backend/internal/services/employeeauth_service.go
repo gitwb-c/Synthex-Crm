@@ -40,4 +40,10 @@ func (s *EmployeeAuthService) UpdateID(ctx context.Context, id string, input ent
 	return employeeAuth, nil
 }
 
-func (s *EmployeeAuthService) Delete() {}
+func (s *EmployeeAuthService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

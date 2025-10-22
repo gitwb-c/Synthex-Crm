@@ -36,4 +36,14 @@ func (s *DealRepository) UpdateID(ctx context.Context, id string, input ent.Upda
 	return s.client.Deal.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
 
-func (s *DealRepository) Delete(ctx context.Context) {}
+func (s *DealRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.Deal.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

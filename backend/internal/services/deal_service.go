@@ -43,4 +43,10 @@ func (s *DealService) UpdateID(ctx context.Context, id string, input ent.UpdateD
 	return deal, nil
 }
 
-func (s *DealService) Delete() {}
+func (s *DealService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -38,4 +38,10 @@ func (s *QueueService) UpdateID(ctx context.Context, id string, input ent.Update
 	}
 	return queue, nil
 }
-func (s *QueueService) Delete() {}
+func (s *QueueService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

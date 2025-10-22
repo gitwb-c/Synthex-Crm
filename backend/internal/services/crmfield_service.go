@@ -38,4 +38,10 @@ func (s *CrmFieldService) UpdateID(ctx context.Context, id string, input ent.Upd
 	}
 	return crmField, nil
 }
-func (s *CrmFieldService) Delete() {}
+func (s *CrmFieldService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -40,4 +40,10 @@ func (s *PipelineService) UpdateID(ctx context.Context, id string, input ent.Upd
 	}
 	return pipeline, nil
 }
-func (s *PipelineService) Delete() {}
+func (s *PipelineService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

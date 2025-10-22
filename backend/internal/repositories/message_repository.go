@@ -31,4 +31,14 @@ func (s *MessageRepository) UpdateID(ctx context.Context, id string, input ent.U
 	}
 	return s.client.Message.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *MessageRepository) Delete(ctx context.Context) {}
+func (s *MessageRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.Message.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

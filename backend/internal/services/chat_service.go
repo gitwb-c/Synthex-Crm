@@ -40,4 +40,10 @@ func (s *ChatService) UpdateID(ctx context.Context, id string, input ent.UpdateC
 	}
 	return chat, nil
 }
-func (s *ChatService) Delete() {}
+func (s *ChatService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

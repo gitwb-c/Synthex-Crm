@@ -3,10 +3,12 @@ scalar Time
 extend type Mutation {
   createDeal(input: CreateDealInput!): Deal!
   updateDealID(id: ID!, input: UpdateDealInput!): Deal!
+  deleteDealID(id: ID!): Boolean!
   updateDealWhere(where: DealWhereInput!, input: UpdateDealInput!): [Deal!]!
 
   createPipeline(input: CreatePipelineInput!): Pipeline!
   updatePipelineID(id: ID!, input: UpdatePipelineInput!): Pipeline!
+  deletePipelinelID(id: ID!): Boolean!
   updatePipelineWhere(
     where: PipelineWhereInput!
     input: UpdatePipelineInput!
@@ -14,6 +16,7 @@ extend type Mutation {
 
   createCostumer(input: CreateCostumerInput!): Costumer!
   updateCostumerID(id: ID!, input: UpdateCostumerInput!): Costumer!
+  deleteCostumerID(id: ID!): Boolean!
   updateCostumerWhere(
     where: CostumerWhereInput!
     input: UpdateCostumerInput!
@@ -21,14 +24,17 @@ extend type Mutation {
 
   createStage(input: CreateStageInput!): Stage!
   updateStageID(id: ID!, input: UpdateStageInput!): Stage!
+  deleteStageID(id: ID!): Boolean!
   updateStageWhere(where: StageWhereInput!, input: UpdateStageInput!): [Stage!]!
 
   createChat(input: CreateChatInput!): Chat!
   updateChatID(id: ID!, input: UpdateChatInput!): Chat!
+  deleteChatID(id: ID!): Boolean!
   updateChatWhere(where: ChatWhereInput!, input: UpdateChatInput!): [Chat!]!
 
   createEmployee(input: CreateEmployeeInput!): Employee!
   updateEmployeeID(id: ID!, input: UpdateEmployeeInput!): Employee!
+  deleteEmployeeID(id: ID!): Boolean!
   updateEmployeeWhere(
     where: EmployeeWhereInput!
     input: UpdateEmployeeInput!
@@ -36,6 +42,7 @@ extend type Mutation {
 
   createEmployeeAuth(input: CreateEmployeeAuthInput!): EmployeeAuth!
   updateEmployeeAuthID(id: ID!, input: UpdateEmployeeAuthInput!): EmployeeAuth!
+  deleteEmployeeAuthID(id: ID!): Boolean!
   updateEmployeeAuthWhere(
     where: EmployeeAuthWhereInput!
     input: UpdateEmployeeAuthInput!
@@ -43,6 +50,7 @@ extend type Mutation {
 
   createDepartment(input: CreateDepartmentInput!): Department!
   updateDepartmentID(id: ID!, input: UpdateDepartmentInput!): Department!
+  deleteDepartmentID(id: ID!): Boolean!
   updateDepartmentWhere(
     where: DepartmentWhereInput!
     input: UpdateDepartmentInput!
@@ -50,6 +58,7 @@ extend type Mutation {
 
   createMessage(input: CreateMessageInput!): Message!
   updateMessageID(id: ID!, input: UpdateMessageInput!): Message!
+  deleteMessageID(id: ID!): Boolean!
   updateMessageWhere(
     where: MessageWhereInput!
     input: UpdateMessageInput!
@@ -57,10 +66,12 @@ extend type Mutation {
 
   createQueue(input: CreateQueueInput!): Queue!
   updateQueueID(id: ID!, input: UpdateQueueInput!): Queue!
+  deleteQueueID(id: ID!): Boolean!
   updateQueueWhere(where: QueueWhereInput!, input: UpdateQueueInput!): [Queue!]!
 
   createCrmField(input: CreateCrmFieldInput!): CrmField!
   updateCrmFieldID(id: ID!, input: UpdateCrmFieldInput!): CrmField!
+  deleteCrmFieldID(id: ID!): Boolean!
   updateCrmFieldWhere(
     where: CrmFieldWhereInput!
     input: UpdateCrmFieldInput!
@@ -68,6 +79,7 @@ extend type Mutation {
 
   createDealCrmField(input: CreateDealCrmFieldInput!): DealCrmField!
   updateDealCrmFieldID(id: ID!, input: UpdateDealCrmFieldInput!): DealCrmField!
+  deleteDealCrmFieldID(id: ID!): Boolean!
   updateDealCrmFieldWhere(
     where: DealCrmFieldWhereInput!
     input: UpdateDealCrmFieldInput!

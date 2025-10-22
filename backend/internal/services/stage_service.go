@@ -40,4 +40,10 @@ func (s *StageService) UpdateID(ctx context.Context, id string, input ent.Update
 	}
 	return stage, nil
 }
-func (s *StageService) Delete() {}
+func (s *StageService) DeleteID(ctx context.Context, id string) error {
+	err := s.repository.DeleteID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

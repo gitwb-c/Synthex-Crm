@@ -31,4 +31,14 @@ func (s *EmployeeAuthRepository) UpdateID(ctx context.Context, id string, input 
 	}
 	return s.client.EmployeeAuth.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *EmployeeAuthRepository) Delete(ctx context.Context) {}
+func (s *EmployeeAuthRepository) DeleteID(ctx context.Context, id string) error {
+	uuidId, e := uuid.Parse(id)
+	if e != nil {
+		return e
+	}
+	err := s.client.EmployeeAuth.DeleteOneID(uuidId).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
