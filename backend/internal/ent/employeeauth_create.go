@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
 	"github.com/google/uuid"
 )
@@ -79,6 +80,25 @@ func (_c *EmployeeAuthCreate) SetNillableID(v *uuid.UUID) *EmployeeAuthCreate {
 		_c.SetID(*v)
 	}
 	return _c
+}
+
+// SetEmployeeID sets the "employee" edge to the Employee entity by ID.
+func (_c *EmployeeAuthCreate) SetEmployeeID(id uuid.UUID) *EmployeeAuthCreate {
+	_c.mutation.SetEmployeeID(id)
+	return _c
+}
+
+// SetNillableEmployeeID sets the "employee" edge to the Employee entity by ID if the given value is not nil.
+func (_c *EmployeeAuthCreate) SetNillableEmployeeID(id *uuid.UUID) *EmployeeAuthCreate {
+	if id != nil {
+		_c = _c.SetEmployeeID(*id)
+	}
+	return _c
+}
+
+// SetEmployee sets the "employee" edge to the Employee entity.
+func (_c *EmployeeAuthCreate) SetEmployee(v *Employee) *EmployeeAuthCreate {
+	return _c.SetEmployeeID(v.ID)
 }
 
 // Mutation returns the EmployeeAuthMutation object of the builder.
@@ -216,6 +236,23 @@ func (_c *EmployeeAuthCreate) createSpec() (*EmployeeAuth, *sqlgraph.CreateSpec)
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(employeeauth.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.EmployeeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   employeeauth.EmployeeTable,
+			Columns: []string{employeeauth.EmployeeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.employee_employee_auth = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

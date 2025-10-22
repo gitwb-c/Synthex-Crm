@@ -803,17 +803,27 @@ func (c *EmployeeUpdateOne) SetInput(i UpdateEmployeeInput) *EmployeeUpdateOne {
 
 // CreateEmployeeAuthInput represents a mutation input for creating employeeauths.
 type CreateEmployeeAuthInput struct {
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
+	Name       string
+	Email      string
+	Password   string
+	CreatedAt  *time.Time
+	UpdatedAt  *time.Time
+	EmployeeID *uuid.UUID
 }
 
 // Mutate applies the CreateEmployeeAuthInput on the EmployeeAuthMutation builder.
 func (i *CreateEmployeeAuthInput) Mutate(m *EmployeeAuthMutation) {
+	m.SetName(i.Name)
+	m.SetEmail(i.Email)
+	m.SetPassword(i.Password)
 	if v := i.CreatedAt; v != nil {
 		m.SetCreatedAt(*v)
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
+	}
+	if v := i.EmployeeID; v != nil {
+		m.SetEmployeeID(*v)
 	}
 }
 
@@ -825,13 +835,33 @@ func (c *EmployeeAuthCreate) SetInput(i CreateEmployeeAuthInput) *EmployeeAuthCr
 
 // UpdateEmployeeAuthInput represents a mutation input for updating employeeauths.
 type UpdateEmployeeAuthInput struct {
-	UpdatedAt *time.Time
+	Name          *string
+	Email         *string
+	Password      *string
+	UpdatedAt     *time.Time
+	ClearEmployee bool
+	EmployeeID    *uuid.UUID
 }
 
 // Mutate applies the UpdateEmployeeAuthInput on the EmployeeAuthMutation builder.
 func (i *UpdateEmployeeAuthInput) Mutate(m *EmployeeAuthMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.Email; v != nil {
+		m.SetEmail(*v)
+	}
+	if v := i.Password; v != nil {
+		m.SetPassword(*v)
+	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
+	}
+	if i.ClearEmployee {
+		m.ClearEmployee()
+	}
+	if v := i.EmployeeID; v != nil {
+		m.SetEmployeeID(*v)
 	}
 }
 

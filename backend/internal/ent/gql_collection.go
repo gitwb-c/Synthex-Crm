@@ -1245,6 +1245,22 @@ func (_q *EmployeeAuthQuery) collectField(ctx context.Context, oneNode bool, opC
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
+
+		case "employee":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EmployeeClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, employeeImplementors)...); err != nil {
+				return err
+			}
+			_q.withEmployee = query
+		case "name":
+			if _, ok := fieldSeen[employeeauth.FieldName]; !ok {
+				selectedFields = append(selectedFields, employeeauth.FieldName)
+				fieldSeen[employeeauth.FieldName] = struct{}{}
+			}
 		case "createdat":
 			if _, ok := fieldSeen[employeeauth.FieldCreatedAt]; !ok {
 				selectedFields = append(selectedFields, employeeauth.FieldCreatedAt)

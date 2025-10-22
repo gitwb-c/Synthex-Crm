@@ -432,6 +432,41 @@ func (r *mutationResolver) UpdateDealCrmFieldWhere(ctx context.Context, where en
 	panic(fmt.Errorf("not implemented: UpdateDealCrmFieldWhere - updateDealCrmFieldWhere"))
 }
 
+// CreateCompany is the resolver for the createCompany field.
+func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error) {
+	service := wire.InitializeCompanyService(r.Client)
+	company, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return company, nil
+}
+
+// UpdateCompanyID is the resolver for the updateCompanyID field.
+func (r *mutationResolver) UpdateCompanyID(ctx context.Context, id string, input ent.UpdateCompanyInput) (*ent.Company, error) {
+	service := wire.InitializeCompanyService(r.Client)
+	company, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return company, nil
+}
+
+// DeleteCompanyID is the resolver for the deleteCompanyID field.
+func (r *mutationResolver) DeleteCompanyID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeCompanyService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// UpdateCompanyWhere is the resolver for the updateCompanyWhere field.
+func (r *mutationResolver) UpdateCompanyWhere(ctx context.Context, where ent.CompanyWhereInput, input ent.UpdateCompanyInput) ([]*ent.Company, error) {
+	panic(fmt.Errorf("not implemented: UpdateCompanyWhere - updateCompanyWhere"))
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 

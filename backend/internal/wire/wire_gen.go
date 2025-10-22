@@ -7,9 +7,9 @@
 package wire
 
 import (
+	"github.com/gitwb-c/crm.saas/backend/internal/domain/services"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
-	"github.com/gitwb-c/crm.saas/backend/internal/services"
 )
 
 // Injectors from wire.go:
@@ -86,6 +86,12 @@ func InitializeDealCrmFieldService(client *ent.Client) *services.DealCrmFieldSer
 	return dealCrmFieldService
 }
 
+func InitializeCompanyService(client *ent.Client) *services.CompanyService {
+	companyRepository := InitializeCompanyRepository(client)
+	companyService := services.NewCompanyService(companyRepository)
+	return companyService
+}
+
 func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
 	chatRepository := repositories.NewChatRepository(client)
 	return chatRepository
@@ -144,4 +150,9 @@ func InitializeCrmFieldRepository(client *ent.Client) *repositories.CrmFieldRepo
 func InitializeDealCrmFieldRepository(client *ent.Client) *repositories.DealCrmFieldRepository {
 	dealCrmFieldRepository := repositories.NewDealCrmFieldRepository(client)
 	return dealCrmFieldRepository
+}
+
+func InitializeCompanyRepository(client *ent.Client) *repositories.CompanyRepository {
+	companyRepository := repositories.NewCompanyRepository(client)
+	return companyRepository
 }

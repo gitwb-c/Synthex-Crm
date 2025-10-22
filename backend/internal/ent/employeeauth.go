@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
 	"github.com/google/uuid"
 )
@@ -27,8 +28,34 @@ type EmployeeAuth struct {
 	// CreatedAt holds the value of the "createdAt" field.
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
-	UpdatedAt    time.Time `json:"updatedAt,omitempty"`
-	selectValues sql.SelectValues
+	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the EmployeeAuthQuery when eager-loading is set.
+	Edges                  EmployeeAuthEdges `json:"edges"`
+	employee_employee_auth *uuid.UUID
+	selectValues           sql.SelectValues
+}
+
+// EmployeeAuthEdges holds the relations/edges for other nodes in the graph.
+type EmployeeAuthEdges struct {
+	// Employee holds the value of the employee edge.
+	Employee *Employee `json:"employee,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+}
+
+// EmployeeOrErr returns the Employee value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EmployeeAuthEdges) EmployeeOrErr() (*Employee, error) {
+	if e.Employee != nil {
+		return e.Employee, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: employee.Label}
+	}
+	return nil, &NotLoadedError{edge: "employee"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -42,6 +69,8 @@ func (*EmployeeAuth) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case employeeauth.FieldID:
 			values[i] = new(uuid.UUID)
+		case employeeauth.ForeignKeys[0]: // employee_employee_auth
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -93,6 +122,13 @@ func (_m *EmployeeAuth) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case employeeauth.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field employee_employee_auth", values[i])
+			} else if value.Valid {
+				_m.employee_employee_auth = new(uuid.UUID)
+				*_m.employee_employee_auth = *value.S.(*uuid.UUID)
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -104,6 +140,11 @@ func (_m *EmployeeAuth) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *EmployeeAuth) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryEmployee queries the "employee" edge of the EmployeeAuth entity.
+func (_m *EmployeeAuth) QueryEmployee() *EmployeeQuery {
+	return NewEmployeeAuthClient(_m.config).QueryEmployee(_m)
 }
 
 // Update returns a builder for updating this EmployeeAuth.

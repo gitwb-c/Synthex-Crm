@@ -236,6 +236,14 @@ func (_m *Employee) Messages(ctx context.Context) (result []*Message, err error)
 	return result, err
 }
 
+func (_m *EmployeeAuth) Employee(ctx context.Context) (*Employee, error) {
+	result, err := _m.Edges.EmployeeOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryEmployee().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *File) Message(ctx context.Context) (*Message, error) {
 	result, err := _m.Edges.MessageOrErr()
 	if IsNotLoaded(err) {

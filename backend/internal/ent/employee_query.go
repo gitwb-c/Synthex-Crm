@@ -92,7 +92,7 @@ func (_q *EmployeeQuery) QueryEmployeeAuth() *EmployeeAuthQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(employee.Table, employee.FieldID, selector),
 			sqlgraph.To(employeeauth.Table, employeeauth.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, employee.EmployeeAuthTable, employee.EmployeeAuthColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, employee.EmployeeAuthTable, employee.EmployeeAuthColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -568,7 +568,7 @@ func (_q *EmployeeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Emp
 			_q.withMessages != nil,
 		}
 	)
-	if _q.withEmployeeAuth != nil || _q.withCompany != nil || _q.withDepartment != nil {
+	if _q.withCompany != nil || _q.withDepartment != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -664,34 +664,30 @@ func (_q *EmployeeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Emp
 }
 
 func (_q *EmployeeQuery) loadEmployeeAuth(ctx context.Context, query *EmployeeAuthQuery, nodes []*Employee, init func(*Employee), assign func(*Employee, *EmployeeAuth)) error {
-	ids := make([]uuid.UUID, 0, len(nodes))
-	nodeids := make(map[uuid.UUID][]*Employee)
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Employee)
 	for i := range nodes {
-		if nodes[i].employee_employee_auth == nil {
-			continue
-		}
-		fk := *nodes[i].employee_employee_auth
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(employeeauth.IDIn(ids...))
+	query.withFKs = true
+	query.Where(predicate.EmployeeAuth(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(employee.EmployeeAuthColumn), fks...))
+	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
+		fk := n.employee_employee_auth
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "employee_employee_auth" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "employee_employee_auth" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "employee_employee_auth" returned %v for node %v`, *fk, n.ID)
 		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
+		assign(node, n)
 	}
 	return nil
 }

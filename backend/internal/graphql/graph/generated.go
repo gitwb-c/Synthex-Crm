@@ -20,6 +20,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	graphql1 "github.com/gitwb-c/crm.saas/backend/internal/graphql"
 	"github.com/google/uuid"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -74,6 +75,7 @@ type ResolverRoot interface {
 	CreateDealInput() CreateDealInputResolver
 	CreateDepartmentInput() CreateDepartmentInputResolver
 	CreateDropdownListInput() CreateDropdownListInputResolver
+	CreateEmployeeAuthInput() CreateEmployeeAuthInputResolver
 	CreateEmployeeInput() CreateEmployeeInputResolver
 	CreateFileInput() CreateFileInputResolver
 	CreateMessageInput() CreateMessageInputResolver
@@ -102,6 +104,7 @@ type ResolverRoot interface {
 	UpdateDealInput() UpdateDealInputResolver
 	UpdateDepartmentInput() UpdateDepartmentInputResolver
 	UpdateDropdownListInput() UpdateDropdownListInputResolver
+	UpdateEmployeeAuthInput() UpdateEmployeeAuthInputResolver
 	UpdateEmployeeInput() UpdateEmployeeInputResolver
 	UpdateFileInput() UpdateFileInputResolver
 	UpdateMessageInput() UpdateMessageInputResolver
@@ -210,7 +213,9 @@ type ComplexityRoot struct {
 
 	EmployeeAuth struct {
 		CreatedAt func(childComplexity int) int
+		Employee  func(childComplexity int) int
 		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
@@ -238,6 +243,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateChat              func(childComplexity int, input ent.CreateChatInput) int
+		CreateCompany           func(childComplexity int, input ent.CreateCompanyInput) int
 		CreateCostumer          func(childComplexity int, input ent.CreateCostumerInput) int
 		CreateCrmField          func(childComplexity int, input ent.CreateCrmFieldInput) int
 		CreateDeal              func(childComplexity int, input ent.CreateDealInput) int
@@ -250,6 +256,7 @@ type ComplexityRoot struct {
 		CreateQueue             func(childComplexity int, input ent.CreateQueueInput) int
 		CreateStage             func(childComplexity int, input ent.CreateStageInput) int
 		DeleteChatID            func(childComplexity int, id string) int
+		DeleteCompanyID         func(childComplexity int, id string) int
 		DeleteCostumerID        func(childComplexity int, id string) int
 		DeleteCrmFieldID        func(childComplexity int, id string) int
 		DeleteDealCrmFieldID    func(childComplexity int, id string) int
@@ -263,6 +270,8 @@ type ComplexityRoot struct {
 		DeleteStageID           func(childComplexity int, id string) int
 		UpdateChatID            func(childComplexity int, id string, input ent.UpdateChatInput) int
 		UpdateChatWhere         func(childComplexity int, where ent.ChatWhereInput, input ent.UpdateChatInput) int
+		UpdateCompanyID         func(childComplexity int, id string, input ent.UpdateCompanyInput) int
+		UpdateCompanyWhere      func(childComplexity int, where ent.CompanyWhereInput, input ent.UpdateCompanyInput) int
 		UpdateCostumerID        func(childComplexity int, id string, input ent.UpdateCostumerInput) int
 		UpdateCostumerWhere     func(childComplexity int, where ent.CostumerWhereInput, input ent.UpdateCostumerInput) int
 		UpdateCrmFieldID        func(childComplexity int, id string, input ent.UpdateCrmFieldInput) int
@@ -285,6 +294,11 @@ type ComplexityRoot struct {
 		UpdateQueueWhere        func(childComplexity int, where ent.QueueWhereInput, input ent.UpdateQueueInput) int
 		UpdateStageID           func(childComplexity int, id string, input ent.UpdateStageInput) int
 		UpdateStageWhere        func(childComplexity int, where ent.StageWhereInput, input ent.UpdateStageInput) int
+	}
+
+	NewLogin struct {
+		Jwt  func(childComplexity int) int
+		Time func(childComplexity int) int
 	}
 
 	PageInfo struct {
@@ -314,6 +328,7 @@ type ComplexityRoot struct {
 		EmployeeAuths func(childComplexity int) int
 		Employees     func(childComplexity int) int
 		Files         func(childComplexity int) int
+		Login         func(childComplexity int, input graphql1.LoginInput) int
 		Messages      func(childComplexity int) int
 		Node          func(childComplexity int, id string) int
 		Nodes         func(childComplexity int, ids []string) int
@@ -438,6 +453,10 @@ type MutationResolver interface {
 	UpdateDealCrmFieldID(ctx context.Context, id string, input ent.UpdateDealCrmFieldInput) (*ent.DealCrmField, error)
 	DeleteDealCrmFieldID(ctx context.Context, id string) (bool, error)
 	UpdateDealCrmFieldWhere(ctx context.Context, where ent.DealCrmFieldWhereInput, input ent.UpdateDealCrmFieldInput) ([]*ent.DealCrmField, error)
+	CreateCompany(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error)
+	UpdateCompanyID(ctx context.Context, id string, input ent.UpdateCompanyInput) (*ent.Company, error)
+	DeleteCompanyID(ctx context.Context, id string) (bool, error)
+	UpdateCompanyWhere(ctx context.Context, where ent.CompanyWhereInput, input ent.UpdateCompanyInput) ([]*ent.Company, error)
 }
 type PipelineResolver interface {
 	ID(ctx context.Context, obj *ent.Pipeline) (string, error)
@@ -461,6 +480,7 @@ type QueryResolver interface {
 	Queues(ctx context.Context) ([]*ent.Queue, error)
 	Stages(ctx context.Context) ([]*ent.Stage, error)
 	Texts(ctx context.Context) ([]*ent.Text, error)
+	Login(ctx context.Context, input graphql1.LoginInput) (*graphql1.NewLogin, error)
 }
 type QueueResolver interface {
 	ID(ctx context.Context, obj *ent.Queue) (string, error)
@@ -533,6 +553,9 @@ type CreateDepartmentInputResolver interface {
 }
 type CreateDropdownListInputResolver interface {
 	CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error
+}
+type CreateEmployeeAuthInputResolver interface {
+	EmployeeID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data *string) error
 }
 type CreateEmployeeInputResolver interface {
 	EmployeeauthID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error
@@ -744,6 +767,9 @@ type UpdateDepartmentInputResolver interface {
 type UpdateDropdownListInputResolver interface {
 	AddCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error
 	RemoveCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error
+}
+type UpdateEmployeeAuthInputResolver interface {
+	EmployeeID(ctx context.Context, obj *ent.UpdateEmployeeAuthInput, data *string) error
 }
 type UpdateEmployeeInputResolver interface {
 	EmployeeauthID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error
@@ -1226,12 +1252,24 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.EmployeeAuth.CreatedAt(childComplexity), true
+	case "EmployeeAuth.employee":
+		if e.complexity.EmployeeAuth.Employee == nil {
+			break
+		}
+
+		return e.complexity.EmployeeAuth.Employee(childComplexity), true
 	case "EmployeeAuth.id":
 		if e.complexity.EmployeeAuth.ID == nil {
 			break
 		}
 
 		return e.complexity.EmployeeAuth.ID(childComplexity), true
+	case "EmployeeAuth.name":
+		if e.complexity.EmployeeAuth.Name == nil {
+			break
+		}
+
+		return e.complexity.EmployeeAuth.Name(childComplexity), true
 	case "EmployeeAuth.updatedat":
 		if e.complexity.EmployeeAuth.UpdatedAt == nil {
 			break
@@ -1348,6 +1386,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateChat(childComplexity, args["input"].(ent.CreateChatInput)), true
+	case "Mutation.createCompany":
+		if e.complexity.Mutation.CreateCompany == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createCompany_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateCompany(childComplexity, args["input"].(ent.CreateCompanyInput)), true
 	case "Mutation.createCostumer":
 		if e.complexity.Mutation.CreateCostumer == nil {
 			break
@@ -1480,6 +1529,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.DeleteChatID(childComplexity, args["id"].(string)), true
+	case "Mutation.deleteCompanyID":
+		if e.complexity.Mutation.DeleteCompanyID == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCompanyID_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCompanyID(childComplexity, args["id"].(string)), true
 	case "Mutation.deleteCostumerID":
 		if e.complexity.Mutation.DeleteCostumerID == nil {
 			break
@@ -1623,6 +1683,28 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.UpdateChatWhere(childComplexity, args["where"].(ent.ChatWhereInput), args["input"].(ent.UpdateChatInput)), true
+	case "Mutation.updateCompanyID":
+		if e.complexity.Mutation.UpdateCompanyID == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCompanyID_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCompanyID(childComplexity, args["id"].(string), args["input"].(ent.UpdateCompanyInput)), true
+	case "Mutation.updateCompanyWhere":
+		if e.complexity.Mutation.UpdateCompanyWhere == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCompanyWhere_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCompanyWhere(childComplexity, args["where"].(ent.CompanyWhereInput), args["input"].(ent.UpdateCompanyInput)), true
 	case "Mutation.updateCostumerID":
 		if e.complexity.Mutation.UpdateCostumerID == nil {
 			break
@@ -1866,6 +1948,19 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.UpdateStageWhere(childComplexity, args["where"].(ent.StageWhereInput), args["input"].(ent.UpdateStageInput)), true
 
+	case "NewLogin.jwt":
+		if e.complexity.NewLogin.Jwt == nil {
+			break
+		}
+
+		return e.complexity.NewLogin.Jwt(childComplexity), true
+	case "NewLogin.time":
+		if e.complexity.NewLogin.Time == nil {
+			break
+		}
+
+		return e.complexity.NewLogin.Time(childComplexity), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -1988,6 +2083,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Files(childComplexity), true
+	case "Query.login":
+		if e.complexity.Query.Login == nil {
+			break
+		}
+
+		args, err := ec.field_Query_login_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Login(childComplexity, args["input"].(graphql1.LoginInput)), true
 	case "Query.messages":
 		if e.complexity.Query.Messages == nil {
 			break
@@ -2210,6 +2316,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputEmployeeWhereInput,
 		ec.unmarshalInputFileOrder,
 		ec.unmarshalInputFileWhereInput,
+		ec.unmarshalInputLoginInput,
 		ec.unmarshalInputMessageOrder,
 		ec.unmarshalInputMessageWhereInput,
 		ec.unmarshalInputPipelineOrder,
@@ -2332,7 +2439,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "mutation.graphql" "ent.graphql"
+//go:embed "mutation.graphql" "auth.graphql" "ent.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -2345,6 +2452,7 @@ func sourceData(filename string) string {
 
 var sources = []*ast.Source{
 	{Name: "mutation.graphql", Input: sourceData("mutation.graphql"), BuiltIn: false},
+	{Name: "auth.graphql", Input: sourceData("auth.graphql"), BuiltIn: false},
 	{Name: "ent.graphql", Input: sourceData("ent.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -2357,6 +2465,17 @@ func (ec *executionContext) field_Mutation_createChat_args(ctx context.Context, 
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNCreateChatInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCreateChatInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createCompany_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNCreateCompanyInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCreateCompanyInput)
 	if err != nil {
 		return nil, err
 	}
@@ -2486,6 +2605,17 @@ func (ec *executionContext) field_Mutation_createStage_args(ctx context.Context,
 }
 
 func (ec *executionContext) field_Mutation_deleteChatID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteCompanyID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
@@ -2642,6 +2772,38 @@ func (ec *executionContext) field_Mutation_updateChatWhere_args(ctx context.Cont
 	}
 	args["where"] = arg0
 	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateChatInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐUpdateChatInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCompanyID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateCompanyInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐUpdateCompanyInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCompanyWhere_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "where", ec.unmarshalNCompanyWhereInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompanyWhereInput)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateCompanyInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐUpdateCompanyInput)
 	if err != nil {
 		return nil, err
 	}
@@ -3009,6 +3171,17 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_login_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNLoginInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐLoginInput)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -5156,10 +5329,14 @@ func (ec *executionContext) fieldContext_Employee_employeeauth(_ context.Context
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_EmployeeAuth_id(ctx, field)
+			case "name":
+				return ec.fieldContext_EmployeeAuth_name(ctx, field)
 			case "createdat":
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EmployeeAuth", field.Name)
 		},
@@ -5427,6 +5604,35 @@ func (ec *executionContext) fieldContext_EmployeeAuth_id(_ context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _EmployeeAuth_name(ctx context.Context, field graphql.CollectedField, obj *ent.EmployeeAuth) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_EmployeeAuth_name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_EmployeeAuth_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EmployeeAuth",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _EmployeeAuth_createdat(ctx context.Context, field graphql.CollectedField, obj *ent.EmployeeAuth) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -5480,6 +5686,59 @@ func (ec *executionContext) fieldContext_EmployeeAuth_updatedat(_ context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EmployeeAuth_employee(ctx context.Context, field graphql.CollectedField, obj *ent.EmployeeAuth) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_EmployeeAuth_employee,
+		func(ctx context.Context) (any, error) {
+			return obj.Employee(ctx)
+		},
+		nil,
+		ec.marshalOEmployee2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐEmployee,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_EmployeeAuth_employee(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EmployeeAuth",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Employee_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Employee_name(ctx, field)
+			case "active":
+				return ec.fieldContext_Employee_active(ctx, field)
+			case "createdat":
+				return ec.fieldContext_Employee_createdat(ctx, field)
+			case "updatedat":
+				return ec.fieldContext_Employee_updatedat(ctx, field)
+			case "employeeauth":
+				return ec.fieldContext_Employee_employeeauth(ctx, field)
+			case "company":
+				return ec.fieldContext_Employee_company(ctx, field)
+			case "department":
+				return ec.fieldContext_Employee_department(ctx, field)
+			case "chat":
+				return ec.fieldContext_Employee_chat(ctx, field)
+			case "queues":
+				return ec.fieldContext_Employee_queues(ctx, field)
+			case "messages":
+				return ec.fieldContext_Employee_messages(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Employee", field.Name)
 		},
 	}
 	return fc, nil
@@ -7384,10 +7643,14 @@ func (ec *executionContext) fieldContext_Mutation_createEmployeeAuth(ctx context
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_EmployeeAuth_id(ctx, field)
+			case "name":
+				return ec.fieldContext_EmployeeAuth_name(ctx, field)
 			case "createdat":
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EmployeeAuth", field.Name)
 		},
@@ -7433,10 +7696,14 @@ func (ec *executionContext) fieldContext_Mutation_updateEmployeeAuthID(ctx conte
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_EmployeeAuth_id(ctx, field)
+			case "name":
+				return ec.fieldContext_EmployeeAuth_name(ctx, field)
 			case "createdat":
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EmployeeAuth", field.Name)
 		},
@@ -7523,10 +7790,14 @@ func (ec *executionContext) fieldContext_Mutation_updateEmployeeAuthWhere(ctx co
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_EmployeeAuth_id(ctx, field)
+			case "name":
+				return ec.fieldContext_EmployeeAuth_name(ctx, field)
 			case "createdat":
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EmployeeAuth", field.Name)
 		},
@@ -8623,6 +8894,264 @@ func (ec *executionContext) fieldContext_Mutation_updateDealCrmFieldWhere(ctx co
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_createCompany,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().CreateCompany(ctx, fc.Args["input"].(ent.CreateCompanyInput))
+		},
+		nil,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createCompany(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Company_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Company_name(ctx, field)
+			case "createdat":
+				return ec.fieldContext_Company_createdat(ctx, field)
+			case "updatedat":
+				return ec.fieldContext_Company_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_Company_employee(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Company", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createCompany_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateCompanyID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_updateCompanyID,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().UpdateCompanyID(ctx, fc.Args["id"].(string), fc.Args["input"].(ent.UpdateCompanyInput))
+		},
+		nil,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateCompanyID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Company_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Company_name(ctx, field)
+			case "createdat":
+				return ec.fieldContext_Company_createdat(ctx, field)
+			case "updatedat":
+				return ec.fieldContext_Company_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_Company_employee(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Company", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateCompanyID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteCompanyID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_deleteCompanyID,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().DeleteCompanyID(ctx, fc.Args["id"].(string))
+		},
+		nil,
+		ec.marshalNBoolean2bool,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteCompanyID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteCompanyID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateCompanyWhere(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_updateCompanyWhere,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().UpdateCompanyWhere(ctx, fc.Args["where"].(ent.CompanyWhereInput), fc.Args["input"].(ent.UpdateCompanyInput))
+		},
+		nil,
+		ec.marshalNCompany2ᚕᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompanyᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateCompanyWhere(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Company_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Company_name(ctx, field)
+			case "createdat":
+				return ec.fieldContext_Company_createdat(ctx, field)
+			case "updatedat":
+				return ec.fieldContext_Company_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_Company_employee(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Company", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateCompanyWhere_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NewLogin_jwt(ctx context.Context, field graphql.CollectedField, obj *graphql1.NewLogin) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_NewLogin_jwt,
+		func(ctx context.Context) (any, error) {
+			return obj.Jwt, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_NewLogin_jwt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NewLogin",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NewLogin_time(ctx context.Context, field graphql.CollectedField, obj *graphql1.NewLogin) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_NewLogin_time,
+		func(ctx context.Context) (any, error) {
+			return obj.Time, nil
+		},
+		nil,
+		ec.marshalNTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_NewLogin_time(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NewLogin",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[uuid.UUID]) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -9423,10 +9952,14 @@ func (ec *executionContext) fieldContext_Query_employeeAuths(_ context.Context, 
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_EmployeeAuth_id(ctx, field)
+			case "name":
+				return ec.fieldContext_EmployeeAuth_name(ctx, field)
 			case "createdat":
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
+			case "employee":
+				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EmployeeAuth", field.Name)
 		},
@@ -9698,6 +10231,53 @@ func (ec *executionContext) fieldContext_Query_texts(_ context.Context, field gr
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Text", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_login,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Query().Login(ctx, fc.Args["input"].(graphql1.LoginInput))
+		},
+		nil,
+		ec.marshalNNewLogin2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐNewLogin,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_login(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "jwt":
+				return ec.fieldContext_NewLogin_jwt(ctx, field)
+			case "time":
+				return ec.fieldContext_NewLogin_time(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type NewLogin", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_login_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -13836,13 +14416,34 @@ func (ec *executionContext) unmarshalInputCreateEmployeeAuthInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"createdat", "updatedat"}
+	fieldsInOrder := [...]string{"name", "email", "password", "createdat", "updatedat", "employeeID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "email":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Email = data
+		case "password":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Password = data
 		case "createdat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdat"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -13857,6 +14458,15 @@ func (ec *executionContext) unmarshalInputCreateEmployeeAuthInput(ctx context.Co
 				return it, err
 			}
 			it.UpdatedAt = data
+		case "employeeID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeID"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CreateEmployeeAuthInput().EmployeeID(ctx, &it, data); err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -16535,7 +17145,7 @@ func (ec *executionContext) unmarshalInputEmployeeAuthWhereInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasEmployee", "hasEmployeeWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -16635,6 +17245,97 @@ func (ec *executionContext) unmarshalInputEmployeeAuthWhereInput(ctx context.Con
 			if err = ec.resolvers.EmployeeAuthWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "nameNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameNEQ = data
+		case "nameIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameIn = data
+		case "nameNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameNotIn = data
+		case "nameGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameGT = data
+		case "nameGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameGTE = data
+		case "nameLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameLT = data
+		case "nameLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameLTE = data
+		case "nameContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameContains = data
+		case "nameHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameHasPrefix = data
+		case "nameHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameHasSuffix = data
+		case "nameEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameEqualFold = data
+		case "nameContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameContainsFold = data
 		case "createdat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdat"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -16747,6 +17448,20 @@ func (ec *executionContext) unmarshalInputEmployeeAuthWhereInput(ctx context.Con
 				return it, err
 			}
 			it.UpdatedAtLTE = data
+		case "hasEmployee":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasEmployee"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasEmployee = data
+		case "hasEmployeeWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasEmployeeWith"))
+			data, err := ec.unmarshalOEmployeeWhereInput2ᚕᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐEmployeeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasEmployeeWith = data
 		}
 	}
 
@@ -17742,6 +18457,40 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.HasMessageWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputLoginInput(ctx context.Context, obj any) (graphql1.LoginInput, error) {
+	var it graphql1.LoginInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"email", "password"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "email":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Email = data
+		case "password":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Password = data
 		}
 	}
 
@@ -20325,13 +21074,34 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeAuthInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"updatedat"}
+	fieldsInOrder := [...]string{"name", "email", "password", "updatedat", "employeeID", "clearEmployee"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "email":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Email = data
+		case "password":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Password = data
 		case "updatedat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedat"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -20339,6 +21109,22 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeAuthInput(ctx context.Co
 				return it, err
 			}
 			it.UpdatedAt = data
+		case "employeeID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeID"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.UpdateEmployeeAuthInput().EmployeeID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "clearEmployee":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearEmployee"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearEmployee = data
 		}
 	}
 
@@ -22671,6 +23457,11 @@ func (ec *executionContext) _EmployeeAuth(ctx context.Context, sel ast.Selection
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "name":
+			out.Values[i] = ec._EmployeeAuth_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "createdat":
 			out.Values[i] = ec._EmployeeAuth_createdat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -22681,6 +23472,39 @@ func (ec *executionContext) _EmployeeAuth(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "employee":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._EmployeeAuth_employee(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23409,6 +24233,78 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "createCompany":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createCompany(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateCompanyID":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCompanyID(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteCompanyID":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteCompanyID(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateCompanyWhere":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCompanyWhere(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var newLoginImplementors = []string{"NewLogin"}
+
+func (ec *executionContext) _NewLogin(ctx context.Context, sel ast.SelectionSet, obj *graphql1.NewLogin) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, newLoginImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NewLogin")
+		case "jwt":
+			out.Values[i] = ec._NewLogin_jwt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "time":
+			out.Values[i] = ec._NewLogin_time(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23998,6 +24894,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_texts(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "login":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_login(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -24976,6 +25894,10 @@ func (ec *executionContext) unmarshalNChatWhereInput2ᚖgithubᚗcomᚋgitwbᚑc
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNCompany2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany(ctx context.Context, sel ast.SelectionSet, v ent.Company) graphql.Marshaler {
+	return ec._Company(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNCompany2ᚕᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Company) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -25044,6 +25966,11 @@ func (ec *executionContext) marshalNCompanyOrderField2ᚖgithubᚗcomᚋgitwbᚑ
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalNCompanyWhereInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompanyWhereInput(ctx context.Context, v any) (ent.CompanyWhereInput, error) {
+	res, err := ec.unmarshalInputCompanyWhereInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNCompanyWhereInput2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompanyWhereInput(ctx context.Context, v any) (*ent.CompanyWhereInput, error) {
@@ -25137,6 +26064,11 @@ func (ec *executionContext) unmarshalNCostumerWhereInput2ᚖgithubᚗcomᚋgitwb
 
 func (ec *executionContext) unmarshalNCreateChatInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCreateChatInput(ctx context.Context, v any) (ent.CreateChatInput, error) {
 	res, err := ec.unmarshalInputCreateChatInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateCompanyInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCreateCompanyInput(ctx context.Context, v any) (ent.CreateCompanyInput, error) {
+	res, err := ec.unmarshalInputCreateCompanyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -25905,6 +26837,11 @@ func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast
 	return ret
 }
 
+func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐLoginInput(ctx context.Context, v any) (graphql1.LoginInput, error) {
+	res, err := ec.unmarshalInputLoginInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNMessage2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐMessage(ctx context.Context, sel ast.SelectionSet, v ent.Message) graphql.Marshaler {
 	return ec._Message(ctx, sel, &v)
 }
@@ -26007,6 +26944,20 @@ func (ec *executionContext) unmarshalNMessageWhereInput2githubᚗcomᚋgitwbᚑc
 func (ec *executionContext) unmarshalNMessageWhereInput2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐMessageWhereInput(ctx context.Context, v any) (*ent.MessageWhereInput, error) {
 	res, err := ec.unmarshalInputMessageWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNewLogin2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐNewLogin(ctx context.Context, sel ast.SelectionSet, v graphql1.NewLogin) graphql.Marshaler {
+	return ec._NewLogin(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNNewLogin2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐNewLogin(ctx context.Context, sel ast.SelectionSet, v *graphql1.NewLogin) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._NewLogin(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNNode2ᚕgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐNoder(ctx context.Context, sel ast.SelectionSet, v []ent.Noder) graphql.Marshaler {
@@ -26428,6 +27379,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 
 func (ec *executionContext) unmarshalNUpdateChatInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐUpdateChatInput(ctx context.Context, v any) (ent.UpdateChatInput, error) {
 	res, err := ec.unmarshalInputUpdateChatInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateCompanyInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐUpdateCompanyInput(ctx context.Context, v any) (ent.UpdateCompanyInput, error) {
+	res, err := ec.unmarshalInputUpdateCompanyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -27328,6 +28284,13 @@ func (ec *executionContext) marshalOEmployee2ᚕᚖgithubᚗcomᚋgitwbᚑcᚋcr
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOEmployee2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐEmployee(ctx context.Context, sel ast.SelectionSet, v *ent.Employee) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Employee(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOEmployeeAuthWhereInput2ᚕᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐEmployeeAuthWhereInputᚄ(ctx context.Context, v any) ([]*ent.EmployeeAuthWhereInput, error) {

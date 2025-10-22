@@ -84,4 +84,12 @@ extend type Mutation {
     where: DealCrmFieldWhereInput!
     input: UpdateDealCrmFieldInput!
   ): [DealCrmField!]!
+
+  createCompany(input: CreateCompanyInput!): Company!
+  updateCompanyID(id: ID!, input: UpdateCompanyInput!): Company!
+  deleteCompanyID(id: ID!): Boolean!
+  updateCompanyWhere(
+    where: CompanyWhereInput!
+    input: UpdateCompanyInput!
+  ): [Company!]!
 }

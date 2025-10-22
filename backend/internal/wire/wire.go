@@ -4,9 +4,9 @@
 package wire
 
 import (
+	"github.com/gitwb-c/crm.saas/backend/internal/domain/services"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
-	"github.com/gitwb-c/crm.saas/backend/internal/services"
 	"github.com/google/wire"
 )
 
@@ -94,6 +94,13 @@ func InitializeDealCrmFieldService(client *ent.Client) *services.DealCrmFieldSer
 	))
 }
 
+func InitializeCompanyService(client *ent.Client) *services.CompanyService {
+	panic(wire.Build(
+		services.NewCompanyService,
+		InitializeCompanyRepository,
+	))
+}
+
 func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
 	panic(wire.Build(repositories.NewChatRepository))
 }
@@ -139,4 +146,7 @@ func InitializeCrmFieldRepository(client *ent.Client) *repositories.CrmFieldRepo
 }
 func InitializeDealCrmFieldRepository(client *ent.Client) *repositories.DealCrmFieldRepository {
 	panic(wire.Build(repositories.NewDealCrmFieldRepository))
+}
+func InitializeCompanyRepository(client *ent.Client) *repositories.CompanyRepository {
+	panic(wire.Build(repositories.NewCompanyRepository))
 }

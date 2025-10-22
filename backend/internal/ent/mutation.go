@@ -6151,18 +6151,20 @@ func (m *EmployeeMutation) ResetEdge(name string) error {
 // EmployeeAuthMutation represents an operation that mutates the EmployeeAuth nodes in the graph.
 type EmployeeAuthMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *uuid.UUID
-	name          *string
-	email         *string
-	password      *string
-	createdAt     *time.Time
-	updatedAt     *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*EmployeeAuth, error)
-	predicates    []predicate.EmployeeAuth
+	op              Op
+	typ             string
+	id              *uuid.UUID
+	name            *string
+	email           *string
+	password        *string
+	createdAt       *time.Time
+	updatedAt       *time.Time
+	clearedFields   map[string]struct{}
+	employee        *uuid.UUID
+	clearedemployee bool
+	done            bool
+	oldValue        func(context.Context) (*EmployeeAuth, error)
+	predicates      []predicate.EmployeeAuth
 }
 
 var _ ent.Mutation = (*EmployeeAuthMutation)(nil)
@@ -6449,6 +6451,45 @@ func (m *EmployeeAuthMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetEmployeeID sets the "employee" edge to the Employee entity by id.
+func (m *EmployeeAuthMutation) SetEmployeeID(id uuid.UUID) {
+	m.employee = &id
+}
+
+// ClearEmployee clears the "employee" edge to the Employee entity.
+func (m *EmployeeAuthMutation) ClearEmployee() {
+	m.clearedemployee = true
+}
+
+// EmployeeCleared reports if the "employee" edge to the Employee entity was cleared.
+func (m *EmployeeAuthMutation) EmployeeCleared() bool {
+	return m.clearedemployee
+}
+
+// EmployeeID returns the "employee" edge ID in the mutation.
+func (m *EmployeeAuthMutation) EmployeeID() (id uuid.UUID, exists bool) {
+	if m.employee != nil {
+		return *m.employee, true
+	}
+	return
+}
+
+// EmployeeIDs returns the "employee" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// EmployeeID instead. It exists only for internal usage by the builders.
+func (m *EmployeeAuthMutation) EmployeeIDs() (ids []uuid.UUID) {
+	if id := m.employee; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetEmployee resets all changes to the "employee" edge.
+func (m *EmployeeAuthMutation) ResetEmployee() {
+	m.employee = nil
+	m.clearedemployee = false
+}
+
 // Where appends a list predicates to the EmployeeAuthMutation builder.
 func (m *EmployeeAuthMutation) Where(ps ...predicate.EmployeeAuth) {
 	m.predicates = append(m.predicates, ps...)
@@ -6650,19 +6691,28 @@ func (m *EmployeeAuthMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *EmployeeAuthMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.employee != nil {
+		edges = append(edges, employeeauth.EdgeEmployee)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *EmployeeAuthMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case employeeauth.EdgeEmployee:
+		if id := m.employee; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *EmployeeAuthMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -6674,25 +6724,42 @@ func (m *EmployeeAuthMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *EmployeeAuthMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedemployee {
+		edges = append(edges, employeeauth.EdgeEmployee)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *EmployeeAuthMutation) EdgeCleared(name string) bool {
+	switch name {
+	case employeeauth.EdgeEmployee:
+		return m.clearedemployee
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *EmployeeAuthMutation) ClearEdge(name string) error {
+	switch name {
+	case employeeauth.EdgeEmployee:
+		m.ClearEmployee()
+		return nil
+	}
 	return fmt.Errorf("unknown EmployeeAuth unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *EmployeeAuthMutation) ResetEdge(name string) error {
+	switch name {
+	case employeeauth.EdgeEmployee:
+		m.ResetEmployee()
+		return nil
+	}
 	return fmt.Errorf("unknown EmployeeAuth edge %s", name)
 }
 

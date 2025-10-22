@@ -236,7 +236,7 @@ func HasEmployeeAuth() predicate.Employee {
 	return predicate.Employee(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, EmployeeAuthTable, EmployeeAuthColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, EmployeeAuthTable, EmployeeAuthColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

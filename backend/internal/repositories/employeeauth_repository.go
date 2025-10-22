@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
 	"github.com/google/uuid"
 )
 
@@ -19,6 +20,10 @@ func NewEmployeeAuthRepository(client *ent.Client) *EmployeeAuthRepository {
 
 func (s *EmployeeAuthRepository) Read(ctx context.Context) ([]*ent.EmployeeAuth, error) {
 	return s.client.EmployeeAuth.Query().All(ctx)
+}
+
+func (s *EmployeeAuthRepository) ReadEmail(ctx context.Context, email string) (*ent.EmployeeAuth, error) {
+	return s.client.EmployeeAuth.Query().Where(employeeauth.Email(email)).Only(ctx)
 }
 
 func (s *EmployeeAuthRepository) Create(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error) {

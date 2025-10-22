@@ -1,0 +1,13 @@
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type NewLogin {
+  jwt: String!
+  time: Time!
+}
+
+extend type Query {
+  login(input: LoginInput!): NewLogin!
+}

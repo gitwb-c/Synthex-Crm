@@ -112,7 +112,12 @@ func (r *queryResolver) Chats(ctx context.Context) ([]*ent.Chat, error) {
 
 // Companies is the resolver for the companies field.
 func (r *queryResolver) Companies(ctx context.Context) ([]*ent.Company, error) {
-	panic(fmt.Errorf("not implemented: Companies - companies"))
+	service := wire.InitializeCompanyService(r.Client)
+	companies, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return companies, nil
 }
 
 // Costumers is the resolver for the costumers field.
@@ -628,6 +633,11 @@ func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *
 	obj.CrmFieldIDs = uuids
 
 	return nil
+}
+
+// EmployeeID is the resolver for the employeeID field.
+func (r *createEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data *string) error {
+	panic(fmt.Errorf("not implemented: EmployeeID - employeeID"))
 }
 
 // EmployeeauthID is the resolver for the employeeauthID field.
@@ -1557,6 +1567,11 @@ func (r *updateDropdownListInputResolver) RemoveCrmFieldIDs(ctx context.Context,
 	panic(fmt.Errorf("not implemented: RemoveCrmFieldIDs - removeCrmFieldIDs"))
 }
 
+// EmployeeID is the resolver for the employeeID field.
+func (r *updateEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *ent.UpdateEmployeeAuthInput, data *string) error {
+	panic(fmt.Errorf("not implemented: EmployeeID - employeeID"))
+}
+
 // EmployeeauthID is the resolver for the employeeauthID field.
 func (r *updateEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error {
 	panic(fmt.Errorf("not implemented: EmployeeauthID - employeeauthID"))
@@ -1797,6 +1812,11 @@ func (r *Resolver) CreateDropdownListInput() CreateDropdownListInputResolver {
 	return &createDropdownListInputResolver{r}
 }
 
+// CreateEmployeeAuthInput returns CreateEmployeeAuthInputResolver implementation.
+func (r *Resolver) CreateEmployeeAuthInput() CreateEmployeeAuthInputResolver {
+	return &createEmployeeAuthInputResolver{r}
+}
+
 // CreateEmployeeInput returns CreateEmployeeInputResolver implementation.
 func (r *Resolver) CreateEmployeeInput() CreateEmployeeInputResolver {
 	return &createEmployeeInputResolver{r}
@@ -1915,6 +1935,11 @@ func (r *Resolver) UpdateDropdownListInput() UpdateDropdownListInputResolver {
 	return &updateDropdownListInputResolver{r}
 }
 
+// UpdateEmployeeAuthInput returns UpdateEmployeeAuthInputResolver implementation.
+func (r *Resolver) UpdateEmployeeAuthInput() UpdateEmployeeAuthInputResolver {
+	return &updateEmployeeAuthInputResolver{r}
+}
+
 // UpdateEmployeeInput returns UpdateEmployeeInputResolver implementation.
 func (r *Resolver) UpdateEmployeeInput() UpdateEmployeeInputResolver {
 	return &updateEmployeeInputResolver{r}
@@ -1970,6 +1995,7 @@ type createDealCrmFieldInputResolver struct{ *Resolver }
 type createDealInputResolver struct{ *Resolver }
 type createDepartmentInputResolver struct{ *Resolver }
 type createDropdownListInputResolver struct{ *Resolver }
+type createEmployeeAuthInputResolver struct{ *Resolver }
 type createEmployeeInputResolver struct{ *Resolver }
 type createFileInputResolver struct{ *Resolver }
 type createMessageInputResolver struct{ *Resolver }
@@ -1998,6 +2024,7 @@ type updateDealCrmFieldInputResolver struct{ *Resolver }
 type updateDealInputResolver struct{ *Resolver }
 type updateDepartmentInputResolver struct{ *Resolver }
 type updateDropdownListInputResolver struct{ *Resolver }
+type updateEmployeeAuthInputResolver struct{ *Resolver }
 type updateEmployeeInputResolver struct{ *Resolver }
 type updateFileInputResolver struct{ *Resolver }
 type updateMessageInputResolver struct{ *Resolver }

@@ -31,11 +31,10 @@ type Employee struct {
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EmployeeQuery when eager-loading is set.
-	Edges                  EmployeeEdges `json:"edges"`
-	employee_employee_auth *uuid.UUID
-	employee_company       *uuid.UUID
-	employee_department    *uuid.UUID
-	selectValues           sql.SelectValues
+	Edges               EmployeeEdges `json:"edges"`
+	employee_company    *uuid.UUID
+	employee_department *uuid.UUID
+	selectValues        sql.SelectValues
 }
 
 // EmployeeEdges holds the relations/edges for other nodes in the graph.
@@ -136,11 +135,9 @@ func (*Employee) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case employee.FieldID:
 			values[i] = new(uuid.UUID)
-		case employee.ForeignKeys[0]: // employee_employee_auth
+		case employee.ForeignKeys[0]: // employee_company
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case employee.ForeignKeys[1]: // employee_company
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case employee.ForeignKeys[2]: // employee_department
+		case employee.ForeignKeys[1]: // employee_department
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
@@ -189,19 +186,12 @@ func (_m *Employee) assignValues(columns []string, values []any) error {
 			}
 		case employee.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field employee_employee_auth", values[i])
-			} else if value.Valid {
-				_m.employee_employee_auth = new(uuid.UUID)
-				*_m.employee_employee_auth = *value.S.(*uuid.UUID)
-			}
-		case employee.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field employee_company", values[i])
 			} else if value.Valid {
 				_m.employee_company = new(uuid.UUID)
 				*_m.employee_company = *value.S.(*uuid.UUID)
 			}
-		case employee.ForeignKeys[2]:
+		case employee.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field employee_department", values[i])
 			} else if value.Valid {

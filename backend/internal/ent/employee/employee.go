@@ -38,7 +38,7 @@ const (
 	// Table holds the table name of the employee in the database.
 	Table = "employees"
 	// EmployeeAuthTable is the table that holds the employeeAuth relation/edge.
-	EmployeeAuthTable = "employees"
+	EmployeeAuthTable = "employee_auths"
 	// EmployeeAuthInverseTable is the table name for the EmployeeAuth entity.
 	// It exists in this package in order to avoid circular dependency with the "employeeauth" package.
 	EmployeeAuthInverseTable = "employee_auths"
@@ -87,7 +87,6 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "employees"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"employee_employee_auth",
 	"employee_company",
 	"employee_department",
 }
@@ -228,7 +227,7 @@ func newEmployeeAuthStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(EmployeeAuthInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, EmployeeAuthTable, EmployeeAuthColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, EmployeeAuthTable, EmployeeAuthColumn),
 	)
 }
 func newCompanyStep() *sqlgraph.Step {

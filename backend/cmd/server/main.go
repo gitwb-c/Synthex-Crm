@@ -5,10 +5,18 @@ import (
 
 	"github.com/gitwb-c/crm.saas/backend/internal/db"
 	"github.com/gitwb-c/crm.saas/backend/internal/http"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	client, _ := db.NewClient()
+	if err := godotenv.Load(); err != nil {
+		log.Println(".env file not found")
+	}
+
+	client, er := db.NewClient()
+	if er != nil {
+		log.Fatalf("failed to init Ent client: %v", er)
+	}
 	srv, err := db.Init(client)
 	if err != nil {
 		log.Fatalf("failed to init db: %v", err)
@@ -17,5 +25,4 @@ func main() {
 
 	r := http.GlobalRouter(srv)
 	r.Run(":8080")
-
 }

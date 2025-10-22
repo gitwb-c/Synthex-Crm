@@ -165,7 +165,6 @@ var (
 		{Name: "active", Type: field.TypeBool, Default: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "employee_employee_auth", Type: field.TypeUUID},
 		{Name: "employee_company", Type: field.TypeUUID},
 		{Name: "employee_department", Type: field.TypeUUID},
 	}
@@ -176,20 +175,14 @@ var (
 		PrimaryKey: []*schema.Column{EmployeesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "employees_employee_auths_employeeAuth",
-				Columns:    []*schema.Column{EmployeesColumns[5]},
-				RefColumns: []*schema.Column{EmployeeAuthsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
 				Symbol:     "employees_companies_company",
-				Columns:    []*schema.Column{EmployeesColumns[6]},
+				Columns:    []*schema.Column{EmployeesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "employees_departments_department",
-				Columns:    []*schema.Column{EmployeesColumns[7]},
+				Columns:    []*schema.Column{EmployeesColumns[6]},
 				RefColumns: []*schema.Column{DepartmentsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -203,12 +196,21 @@ var (
 		{Name: "password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "employee_employee_auth", Type: field.TypeUUID, Unique: true, Nullable: true},
 	}
 	// EmployeeAuthsTable holds the schema information for the "employee_auths" table.
 	EmployeeAuthsTable = &schema.Table{
 		Name:       "employee_auths",
 		Columns:    EmployeeAuthsColumns,
 		PrimaryKey: []*schema.Column{EmployeeAuthsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "employee_auths_employees_employeeAuth",
+				Columns:    []*schema.Column{EmployeeAuthsColumns[6]},
+				RefColumns: []*schema.Column{EmployeesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// FilesColumns holds the columns for the "files" table.
 	FilesColumns = []*schema.Column{
@@ -488,9 +490,9 @@ func init() {
 	DealsTable.ForeignKeys[2].RefTable = StagesTable
 	DealCrmFieldsTable.ForeignKeys[0].RefTable = DealsTable
 	DealCrmFieldsTable.ForeignKeys[1].RefTable = CrmFieldsTable
-	EmployeesTable.ForeignKeys[0].RefTable = EmployeeAuthsTable
-	EmployeesTable.ForeignKeys[1].RefTable = CompaniesTable
-	EmployeesTable.ForeignKeys[2].RefTable = DepartmentsTable
+	EmployeesTable.ForeignKeys[0].RefTable = CompaniesTable
+	EmployeesTable.ForeignKeys[1].RefTable = DepartmentsTable
+	EmployeeAuthsTable.ForeignKeys[0].RefTable = EmployeesTable
 	MessagesTable.ForeignKeys[0].RefTable = FilesTable
 	MessagesTable.ForeignKeys[1].RefTable = ChatsTable
 	MessagesTable.ForeignKeys[2].RefTable = TextsTable

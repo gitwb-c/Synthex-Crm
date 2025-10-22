@@ -1766,7 +1766,7 @@ func (c *EmployeeClient) QueryEmployeeAuth(_m *Employee) *EmployeeAuthQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(employee.Table, employee.FieldID, id),
 			sqlgraph.To(employeeauth.Table, employeeauth.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, employee.EmployeeAuthTable, employee.EmployeeAuthColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, employee.EmployeeAuthTable, employee.EmployeeAuthColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -1985,6 +1985,22 @@ func (c *EmployeeAuthClient) GetX(ctx context.Context, id uuid.UUID) *EmployeeAu
 		panic(err)
 	}
 	return obj
+}
+
+// QueryEmployee queries the employee edge of a EmployeeAuth.
+func (c *EmployeeAuthClient) QueryEmployee(_m *EmployeeAuth) *EmployeeQuery {
+	query := (&EmployeeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(employeeauth.Table, employeeauth.FieldID, id),
+			sqlgraph.To(employee.Table, employee.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, employeeauth.EmployeeTable, employeeauth.EmployeeColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

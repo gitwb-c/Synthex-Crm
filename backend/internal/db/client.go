@@ -9,15 +9,17 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/migrate"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
+var Client *ent.Client
+
 func NewClient() (*ent.Client, error) {
-	if err := godotenv.Load(); err != nil {
-		log.Println(".env file not found")
+	Client, err := ent.Open("postgres", os.Getenv("DB_POSTGRES_URL"))
+	if err != nil {
+		return nil, err
 	}
-	return ent.Open("postgres", os.Getenv("DB_POSTGRES_URL"))
+	return Client, nil
 
 }
 

@@ -11,8 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
+	"github.com/google/uuid"
 )
 
 // EmployeeAuthUpdate is the builder for updating EmployeeAuth entities.
@@ -76,9 +78,34 @@ func (_u *EmployeeAuthUpdate) SetUpdatedAt(v time.Time) *EmployeeAuthUpdate {
 	return _u
 }
 
+// SetEmployeeID sets the "employee" edge to the Employee entity by ID.
+func (_u *EmployeeAuthUpdate) SetEmployeeID(id uuid.UUID) *EmployeeAuthUpdate {
+	_u.mutation.SetEmployeeID(id)
+	return _u
+}
+
+// SetNillableEmployeeID sets the "employee" edge to the Employee entity by ID if the given value is not nil.
+func (_u *EmployeeAuthUpdate) SetNillableEmployeeID(id *uuid.UUID) *EmployeeAuthUpdate {
+	if id != nil {
+		_u = _u.SetEmployeeID(*id)
+	}
+	return _u
+}
+
+// SetEmployee sets the "employee" edge to the Employee entity.
+func (_u *EmployeeAuthUpdate) SetEmployee(v *Employee) *EmployeeAuthUpdate {
+	return _u.SetEmployeeID(v.ID)
+}
+
 // Mutation returns the EmployeeAuthMutation object of the builder.
 func (_u *EmployeeAuthUpdate) Mutation() *EmployeeAuthMutation {
 	return _u.mutation
+}
+
+// ClearEmployee clears the "employee" edge to the Employee entity.
+func (_u *EmployeeAuthUpdate) ClearEmployee() *EmployeeAuthUpdate {
+	_u.mutation.ClearEmployee()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -161,6 +188,35 @@ func (_u *EmployeeAuthUpdate) sqlSave(ctx context.Context) (_node int, err error
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(employeeauth.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if _u.mutation.EmployeeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   employeeauth.EmployeeTable,
+			Columns: []string{employeeauth.EmployeeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EmployeeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   employeeauth.EmployeeTable,
+			Columns: []string{employeeauth.EmployeeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{employeeauth.Label}
@@ -229,9 +285,34 @@ func (_u *EmployeeAuthUpdateOne) SetUpdatedAt(v time.Time) *EmployeeAuthUpdateOn
 	return _u
 }
 
+// SetEmployeeID sets the "employee" edge to the Employee entity by ID.
+func (_u *EmployeeAuthUpdateOne) SetEmployeeID(id uuid.UUID) *EmployeeAuthUpdateOne {
+	_u.mutation.SetEmployeeID(id)
+	return _u
+}
+
+// SetNillableEmployeeID sets the "employee" edge to the Employee entity by ID if the given value is not nil.
+func (_u *EmployeeAuthUpdateOne) SetNillableEmployeeID(id *uuid.UUID) *EmployeeAuthUpdateOne {
+	if id != nil {
+		_u = _u.SetEmployeeID(*id)
+	}
+	return _u
+}
+
+// SetEmployee sets the "employee" edge to the Employee entity.
+func (_u *EmployeeAuthUpdateOne) SetEmployee(v *Employee) *EmployeeAuthUpdateOne {
+	return _u.SetEmployeeID(v.ID)
+}
+
 // Mutation returns the EmployeeAuthMutation object of the builder.
 func (_u *EmployeeAuthUpdateOne) Mutation() *EmployeeAuthMutation {
 	return _u.mutation
+}
+
+// ClearEmployee clears the "employee" edge to the Employee entity.
+func (_u *EmployeeAuthUpdateOne) ClearEmployee() *EmployeeAuthUpdateOne {
+	_u.mutation.ClearEmployee()
+	return _u
 }
 
 // Where appends a list predicates to the EmployeeAuthUpdate builder.
@@ -343,6 +424,35 @@ func (_u *EmployeeAuthUpdateOne) sqlSave(ctx context.Context) (_node *EmployeeAu
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(employeeauth.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.EmployeeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   employeeauth.EmployeeTable,
+			Columns: []string{employeeauth.EmployeeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EmployeeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   employeeauth.EmployeeTable,
+			Columns: []string{employeeauth.EmployeeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &EmployeeAuth{config: _u.config}
 	_spec.Assign = _node.assignValues
