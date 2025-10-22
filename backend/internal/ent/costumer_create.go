@@ -60,6 +60,14 @@ func (_c *CostumerCreate) SetUpdatedAt(v time.Time) *CostumerCreate {
 	return _c
 }
 
+// SetNillableUpdatedAt sets the "updatedAt" field if the given value is not nil.
+func (_c *CostumerCreate) SetNillableUpdatedAt(v *time.Time) *CostumerCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *CostumerCreate) SetID(v uuid.UUID) *CostumerCreate {
 	_c.mutation.SetID(v)
@@ -127,6 +135,10 @@ func (_c *CostumerCreate) defaults() {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := costumer.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := costumer.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := _c.mutation.ID(); !ok {
 		v := costumer.DefaultID()

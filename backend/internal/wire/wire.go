@@ -52,20 +52,6 @@ func InitializeEmployeeAuthService(client *ent.Client) *services.EmployeeAuthSer
 	))
 }
 
-func InitializeFieldService(client *ent.Client) *services.FieldService {
-	panic(wire.Build(
-		services.NewFieldService,
-		InitializeFieldRepository,
-	))
-}
-
-func InitializeFormService(client *ent.Client) *services.FormService {
-	panic(wire.Build(
-		services.NewFormService,
-		InitializeFormRepository,
-	))
-}
-
 func InitializeMessageService(client *ent.Client) *services.MessageService {
 	panic(wire.Build(
 		services.NewMessageService,
@@ -94,6 +80,20 @@ func InitializeStageService(client *ent.Client) *services.StageService {
 	))
 }
 
+func InitializeCrmFieldService(client *ent.Client) *services.CrmFieldService {
+	panic(wire.Build(
+		services.NewCrmFieldService,
+		InitializeCrmFieldRepository,
+	))
+}
+
+func InitializeDealCrmFieldService(client *ent.Client) *services.DealCrmFieldService {
+	panic(wire.Build(
+		services.NewDealCrmFieldService,
+		InitializeDealCrmFieldRepository,
+	))
+}
+
 func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
 	panic(wire.Build(repositories.NewChatRepository))
 }
@@ -118,14 +118,6 @@ func InitializeEmployeeAuthRepository(client *ent.Client) *repositories.Employee
 	panic(wire.Build(repositories.NewEmployeeAuthRepository))
 }
 
-func InitializeFieldRepository(client *ent.Client) *repositories.FieldRepository {
-	panic(wire.Build(repositories.NewFieldRepository))
-}
-
-func InitializeFormRepository(client *ent.Client) *repositories.FormRepository {
-	panic(wire.Build(repositories.NewFormRepository))
-}
-
 func InitializeMessageRepository(client *ent.Client) *repositories.MessageRepository {
 	panic(wire.Build(repositories.NewMessageRepository))
 }
@@ -140,4 +132,11 @@ func InitializeQueueRepository(client *ent.Client) *repositories.QueueRepository
 
 func InitializeStageRepository(client *ent.Client) *repositories.StageRepository {
 	panic(wire.Build(repositories.NewStageRepository))
+}
+
+func InitializeCrmFieldRepository(client *ent.Client) *repositories.CrmFieldRepository {
+	panic(wire.Build(repositories.NewCrmFieldRepository))
+}
+func InitializeDealCrmFieldRepository(client *ent.Client) *repositories.DealCrmFieldRepository {
+	panic(wire.Build(repositories.NewDealCrmFieldRepository))
 }

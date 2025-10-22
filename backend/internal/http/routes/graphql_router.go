@@ -11,7 +11,7 @@ func graphqlRouter(r *gin.Engine, srv *handler.Server) {
 		srv.ServeHTTP(c.Writer, c.Request)
 	})
 
-	r.GET("/", func(c *gin.Context) {
-		playground.Handler("Todo", "/query").ServeHTTP(c.Writer, c.Request)
+	r.GET("/playground", func(c *gin.Context) {
+		playground.Handler("Playground", "/query").ServeHTTP(c.Writer, c.Request)
 	})
 }

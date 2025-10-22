@@ -9,86 +9,105 @@ import (
 	"fmt"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/wire"
+	"github.com/google/uuid"
 )
 
 // ID is the resolver for the id field.
 func (r *chatResolver) ID(ctx context.Context, obj *ent.Chat) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *companyResolver) ID(ctx context.Context, obj *ent.Company) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *costumerResolver) ID(ctx context.Context, obj *ent.Costumer) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *crmFieldResolver) ID(ctx context.Context, obj *ent.CrmField) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *dealResolver) ID(ctx context.Context, obj *ent.Deal) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *dealCrmFieldResolver) ID(ctx context.Context, obj *ent.DealCrmField) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *departmentResolver) ID(ctx context.Context, obj *ent.Department) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *dropdownListResolver) ID(ctx context.Context, obj *ent.DropdownList) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *employeeResolver) ID(ctx context.Context, obj *ent.Employee) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *employeeAuthResolver) ID(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *fileResolver) ID(ctx context.Context, obj *ent.File) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *messageResolver) ID(ctx context.Context, obj *ent.Message) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *pipelineResolver) ID(ctx context.Context, obj *ent.Pipeline) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
-	panic(fmt.Errorf("not implemented: Node - node"))
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.Noder(ctx, uid)
 }
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
-	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+	var uuids []uuid.UUID
+	for _, id := range ids {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return nil, err
+		}
+		uuids = append(uuids, uid)
+	}
+	return r.Client.Noders(ctx, uuids)
 }
 
 // Chats is the resolver for the chats field.
 func (r *queryResolver) Chats(ctx context.Context) ([]*ent.Chat, error) {
-	panic(fmt.Errorf("not implemented: Chats - chats"))
+	service := wire.InitializeChatService(r.Client)
+	chats, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return chats, nil
 }
 
 // Companies is the resolver for the companies field.
@@ -98,27 +117,52 @@ func (r *queryResolver) Companies(ctx context.Context) ([]*ent.Company, error) {
 
 // Costumers is the resolver for the costumers field.
 func (r *queryResolver) Costumers(ctx context.Context) ([]*ent.Costumer, error) {
-	panic(fmt.Errorf("not implemented: Costumers - costumers"))
+	service := wire.InitializeCostumerService(r.Client)
+	costumers, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return costumers, nil
 }
 
 // CrmFields is the resolver for the crmFields field.
 func (r *queryResolver) CrmFields(ctx context.Context) ([]*ent.CrmField, error) {
-	panic(fmt.Errorf("not implemented: CrmFields - crmFields"))
+	service := wire.InitializeCrmFieldService(r.Client)
+	crmFields, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return crmFields, nil
 }
 
 // Deals is the resolver for the deals field.
 func (r *queryResolver) Deals(ctx context.Context) ([]*ent.Deal, error) {
-	panic(fmt.Errorf("not implemented: Deals - deals"))
+	service := wire.InitializeDealService(r.Client)
+	deals, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return deals, nil
 }
 
 // DealCrmFields is the resolver for the dealCrmFields field.
 func (r *queryResolver) DealCrmFields(ctx context.Context) ([]*ent.DealCrmField, error) {
-	panic(fmt.Errorf("not implemented: DealCrmFields - dealCrmFields"))
+	service := wire.InitializeDealCrmFieldService(r.Client)
+	dealCrmFields, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return dealCrmFields, nil
 }
 
 // Departments is the resolver for the departments field.
 func (r *queryResolver) Departments(ctx context.Context) ([]*ent.Department, error) {
-	panic(fmt.Errorf("not implemented: Departments - departments"))
+	service := wire.InitializeDepartmentService(r.Client)
+	departments, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return departments, nil
 }
 
 // DropdownLists is the resolver for the dropdownLists field.
@@ -128,12 +172,22 @@ func (r *queryResolver) DropdownLists(ctx context.Context) ([]*ent.DropdownList,
 
 // Employees is the resolver for the employees field.
 func (r *queryResolver) Employees(ctx context.Context) ([]*ent.Employee, error) {
-	panic(fmt.Errorf("not implemented: Employees - employees"))
+	service := wire.InitializeEmployeeService(r.Client)
+	employees, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return employees, nil
 }
 
 // EmployeeAuths is the resolver for the employeeAuths field.
 func (r *queryResolver) EmployeeAuths(ctx context.Context) ([]*ent.EmployeeAuth, error) {
-	panic(fmt.Errorf("not implemented: EmployeeAuths - employeeAuths"))
+	service := wire.InitializeEmployeeAuthService(r.Client)
+	employeeAuths, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return employeeAuths, nil
 }
 
 // Files is the resolver for the files field.
@@ -143,22 +197,42 @@ func (r *queryResolver) Files(ctx context.Context) ([]*ent.File, error) {
 
 // Messages is the resolver for the messages field.
 func (r *queryResolver) Messages(ctx context.Context) ([]*ent.Message, error) {
-	panic(fmt.Errorf("not implemented: Messages - messages"))
+	service := wire.InitializeMessageService(r.Client)
+	messages, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return messages, nil
 }
 
 // Pipelines is the resolver for the pipelines field.
 func (r *queryResolver) Pipelines(ctx context.Context) ([]*ent.Pipeline, error) {
-	panic(fmt.Errorf("not implemented: Pipelines - pipelines"))
+	service := wire.InitializePipelineService(r.Client)
+	pipelines, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return pipelines, nil
 }
 
 // Queues is the resolver for the queues field.
 func (r *queryResolver) Queues(ctx context.Context) ([]*ent.Queue, error) {
-	panic(fmt.Errorf("not implemented: Queues - queues"))
+	service := wire.InitializeQueueService(r.Client)
+	queues, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return queues, nil
 }
 
 // Stages is the resolver for the stages field.
 func (r *queryResolver) Stages(ctx context.Context) ([]*ent.Stage, error) {
-	panic(fmt.Errorf("not implemented: Stages - stages"))
+	service := wire.InitializeStageService(r.Client)
+	stages, err := service.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return stages, nil
 }
 
 // Texts is the resolver for the texts field.
@@ -168,192 +242,1189 @@ func (r *queryResolver) Texts(ctx context.Context) ([]*ent.Text, error) {
 
 // ID is the resolver for the id field.
 func (r *queueResolver) ID(ctx context.Context, obj *ent.Queue) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *stageResolver) ID(ctx context.Context, obj *ent.Stage) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return obj.ID.String(), nil
 }
 
 // ID is the resolver for the id field.
 func (r *textResolver) ID(ctx context.Context, obj *ent.Text) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// ID is the resolver for the id field.
+func (r *chatWhereInputResolver) ID(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *chatWhereInputResolver) IDNeq(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *chatWhereInputResolver) IDIn(ctx context.Context, obj *ent.ChatWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *chatWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.ChatWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *chatWhereInputResolver) IDGt(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *chatWhereInputResolver) IDGte(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *chatWhereInputResolver) IDLt(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *chatWhereInputResolver) IDLte(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *companyWhereInputResolver) ID(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *companyWhereInputResolver) IDNeq(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *companyWhereInputResolver) IDIn(ctx context.Context, obj *ent.CompanyWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *companyWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.CompanyWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *companyWhereInputResolver) IDGt(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *companyWhereInputResolver) IDGte(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *companyWhereInputResolver) IDLt(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *companyWhereInputResolver) IDLte(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *costumerWhereInputResolver) ID(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *costumerWhereInputResolver) IDNeq(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *costumerWhereInputResolver) IDIn(ctx context.Context, obj *ent.CostumerWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *costumerWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.CostumerWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *costumerWhereInputResolver) IDGt(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *costumerWhereInputResolver) IDGte(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *costumerWhereInputResolver) IDLt(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *costumerWhereInputResolver) IDLte(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
 // DealID is the resolver for the dealID field.
 func (r *createChatInputResolver) DealID(ctx context.Context, obj *ent.CreateChatInput, data *string) error {
-	panic(fmt.Errorf("not implemented: DealID - dealID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.DealID = &id
+	}
+	return nil
 }
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createChatInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
-	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.EmployeeIDs = uuids
+
+	return nil
 }
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createChatInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
-	panic(fmt.Errorf("not implemented: MessageIDs - messageIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.MessageIDs = uuids
+
+	return nil
 }
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.EmployeeIDs = uuids
+
+	return nil
 }
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error {
-	panic(fmt.Errorf("not implemented: DealIDs - dealIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.DealIDs = uuids
+
+	return nil
 }
 
 // DropdownlistIDs is the resolver for the dropdownlistIDs field.
 func (r *createCrmFieldInputResolver) DropdownlistIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
-	panic(fmt.Errorf("not implemented: DropdownlistIDs - dropdownlistIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.DropdownListIDs = uuids
+
+	return nil
 }
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createCrmFieldInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
-	panic(fmt.Errorf("not implemented: DealcrmfieldIDs - dealcrmfieldIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.DealCrmFieldIDs = uuids
+
+	return nil
 }
 
 // DealID is the resolver for the dealID field.
-func (r *createDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data *string) error {
-	panic(fmt.Errorf("not implemented: DealID - dealID"))
+func (r *createDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.DealID = id
+
+	return nil
 }
 
 // CrmfieldID is the resolver for the crmfieldID field.
-func (r *createDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data *string) error {
-	panic(fmt.Errorf("not implemented: CrmfieldID - crmfieldID"))
+func (r *createDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.CrmFieldID = id
+
+	return nil
 }
 
 // CostumerID is the resolver for the costumerID field.
-func (r *createDealInputResolver) CostumerID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
-	panic(fmt.Errorf("not implemented: CostumerID - costumerID"))
+func (r *createDealInputResolver) CostumerID(ctx context.Context, obj *ent.CreateDealInput, data *string) error {
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.CostumerID = &id
+	}
+	return nil
 }
 
 // ChatID is the resolver for the chatID field.
 func (r *createDealInputResolver) ChatID(ctx context.Context, obj *ent.CreateDealInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ChatID - chatID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.ChatID = &id
+	}
+	return nil
 }
 
 // StageID is the resolver for the stageID field.
 func (r *createDealInputResolver) StageID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
-	panic(fmt.Errorf("not implemented: StageID - stageID"))
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.StageID = id
+
+	return nil
 }
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createDealInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateDealInput, data []string) error {
-	panic(fmt.Errorf("not implemented: DealcrmfieldIDs - dealcrmfieldIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.DealCrmFieldIDs = uuids
+
+	return nil
 }
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.EmployeeIDs = uuids
+
+	return nil
 }
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	panic(fmt.Errorf("not implemented: QueueIDs - queueIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.QueueIDs = uuids
+
+	return nil
 }
 
 // CrmfieldIDs is the resolver for the crmfieldIDs field.
 func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error {
-	panic(fmt.Errorf("not implemented: CrmfieldIDs - crmfieldIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.CrmFieldIDs = uuids
+
+	return nil
 }
 
 // EmployeeauthID is the resolver for the employeeauthID field.
 func (r *createEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
-	panic(fmt.Errorf("not implemented: EmployeeauthID - employeeauthID"))
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.EmployeeAuthID = id
+
+	return nil
 }
 
 // CompanyID is the resolver for the companyID field.
 func (r *createEmployeeInputResolver) CompanyID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
-	panic(fmt.Errorf("not implemented: CompanyID - companyID"))
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.CompanyID = id
+
+	return nil
 }
 
 // DepartmentID is the resolver for the departmentID field.
 func (r *createEmployeeInputResolver) DepartmentID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
-	panic(fmt.Errorf("not implemented: DepartmentID - departmentID"))
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.DepartmentID = id
+
+	return nil
 }
 
 // ChatIDs is the resolver for the chatIDs field.
 func (r *createEmployeeInputResolver) ChatIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	panic(fmt.Errorf("not implemented: ChatIDs - chatIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.ChatIDs = uuids
+
+	return nil
 }
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createEmployeeInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	panic(fmt.Errorf("not implemented: QueueIDs - queueIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.QueueIDs = uuids
+
+	return nil
 }
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createEmployeeInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	panic(fmt.Errorf("not implemented: MessageIDs - messageIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.MessageIDs = uuids
+
+	return nil
 }
 
 // MessageID is the resolver for the messageID field.
-func (r *createFileInputResolver) MessageID(ctx context.Context, obj *ent.CreateFileInput, data *string) error {
-	panic(fmt.Errorf("not implemented: MessageID - messageID"))
+func (r *createFileInputResolver) MessageID(ctx context.Context, obj *ent.CreateFileInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.MessageID = id
+
+	return nil
 }
 
 // ChatID is the resolver for the chatID field.
 func (r *createMessageInputResolver) ChatID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ChatID - chatID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.ChatID = &id
+	}
+	return nil
 }
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createMessageInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateMessageInput, data []string) error {
-	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.EmployeeIDs = uuids
+
+	return nil
 }
 
 // TextID is the resolver for the textID field.
 func (r *createMessageInputResolver) TextID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TextID - textID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.TextID = &id
+	}
+	return nil
 }
 
 // FileID is the resolver for the fileID field.
 func (r *createMessageInputResolver) FileID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
-	panic(fmt.Errorf("not implemented: FileID - fileID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.FileID = &id
+	}
+	return nil
 }
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error {
-	panic(fmt.Errorf("not implemented: StageIDs - stageIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.StageIDs = uuids
+
+	return nil
 }
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createQueueInputResolver) StageIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	panic(fmt.Errorf("not implemented: StageIDs - stageIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.StageIDs = uuids
+
+	return nil
 }
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createQueueInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	panic(fmt.Errorf("not implemented: EmployeeIDs - employeeIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.EmployeeIDs = uuids
+
+	return nil
 }
 
 // DepartmentIDs is the resolver for the departmentIDs field.
 func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	panic(fmt.Errorf("not implemented: DepartmentIDs - departmentIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.DepartmentIDs = uuids
+
+	return nil
 }
 
 // PipelineID is the resolver for the pipelineID field.
 func (r *createStageInputResolver) PipelineID(ctx context.Context, obj *ent.CreateStageInput, data string) error {
-	panic(fmt.Errorf("not implemented: PipelineID - pipelineID"))
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.PipelineID = id
+
+	return nil
 }
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createStageInputResolver) DealIDs(ctx context.Context, obj *ent.CreateStageInput, data []string) error {
-	panic(fmt.Errorf("not implemented: DealIDs - dealIDs"))
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+	obj.DealIDs = uuids
+
+	return nil
 }
 
 // QueueID is the resolver for the queueID field.
 func (r *createStageInputResolver) QueueID(ctx context.Context, obj *ent.CreateStageInput, data *string) error {
-	panic(fmt.Errorf("not implemented: QueueID - queueID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.QueueID = &id
+	}
+	return nil
 }
 
 // MessageID is the resolver for the messageID field.
-func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.CreateTextInput, data *string) error {
-	panic(fmt.Errorf("not implemented: MessageID - messageID"))
+func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.CreateTextInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.MessageID = id
+
+	return nil
+}
+
+// ID is the resolver for the id field.
+func (r *crmFieldWhereInputResolver) ID(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *crmFieldWhereInputResolver) IDNeq(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *crmFieldWhereInputResolver) IDIn(ctx context.Context, obj *ent.CrmFieldWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *crmFieldWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.CrmFieldWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *crmFieldWhereInputResolver) IDGt(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *crmFieldWhereInputResolver) IDGte(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *crmFieldWhereInputResolver) IDLt(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *crmFieldWhereInputResolver) IDLte(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *dealCrmFieldWhereInputResolver) ID(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *dealCrmFieldWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *dealCrmFieldWhereInputResolver) IDIn(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *dealCrmFieldWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *dealCrmFieldWhereInputResolver) IDGt(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *dealCrmFieldWhereInputResolver) IDGte(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *dealCrmFieldWhereInputResolver) IDLt(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *dealCrmFieldWhereInputResolver) IDLte(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *dealWhereInputResolver) ID(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *dealWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *dealWhereInputResolver) IDIn(ctx context.Context, obj *ent.DealWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *dealWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DealWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *dealWhereInputResolver) IDGt(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *dealWhereInputResolver) IDGte(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *dealWhereInputResolver) IDLt(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *dealWhereInputResolver) IDLte(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *departmentWhereInputResolver) ID(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *departmentWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *departmentWhereInputResolver) IDIn(ctx context.Context, obj *ent.DepartmentWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *departmentWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DepartmentWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *departmentWhereInputResolver) IDGt(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *departmentWhereInputResolver) IDGte(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *departmentWhereInputResolver) IDLt(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *departmentWhereInputResolver) IDLte(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *dropdownListWhereInputResolver) ID(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *dropdownListWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *dropdownListWhereInputResolver) IDIn(ctx context.Context, obj *ent.DropdownListWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *dropdownListWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DropdownListWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *dropdownListWhereInputResolver) IDGt(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *dropdownListWhereInputResolver) IDGte(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *dropdownListWhereInputResolver) IDLt(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *dropdownListWhereInputResolver) IDLte(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *employeeAuthWhereInputResolver) ID(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *employeeAuthWhereInputResolver) IDNeq(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *employeeAuthWhereInputResolver) IDIn(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *employeeAuthWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *employeeAuthWhereInputResolver) IDGt(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *employeeAuthWhereInputResolver) IDGte(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *employeeAuthWhereInputResolver) IDLt(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *employeeAuthWhereInputResolver) IDLte(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *employeeWhereInputResolver) ID(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *employeeWhereInputResolver) IDNeq(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *employeeWhereInputResolver) IDIn(ctx context.Context, obj *ent.EmployeeWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *employeeWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.EmployeeWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *employeeWhereInputResolver) IDGt(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *employeeWhereInputResolver) IDGte(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *employeeWhereInputResolver) IDLt(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *employeeWhereInputResolver) IDLte(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *fileWhereInputResolver) ID(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *fileWhereInputResolver) IDNeq(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *fileWhereInputResolver) IDIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *fileWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *fileWhereInputResolver) IDGt(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *fileWhereInputResolver) IDGte(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *fileWhereInputResolver) IDLt(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *fileWhereInputResolver) IDLte(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *messageWhereInputResolver) ID(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *messageWhereInputResolver) IDNeq(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *messageWhereInputResolver) IDIn(ctx context.Context, obj *ent.MessageWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *messageWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.MessageWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *messageWhereInputResolver) IDGt(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *messageWhereInputResolver) IDGte(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *messageWhereInputResolver) IDLt(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *messageWhereInputResolver) IDLte(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *pipelineWhereInputResolver) ID(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *pipelineWhereInputResolver) IDNeq(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *pipelineWhereInputResolver) IDIn(ctx context.Context, obj *ent.PipelineWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *pipelineWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.PipelineWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *pipelineWhereInputResolver) IDGt(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *pipelineWhereInputResolver) IDGte(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *pipelineWhereInputResolver) IDLt(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *pipelineWhereInputResolver) IDLte(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *queueWhereInputResolver) ID(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *queueWhereInputResolver) IDNeq(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *queueWhereInputResolver) IDIn(ctx context.Context, obj *ent.QueueWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *queueWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.QueueWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *queueWhereInputResolver) IDGt(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *queueWhereInputResolver) IDGte(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *queueWhereInputResolver) IDLt(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *queueWhereInputResolver) IDLte(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *stageWhereInputResolver) ID(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *stageWhereInputResolver) IDNeq(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *stageWhereInputResolver) IDIn(ctx context.Context, obj *ent.StageWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *stageWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.StageWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *stageWhereInputResolver) IDGt(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *stageWhereInputResolver) IDGte(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *stageWhereInputResolver) IDLt(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *stageWhereInputResolver) IDLte(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *textWhereInputResolver) ID(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *textWhereInputResolver) IDNeq(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *textWhereInputResolver) IDIn(ctx context.Context, obj *ent.TextWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *textWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.TextWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *textWhereInputResolver) IDGt(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *textWhereInputResolver) IDGte(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *textWhereInputResolver) IDLt(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *textWhereInputResolver) IDLte(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
 // DealID is the resolver for the dealID field.
@@ -677,6 +1748,19 @@ func (r *Resolver) Stage() StageResolver { return &stageResolver{r} }
 // Text returns TextResolver implementation.
 func (r *Resolver) Text() TextResolver { return &textResolver{r} }
 
+// ChatWhereInput returns ChatWhereInputResolver implementation.
+func (r *Resolver) ChatWhereInput() ChatWhereInputResolver { return &chatWhereInputResolver{r} }
+
+// CompanyWhereInput returns CompanyWhereInputResolver implementation.
+func (r *Resolver) CompanyWhereInput() CompanyWhereInputResolver {
+	return &companyWhereInputResolver{r}
+}
+
+// CostumerWhereInput returns CostumerWhereInputResolver implementation.
+func (r *Resolver) CostumerWhereInput() CostumerWhereInputResolver {
+	return &costumerWhereInputResolver{r}
+}
+
 // CreateChatInput returns CreateChatInputResolver implementation.
 func (r *Resolver) CreateChatInput() CreateChatInputResolver { return &createChatInputResolver{r} }
 
@@ -739,6 +1823,61 @@ func (r *Resolver) CreateStageInput() CreateStageInputResolver { return &createS
 
 // CreateTextInput returns CreateTextInputResolver implementation.
 func (r *Resolver) CreateTextInput() CreateTextInputResolver { return &createTextInputResolver{r} }
+
+// CrmFieldWhereInput returns CrmFieldWhereInputResolver implementation.
+func (r *Resolver) CrmFieldWhereInput() CrmFieldWhereInputResolver {
+	return &crmFieldWhereInputResolver{r}
+}
+
+// DealCrmFieldWhereInput returns DealCrmFieldWhereInputResolver implementation.
+func (r *Resolver) DealCrmFieldWhereInput() DealCrmFieldWhereInputResolver {
+	return &dealCrmFieldWhereInputResolver{r}
+}
+
+// DealWhereInput returns DealWhereInputResolver implementation.
+func (r *Resolver) DealWhereInput() DealWhereInputResolver { return &dealWhereInputResolver{r} }
+
+// DepartmentWhereInput returns DepartmentWhereInputResolver implementation.
+func (r *Resolver) DepartmentWhereInput() DepartmentWhereInputResolver {
+	return &departmentWhereInputResolver{r}
+}
+
+// DropdownListWhereInput returns DropdownListWhereInputResolver implementation.
+func (r *Resolver) DropdownListWhereInput() DropdownListWhereInputResolver {
+	return &dropdownListWhereInputResolver{r}
+}
+
+// EmployeeAuthWhereInput returns EmployeeAuthWhereInputResolver implementation.
+func (r *Resolver) EmployeeAuthWhereInput() EmployeeAuthWhereInputResolver {
+	return &employeeAuthWhereInputResolver{r}
+}
+
+// EmployeeWhereInput returns EmployeeWhereInputResolver implementation.
+func (r *Resolver) EmployeeWhereInput() EmployeeWhereInputResolver {
+	return &employeeWhereInputResolver{r}
+}
+
+// FileWhereInput returns FileWhereInputResolver implementation.
+func (r *Resolver) FileWhereInput() FileWhereInputResolver { return &fileWhereInputResolver{r} }
+
+// MessageWhereInput returns MessageWhereInputResolver implementation.
+func (r *Resolver) MessageWhereInput() MessageWhereInputResolver {
+	return &messageWhereInputResolver{r}
+}
+
+// PipelineWhereInput returns PipelineWhereInputResolver implementation.
+func (r *Resolver) PipelineWhereInput() PipelineWhereInputResolver {
+	return &pipelineWhereInputResolver{r}
+}
+
+// QueueWhereInput returns QueueWhereInputResolver implementation.
+func (r *Resolver) QueueWhereInput() QueueWhereInputResolver { return &queueWhereInputResolver{r} }
+
+// StageWhereInput returns StageWhereInputResolver implementation.
+func (r *Resolver) StageWhereInput() StageWhereInputResolver { return &stageWhereInputResolver{r} }
+
+// TextWhereInput returns TextWhereInputResolver implementation.
+func (r *Resolver) TextWhereInput() TextWhereInputResolver { return &textWhereInputResolver{r} }
 
 // UpdateChatInput returns UpdateChatInputResolver implementation.
 func (r *Resolver) UpdateChatInput() UpdateChatInputResolver { return &updateChatInputResolver{r} }
@@ -820,6 +1959,9 @@ type queryResolver struct{ *Resolver }
 type queueResolver struct{ *Resolver }
 type stageResolver struct{ *Resolver }
 type textResolver struct{ *Resolver }
+type chatWhereInputResolver struct{ *Resolver }
+type companyWhereInputResolver struct{ *Resolver }
+type costumerWhereInputResolver struct{ *Resolver }
 type createChatInputResolver struct{ *Resolver }
 type createCompanyInputResolver struct{ *Resolver }
 type createCostumerInputResolver struct{ *Resolver }
@@ -835,6 +1977,19 @@ type createPipelineInputResolver struct{ *Resolver }
 type createQueueInputResolver struct{ *Resolver }
 type createStageInputResolver struct{ *Resolver }
 type createTextInputResolver struct{ *Resolver }
+type crmFieldWhereInputResolver struct{ *Resolver }
+type dealCrmFieldWhereInputResolver struct{ *Resolver }
+type dealWhereInputResolver struct{ *Resolver }
+type departmentWhereInputResolver struct{ *Resolver }
+type dropdownListWhereInputResolver struct{ *Resolver }
+type employeeAuthWhereInputResolver struct{ *Resolver }
+type employeeWhereInputResolver struct{ *Resolver }
+type fileWhereInputResolver struct{ *Resolver }
+type messageWhereInputResolver struct{ *Resolver }
+type pipelineWhereInputResolver struct{ *Resolver }
+type queueWhereInputResolver struct{ *Resolver }
+type stageWhereInputResolver struct{ *Resolver }
+type textWhereInputResolver struct{ *Resolver }
 type updateChatInputResolver struct{ *Resolver }
 type updateCompanyInputResolver struct{ *Resolver }
 type updateCostumerInputResolver struct{ *Resolver }

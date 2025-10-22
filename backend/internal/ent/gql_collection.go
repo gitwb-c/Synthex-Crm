@@ -143,6 +143,31 @@ func newChatPaginateArgs(rv map[string]any) *chatPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ChatOrder{Field: &ChatOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithChatOrder(order))
+			}
+		case *ChatOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithChatOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ChatWhereInput); ok {
+		args.opts = append(args.opts, WithChatFilter(v.Filter))
+	}
 	return args
 }
 
@@ -229,6 +254,31 @@ func newCompanyPaginateArgs(rv map[string]any) *companyPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &CompanyOrder{Field: &CompanyOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithCompanyOrder(order))
+			}
+		case *CompanyOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithCompanyOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*CompanyWhereInput); ok {
+		args.opts = append(args.opts, WithCompanyFilter(v.Filter))
 	}
 	return args
 }
@@ -326,6 +376,31 @@ func newCostumerPaginateArgs(rv map[string]any) *costumerPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &CostumerOrder{Field: &CostumerOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithCostumerOrder(order))
+			}
+		case *CostumerOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithCostumerOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*CostumerWhereInput); ok {
+		args.opts = append(args.opts, WithCostumerFilter(v.Filter))
 	}
 	return args
 }
@@ -436,6 +511,31 @@ func newCrmFieldPaginateArgs(rv map[string]any) *crmfieldPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &CrmFieldOrder{Field: &CrmFieldOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithCrmFieldOrder(order))
+			}
+		case *CrmFieldOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithCrmFieldOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*CrmFieldWhereInput); ok {
+		args.opts = append(args.opts, WithCrmFieldFilter(v.Filter))
 	}
 	return args
 }
@@ -562,6 +662,31 @@ func newDealPaginateArgs(rv map[string]any) *dealPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &DealOrder{Field: &DealOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithDealOrder(order))
+			}
+		case *DealOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithDealOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*DealWhereInput); ok {
+		args.opts = append(args.opts, WithDealFilter(v.Filter))
+	}
 	return args
 }
 
@@ -657,6 +782,31 @@ func newDealCrmFieldPaginateArgs(rv map[string]any) *dealcrmfieldPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &DealCrmFieldOrder{Field: &DealCrmFieldOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithDealCrmFieldOrder(order))
+			}
+		case *DealCrmFieldOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithDealCrmFieldOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*DealCrmFieldWhereInput); ok {
+		args.opts = append(args.opts, WithDealCrmFieldFilter(v.Filter))
 	}
 	return args
 }
@@ -758,6 +908,31 @@ func newDepartmentPaginateArgs(rv map[string]any) *departmentPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &DepartmentOrder{Field: &DepartmentOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithDepartmentOrder(order))
+			}
+		case *DepartmentOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithDepartmentOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*DepartmentWhereInput); ok {
+		args.opts = append(args.opts, WithDepartmentFilter(v.Filter))
+	}
 	return args
 }
 
@@ -844,6 +1019,31 @@ func newDropdownListPaginateArgs(rv map[string]any) *dropdownlistPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &DropdownListOrder{Field: &DropdownListOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithDropdownListOrder(order))
+			}
+		case *DropdownListOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithDropdownListOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*DropdownListWhereInput); ok {
+		args.opts = append(args.opts, WithDropdownListFilter(v.Filter))
 	}
 	return args
 }
@@ -1018,6 +1218,9 @@ func newEmployeePaginateArgs(rv map[string]any) *employeePaginateArgs {
 			}
 		}
 	}
+	if v, ok := rv[whereField].(*EmployeeWhereInput); ok {
+		args.opts = append(args.opts, WithEmployeeFilter(v.Filter))
+	}
 	return args
 }
 
@@ -1086,6 +1289,31 @@ func newEmployeeAuthPaginateArgs(rv map[string]any) *employeeauthPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &EmployeeAuthOrder{Field: &EmployeeAuthOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithEmployeeAuthOrder(order))
+			}
+		case *EmployeeAuthOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithEmployeeAuthOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*EmployeeAuthWhereInput); ok {
+		args.opts = append(args.opts, WithEmployeeAuthFilter(v.Filter))
 	}
 	return args
 }
@@ -1176,6 +1404,31 @@ func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &FileOrder{Field: &FileOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithFileOrder(order))
+			}
+		case *FileOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithFileOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*FileWhereInput); ok {
+		args.opts = append(args.opts, WithFileFilter(v.Filter))
 	}
 	return args
 }
@@ -1307,6 +1560,31 @@ func newMessagePaginateArgs(rv map[string]any) *messagePaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &MessageOrder{Field: &MessageOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithMessageOrder(order))
+			}
+		case *MessageOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithMessageOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*MessageWhereInput); ok {
+		args.opts = append(args.opts, WithMessageFilter(v.Filter))
+	}
 	return args
 }
 
@@ -1393,6 +1671,31 @@ func newPipelinePaginateArgs(rv map[string]any) *pipelinePaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &PipelineOrder{Field: &PipelineOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithPipelineOrder(order))
+			}
+		case *PipelineOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithPipelineOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*PipelineWhereInput); ok {
+		args.opts = append(args.opts, WithPipelineFilter(v.Filter))
 	}
 	return args
 }
@@ -1511,6 +1814,31 @@ func newQueuePaginateArgs(rv map[string]any) *queuePaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &QueueOrder{Field: &QueueOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithQueueOrder(order))
+			}
+		case *QueueOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithQueueOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*QueueWhereInput); ok {
+		args.opts = append(args.opts, WithQueueFilter(v.Filter))
 	}
 	return args
 }
@@ -1631,6 +1959,31 @@ func newStagePaginateArgs(rv map[string]any) *stagePaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &StageOrder{Field: &StageOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithStageOrder(order))
+			}
+		case *StageOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithStageOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*StageWhereInput); ok {
+		args.opts = append(args.opts, WithStageFilter(v.Filter))
+	}
 	return args
 }
 
@@ -1705,6 +2058,31 @@ func newTextPaginateArgs(rv map[string]any) *textPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &TextOrder{Field: &TextOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithTextOrder(order))
+			}
+		case *TextOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithTextOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*TextWhereInput); ok {
+		args.opts = append(args.opts, WithTextFilter(v.Filter))
 	}
 	return args
 }

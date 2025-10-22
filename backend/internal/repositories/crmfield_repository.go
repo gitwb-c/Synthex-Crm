@@ -2,25 +2,38 @@ package repositories
 
 import (
 	"context"
+	"log"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/google/uuid"
 )
 
-type FieldRepository struct {
+type CrmFieldRepository struct {
 	client *ent.Client
 }
 
-func NewFieldRepository(client *ent.Client) *FieldRepository {
-	return &FieldRepository{
+func NewCrmFieldRepository(client *ent.Client) *CrmFieldRepository {
+	return &CrmFieldRepository{
 		client: client,
 	}
 }
 
-// ([]*ent.Field, error)
-func (s *FieldRepository) Read(ctx context.Context) {}
+func (s *CrmFieldRepository) Read(ctx context.Context) ([]*ent.CrmField, error) {
+	return s.client.CrmField.Query().All(ctx)
+}
 
-func (s *FieldRepository) Create(ctx context.Context) {}
+func (s *CrmFieldRepository) Create(ctx context.Context, input ent.CreateCrmFieldInput) (*ent.CrmField, error) {
+	log.Printf("repository: %v", input)
 
-func (s *FieldRepository) Update(ctx context.Context) {}
+	return s.client.CrmField.Create().SetInput(input).Save(ctx)
+}
 
-func (s *FieldRepository) Delete(ctx context.Context) {}
+func (s *CrmFieldRepository) UpdateID(ctx context.Context, id string, input ent.UpdateCrmFieldInput) (*ent.CrmField, error) {
+	uuidId, err := uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+	return s.client.CrmField.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+}
+
+func (s *CrmFieldRepository) Delete(ctx context.Context) {}

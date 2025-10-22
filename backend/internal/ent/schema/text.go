@@ -16,13 +16,13 @@ type Text struct {
 func (Text) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
-		field.String("text").NotEmpty().Annotations(entgql.QueryField()),
+		field.String("text").NotEmpty().Annotations(entgql.QueryField(), entgql.OrderField("TEXT")),
 	}
 }
 
 func (Text) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("message", Message.Type).Unique(),
+		edge.To("message", Message.Type).Unique().Required(),
 	}
 }
 

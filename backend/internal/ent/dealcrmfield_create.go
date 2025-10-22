@@ -77,14 +77,6 @@ func (_c *DealCrmFieldCreate) SetDealID(id uuid.UUID) *DealCrmFieldCreate {
 	return _c
 }
 
-// SetNillableDealID sets the "deal" edge to the Deal entity by ID if the given value is not nil.
-func (_c *DealCrmFieldCreate) SetNillableDealID(id *uuid.UUID) *DealCrmFieldCreate {
-	if id != nil {
-		_c = _c.SetDealID(*id)
-	}
-	return _c
-}
-
 // SetDeal sets the "deal" edge to the Deal entity.
 func (_c *DealCrmFieldCreate) SetDeal(v *Deal) *DealCrmFieldCreate {
 	return _c.SetDealID(v.ID)
@@ -93,14 +85,6 @@ func (_c *DealCrmFieldCreate) SetDeal(v *Deal) *DealCrmFieldCreate {
 // SetCrmFieldID sets the "crmField" edge to the CrmField entity by ID.
 func (_c *DealCrmFieldCreate) SetCrmFieldID(id uuid.UUID) *DealCrmFieldCreate {
 	_c.mutation.SetCrmFieldID(id)
-	return _c
-}
-
-// SetNillableCrmFieldID sets the "crmField" edge to the CrmField entity by ID if the given value is not nil.
-func (_c *DealCrmFieldCreate) SetNillableCrmFieldID(id *uuid.UUID) *DealCrmFieldCreate {
-	if id != nil {
-		_c = _c.SetCrmFieldID(*id)
-	}
 	return _c
 }
 
@@ -173,6 +157,12 @@ func (_c *DealCrmFieldCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "DealCrmField.updatedAt"`)}
+	}
+	if len(_c.mutation.DealIDs()) == 0 {
+		return &ValidationError{Name: "deal", err: errors.New(`ent: missing required edge "DealCrmField.deal"`)}
+	}
+	if len(_c.mutation.CrmFieldIDs()) == 0 {
+		return &ValidationError{Name: "crmField", err: errors.New(`ent: missing required edge "DealCrmField.crmField"`)}
 	}
 	return nil
 }

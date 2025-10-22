@@ -57,14 +57,6 @@ func (_u *DealCrmFieldUpdate) SetDealID(id uuid.UUID) *DealCrmFieldUpdate {
 	return _u
 }
 
-// SetNillableDealID sets the "deal" edge to the Deal entity by ID if the given value is not nil.
-func (_u *DealCrmFieldUpdate) SetNillableDealID(id *uuid.UUID) *DealCrmFieldUpdate {
-	if id != nil {
-		_u = _u.SetDealID(*id)
-	}
-	return _u
-}
-
 // SetDeal sets the "deal" edge to the Deal entity.
 func (_u *DealCrmFieldUpdate) SetDeal(v *Deal) *DealCrmFieldUpdate {
 	return _u.SetDealID(v.ID)
@@ -73,14 +65,6 @@ func (_u *DealCrmFieldUpdate) SetDeal(v *Deal) *DealCrmFieldUpdate {
 // SetCrmFieldID sets the "crmField" edge to the CrmField entity by ID.
 func (_u *DealCrmFieldUpdate) SetCrmFieldID(id uuid.UUID) *DealCrmFieldUpdate {
 	_u.mutation.SetCrmFieldID(id)
-	return _u
-}
-
-// SetNillableCrmFieldID sets the "crmField" edge to the CrmField entity by ID if the given value is not nil.
-func (_u *DealCrmFieldUpdate) SetNillableCrmFieldID(id *uuid.UUID) *DealCrmFieldUpdate {
-	if id != nil {
-		_u = _u.SetCrmFieldID(*id)
-	}
 	return _u
 }
 
@@ -148,6 +132,12 @@ func (_u *DealCrmFieldUpdate) check() error {
 		if err := dealcrmfield.ValueValidator(v); err != nil {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "DealCrmField.value": %w`, err)}
 		}
+	}
+	if _u.mutation.DealCleared() && len(_u.mutation.DealIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DealCrmField.deal"`)
+	}
+	if _u.mutation.CrmFieldCleared() && len(_u.mutation.CrmFieldIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DealCrmField.crmField"`)
 	}
 	return nil
 }
@@ -274,14 +264,6 @@ func (_u *DealCrmFieldUpdateOne) SetDealID(id uuid.UUID) *DealCrmFieldUpdateOne 
 	return _u
 }
 
-// SetNillableDealID sets the "deal" edge to the Deal entity by ID if the given value is not nil.
-func (_u *DealCrmFieldUpdateOne) SetNillableDealID(id *uuid.UUID) *DealCrmFieldUpdateOne {
-	if id != nil {
-		_u = _u.SetDealID(*id)
-	}
-	return _u
-}
-
 // SetDeal sets the "deal" edge to the Deal entity.
 func (_u *DealCrmFieldUpdateOne) SetDeal(v *Deal) *DealCrmFieldUpdateOne {
 	return _u.SetDealID(v.ID)
@@ -290,14 +272,6 @@ func (_u *DealCrmFieldUpdateOne) SetDeal(v *Deal) *DealCrmFieldUpdateOne {
 // SetCrmFieldID sets the "crmField" edge to the CrmField entity by ID.
 func (_u *DealCrmFieldUpdateOne) SetCrmFieldID(id uuid.UUID) *DealCrmFieldUpdateOne {
 	_u.mutation.SetCrmFieldID(id)
-	return _u
-}
-
-// SetNillableCrmFieldID sets the "crmField" edge to the CrmField entity by ID if the given value is not nil.
-func (_u *DealCrmFieldUpdateOne) SetNillableCrmFieldID(id *uuid.UUID) *DealCrmFieldUpdateOne {
-	if id != nil {
-		_u = _u.SetCrmFieldID(*id)
-	}
 	return _u
 }
 
@@ -378,6 +352,12 @@ func (_u *DealCrmFieldUpdateOne) check() error {
 		if err := dealcrmfield.ValueValidator(v); err != nil {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "DealCrmField.value": %w`, err)}
 		}
+	}
+	if _u.mutation.DealCleared() && len(_u.mutation.DealIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DealCrmField.deal"`)
+	}
+	if _u.mutation.CrmFieldCleared() && len(_u.mutation.CrmFieldIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DealCrmField.crmField"`)
 	}
 	return nil
 }

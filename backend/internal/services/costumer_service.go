@@ -1,6 +1,9 @@
 package services
 
 import (
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
 )
 
@@ -14,11 +17,28 @@ func NewCostumerService(repository *repositories.CostumerRepository) *CostumerSe
 	}
 }
 
-// ([]*ent.Costumer, error)
-func (s *CostumerService) Read() {}
+func (s *CostumerService) Read(ctx context.Context) ([]*ent.Costumer, error) {
+	costumer, err := s.repository.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return costumer, nil
+}
 
-func (s *CostumerService) Create() {}
+func (s *CostumerService) Create(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error) {
+	costumer, err := s.repository.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return costumer, nil
+}
 
-func (s *CostumerService) Update() {}
+func (s *CostumerService) UpdateID(ctx context.Context, id string, input ent.UpdateCostumerInput) (*ent.Costumer, error) {
+	costumer, err := s.repository.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return costumer, nil
+}
 
 func (s *CostumerService) Delete() {}

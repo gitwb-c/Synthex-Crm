@@ -18,16 +18,16 @@ type DealCrmField struct {
 func (DealCrmField) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
-		field.String("value").NotEmpty().Annotations(entgql.QueryField()),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.String("value").NotEmpty().Annotations(entgql.QueryField()).Annotations(entgql.OrderField("VALUE")),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
 }
 
 func (DealCrmField) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("deal", Deal.Type).Unique(),
-		edge.To("crmField", CrmField.Type).Unique(),
+		edge.To("deal", Deal.Type).Unique().Required(),
+		edge.To("crmField", CrmField.Type).Unique().Required(),
 	}
 }
 

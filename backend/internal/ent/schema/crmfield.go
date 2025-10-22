@@ -18,11 +18,11 @@ type CrmField struct {
 func (CrmField) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
-		field.String("name").NotEmpty().Unique().Annotations(entgql.QueryField()),
-		field.String("section").Annotations(entgql.QueryField()),
-		field.Enum("type").Values("txt", "date", "checkbox", "dropdownList").Immutable().Annotations(entgql.QueryField()),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.String("name").NotEmpty().Unique().Annotations(entgql.QueryField(), entgql.OrderField("NAME")),
+		field.String("section").Annotations(entgql.QueryField(), entgql.OrderField("SECTION")),
+		field.Enum("type").Values("txt", "date", "checkbox", "dropdownList").Immutable().Annotations(entgql.QueryField(), entgql.OrderField("TYPE")),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
 }
 

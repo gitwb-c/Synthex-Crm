@@ -14,3 +14,8 @@ resolver:
 
 autobind:
   - github.com/gitwb-c/crm.saas/backend/internal/ent
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID

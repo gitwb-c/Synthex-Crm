@@ -73,6 +73,14 @@ func (_u *DealUpdate) SetCostumerID(id uuid.UUID) *DealUpdate {
 	return _u
 }
 
+// SetNillableCostumerID sets the "costumer" edge to the Costumer entity by ID if the given value is not nil.
+func (_u *DealUpdate) SetNillableCostumerID(id *uuid.UUID) *DealUpdate {
+	if id != nil {
+		_u = _u.SetCostumerID(*id)
+	}
+	return _u
+}
+
 // SetCostumer sets the "costumer" edge to the Costumer entity.
 func (_u *DealUpdate) SetCostumer(v *Costumer) *DealUpdate {
 	return _u.SetCostumerID(v.ID)
@@ -209,9 +217,6 @@ func (_u *DealUpdate) check() error {
 		if err := deal.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
-	}
-	if _u.mutation.CostumerCleared() && len(_u.mutation.CostumerIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Deal.costumer"`)
 	}
 	if _u.mutation.StageCleared() && len(_u.mutation.StageIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Deal.stage"`)
@@ -432,6 +437,14 @@ func (_u *DealUpdateOne) SetCostumerID(id uuid.UUID) *DealUpdateOne {
 	return _u
 }
 
+// SetNillableCostumerID sets the "costumer" edge to the Costumer entity by ID if the given value is not nil.
+func (_u *DealUpdateOne) SetNillableCostumerID(id *uuid.UUID) *DealUpdateOne {
+	if id != nil {
+		_u = _u.SetCostumerID(*id)
+	}
+	return _u
+}
+
 // SetCostumer sets the "costumer" edge to the Costumer entity.
 func (_u *DealUpdateOne) SetCostumer(v *Costumer) *DealUpdateOne {
 	return _u.SetCostumerID(v.ID)
@@ -581,9 +594,6 @@ func (_u *DealUpdateOne) check() error {
 		if err := deal.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
-	}
-	if _u.mutation.CostumerCleared() && len(_u.mutation.CostumerIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Deal.costumer"`)
 	}
 	if _u.mutation.StageCleared() && len(_u.mutation.StageIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Deal.stage"`)

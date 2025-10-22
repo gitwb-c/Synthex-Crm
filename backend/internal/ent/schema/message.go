@@ -18,11 +18,11 @@ type Message struct {
 func (Message) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
-		field.Enum("sentBy").Values("employee", "costumer").Annotations(entgql.QueryField()),
-		field.Bool("private").Annotations(entgql.QueryField()),
-		field.Enum("type").Values("text", "audio", "image", "file").Annotations(entgql.QueryField()),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.Enum("sentBy").Values("employee", "costumer").Annotations(entgql.QueryField(), entgql.OrderField("SENT_BY")),
+		field.Bool("private").Annotations(entgql.QueryField()).Annotations(entgql.OrderField("PRIVATE")),
+		field.Enum("type").Values("text", "audio", "image", "file").Annotations(entgql.QueryField(), entgql.OrderField("TYPE")),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
 }
 

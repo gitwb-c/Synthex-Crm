@@ -49,14 +49,6 @@ func (_u *TextUpdate) SetMessageID(id uuid.UUID) *TextUpdate {
 	return _u
 }
 
-// SetNillableMessageID sets the "message" edge to the Message entity by ID if the given value is not nil.
-func (_u *TextUpdate) SetNillableMessageID(id *uuid.UUID) *TextUpdate {
-	if id != nil {
-		_u = _u.SetMessageID(*id)
-	}
-	return _u
-}
-
 // SetMessage sets the "message" edge to the Message entity.
 func (_u *TextUpdate) SetMessage(v *Message) *TextUpdate {
 	return _u.SetMessageID(v.ID)
@@ -106,6 +98,9 @@ func (_u *TextUpdate) check() error {
 		if err := text.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Text.text": %w`, err)}
 		}
+	}
+	if _u.mutation.MessageCleared() && len(_u.mutation.MessageIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Text.message"`)
 	}
 	return nil
 }
@@ -194,14 +189,6 @@ func (_u *TextUpdateOne) SetMessageID(id uuid.UUID) *TextUpdateOne {
 	return _u
 }
 
-// SetNillableMessageID sets the "message" edge to the Message entity by ID if the given value is not nil.
-func (_u *TextUpdateOne) SetNillableMessageID(id *uuid.UUID) *TextUpdateOne {
-	if id != nil {
-		_u = _u.SetMessageID(*id)
-	}
-	return _u
-}
-
 // SetMessage sets the "message" edge to the Message entity.
 func (_u *TextUpdateOne) SetMessage(v *Message) *TextUpdateOne {
 	return _u.SetMessageID(v.ID)
@@ -264,6 +251,9 @@ func (_u *TextUpdateOne) check() error {
 		if err := text.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Text.text": %w`, err)}
 		}
+	}
+	if _u.mutation.MessageCleared() && len(_u.mutation.MessageIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Text.message"`)
 	}
 	return nil
 }

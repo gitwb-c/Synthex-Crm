@@ -20,8 +20,8 @@ func (EmployeeAuth) Fields() []ent.Field {
 		field.String("name").NotEmpty().Annotations(entgql.Skip()),
 		field.String("email").NotEmpty().Unique().Sensitive().Annotations(entgql.Skip()),
 		field.String("password").NotEmpty().Sensitive().Annotations(entgql.Skip()),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
 }
 

@@ -18,11 +18,11 @@ type Chat struct {
 func (Chat) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
-		field.String("title").NotEmpty(),
-		field.Bool("accepted"),
-		field.Bool("locked"),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.String("title").NotEmpty().Annotations(entgql.OrderField("TITLE")),
+		field.Bool("accepted").Annotations(entgql.OrderField("ACCEPTED")),
+		field.Bool("locked").Annotations(entgql.OrderField("LOCKED")),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
 }
 

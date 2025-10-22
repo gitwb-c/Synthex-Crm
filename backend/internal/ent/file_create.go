@@ -73,14 +73,6 @@ func (_c *FileCreate) SetMessageID(id uuid.UUID) *FileCreate {
 	return _c
 }
 
-// SetNillableMessageID sets the "message" edge to the Message entity by ID if the given value is not nil.
-func (_c *FileCreate) SetNillableMessageID(id *uuid.UUID) *FileCreate {
-	if id != nil {
-		_c = _c.SetMessageID(*id)
-	}
-	return _c
-}
-
 // SetMessage sets the "message" edge to the Message entity.
 func (_c *FileCreate) SetMessage(v *Message) *FileCreate {
 	return _c.SetMessageID(v.ID)
@@ -142,6 +134,9 @@ func (_c *FileCreate) check() error {
 	}
 	if _, ok := _c.mutation.FileName(); !ok {
 		return &ValidationError{Name: "fileName", err: errors.New(`ent: missing required field "File.fileName"`)}
+	}
+	if len(_c.mutation.MessageIDs()) == 0 {
+		return &ValidationError{Name: "message", err: errors.New(`ent: missing required edge "File.message"`)}
 	}
 	return nil
 }

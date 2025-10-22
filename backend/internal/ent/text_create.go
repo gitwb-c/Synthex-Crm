@@ -47,14 +47,6 @@ func (_c *TextCreate) SetMessageID(id uuid.UUID) *TextCreate {
 	return _c
 }
 
-// SetNillableMessageID sets the "message" edge to the Message entity by ID if the given value is not nil.
-func (_c *TextCreate) SetNillableMessageID(id *uuid.UUID) *TextCreate {
-	if id != nil {
-		_c = _c.SetMessageID(*id)
-	}
-	return _c
-}
-
 // SetMessage sets the "message" edge to the Message entity.
 func (_c *TextCreate) SetMessage(v *Message) *TextCreate {
 	return _c.SetMessageID(v.ID)
@@ -110,6 +102,9 @@ func (_c *TextCreate) check() error {
 		if err := text.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Text.text": %w`, err)}
 		}
+	}
+	if len(_c.mutation.MessageIDs()) == 0 {
+		return &ValidationError{Name: "message", err: errors.New(`ent: missing required edge "Text.message"`)}
 	}
 	return nil
 }

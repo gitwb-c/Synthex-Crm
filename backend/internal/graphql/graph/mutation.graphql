@@ -2,32 +2,74 @@ scalar Time
 
 extend type Mutation {
   createDeal(input: CreateDealInput!): Deal!
-  updateDeal(id: ID!, input: UpdateDealInput!): Deal!
+  updateDealID(id: ID!, input: UpdateDealInput!): Deal!
+  updateDealWhere(where: DealWhereInput!, input: UpdateDealInput!): [Deal!]!
 
   createPipeline(input: CreatePipelineInput!): Pipeline!
-  updatePipeline(id: ID!, input: UpdatePipelineInput!): Pipeline!
+  updatePipelineID(id: ID!, input: UpdatePipelineInput!): Pipeline!
+  updatePipelineWhere(
+    where: PipelineWhereInput!
+    input: UpdatePipelineInput!
+  ): [Pipeline!]!
 
   createCostumer(input: CreateCostumerInput!): Costumer!
-  updateCostumer(id: ID!, input: UpdateCostumerInput!): Costumer!
+  updateCostumerID(id: ID!, input: UpdateCostumerInput!): Costumer!
+  updateCostumerWhere(
+    where: CostumerWhereInput!
+    input: UpdateCostumerInput!
+  ): [Costumer!]!
 
   createStage(input: CreateStageInput!): Stage!
-  updateStage(id: ID!, input: UpdateStageInput!): Stage!
+  updateStageID(id: ID!, input: UpdateStageInput!): Stage!
+  updateStageWhere(where: StageWhereInput!, input: UpdateStageInput!): [Stage!]!
 
   createChat(input: CreateChatInput!): Chat!
-  updateChat(id: ID!, input: UpdateChatInput!): Chat!
+  updateChatID(id: ID!, input: UpdateChatInput!): Chat!
+  updateChatWhere(where: ChatWhereInput!, input: UpdateChatInput!): [Chat!]!
 
   createEmployee(input: CreateEmployeeInput!): Employee!
-  updateEmployee(id: ID!, input: UpdateEmployeeInput!): Employee!
+  updateEmployeeID(id: ID!, input: UpdateEmployeeInput!): Employee!
+  updateEmployeeWhere(
+    where: EmployeeWhereInput!
+    input: UpdateEmployeeInput!
+  ): [Employee!]!
 
   createEmployeeAuth(input: CreateEmployeeAuthInput!): EmployeeAuth!
-  updateEmployeeAuth(id: ID!, input: UpdateEmployeeAuthInput!): EmployeeAuth!
+  updateEmployeeAuthID(id: ID!, input: UpdateEmployeeAuthInput!): EmployeeAuth!
+  updateEmployeeAuthWhere(
+    where: EmployeeAuthWhereInput!
+    input: UpdateEmployeeAuthInput!
+  ): [EmployeeAuth!]!
 
   createDepartment(input: CreateDepartmentInput!): Department!
-  updateDepartment(id: ID!, input: UpdateDepartmentInput!): Department!
+  updateDepartmentID(id: ID!, input: UpdateDepartmentInput!): Department!
+  updateDepartmentWhere(
+    where: DepartmentWhereInput!
+    input: UpdateDepartmentInput!
+  ): [Department!]!
 
   createMessage(input: CreateMessageInput!): Message!
-  updateMessage(id: ID!, input: UpdateMessageInput!): Message!
+  updateMessageID(id: ID!, input: UpdateMessageInput!): Message!
+  updateMessageWhere(
+    where: MessageWhereInput!
+    input: UpdateMessageInput!
+  ): [Message!]!
 
   createQueue(input: CreateQueueInput!): Queue!
-  updateQueue(id: ID!, input: UpdateQueueInput!): Queue!
+  updateQueueID(id: ID!, input: UpdateQueueInput!): Queue!
+  updateQueueWhere(where: QueueWhereInput!, input: UpdateQueueInput!): [Queue!]!
+
+  createCrmField(input: CreateCrmFieldInput!): CrmField!
+  updateCrmFieldID(id: ID!, input: UpdateCrmFieldInput!): CrmField!
+  updateCrmFieldWhere(
+    where: CrmFieldWhereInput!
+    input: UpdateCrmFieldInput!
+  ): [CrmField!]!
+
+  createDealCrmField(input: CreateDealCrmFieldInput!): DealCrmField!
+  updateDealCrmFieldID(id: ID!, input: UpdateDealCrmFieldInput!): DealCrmField!
+  updateDealCrmFieldWhere(
+    where: DealCrmFieldWhereInput!
+    input: UpdateDealCrmFieldInput!
+  ): [DealCrmField!]!
 }

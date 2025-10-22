@@ -1,6 +1,9 @@
 package services
 
 import (
+	"context"
+
+	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
 )
 
@@ -14,11 +17,25 @@ func NewQueueService(repository *repositories.QueueRepository) *QueueService {
 	}
 }
 
-// ([]*ent.Queue, error)
-func (s *QueueService) Read() {}
-
-func (s *QueueService) Create() {}
-
-func (s *QueueService) Update() {}
-
+func (s *QueueService) Read(ctx context.Context) ([]*ent.Queue, error) {
+	queue, err := s.repository.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return queue, nil
+}
+func (s *QueueService) Create(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error) {
+	queue, err := s.repository.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return queue, nil
+}
+func (s *QueueService) UpdateID(ctx context.Context, id string, input ent.UpdateQueueInput) (*ent.Queue, error) {
+	queue, err := s.repository.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return queue, nil
+}
 func (s *QueueService) Delete() {}

@@ -93,7 +93,7 @@ func (_m *Deal) Costumer(ctx context.Context) (*Costumer, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryCostumer().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (_m *Deal) Chat(ctx context.Context) (*Chat, error) {
@@ -129,7 +129,7 @@ func (_m *DealCrmField) Deal(ctx context.Context) (*Deal, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryDeal().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *DealCrmField) CrmField(ctx context.Context) (*CrmField, error) {
@@ -137,7 +137,7 @@ func (_m *DealCrmField) CrmField(ctx context.Context) (*CrmField, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryCrmField().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Department) Employee(ctx context.Context) (result []*Employee, err error) {
@@ -241,7 +241,7 @@ func (_m *File) Message(ctx context.Context) (*Message, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMessage().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Message) Chat(ctx context.Context) (*Chat, error) {
@@ -361,5 +361,5 @@ func (_m *Text) Message(ctx context.Context) (*Message, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMessage().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }

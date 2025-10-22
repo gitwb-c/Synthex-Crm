@@ -1,11 +1,13 @@
 package db
 
 import (
+	"context"
 	"log"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/migrate"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -20,18 +22,13 @@ func NewClient() (*ent.Client, error) {
 }
 
 func Init(client *ent.Client) (*handler.Server, error) {
-	client, err := NewClient()
-	if err != nil {
-		return nil, err
+	if err := client.Schema.Create(
+		context.Background(),
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
+	); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
 	}
-
-	// if err := Client.Schema.Create(
-	// 	context.Background(),
-	// 	migrate.WithDropIndex(true),
-	// 	migrate.WithDropColumn(true),
-	// ); err != nil {
-	// 	log.Fatalf("failed creating schema resources: %v", err)
-	// }
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{Client: client}}))
 	return srv, nil

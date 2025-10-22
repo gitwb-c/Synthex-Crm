@@ -15,107 +15,301 @@ import (
 // CreateDeal is the resolver for the createDeal field.
 func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error) {
 	service := wire.InitializeDealService(r.Client)
-	deal, err := service.Create(ctx, &input)
+	deal, err := service.Create(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 	return deal, nil
-
 }
 
-// UpdateDeal is the resolver for the updateDeal field.
-func (r *mutationResolver) UpdateDeal(ctx context.Context, id string, input ent.UpdateDealInput) (*ent.Deal, error) {
-	panic(fmt.Errorf("not implemented: UpdateDeal - updateDeal"))
+// UpdateDealID is the resolver for the updateDealID field.
+func (r *mutationResolver) UpdateDealID(ctx context.Context, id string, input ent.UpdateDealInput) (*ent.Deal, error) {
+	service := wire.InitializeDealService(r.Client)
+	deal, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return deal, nil
+}
+
+// UpdateDealWhere is the resolver for the updateDealWhere field.
+func (r *mutationResolver) UpdateDealWhere(ctx context.Context, where ent.DealWhereInput, input ent.UpdateDealInput) ([]*ent.Deal, error) {
+	panic(fmt.Errorf("not implemented: UpdateDealWhere - updateDealWhere"))
 }
 
 // CreatePipeline is the resolver for the createPipeline field.
 func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreatePipelineInput) (*ent.Pipeline, error) {
-	panic(fmt.Errorf("not implemented: CreatePipeline - createPipeline"))
+	service := wire.InitializePipelineService(r.Client)
+	pipeline, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return pipeline, nil
 }
 
-// UpdatePipeline is the resolver for the updatePipeline field.
-func (r *mutationResolver) UpdatePipeline(ctx context.Context, id string, input ent.UpdatePipelineInput) (*ent.Pipeline, error) {
-	panic(fmt.Errorf("not implemented: UpdatePipeline - updatePipeline"))
+// UpdatePipelineID is the resolver for the updatePipelineID field.
+func (r *mutationResolver) UpdatePipelineID(ctx context.Context, id string, input ent.UpdatePipelineInput) (*ent.Pipeline, error) {
+	service := wire.InitializePipelineService(r.Client)
+	pipeline, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return pipeline, nil
+}
+
+// UpdatePipelineWhere is the resolver for the updatePipelineWhere field.
+func (r *mutationResolver) UpdatePipelineWhere(ctx context.Context, where ent.PipelineWhereInput, input ent.UpdatePipelineInput) ([]*ent.Pipeline, error) {
+	panic(fmt.Errorf("not implemented: UpdatePipelineWhere - updatePipelineWhere"))
 }
 
 // CreateCostumer is the resolver for the createCostumer field.
 func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error) {
-	panic(fmt.Errorf("not implemented: CreateCostumer - createCostumer"))
+	service := wire.InitializeCostumerService(r.Client)
+	costumer, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return costumer, nil
 }
 
-// UpdateCostumer is the resolver for the updateCostumer field.
-func (r *mutationResolver) UpdateCostumer(ctx context.Context, id string, input ent.UpdateCostumerInput) (*ent.Costumer, error) {
-	panic(fmt.Errorf("not implemented: UpdateCostumer - updateCostumer"))
+// UpdateCostumerID is the resolver for the updateCostumerID field.
+func (r *mutationResolver) UpdateCostumerID(ctx context.Context, id string, input ent.UpdateCostumerInput) (*ent.Costumer, error) {
+	service := wire.InitializeCostumerService(r.Client)
+	costumer, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return costumer, nil
+}
+
+// UpdateCostumerWhere is the resolver for the updateCostumerWhere field.
+func (r *mutationResolver) UpdateCostumerWhere(ctx context.Context, where ent.CostumerWhereInput, input ent.UpdateCostumerInput) ([]*ent.Costumer, error) {
+	panic(fmt.Errorf("not implemented: UpdateCostumerWhere - updateCostumerWhere"))
 }
 
 // CreateStage is the resolver for the createStage field.
 func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStageInput) (*ent.Stage, error) {
-	panic(fmt.Errorf("not implemented: CreateStage - createStage"))
+	service := wire.InitializeStageService(r.Client)
+	stage, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return stage, nil
 }
 
-// UpdateStage is the resolver for the updateStage field.
-func (r *mutationResolver) UpdateStage(ctx context.Context, id string, input ent.UpdateStageInput) (*ent.Stage, error) {
-	panic(fmt.Errorf("not implemented: UpdateStage - updateStage"))
+// UpdateStageID is the resolver for the updateStageID field.
+func (r *mutationResolver) UpdateStageID(ctx context.Context, id string, input ent.UpdateStageInput) (*ent.Stage, error) {
+	service := wire.InitializeStageService(r.Client)
+	stage, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return stage, nil
+}
+
+// UpdateStageWhere is the resolver for the updateStageWhere field.
+func (r *mutationResolver) UpdateStageWhere(ctx context.Context, where ent.StageWhereInput, input ent.UpdateStageInput) ([]*ent.Stage, error) {
+	panic(fmt.Errorf("not implemented: UpdateStageWhere - updateStageWhere"))
 }
 
 // CreateChat is the resolver for the createChat field.
 func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatInput) (*ent.Chat, error) {
-	panic(fmt.Errorf("not implemented: CreateChat - createChat"))
+	service := wire.InitializeChatService(r.Client)
+	chat, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return chat, nil
 }
 
-// UpdateChat is the resolver for the updateChat field.
-func (r *mutationResolver) UpdateChat(ctx context.Context, id string, input ent.UpdateChatInput) (*ent.Chat, error) {
-	panic(fmt.Errorf("not implemented: UpdateChat - updateChat"))
+// UpdateChatID is the resolver for the updateChatID field.
+func (r *mutationResolver) UpdateChatID(ctx context.Context, id string, input ent.UpdateChatInput) (*ent.Chat, error) {
+	service := wire.InitializeChatService(r.Client)
+	chat, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return chat, nil
+}
+
+// UpdateChatWhere is the resolver for the updateChatWhere field.
+func (r *mutationResolver) UpdateChatWhere(ctx context.Context, where ent.ChatWhereInput, input ent.UpdateChatInput) ([]*ent.Chat, error) {
+	panic(fmt.Errorf("not implemented: UpdateChatWhere - updateChatWhere"))
 }
 
 // CreateEmployee is the resolver for the createEmployee field.
 func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
-	panic(fmt.Errorf("not implemented: CreateEmployee - createEmployee"))
+	service := wire.InitializeEmployeeService(r.Client)
+	employee, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return employee, nil
 }
 
-// UpdateEmployee is the resolver for the updateEmployee field.
-func (r *mutationResolver) UpdateEmployee(ctx context.Context, id string, input ent.UpdateEmployeeInput) (*ent.Employee, error) {
-	panic(fmt.Errorf("not implemented: UpdateEmployee - updateEmployee"))
+// UpdateEmployeeID is the resolver for the updateEmployeeID field.
+func (r *mutationResolver) UpdateEmployeeID(ctx context.Context, id string, input ent.UpdateEmployeeInput) (*ent.Employee, error) {
+	service := wire.InitializeEmployeeService(r.Client)
+	employee, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return employee, nil
+}
+
+// UpdateEmployeeWhere is the resolver for the updateEmployeeWhere field.
+func (r *mutationResolver) UpdateEmployeeWhere(ctx context.Context, where ent.EmployeeWhereInput, input ent.UpdateEmployeeInput) ([]*ent.Employee, error) {
+	panic(fmt.Errorf("not implemented: UpdateEmployeeWhere - updateEmployeeWhere"))
 }
 
 // CreateEmployeeAuth is the resolver for the createEmployeeAuth field.
 func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
-	panic(fmt.Errorf("not implemented: CreateEmployeeAuth - createEmployeeAuth"))
+	service := wire.InitializeEmployeeAuthService(r.Client)
+	employeeAuth, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return employeeAuth, nil
 }
 
-// UpdateEmployeeAuth is the resolver for the updateEmployeeAuth field.
-func (r *mutationResolver) UpdateEmployeeAuth(ctx context.Context, id string, input ent.UpdateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
-	panic(fmt.Errorf("not implemented: UpdateEmployeeAuth - updateEmployeeAuth"))
+// UpdateEmployeeAuthID is the resolver for the updateEmployeeAuthID field.
+func (r *mutationResolver) UpdateEmployeeAuthID(ctx context.Context, id string, input ent.UpdateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
+	service := wire.InitializeEmployeeAuthService(r.Client)
+	employeeAuth, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return employeeAuth, nil
+}
+
+// UpdateEmployeeAuthWhere is the resolver for the updateEmployeeAuthWhere field.
+func (r *mutationResolver) UpdateEmployeeAuthWhere(ctx context.Context, where ent.EmployeeAuthWhereInput, input ent.UpdateEmployeeAuthInput) ([]*ent.EmployeeAuth, error) {
+	panic(fmt.Errorf("not implemented: UpdateEmployeeAuthWhere - updateEmployeeAuthWhere"))
 }
 
 // CreateDepartment is the resolver for the createDepartment field.
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
-	panic(fmt.Errorf("not implemented: CreateDepartment - createDepartment"))
+	service := wire.InitializeDepartmentService(r.Client)
+	department, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return department, nil
 }
 
-// UpdateDepartment is the resolver for the updateDepartment field.
-func (r *mutationResolver) UpdateDepartment(ctx context.Context, id string, input ent.UpdateDepartmentInput) (*ent.Department, error) {
-	panic(fmt.Errorf("not implemented: UpdateDepartment - updateDepartment"))
+// UpdateDepartmentID is the resolver for the updateDepartmentID field.
+func (r *mutationResolver) UpdateDepartmentID(ctx context.Context, id string, input ent.UpdateDepartmentInput) (*ent.Department, error) {
+	service := wire.InitializeDepartmentService(r.Client)
+	department, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return department, nil
+}
+
+// UpdateDepartmentWhere is the resolver for the updateDepartmentWhere field.
+func (r *mutationResolver) UpdateDepartmentWhere(ctx context.Context, where ent.DepartmentWhereInput, input ent.UpdateDepartmentInput) ([]*ent.Department, error) {
+	panic(fmt.Errorf("not implemented: UpdateDepartmentWhere - updateDepartmentWhere"))
 }
 
 // CreateMessage is the resolver for the createMessage field.
 func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMessageInput) (*ent.Message, error) {
-	panic(fmt.Errorf("not implemented: CreateMessage - createMessage"))
+	service := wire.InitializeMessageService(r.Client)
+	message, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return message, nil
 }
 
-// UpdateMessage is the resolver for the updateMessage field.
-func (r *mutationResolver) UpdateMessage(ctx context.Context, id string, input ent.UpdateMessageInput) (*ent.Message, error) {
-	panic(fmt.Errorf("not implemented: UpdateMessage - updateMessage"))
+// UpdateMessageID is the resolver for the updateMessageID field.
+func (r *mutationResolver) UpdateMessageID(ctx context.Context, id string, input ent.UpdateMessageInput) (*ent.Message, error) {
+	service := wire.InitializeMessageService(r.Client)
+	message, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return message, nil
+}
+
+// UpdateMessageWhere is the resolver for the updateMessageWhere field.
+func (r *mutationResolver) UpdateMessageWhere(ctx context.Context, where ent.MessageWhereInput, input ent.UpdateMessageInput) ([]*ent.Message, error) {
+	panic(fmt.Errorf("not implemented: UpdateMessageWhere - updateMessageWhere"))
 }
 
 // CreateQueue is the resolver for the createQueue field.
 func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error) {
-	panic(fmt.Errorf("not implemented: CreateQueue - createQueue"))
+	service := wire.InitializeQueueService(r.Client)
+	queue, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return queue, nil
 }
 
-// UpdateQueue is the resolver for the updateQueue field.
-func (r *mutationResolver) UpdateQueue(ctx context.Context, id string, input ent.UpdateQueueInput) (*ent.Queue, error) {
-	panic(fmt.Errorf("not implemented: UpdateQueue - updateQueue"))
+// UpdateQueueID is the resolver for the updateQueueID field.
+func (r *mutationResolver) UpdateQueueID(ctx context.Context, id string, input ent.UpdateQueueInput) (*ent.Queue, error) {
+	service := wire.InitializeQueueService(r.Client)
+	queue, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return queue, nil
+}
+
+// UpdateQueueWhere is the resolver for the updateQueueWhere field.
+func (r *mutationResolver) UpdateQueueWhere(ctx context.Context, where ent.QueueWhereInput, input ent.UpdateQueueInput) ([]*ent.Queue, error) {
+	panic(fmt.Errorf("not implemented: UpdateQueueWhere - updateQueueWhere"))
+}
+
+// CreateCrmField is the resolver for the createCrmField field.
+func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateCrmFieldInput) (*ent.CrmField, error) {
+	service := wire.InitializeCrmFieldService(r.Client)
+	crmField, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return crmField, nil
+}
+
+// UpdateCrmFieldID is the resolver for the updateCrmFieldID field.
+func (r *mutationResolver) UpdateCrmFieldID(ctx context.Context, id string, input ent.UpdateCrmFieldInput) (*ent.CrmField, error) {
+	service := wire.InitializeCrmFieldService(r.Client)
+	crmField, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return crmField, nil
+}
+
+// UpdateCrmFieldWhere is the resolver for the updateCrmFieldWhere field.
+func (r *mutationResolver) UpdateCrmFieldWhere(ctx context.Context, where ent.CrmFieldWhereInput, input ent.UpdateCrmFieldInput) ([]*ent.CrmField, error) {
+	panic(fmt.Errorf("not implemented: UpdateCrmFieldWhere - updateCrmFieldWhere"))
+}
+
+// CreateDealCrmField is the resolver for the createDealCrmField field.
+func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.CreateDealCrmFieldInput) (*ent.DealCrmField, error) {
+	service := wire.InitializeDealCrmFieldService(r.Client)
+	dealCrmField, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return dealCrmField, nil
+}
+
+// UpdateDealCrmFieldID is the resolver for the updateDealCrmFieldID field.
+func (r *mutationResolver) UpdateDealCrmFieldID(ctx context.Context, id string, input ent.UpdateDealCrmFieldInput) (*ent.DealCrmField, error) {
+	service := wire.InitializeDealCrmFieldService(r.Client)
+	dealCrmField, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return dealCrmField, nil
+}
+
+// UpdateDealCrmFieldWhere is the resolver for the updateDealCrmFieldWhere field.
+func (r *mutationResolver) UpdateDealCrmFieldWhere(ctx context.Context, where ent.DealCrmFieldWhereInput, input ent.UpdateDealCrmFieldInput) ([]*ent.DealCrmField, error) {
+	panic(fmt.Errorf("not implemented: UpdateDealCrmFieldWhere - updateDealCrmFieldWhere"))
 }
 
 // Mutation returns MutationResolver implementation.

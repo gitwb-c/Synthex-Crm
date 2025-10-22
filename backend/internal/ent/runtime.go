@@ -89,6 +89,8 @@ func init() {
 	costumer.DefaultCreatedAt = costumerDescCreatedAt.Default.(func() time.Time)
 	// costumerDescUpdatedAt is the schema descriptor for updatedAt field.
 	costumerDescUpdatedAt := costumerFields[5].Descriptor()
+	// costumer.DefaultUpdatedAt holds the default value on creation for the updatedAt field.
+	costumer.DefaultUpdatedAt = costumerDescUpdatedAt.Default.(func() time.Time)
 	// costumer.UpdateDefaultUpdatedAt holds the default value on update for the updatedAt field.
 	costumer.UpdateDefaultUpdatedAt = costumerDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// costumerDescID is the schema descriptor for id field.

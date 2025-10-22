@@ -18,11 +18,11 @@ type Stage struct {
 func (Stage) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID"), entgql.QueryField()),
-		field.String("name").NotEmpty().Annotations(entgql.QueryField()),
-		field.String("color").Default("#ffffff").NotEmpty().Annotations(),
-		field.Bool("lossOrGain").Annotations(entgql.QueryField()),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.String("name").NotEmpty().Annotations(entgql.QueryField(), entgql.OrderField("NAME")),
+		field.String("color").Default("#ffffff").NotEmpty(),
+		field.Bool("lossOrGain").Annotations(entgql.QueryField(), entgql.OrderField("LOSS_OR_GAIN")),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
 }
 

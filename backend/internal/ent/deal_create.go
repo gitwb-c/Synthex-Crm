@@ -85,6 +85,14 @@ func (_c *DealCreate) SetCostumerID(id uuid.UUID) *DealCreate {
 	return _c
 }
 
+// SetNillableCostumerID sets the "costumer" edge to the Costumer entity by ID if the given value is not nil.
+func (_c *DealCreate) SetNillableCostumerID(id *uuid.UUID) *DealCreate {
+	if id != nil {
+		_c = _c.SetCostumerID(*id)
+	}
+	return _c
+}
+
 // SetCostumer sets the "costumer" edge to the Costumer entity.
 func (_c *DealCreate) SetCostumer(v *Costumer) *DealCreate {
 	return _c.SetCostumerID(v.ID)
@@ -202,9 +210,6 @@ func (_c *DealCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Deal.updatedAt"`)}
-	}
-	if len(_c.mutation.CostumerIDs()) == 0 {
-		return &ValidationError{Name: "costumer", err: errors.New(`ent: missing required edge "Deal.costumer"`)}
 	}
 	if len(_c.mutation.StageIDs()) == 0 {
 		return &ValidationError{Name: "stage", err: errors.New(`ent: missing required edge "Deal.stage"`)}

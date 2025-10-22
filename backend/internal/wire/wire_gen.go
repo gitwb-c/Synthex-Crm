@@ -50,18 +50,6 @@ func InitializeEmployeeAuthService(client *ent.Client) *services.EmployeeAuthSer
 	return employeeAuthService
 }
 
-func InitializeFieldService(client *ent.Client) *services.FieldService {
-	fieldRepository := InitializeFieldRepository(client)
-	fieldService := services.NewFieldService(fieldRepository)
-	return fieldService
-}
-
-func InitializeFormService(client *ent.Client) *services.FormService {
-	formRepository := InitializeFormRepository(client)
-	formService := services.NewFormService(formRepository)
-	return formService
-}
-
 func InitializeMessageService(client *ent.Client) *services.MessageService {
 	messageRepository := InitializeMessageRepository(client)
 	messageService := services.NewMessageService(messageRepository)
@@ -84,6 +72,18 @@ func InitializeStageService(client *ent.Client) *services.StageService {
 	stageRepository := InitializeStageRepository(client)
 	stageService := services.NewStageService(stageRepository)
 	return stageService
+}
+
+func InitializeCrmFieldService(client *ent.Client) *services.CrmFieldService {
+	crmFieldRepository := InitializeCrmFieldRepository(client)
+	crmFieldService := services.NewCrmFieldService(crmFieldRepository)
+	return crmFieldService
+}
+
+func InitializeDealCrmFieldService(client *ent.Client) *services.DealCrmFieldService {
+	dealCrmFieldRepository := InitializeDealCrmFieldRepository(client)
+	dealCrmFieldService := services.NewDealCrmFieldService(dealCrmFieldRepository)
+	return dealCrmFieldService
 }
 
 func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
@@ -116,16 +116,6 @@ func InitializeEmployeeAuthRepository(client *ent.Client) *repositories.Employee
 	return employeeAuthRepository
 }
 
-func InitializeFieldRepository(client *ent.Client) *repositories.FieldRepository {
-	fieldRepository := repositories.NewFieldRepository(client)
-	return fieldRepository
-}
-
-func InitializeFormRepository(client *ent.Client) *repositories.FormRepository {
-	formRepository := repositories.NewFormRepository(client)
-	return formRepository
-}
-
 func InitializeMessageRepository(client *ent.Client) *repositories.MessageRepository {
 	messageRepository := repositories.NewMessageRepository(client)
 	return messageRepository
@@ -144,4 +134,14 @@ func InitializeQueueRepository(client *ent.Client) *repositories.QueueRepository
 func InitializeStageRepository(client *ent.Client) *repositories.StageRepository {
 	stageRepository := repositories.NewStageRepository(client)
 	return stageRepository
+}
+
+func InitializeCrmFieldRepository(client *ent.Client) *repositories.CrmFieldRepository {
+	crmFieldRepository := repositories.NewCrmFieldRepository(client)
+	return crmFieldRepository
+}
+
+func InitializeDealCrmFieldRepository(client *ent.Client) *repositories.DealCrmFieldRepository {
+	dealCrmFieldRepository := repositories.NewDealCrmFieldRepository(client)
+	return dealCrmFieldRepository
 }

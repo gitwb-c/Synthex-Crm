@@ -18,18 +18,18 @@ type Deal struct {
 func (Deal) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
-		field.String("title").NotEmpty().Unique().Annotations(entgql.QueryField()),
-		field.String("source").Annotations(entgql.QueryField()),
-		field.Time("createdAt").Default(time.Now).Immutable(),
-		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now),
+		field.String("title").NotEmpty().Unique().Annotations(entgql.QueryField(), entgql.OrderField("TITLE")),
+		field.String("source").Annotations(entgql.QueryField()).Annotations(entgql.QueryField(), entgql.OrderField("SOURCE")),
+		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.QueryField(), entgql.OrderField("CREATED_AT")),
+		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.QueryField(), entgql.OrderField("UPDATED_AT")),
 	}
 }
 
 func (Deal) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("costumer", Costumer.Type).Required().Unique(),
+		edge.To("costumer", Costumer.Type).Unique(),
 		edge.From("chat", Chat.Type).Ref("deal").Unique(),
-		edge.To("stage", Stage.Type).Required().Unique(),
+		edge.To("stage", Stage.Type).Required().Unique().Required(),
 		edge.From("dealCrmFields", DealCrmField.Type).Ref("deal"),
 	}
 }

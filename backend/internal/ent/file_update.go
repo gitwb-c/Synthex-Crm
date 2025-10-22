@@ -97,14 +97,6 @@ func (_u *FileUpdate) SetMessageID(id uuid.UUID) *FileUpdate {
 	return _u
 }
 
-// SetNillableMessageID sets the "message" edge to the Message entity by ID if the given value is not nil.
-func (_u *FileUpdate) SetNillableMessageID(id *uuid.UUID) *FileUpdate {
-	if id != nil {
-		_u = _u.SetMessageID(*id)
-	}
-	return _u
-}
-
 // SetMessage sets the "message" edge to the Message entity.
 func (_u *FileUpdate) SetMessage(v *Message) *FileUpdate {
 	return _u.SetMessageID(v.ID)
@@ -154,6 +146,9 @@ func (_u *FileUpdate) check() error {
 		if err := file.URLValidator(v); err != nil {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "File.url": %w`, err)}
 		}
+	}
+	if _u.mutation.MessageCleared() && len(_u.mutation.MessageIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "File.message"`)
 	}
 	return nil
 }
@@ -302,14 +297,6 @@ func (_u *FileUpdateOne) SetMessageID(id uuid.UUID) *FileUpdateOne {
 	return _u
 }
 
-// SetNillableMessageID sets the "message" edge to the Message entity by ID if the given value is not nil.
-func (_u *FileUpdateOne) SetNillableMessageID(id *uuid.UUID) *FileUpdateOne {
-	if id != nil {
-		_u = _u.SetMessageID(*id)
-	}
-	return _u
-}
-
 // SetMessage sets the "message" edge to the Message entity.
 func (_u *FileUpdateOne) SetMessage(v *Message) *FileUpdateOne {
 	return _u.SetMessageID(v.ID)
@@ -372,6 +359,9 @@ func (_u *FileUpdateOne) check() error {
 		if err := file.URLValidator(v); err != nil {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "File.url": %w`, err)}
 		}
+	}
+	if _u.mutation.MessageCleared() && len(_u.mutation.MessageIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "File.message"`)
 	}
 	return nil
 }

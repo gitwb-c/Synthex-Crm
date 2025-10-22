@@ -40,8 +40,8 @@ var (
 	CostumersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
-		{Name: "phone", Type: field.TypeString},
-		{Name: "email", Type: field.TypeString},
+		{Name: "phone", Type: field.TypeString, Unique: true},
+		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
@@ -74,7 +74,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "chat_deal", Type: field.TypeUUID, Unique: true, Nullable: true},
-		{Name: "deal_costumer", Type: field.TypeUUID},
+		{Name: "deal_costumer", Type: field.TypeUUID, Nullable: true},
 		{Name: "deal_stage", Type: field.TypeUUID},
 	}
 	// DealsTable holds the schema information for the "deals" table.
@@ -93,7 +93,7 @@ var (
 				Symbol:     "deals_costumers_costumer",
 				Columns:    []*schema.Column{DealsColumns[6]},
 				RefColumns: []*schema.Column{CostumersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "deals_stages_stage",
@@ -109,8 +109,8 @@ var (
 		{Name: "value", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deal_crm_field_deal", Type: field.TypeUUID, Nullable: true},
-		{Name: "deal_crm_field_crm_field", Type: field.TypeUUID, Nullable: true},
+		{Name: "deal_crm_field_deal", Type: field.TypeUUID},
+		{Name: "deal_crm_field_crm_field", Type: field.TypeUUID},
 	}
 	// DealCrmFieldsTable holds the schema information for the "deal_crm_fields" table.
 	DealCrmFieldsTable = &schema.Table{
@@ -122,13 +122,13 @@ var (
 				Symbol:     "deal_crm_fields_deals_deal",
 				Columns:    []*schema.Column{DealCrmFieldsColumns[4]},
 				RefColumns: []*schema.Column{DealsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "deal_crm_fields_crm_fields_crmField",
 				Columns:    []*schema.Column{DealCrmFieldsColumns[5]},
 				RefColumns: []*schema.Column{CrmFieldsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}

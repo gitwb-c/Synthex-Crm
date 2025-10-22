@@ -193,7 +193,7 @@ type CreateCostumerInput struct {
 	Phone     string
 	Email     string
 	CreatedAt *time.Time
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 	DealIDs   []uuid.UUID
 }
 
@@ -205,7 +205,9 @@ func (i *CreateCostumerInput) Mutate(m *CostumerMutation) {
 	if v := i.CreatedAt; v != nil {
 		m.SetCreatedAt(*v)
 	}
-	m.SetUpdatedAt(i.UpdatedAt)
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
 	if v := i.DealIDs; len(v) > 0 {
 		m.AddDealIDs(v...)
 	}
@@ -363,7 +365,7 @@ type CreateDealInput struct {
 	Source          string
 	CreatedAt       *time.Time
 	UpdatedAt       *time.Time
-	CostumerID      uuid.UUID
+	CostumerID      *uuid.UUID
 	ChatID          *uuid.UUID
 	StageID         uuid.UUID
 	DealCrmFieldIDs []uuid.UUID
@@ -379,7 +381,9 @@ func (i *CreateDealInput) Mutate(m *DealMutation) {
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
 	}
-	m.SetCostumerID(i.CostumerID)
+	if v := i.CostumerID; v != nil {
+		m.SetCostumerID(*v)
+	}
 	if v := i.ChatID; v != nil {
 		m.SetChatID(*v)
 	}
@@ -400,6 +404,7 @@ type UpdateDealInput struct {
 	Title                 *string
 	Source                *string
 	UpdatedAt             *time.Time
+	ClearCostumer         bool
 	CostumerID            *uuid.UUID
 	ClearChat             bool
 	ChatID                *uuid.UUID
@@ -419,6 +424,9 @@ func (i *UpdateDealInput) Mutate(m *DealMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
+	}
+	if i.ClearCostumer {
+		m.ClearCostumer()
 	}
 	if v := i.CostumerID; v != nil {
 		m.SetCostumerID(*v)
@@ -460,8 +468,8 @@ type CreateDealCrmFieldInput struct {
 	Value      string
 	CreatedAt  *time.Time
 	UpdatedAt  *time.Time
-	DealID     *uuid.UUID
-	CrmFieldID *uuid.UUID
+	DealID     uuid.UUID
+	CrmFieldID uuid.UUID
 }
 
 // Mutate applies the CreateDealCrmFieldInput on the DealCrmFieldMutation builder.
@@ -473,12 +481,8 @@ func (i *CreateDealCrmFieldInput) Mutate(m *DealCrmFieldMutation) {
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
 	}
-	if v := i.DealID; v != nil {
-		m.SetDealID(*v)
-	}
-	if v := i.CrmFieldID; v != nil {
-		m.SetCrmFieldID(*v)
-	}
+	m.SetDealID(i.DealID)
+	m.SetCrmFieldID(i.CrmFieldID)
 }
 
 // SetInput applies the change-set in the CreateDealCrmFieldInput on the DealCrmFieldCreate builder.
@@ -489,12 +493,10 @@ func (c *DealCrmFieldCreate) SetInput(i CreateDealCrmFieldInput) *DealCrmFieldCr
 
 // UpdateDealCrmFieldInput represents a mutation input for updating dealcrmfields.
 type UpdateDealCrmFieldInput struct {
-	Value         *string
-	UpdatedAt     *time.Time
-	ClearDeal     bool
-	DealID        *uuid.UUID
-	ClearCrmField bool
-	CrmFieldID    *uuid.UUID
+	Value      *string
+	UpdatedAt  *time.Time
+	DealID     *uuid.UUID
+	CrmFieldID *uuid.UUID
 }
 
 // Mutate applies the UpdateDealCrmFieldInput on the DealCrmFieldMutation builder.
@@ -505,14 +507,8 @@ func (i *UpdateDealCrmFieldInput) Mutate(m *DealCrmFieldMutation) {
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
 	}
-	if i.ClearDeal {
-		m.ClearDeal()
-	}
 	if v := i.DealID; v != nil {
 		m.SetDealID(*v)
-	}
-	if i.ClearCrmField {
-		m.ClearCrmField()
 	}
 	if v := i.CrmFieldID; v != nil {
 		m.SetCrmFieldID(*v)
@@ -857,7 +853,7 @@ type CreateFileInput struct {
 	Caption   *string
 	MimeType  string
 	FileName  string
-	MessageID *uuid.UUID
+	MessageID uuid.UUID
 }
 
 // Mutate applies the CreateFileInput on the FileMutation builder.
@@ -868,9 +864,7 @@ func (i *CreateFileInput) Mutate(m *FileMutation) {
 	}
 	m.SetMimeType(i.MimeType)
 	m.SetFileName(i.FileName)
-	if v := i.MessageID; v != nil {
-		m.SetMessageID(*v)
-	}
+	m.SetMessageID(i.MessageID)
 }
 
 // SetInput applies the change-set in the CreateFileInput on the FileCreate builder.
@@ -886,7 +880,6 @@ type UpdateFileInput struct {
 	Caption      *string
 	MimeType     *string
 	FileName     *string
-	ClearMessage bool
 	MessageID    *uuid.UUID
 }
 
@@ -906,9 +899,6 @@ func (i *UpdateFileInput) Mutate(m *FileMutation) {
 	}
 	if v := i.FileName; v != nil {
 		m.SetFileName(*v)
-	}
-	if i.ClearMessage {
-		m.ClearMessage()
 	}
 	if v := i.MessageID; v != nil {
 		m.SetMessageID(*v)
@@ -1318,15 +1308,13 @@ func (c *StageUpdateOne) SetInput(i UpdateStageInput) *StageUpdateOne {
 // CreateTextInput represents a mutation input for creating texts.
 type CreateTextInput struct {
 	Text      string
-	MessageID *uuid.UUID
+	MessageID uuid.UUID
 }
 
 // Mutate applies the CreateTextInput on the TextMutation builder.
 func (i *CreateTextInput) Mutate(m *TextMutation) {
 	m.SetText(i.Text)
-	if v := i.MessageID; v != nil {
-		m.SetMessageID(*v)
-	}
+	m.SetMessageID(i.MessageID)
 }
 
 // SetInput applies the change-set in the CreateTextInput on the TextCreate builder.
@@ -1337,18 +1325,14 @@ func (c *TextCreate) SetInput(i CreateTextInput) *TextCreate {
 
 // UpdateTextInput represents a mutation input for updating texts.
 type UpdateTextInput struct {
-	Text         *string
-	ClearMessage bool
-	MessageID    *uuid.UUID
+	Text      *string
+	MessageID *uuid.UUID
 }
 
 // Mutate applies the UpdateTextInput on the TextMutation builder.
 func (i *UpdateTextInput) Mutate(m *TextMutation) {
 	if v := i.Text; v != nil {
 		m.SetText(*v)
-	}
-	if i.ClearMessage {
-		m.ClearMessage()
 	}
 	if v := i.MessageID; v != nil {
 		m.SetMessageID(*v)
