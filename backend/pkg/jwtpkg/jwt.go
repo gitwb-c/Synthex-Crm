@@ -1,4 +1,4 @@
-package jwt
+package jwtpkg
 
 import (
 	"fmt"
@@ -12,15 +12,15 @@ var SecretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 type TokenClaims struct {
 	EmployeeId   string
-	Company      string
+	CompanyId    string
 	DepartmentID string
 }
 
-func GenerateToken(employeeId string, company string, departmentId string) (string, error) {
+func GenerateToken(employeeId string, companyId string, departmentId string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["employeeId"] = employeeId
-	claims["company"] = company
+	claims["companyId"] = companyId
 	claims["departmentId"] = departmentId
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	tokenStr, err := token.SignedString(SecretKey)
@@ -39,10 +39,11 @@ func ParseToken(tokenStr string) (TokenClaims, error) {
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		employeeId := claims["employeeId"].(string)
-		company := claims["company"].(string)
+		companyId := claims["companyId"].(string)
 		departmentId := claims["departmentId"].(string)
-		return TokenClaims{EmployeeId: employeeId,
-			Company:      company,
+		return TokenClaims{
+			EmployeeId:   employeeId,
+			CompanyId:    companyId,
 			DepartmentID: departmentId}, nil
 	}
 	return TokenClaims{}, fmt.Errorf("invalid token or missing claims")

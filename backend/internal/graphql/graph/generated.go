@@ -20,7 +20,6 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
-	graphql1 "github.com/gitwb-c/crm.saas/backend/internal/graphql"
 	"github.com/google/uuid"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -296,11 +295,6 @@ type ComplexityRoot struct {
 		UpdateStageWhere        func(childComplexity int, where ent.StageWhereInput, input ent.UpdateStageInput) int
 	}
 
-	NewLogin struct {
-		Jwt  func(childComplexity int) int
-		Time func(childComplexity int) int
-	}
-
 	PageInfo struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
@@ -328,7 +322,6 @@ type ComplexityRoot struct {
 		EmployeeAuths func(childComplexity int) int
 		Employees     func(childComplexity int) int
 		Files         func(childComplexity int) int
-		Login         func(childComplexity int, input graphql1.LoginInput) int
 		Messages      func(childComplexity int) int
 		Node          func(childComplexity int, id string) int
 		Nodes         func(childComplexity int, ids []string) int
@@ -480,7 +473,6 @@ type QueryResolver interface {
 	Queues(ctx context.Context) ([]*ent.Queue, error)
 	Stages(ctx context.Context) ([]*ent.Stage, error)
 	Texts(ctx context.Context) ([]*ent.Text, error)
-	Login(ctx context.Context, input graphql1.LoginInput) (*graphql1.NewLogin, error)
 }
 type QueueResolver interface {
 	ID(ctx context.Context, obj *ent.Queue) (string, error)
@@ -1948,19 +1940,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.UpdateStageWhere(childComplexity, args["where"].(ent.StageWhereInput), args["input"].(ent.UpdateStageInput)), true
 
-	case "NewLogin.jwt":
-		if e.complexity.NewLogin.Jwt == nil {
-			break
-		}
-
-		return e.complexity.NewLogin.Jwt(childComplexity), true
-	case "NewLogin.time":
-		if e.complexity.NewLogin.Time == nil {
-			break
-		}
-
-		return e.complexity.NewLogin.Time(childComplexity), true
-
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -2083,17 +2062,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Files(childComplexity), true
-	case "Query.login":
-		if e.complexity.Query.Login == nil {
-			break
-		}
-
-		args, err := ec.field_Query_login_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Login(childComplexity, args["input"].(graphql1.LoginInput)), true
 	case "Query.messages":
 		if e.complexity.Query.Messages == nil {
 			break
@@ -2316,7 +2284,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputEmployeeWhereInput,
 		ec.unmarshalInputFileOrder,
 		ec.unmarshalInputFileWhereInput,
-		ec.unmarshalInputLoginInput,
 		ec.unmarshalInputMessageOrder,
 		ec.unmarshalInputMessageWhereInput,
 		ec.unmarshalInputPipelineOrder,
@@ -2439,7 +2406,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "mutation.graphql" "auth.graphql" "ent.graphql"
+//go:embed "mutation.graphql" "ent.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -2452,7 +2419,6 @@ func sourceData(filename string) string {
 
 var sources = []*ast.Source{
 	{Name: "mutation.graphql", Input: sourceData("mutation.graphql"), BuiltIn: false},
-	{Name: "auth.graphql", Input: sourceData("auth.graphql"), BuiltIn: false},
 	{Name: "ent.graphql", Input: sourceData("ent.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -3171,17 +3137,6 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_login_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNLoginInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐLoginInput)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -9094,64 +9049,6 @@ func (ec *executionContext) fieldContext_Mutation_updateCompanyWhere(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _NewLogin_jwt(ctx context.Context, field graphql.CollectedField, obj *graphql1.NewLogin) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_NewLogin_jwt,
-		func(ctx context.Context) (any, error) {
-			return obj.Jwt, nil
-		},
-		nil,
-		ec.marshalNString2string,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_NewLogin_jwt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NewLogin",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _NewLogin_time(ctx context.Context, field graphql.CollectedField, obj *graphql1.NewLogin) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_NewLogin_time,
-		func(ctx context.Context) (any, error) {
-			return obj.Time, nil
-		},
-		nil,
-		ec.marshalNTime2timeᚐTime,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_NewLogin_time(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NewLogin",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[uuid.UUID]) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -10231,53 +10128,6 @@ func (ec *executionContext) fieldContext_Query_texts(_ context.Context, field gr
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Text", field.Name)
 		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Query_login,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().Login(ctx, fc.Args["input"].(graphql1.LoginInput))
-		},
-		nil,
-		ec.marshalNNewLogin2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐNewLogin,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Query_login(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "jwt":
-				return ec.fieldContext_NewLogin_jwt(ctx, field)
-			case "time":
-				return ec.fieldContext_NewLogin_time(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type NewLogin", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_login_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -18463,40 +18313,6 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputLoginInput(ctx context.Context, obj any) (graphql1.LoginInput, error) {
-	var it graphql1.LoginInput
-	asMap := map[string]any{}
-	for k, v := range obj.(map[string]any) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"email", "password"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "email":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Email = data
-		case "password":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Password = data
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputMessageOrder(ctx context.Context, obj any) (ent.MessageOrder, error) {
 	var it ent.MessageOrder
 	asMap := map[string]any{}
@@ -24284,50 +24100,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
-var newLoginImplementors = []string{"NewLogin"}
-
-func (ec *executionContext) _NewLogin(ctx context.Context, sel ast.SelectionSet, obj *graphql1.NewLogin) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, newLoginImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("NewLogin")
-		case "jwt":
-			out.Values[i] = ec._NewLogin_jwt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "time":
-			out.Values[i] = ec._NewLogin_time(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var pageInfoImplementors = []string{"PageInfo"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *entgql.PageInfo[uuid.UUID]) graphql.Marshaler {
@@ -24894,28 +24666,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_texts(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "login":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_login(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -26837,11 +26587,6 @@ func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐLoginInput(ctx context.Context, v any) (graphql1.LoginInput, error) {
-	res, err := ec.unmarshalInputLoginInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalNMessage2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐMessage(ctx context.Context, sel ast.SelectionSet, v ent.Message) graphql.Marshaler {
 	return ec._Message(ctx, sel, &v)
 }
@@ -26944,20 +26689,6 @@ func (ec *executionContext) unmarshalNMessageWhereInput2githubᚗcomᚋgitwbᚑc
 func (ec *executionContext) unmarshalNMessageWhereInput2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐMessageWhereInput(ctx context.Context, v any) (*ent.MessageWhereInput, error) {
 	res, err := ec.unmarshalInputMessageWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNNewLogin2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐNewLogin(ctx context.Context, sel ast.SelectionSet, v graphql1.NewLogin) graphql.Marshaler {
-	return ec._NewLogin(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNNewLogin2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋgraphqlᚐNewLogin(ctx context.Context, sel ast.SelectionSet, v *graphql1.NewLogin) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._NewLogin(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNNode2ᚕgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐNoder(ctx context.Context, sel ast.SelectionSet, v []ent.Noder) graphql.Marshaler {

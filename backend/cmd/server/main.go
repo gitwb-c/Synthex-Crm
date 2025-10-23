@@ -23,6 +23,6 @@ func main() {
 	}
 	defer db.Close(client)
 
-	r := http.GlobalRouter(srv)
+	r := http.GlobalRouter(client, srv)
 	r.Run(":8080")
 }

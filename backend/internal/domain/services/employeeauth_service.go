@@ -9,7 +9,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
 	"github.com/gitwb-c/crm.saas/backend/pkg/auth"
-	"github.com/gitwb-c/crm.saas/backend/pkg/jwt"
+	"github.com/gitwb-c/crm.saas/backend/pkg/jwtpkg"
 )
 
 type EmployeeAuthService struct {
@@ -37,7 +37,7 @@ func (s *EmployeeAuthService) ValidateLogin(ctx context.Context, email string, p
 	if !valid {
 		return contracts.NewLogin{}, fmt.Errorf("invalid credentials")
 	}
-	tokenStr, err := jwt.GenerateToken(
+	tokenStr, err := jwtpkg.GenerateToken(
 		employeeAuth.Edges.Employee.ID.String(),
 		employeeAuth.Edges.Employee.Edges.Company.ID.String(),
 		employeeAuth.Edges.Employee.Edges.Department.ID.String(),
