@@ -30,6 +30,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 )
@@ -67,6 +68,8 @@ type Client struct {
 	Pipeline *PipelineClient
 	// Queue is the client for interacting with the Queue builders.
 	Queue *QueueClient
+	// Rbac is the client for interacting with the Rbac builders.
+	Rbac *RbacClient
 	// Stage is the client for interacting with the Stage builders.
 	Stage *StageClient
 	// Text is the client for interacting with the Text builders.
@@ -96,6 +99,7 @@ func (c *Client) init() {
 	c.Message = NewMessageClient(c.config)
 	c.Pipeline = NewPipelineClient(c.config)
 	c.Queue = NewQueueClient(c.config)
+	c.Rbac = NewRbacClient(c.config)
 	c.Stage = NewStageClient(c.config)
 	c.Text = NewTextClient(c.config)
 }
@@ -204,6 +208,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Message:      NewMessageClient(cfg),
 		Pipeline:     NewPipelineClient(cfg),
 		Queue:        NewQueueClient(cfg),
+		Rbac:         NewRbacClient(cfg),
 		Stage:        NewStageClient(cfg),
 		Text:         NewTextClient(cfg),
 	}, nil
@@ -239,6 +244,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Message:      NewMessageClient(cfg),
 		Pipeline:     NewPipelineClient(cfg),
 		Queue:        NewQueueClient(cfg),
+		Rbac:         NewRbacClient(cfg),
 		Stage:        NewStageClient(cfg),
 		Text:         NewTextClient(cfg),
 	}, nil
@@ -272,7 +278,7 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Chat, c.Company, c.Costumer, c.CrmField, c.Deal, c.DealCrmField, c.Department,
 		c.DropdownList, c.Employee, c.EmployeeAuth, c.File, c.Message, c.Pipeline,
-		c.Queue, c.Stage, c.Text,
+		c.Queue, c.Rbac, c.Stage, c.Text,
 	} {
 		n.Use(hooks...)
 	}
@@ -284,7 +290,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Chat, c.Company, c.Costumer, c.CrmField, c.Deal, c.DealCrmField, c.Department,
 		c.DropdownList, c.Employee, c.EmployeeAuth, c.File, c.Message, c.Pipeline,
-		c.Queue, c.Stage, c.Text,
+		c.Queue, c.Rbac, c.Stage, c.Text,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -321,6 +327,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Pipeline.mutate(ctx, m)
 	case *QueueMutation:
 		return c.Queue.mutate(ctx, m)
+	case *RbacMutation:
+		return c.Rbac.mutate(ctx, m)
 	case *StageMutation:
 		return c.Stage.mutate(ctx, m)
 	case *TextMutation:
@@ -1469,6 +1477,22 @@ func (c *DepartmentClient) QueryQueues(_m *Department) *QueueQuery {
 			sqlgraph.From(department.Table, department.FieldID, id),
 			sqlgraph.To(queue.Table, queue.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, department.QueuesTable, department.QueuesPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryRbacs queries the rbacs edge of a Department.
+func (c *DepartmentClient) QueryRbacs(_m *Department) *RbacQuery {
+	query := (&RbacClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(department.Table, department.FieldID, id),
+			sqlgraph.To(rbac.Table, rbac.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, department.RbacsTable, department.RbacsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -2704,6 +2728,155 @@ func (c *QueueClient) mutate(ctx context.Context, m *QueueMutation) (Value, erro
 	}
 }
 
+// RbacClient is a client for the Rbac schema.
+type RbacClient struct {
+	config
+}
+
+// NewRbacClient returns a client for the Rbac from the given config.
+func NewRbacClient(c config) *RbacClient {
+	return &RbacClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `rbac.Hooks(f(g(h())))`.
+func (c *RbacClient) Use(hooks ...Hook) {
+	c.hooks.Rbac = append(c.hooks.Rbac, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `rbac.Intercept(f(g(h())))`.
+func (c *RbacClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Rbac = append(c.inters.Rbac, interceptors...)
+}
+
+// Create returns a builder for creating a Rbac entity.
+func (c *RbacClient) Create() *RbacCreate {
+	mutation := newRbacMutation(c.config, OpCreate)
+	return &RbacCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Rbac entities.
+func (c *RbacClient) CreateBulk(builders ...*RbacCreate) *RbacCreateBulk {
+	return &RbacCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *RbacClient) MapCreateBulk(slice any, setFunc func(*RbacCreate, int)) *RbacCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &RbacCreateBulk{err: fmt.Errorf("calling to RbacClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*RbacCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &RbacCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Rbac.
+func (c *RbacClient) Update() *RbacUpdate {
+	mutation := newRbacMutation(c.config, OpUpdate)
+	return &RbacUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RbacClient) UpdateOne(_m *Rbac) *RbacUpdateOne {
+	mutation := newRbacMutation(c.config, OpUpdateOne, withRbac(_m))
+	return &RbacUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RbacClient) UpdateOneID(id uuid.UUID) *RbacUpdateOne {
+	mutation := newRbacMutation(c.config, OpUpdateOne, withRbacID(id))
+	return &RbacUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Rbac.
+func (c *RbacClient) Delete() *RbacDelete {
+	mutation := newRbacMutation(c.config, OpDelete)
+	return &RbacDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RbacClient) DeleteOne(_m *Rbac) *RbacDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RbacClient) DeleteOneID(id uuid.UUID) *RbacDeleteOne {
+	builder := c.Delete().Where(rbac.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RbacDeleteOne{builder}
+}
+
+// Query returns a query builder for Rbac.
+func (c *RbacClient) Query() *RbacQuery {
+	return &RbacQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRbac},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Rbac entity by its id.
+func (c *RbacClient) Get(ctx context.Context, id uuid.UUID) (*Rbac, error) {
+	return c.Query().Where(rbac.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RbacClient) GetX(ctx context.Context, id uuid.UUID) *Rbac {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDepartment queries the department edge of a Rbac.
+func (c *RbacClient) QueryDepartment(_m *Rbac) *DepartmentQuery {
+	query := (&DepartmentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(rbac.Table, rbac.FieldID, id),
+			sqlgraph.To(department.Table, department.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, rbac.DepartmentTable, rbac.DepartmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *RbacClient) Hooks() []Hook {
+	return c.hooks.Rbac
+}
+
+// Interceptors returns the client interceptors.
+func (c *RbacClient) Interceptors() []Interceptor {
+	return c.inters.Rbac
+}
+
+func (c *RbacClient) mutate(ctx context.Context, m *RbacMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RbacCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RbacUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RbacUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RbacDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Rbac mutation op: %q", m.Op())
+	}
+}
+
 // StageClient is a client for the Stage schema.
 type StageClient struct {
 	config
@@ -3038,11 +3211,12 @@ func (c *TextClient) mutate(ctx context.Context, m *TextMutation) (Value, error)
 type (
 	hooks struct {
 		Chat, Company, Costumer, CrmField, Deal, DealCrmField, Department, DropdownList,
-		Employee, EmployeeAuth, File, Message, Pipeline, Queue, Stage, Text []ent.Hook
+		Employee, EmployeeAuth, File, Message, Pipeline, Queue, Rbac, Stage,
+		Text []ent.Hook
 	}
 	inters struct {
 		Chat, Company, Costumer, CrmField, Deal, DealCrmField, Department, DropdownList,
-		Employee, EmployeeAuth, File, Message, Pipeline, Queue, Stage,
+		Employee, EmployeeAuth, File, Message, Pipeline, Queue, Rbac, Stage,
 		Text []ent.Interceptor
 	}
 )

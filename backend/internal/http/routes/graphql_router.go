@@ -7,11 +7,11 @@ import (
 )
 
 func graphqlRouter(r *gin.Engine, srv *handler.Server) {
-	r.POST("/query", func(c *gin.Context) {
-		srv.ServeHTTP(c.Writer, c.Request)
+	r.POST("/query", func(ctx *gin.Context) {
+		srv.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
-	r.GET("/playground", func(c *gin.Context) {
-		playground.Handler("Playground", "/query").ServeHTTP(c.Writer, c.Request)
+	r.GET("/playground", func(ctx *gin.Context) {
+		playground.Handler("Playground", "/query").ServeHTTP(ctx.Writer, ctx.Request)
 	})
 }

@@ -28,6 +28,7 @@ func (s *EmployeeAuthService) Read(ctx context.Context) ([]*ent.EmployeeAuth, er
 	}
 	return employeeAuth, nil
 }
+
 func (s *EmployeeAuthService) ValidateLogin(ctx context.Context, email string, password string) (contracts.NewLogin, error) {
 	employeeAuth, err := s.repository.ReadEmail(ctx, email)
 	if err != nil {

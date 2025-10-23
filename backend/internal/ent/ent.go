@@ -26,6 +26,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 )
@@ -102,6 +103,7 @@ func checkColumn(t, c string) error {
 			message.Table:      message.ValidColumn,
 			pipeline.Table:     pipeline.ValidColumn,
 			queue.Table:        queue.ValidColumn,
+			rbac.Table:         rbac.ValidColumn,
 			stage.Table:        stage.ValidColumn,
 			text.Table:         text.ValidColumn,
 		})

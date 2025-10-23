@@ -262,6 +262,29 @@ func HasQueuesWith(preds ...predicate.Queue) predicate.Department {
 	})
 }
 
+// HasRbacs applies the HasEdge predicate on the "rbacs" edge.
+func HasRbacs() predicate.Department {
+	return predicate.Department(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, RbacsTable, RbacsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRbacsWith applies the HasEdge predicate on the "rbacs" edge with a given conditions (other predicates).
+func HasRbacsWith(preds ...predicate.Rbac) predicate.Department {
+	return predicate.Department(func(s *sql.Selector) {
+		step := newRbacsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Department) predicate.Department {
 	return predicate.Department(sql.AndPredicates(predicates...))

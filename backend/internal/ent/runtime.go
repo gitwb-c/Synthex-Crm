@@ -19,6 +19,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
@@ -315,6 +316,22 @@ func init() {
 	queueDescID := queueFields[0].Descriptor()
 	// queue.DefaultID holds the default value on creation for the id field.
 	queue.DefaultID = queueDescID.Default.(func() uuid.UUID)
+	rbacFields := schema.Rbac{}.Fields()
+	_ = rbacFields
+	// rbacDescCreatedAt is the schema descriptor for createdAt field.
+	rbacDescCreatedAt := rbacFields[2].Descriptor()
+	// rbac.DefaultCreatedAt holds the default value on creation for the createdAt field.
+	rbac.DefaultCreatedAt = rbacDescCreatedAt.Default.(func() time.Time)
+	// rbacDescUpdatedAt is the schema descriptor for updatedAt field.
+	rbacDescUpdatedAt := rbacFields[3].Descriptor()
+	// rbac.DefaultUpdatedAt holds the default value on creation for the updatedAt field.
+	rbac.DefaultUpdatedAt = rbacDescUpdatedAt.Default.(func() time.Time)
+	// rbac.UpdateDefaultUpdatedAt holds the default value on update for the updatedAt field.
+	rbac.UpdateDefaultUpdatedAt = rbacDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// rbacDescID is the schema descriptor for id field.
+	rbacDescID := rbacFields[0].Descriptor()
+	// rbac.DefaultID holds the default value on creation for the id field.
+	rbac.DefaultID = rbacDescID.Default.(func() uuid.UUID)
 	stageFields := schema.Stage{}.Fields()
 	_ = stageFields
 	// stageDescName is the schema descriptor for name field.

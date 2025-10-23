@@ -22,6 +22,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 	"github.com/google/uuid"
@@ -2102,6 +2103,10 @@ type DepartmentWhereInput struct {
 	// "queues" edge predicates.
 	HasQueues     *bool              `json:"hasQueues,omitempty"`
 	HasQueuesWith []*QueueWhereInput `json:"hasQueuesWith,omitempty"`
+
+	// "rbacs" edge predicates.
+	HasRbacs     *bool             `json:"hasRbacs,omitempty"`
+	HasRbacsWith []*RbacWhereInput `json:"hasRbacsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -2322,6 +2327,24 @@ func (i *DepartmentWhereInput) P() (predicate.Department, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, department.HasQueuesWith(with...))
+	}
+	if i.HasRbacs != nil {
+		p := department.HasRbacs()
+		if !*i.HasRbacs {
+			p = department.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasRbacsWith) > 0 {
+		with := make([]predicate.Rbac, 0, len(i.HasRbacsWith))
+		for _, w := range i.HasRbacsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasRbacsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, department.HasRbacsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -4656,6 +4679,238 @@ func (i *QueueWhereInput) P() (predicate.Queue, error) {
 		return predicates[0], nil
 	default:
 		return queue.And(predicates...), nil
+	}
+}
+
+// RbacWhereInput represents a where input for filtering Rbac queries.
+type RbacWhereInput struct {
+	Predicates []predicate.Rbac  `json:"-"`
+	Not        *RbacWhereInput   `json:"not,omitempty"`
+	Or         []*RbacWhereInput `json:"or,omitempty"`
+	And        []*RbacWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *uuid.UUID  `json:"id,omitempty"`
+	IDNEQ   *uuid.UUID  `json:"idNEQ,omitempty"`
+	IDIn    []uuid.UUID `json:"idIn,omitempty"`
+	IDNotIn []uuid.UUID `json:"idNotIn,omitempty"`
+	IDGT    *uuid.UUID  `json:"idGT,omitempty"`
+	IDGTE   *uuid.UUID  `json:"idGTE,omitempty"`
+	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
+	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
+
+	// "access" field predicates.
+	Access      *rbac.Access  `json:"access,omitempty"`
+	AccessNEQ   *rbac.Access  `json:"accessNEQ,omitempty"`
+	AccessIn    []rbac.Access `json:"accessIn,omitempty"`
+	AccessNotIn []rbac.Access `json:"accessNotIn,omitempty"`
+
+	// "createdAt" field predicates.
+	CreatedAt      *time.Time  `json:"createdat,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdatNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdatIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdatNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdatGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdatGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdatLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdatLTE,omitempty"`
+
+	// "updatedAt" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedat,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedatNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedatIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedatNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedatGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
+
+	// "department" edge predicates.
+	HasDepartment     *bool                   `json:"hasDepartment,omitempty"`
+	HasDepartmentWith []*DepartmentWhereInput `json:"hasDepartmentWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *RbacWhereInput) AddPredicates(predicates ...predicate.Rbac) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the RbacWhereInput filter on the RbacQuery builder.
+func (i *RbacWhereInput) Filter(q *RbacQuery) (*RbacQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyRbacWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyRbacWhereInput is returned in case the RbacWhereInput is empty.
+var ErrEmptyRbacWhereInput = errors.New("ent: empty predicate RbacWhereInput")
+
+// P returns a predicate for filtering rbacs.
+// An error is returned if the input is empty or invalid.
+func (i *RbacWhereInput) P() (predicate.Rbac, error) {
+	var predicates []predicate.Rbac
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, rbac.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.Rbac, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, rbac.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.Rbac, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, rbac.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, rbac.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, rbac.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, rbac.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, rbac.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, rbac.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, rbac.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, rbac.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, rbac.IDLTE(*i.IDLTE))
+	}
+	if i.Access != nil {
+		predicates = append(predicates, rbac.AccessEQ(*i.Access))
+	}
+	if i.AccessNEQ != nil {
+		predicates = append(predicates, rbac.AccessNEQ(*i.AccessNEQ))
+	}
+	if len(i.AccessIn) > 0 {
+		predicates = append(predicates, rbac.AccessIn(i.AccessIn...))
+	}
+	if len(i.AccessNotIn) > 0 {
+		predicates = append(predicates, rbac.AccessNotIn(i.AccessNotIn...))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, rbac.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, rbac.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, rbac.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, rbac.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, rbac.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, rbac.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, rbac.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, rbac.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, rbac.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, rbac.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, rbac.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, rbac.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, rbac.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, rbac.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, rbac.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, rbac.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+
+	if i.HasDepartment != nil {
+		p := rbac.HasDepartment()
+		if !*i.HasDepartment {
+			p = rbac.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDepartmentWith) > 0 {
+		with := make([]predicate.Department, 0, len(i.HasDepartmentWith))
+		for _, w := range i.HasDepartmentWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasDepartmentWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, rbac.HasDepartmentWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyRbacWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return rbac.And(predicates...), nil
 	}
 }
 

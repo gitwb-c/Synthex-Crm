@@ -19,6 +19,8 @@ func NewClient() (*ent.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Client.Use(hooks.TenantFilterHook)
+
 	return Client, nil
 
 }

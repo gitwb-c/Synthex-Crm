@@ -48,6 +48,9 @@ type Pipeline func(*sql.Selector)
 // Queue is the predicate function for queue builders.
 type Queue func(*sql.Selector)
 
+// Rbac is the predicate function for rbac builders.
+type Rbac func(*sql.Selector)
+
 // Stage is the predicate function for stage builders.
 type Stage func(*sql.Selector)
 

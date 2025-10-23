@@ -26,13 +26,29 @@ func (Company) Fields() []ent.Field {
 
 func (Company) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("employee", Employee.Type).Ref("company"),
+		edge.To("employees", Employee.Type),
+		edge.To("costumers", Costumer.Type),
+		edge.To("deals", Deal.Type),
+		edge.To("departments", Department.Type),
+		edge.To("pipelines", Pipeline.Type),
+		edge.To("crmFields", Pipeline.Type),
+		edge.To("dealCrmFields", Pipeline.Type),
+		edge.To("dropdownLists", Pipeline.Type),
+		edge.To("employeeAuths", Pipeline.Type),
+		edge.To("files", Pipeline.Type),
+		edge.To("messages", Pipeline.Type),
+		edge.To("queues", Pipeline.Type),
+		edge.To("rbacs", Pipeline.Type),
+		edge.To("stages", Pipeline.Type),
+		edge.To("texts", Pipeline.Type),
 	}
 }
 
 func (Company) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
+		entgql.MultiOrder(),
+		entgql.RelayConnection(),
+		entgql.QueryField(),
 	}
 }

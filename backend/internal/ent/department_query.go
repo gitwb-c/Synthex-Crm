@@ -16,6 +16,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/google/uuid"
 )
 
@@ -28,10 +29,12 @@ type DepartmentQuery struct {
 	predicates        []predicate.Department
 	withEmployee      *EmployeeQuery
 	withQueues        *QueueQuery
+	withRbacs         *RbacQuery
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*Department) error
 	withNamedEmployee map[string]*EmployeeQuery
 	withNamedQueues   map[string]*QueueQuery
+	withNamedRbacs    map[string]*RbacQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -105,6 +108,28 @@ func (_q *DepartmentQuery) QueryQueues() *QueueQuery {
 			sqlgraph.From(department.Table, department.FieldID, selector),
 			sqlgraph.To(queue.Table, queue.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, department.QueuesTable, department.QueuesPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRbacs chains the current query on the "rbacs" edge.
+func (_q *DepartmentQuery) QueryRbacs() *RbacQuery {
+	query := (&RbacClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(department.Table, department.FieldID, selector),
+			sqlgraph.To(rbac.Table, rbac.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, department.RbacsTable, department.RbacsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -306,6 +331,7 @@ func (_q *DepartmentQuery) Clone() *DepartmentQuery {
 		predicates:   append([]predicate.Department{}, _q.predicates...),
 		withEmployee: _q.withEmployee.Clone(),
 		withQueues:   _q.withQueues.Clone(),
+		withRbacs:    _q.withRbacs.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -331,6 +357,17 @@ func (_q *DepartmentQuery) WithQueues(opts ...func(*QueueQuery)) *DepartmentQuer
 		opt(query)
 	}
 	_q.withQueues = query
+	return _q
+}
+
+// WithRbacs tells the query-builder to eager-load the nodes that are connected to
+// the "rbacs" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DepartmentQuery) WithRbacs(opts ...func(*RbacQuery)) *DepartmentQuery {
+	query := (&RbacClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withRbacs = query
 	return _q
 }
 
@@ -412,9 +449,10 @@ func (_q *DepartmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 	var (
 		nodes       = []*Department{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			_q.withEmployee != nil,
 			_q.withQueues != nil,
+			_q.withRbacs != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -452,6 +490,13 @@ func (_q *DepartmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 			return nil, err
 		}
 	}
+	if query := _q.withRbacs; query != nil {
+		if err := _q.loadRbacs(ctx, query, nodes,
+			func(n *Department) { n.Edges.Rbacs = []*Rbac{} },
+			func(n *Department, e *Rbac) { n.Edges.Rbacs = append(n.Edges.Rbacs, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range _q.withNamedEmployee {
 		if err := _q.loadEmployee(ctx, query, nodes,
 			func(n *Department) { n.appendNamedEmployee(name) },
@@ -463,6 +508,13 @@ func (_q *DepartmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 		if err := _q.loadQueues(ctx, query, nodes,
 			func(n *Department) { n.appendNamedQueues(name) },
 			func(n *Department, e *Queue) { n.appendNamedQueues(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedRbacs {
+		if err := _q.loadRbacs(ctx, query, nodes,
+			func(n *Department) { n.appendNamedRbacs(name) },
+			func(n *Department, e *Rbac) { n.appendNamedRbacs(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -563,6 +615,37 @@ func (_q *DepartmentQuery) loadQueues(ctx context.Context, query *QueueQuery, no
 		for kn := range nodes {
 			assign(kn, n)
 		}
+	}
+	return nil
+}
+func (_q *DepartmentQuery) loadRbacs(ctx context.Context, query *RbacQuery, nodes []*Department, init func(*Department), assign func(*Department, *Rbac)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Department)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Rbac(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(department.RbacsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.rbac_department
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "rbac_department" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "rbac_department" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -676,6 +759,20 @@ func (_q *DepartmentQuery) WithNamedQueues(name string, opts ...func(*QueueQuery
 		_q.withNamedQueues = make(map[string]*QueueQuery)
 	}
 	_q.withNamedQueues[name] = query
+	return _q
+}
+
+// WithNamedRbacs tells the query-builder to eager-load the nodes that are connected to the "rbacs"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *DepartmentQuery) WithNamedRbacs(name string, opts ...func(*RbacQuery)) *DepartmentQuery {
+	query := (&RbacClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedRbacs == nil {
+		_q.withNamedRbacs = make(map[string]*RbacQuery)
+	}
+	_q.withNamedRbacs[name] = query
 	return _q
 }
 

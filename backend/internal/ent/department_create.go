@@ -13,6 +13,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/google/uuid"
 )
 
@@ -99,6 +100,21 @@ func (_c *DepartmentCreate) AddQueues(v ...*Queue) *DepartmentCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddQueueIDs(ids...)
+}
+
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by IDs.
+func (_c *DepartmentCreate) AddRbacIDs(ids ...uuid.UUID) *DepartmentCreate {
+	_c.mutation.AddRbacIDs(ids...)
+	return _c
+}
+
+// AddRbacs adds the "rbacs" edges to the Rbac entity.
+func (_c *DepartmentCreate) AddRbacs(v ...*Rbac) *DepartmentCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddRbacIDs(ids...)
 }
 
 // Mutation returns the DepartmentMutation object of the builder.
@@ -238,6 +254,22 @@ func (_c *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.RbacsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

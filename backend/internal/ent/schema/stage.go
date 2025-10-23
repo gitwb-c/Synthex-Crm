@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema/mixin"
 	"github.com/google/uuid"
 )
 
@@ -31,12 +32,21 @@ func (Stage) Edges() []ent.Edge {
 		edge.To("pipeline", Pipeline.Type).Required().Unique(),
 		edge.From("deals", Deal.Type).Ref("stage"),
 		edge.To("queue", Queue.Type).Unique(),
+		edge.From("company", Company.Type).Ref("stages").Field("tenant_id").Required().Unique(),
 	}
 }
 
 func (Stage) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
+		entgql.MultiOrder(),
+		entgql.RelayConnection(),
+		entgql.QueryField(),
+	}
+}
+
+func (Stage) Mixins() []ent.Mixin {
+	return []ent.Mixin{
+		mixin.TenantMixin{},
 	}
 }

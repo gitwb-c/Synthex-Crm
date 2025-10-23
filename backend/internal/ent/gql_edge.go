@@ -164,6 +164,18 @@ func (_m *Department) Queues(ctx context.Context) (result []*Queue, err error) {
 	return result, err
 }
 
+func (_m *Department) Rbacs(ctx context.Context) (result []*Rbac, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedRbacs(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.RbacsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryRbacs().All(ctx)
+	}
+	return result, err
+}
+
 func (_m *DropdownList) CrmField(ctx context.Context) (result []*CrmField, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = _m.NamedCrmField(graphql.GetFieldContext(ctx).Field.Alias)
@@ -332,6 +344,14 @@ func (_m *Queue) Department(ctx context.Context) (result []*Department, err erro
 	}
 	if IsNotLoaded(err) {
 		result, err = _m.QueryDepartment().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Rbac) Department(ctx context.Context) (*Department, error) {
+	result, err := _m.Edges.DepartmentOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDepartment().Only(ctx)
 	}
 	return result, err
 }

@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema/mixin"
 	"github.com/google/uuid"
 )
 
@@ -36,7 +37,15 @@ func (Chat) Edges() []ent.Edge {
 
 func (Chat) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
+		entgql.MultiOrder(),
+		entgql.RelayConnection(),
+		entgql.QueryField(),
+	}
+}
+
+func (Chat) Mixins() []ent.Mixin {
+	return []ent.Mixin{
+		mixin.TenantMixin{},
 	}
 }

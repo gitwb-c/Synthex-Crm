@@ -7,9 +7,10 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 
+	"entgo.io/contrib/entgql"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
-	"github.com/gitwb-c/crm.saas/backend/internal/wire"
 	"github.com/google/uuid"
 )
 
@@ -80,6 +81,7 @@ func (r *pipelineResolver) ID(ctx context.Context, obj *ent.Pipeline) (string, e
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
+	log.Print(id)
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, err
@@ -101,152 +103,147 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 }
 
 // Chats is the resolver for the chats field.
-func (r *queryResolver) Chats(ctx context.Context) ([]*ent.Chat, error) {
-	service := wire.InitializeChatService(r.Client)
-	chats, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return chats, nil
+func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.ChatOrder, where *ent.ChatWhereInput) (*ent.ChatConnection, error) {
+	return r.Client.Chat.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithChatOrder(orderBy),
+			ent.WithChatFilter(where.Filter),
+		)
 }
 
 // Companies is the resolver for the companies field.
-func (r *queryResolver) Companies(ctx context.Context) ([]*ent.Company, error) {
-	service := wire.InitializeCompanyService(r.Client)
-	companies, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return companies, nil
+func (r *queryResolver) Companies(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CompanyOrder, where *ent.CompanyWhereInput) (*ent.CompanyConnection, error) {
+	return r.Client.Company.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithCompanyOrder(orderBy),
+			ent.WithCompanyFilter(where.Filter),
+		)
 }
 
 // Costumers is the resolver for the costumers field.
-func (r *queryResolver) Costumers(ctx context.Context) ([]*ent.Costumer, error) {
-	service := wire.InitializeCostumerService(r.Client)
-	costumers, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return costumers, nil
+func (r *queryResolver) Costumers(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CostumerOrder, where *ent.CostumerWhereInput) (*ent.CostumerConnection, error) {
+	return r.Client.Costumer.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithCostumerOrder(orderBy),
+			ent.WithCostumerFilter(where.Filter),
+		)
 }
 
 // CrmFields is the resolver for the crmFields field.
-func (r *queryResolver) CrmFields(ctx context.Context) ([]*ent.CrmField, error) {
-	service := wire.InitializeCrmFieldService(r.Client)
-	crmFields, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return crmFields, nil
+func (r *queryResolver) CrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CrmFieldOrder, where *ent.CrmFieldWhereInput) (*ent.CrmFieldConnection, error) {
+	return r.Client.CrmField.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithCrmFieldOrder(orderBy),
+			ent.WithCrmFieldFilter(where.Filter),
+		)
 }
 
 // Deals is the resolver for the deals field.
-func (r *queryResolver) Deals(ctx context.Context) ([]*ent.Deal, error) {
-	service := wire.InitializeDealService(r.Client)
-	deals, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return deals, nil
+func (r *queryResolver) Deals(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealOrder, where *ent.DealWhereInput) (*ent.DealConnection, error) {
+	return r.Client.Deal.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithDealOrder(orderBy),
+			ent.WithDealFilter(where.Filter),
+		)
 }
 
 // DealCrmFields is the resolver for the dealCrmFields field.
-func (r *queryResolver) DealCrmFields(ctx context.Context) ([]*ent.DealCrmField, error) {
-	service := wire.InitializeDealCrmFieldService(r.Client)
-	dealCrmFields, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return dealCrmFields, nil
+func (r *queryResolver) DealCrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealCrmFieldOrder, where *ent.DealCrmFieldWhereInput) (*ent.DealCrmFieldConnection, error) {
+	return r.Client.DealCrmField.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithDealCrmFieldOrder(orderBy),
+			ent.WithDealCrmFieldFilter(where.Filter),
+		)
 }
 
 // Departments is the resolver for the departments field.
-func (r *queryResolver) Departments(ctx context.Context) ([]*ent.Department, error) {
-	service := wire.InitializeDepartmentService(r.Client)
-	departments, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return departments, nil
+func (r *queryResolver) Departments(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DepartmentOrder, where *ent.DepartmentWhereInput) (*ent.DepartmentConnection, error) {
+	return r.Client.Department.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithDepartmentOrder(orderBy),
+			ent.WithDepartmentFilter(where.Filter),
+		)
 }
 
 // DropdownLists is the resolver for the dropdownLists field.
-func (r *queryResolver) DropdownLists(ctx context.Context) ([]*ent.DropdownList, error) {
-	panic(fmt.Errorf("not implemented: DropdownLists - dropdownLists"))
+func (r *queryResolver) DropdownLists(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DropdownListOrder, where *ent.DropdownListWhereInput) (*ent.DropdownListConnection, error) {
+	return r.Client.DropdownList.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithDropdownListOrder(orderBy),
+			ent.WithDropdownListFilter(where.Filter),
+		)
 }
 
 // Employees is the resolver for the employees field.
-func (r *queryResolver) Employees(ctx context.Context) ([]*ent.Employee, error) {
-	service := wire.InitializeEmployeeService(r.Client)
-	employees, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return employees, nil
+func (r *queryResolver) Employees(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeOrder, where *ent.EmployeeWhereInput) (*ent.EmployeeConnection, error) {
+	return r.Client.Employee.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithEmployeeOrder(orderBy),
+			ent.WithEmployeeFilter(where.Filter),
+		)
 }
 
 // EmployeeAuths is the resolver for the employeeAuths field.
-func (r *queryResolver) EmployeeAuths(ctx context.Context) ([]*ent.EmployeeAuth, error) {
-	service := wire.InitializeEmployeeAuthService(r.Client)
-	employeeAuths, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return employeeAuths, nil
-}
-
-// Files is the resolver for the files field.
-func (r *queryResolver) Files(ctx context.Context) ([]*ent.File, error) {
-	panic(fmt.Errorf("not implemented: Files - files"))
+func (r *queryResolver) EmployeeAuths(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeAuthOrder, where *ent.EmployeeAuthWhereInput) (*ent.EmployeeAuthConnection, error) {
+	return r.Client.EmployeeAuth.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithEmployeeAuthOrder(orderBy),
+			ent.WithEmployeeAuthFilter(where.Filter),
+		)
 }
 
 // Messages is the resolver for the messages field.
-func (r *queryResolver) Messages(ctx context.Context) ([]*ent.Message, error) {
-	service := wire.InitializeMessageService(r.Client)
-	messages, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return messages, nil
+func (r *queryResolver) Messages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.MessageOrder, where *ent.MessageWhereInput) (*ent.MessageConnection, error) {
+	return r.Client.Message.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithMessageOrder(orderBy),
+			ent.WithMessageFilter(where.Filter),
+		)
 }
 
 // Pipelines is the resolver for the pipelines field.
-func (r *queryResolver) Pipelines(ctx context.Context) ([]*ent.Pipeline, error) {
-	service := wire.InitializePipelineService(r.Client)
-	pipelines, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return pipelines, nil
+func (r *queryResolver) Pipelines(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.PipelineOrder, where *ent.PipelineWhereInput) (*ent.PipelineConnection, error) {
+	return r.Client.Pipeline.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithPipelineOrder(orderBy),
+			ent.WithPipelineFilter(where.Filter),
+		)
 }
 
 // Queues is the resolver for the queues field.
-func (r *queryResolver) Queues(ctx context.Context) ([]*ent.Queue, error) {
-	service := wire.InitializeQueueService(r.Client)
-	queues, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return queues, nil
+func (r *queryResolver) Queues(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.QueueOrder, where *ent.QueueWhereInput) (*ent.QueueConnection, error) {
+	return r.Client.Queue.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithQueueOrder(orderBy),
+			ent.WithQueueFilter(where.Filter),
+		)
+}
+
+// Rbacs is the resolver for the rbacs field.
+func (r *queryResolver) Rbacs(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.RbacOrder, where *ent.RbacWhereInput) (*ent.RbacConnection, error) {
+	return r.Client.Rbac.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithRbacOrder(orderBy),
+			ent.WithRbacFilter(where.Filter),
+		)
 }
 
 // Stages is the resolver for the stages field.
-func (r *queryResolver) Stages(ctx context.Context) ([]*ent.Stage, error) {
-	service := wire.InitializeStageService(r.Client)
-	stages, err := service.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return stages, nil
-}
-
-// Texts is the resolver for the texts field.
-func (r *queryResolver) Texts(ctx context.Context) ([]*ent.Text, error) {
-	panic(fmt.Errorf("not implemented: Texts - texts"))
+func (r *queryResolver) Stages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.StageOrder, where *ent.StageWhereInput) (*ent.StageConnection, error) {
+	return r.Client.Stage.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithStageOrder(orderBy),
+			ent.WithStageFilter(where.Filter),
+		)
 }
 
 // ID is the resolver for the id field.
 func (r *queueResolver) ID(ctx context.Context, obj *ent.Queue) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// ID is the resolver for the id field.
+func (r *rbacResolver) ID(ctx context.Context, obj *ent.Rbac) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -617,6 +614,24 @@ func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.C
 	return nil
 }
 
+// RbacIDs is the resolver for the rbacIDs field.
+func (r *createDepartmentInputResolver) RbacIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
+	var uuids []uuid.UUID
+
+	for _, id := range data {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		uuids = append(uuids, uid)
+	}
+
+	obj.RbacIDs = uuids
+
+	return nil
+}
+
 // CrmfieldIDs is the resolver for the crmfieldIDs field.
 func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error {
 	var uuids []uuid.UUID
@@ -637,7 +652,15 @@ func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *
 
 // EmployeeID is the resolver for the employeeID field.
 func (r *createEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data *string) error {
-	panic(fmt.Errorf("not implemented: EmployeeID - employeeID"))
+	if data != nil {
+		id, err := uuid.Parse(*data)
+		if err != nil {
+			return fmt.Errorf("error: %v", err)
+		}
+
+		obj.EmployeeID = &id
+	}
+	return nil
 }
 
 // EmployeeauthID is the resolver for the employeeauthID field.
@@ -859,6 +882,18 @@ func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.C
 		uuids = append(uuids, uid)
 	}
 	obj.DepartmentIDs = uuids
+
+	return nil
+}
+
+// DepartmentID is the resolver for the departmentID field.
+func (r *createRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.CreateRbacInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.DepartmentID = id
 
 	return nil
 }
@@ -1358,6 +1393,46 @@ func (r *queueWhereInputResolver) IDLte(ctx context.Context, obj *ent.QueueWhere
 }
 
 // ID is the resolver for the id field.
+func (r *rbacWhereInputResolver) ID(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *rbacWhereInputResolver) IDNeq(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *rbacWhereInputResolver) IDIn(ctx context.Context, obj *ent.RbacWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *rbacWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.RbacWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *rbacWhereInputResolver) IDGt(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *rbacWhereInputResolver) IDGte(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *rbacWhereInputResolver) IDLt(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *rbacWhereInputResolver) IDLte(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
 func (r *stageWhereInputResolver) ID(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -1557,6 +1632,16 @@ func (r *updateDepartmentInputResolver) RemoveQueueIDs(ctx context.Context, obj 
 	panic(fmt.Errorf("not implemented: RemoveQueueIDs - removeQueueIDs"))
 }
 
+// AddRbacIDs is the resolver for the addRbacIDs field.
+func (r *updateDepartmentInputResolver) AddRbacIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: AddRbacIDs - addRbacIDs"))
+}
+
+// RemoveRbacIDs is the resolver for the removeRbacIDs field.
+func (r *updateDepartmentInputResolver) RemoveRbacIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error {
+	panic(fmt.Errorf("not implemented: RemoveRbacIDs - removeRbacIDs"))
+}
+
 // AddCrmFieldIDs is the resolver for the addCrmFieldIDs field.
 func (r *updateDropdownListInputResolver) AddCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error {
 	panic(fmt.Errorf("not implemented: AddCrmFieldIDs - addCrmFieldIDs"))
@@ -1687,6 +1772,11 @@ func (r *updateQueueInputResolver) RemoveDepartmentIDs(ctx context.Context, obj 
 	panic(fmt.Errorf("not implemented: RemoveDepartmentIDs - removeDepartmentIDs"))
 }
 
+// DepartmentID is the resolver for the departmentID field.
+func (r *updateRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.UpdateRbacInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DepartmentID - departmentID"))
+}
+
 // PipelineID is the resolver for the pipelineID field.
 func (r *updateStageInputResolver) PipelineID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error {
 	panic(fmt.Errorf("not implemented: PipelineID - pipelineID"))
@@ -1756,6 +1846,9 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 // Queue returns QueueResolver implementation.
 func (r *Resolver) Queue() QueueResolver { return &queueResolver{r} }
+
+// Rbac returns RbacResolver implementation.
+func (r *Resolver) Rbac() RbacResolver { return &rbacResolver{r} }
 
 // Stage returns StageResolver implementation.
 func (r *Resolver) Stage() StageResolver { return &stageResolver{r} }
@@ -1838,6 +1931,9 @@ func (r *Resolver) CreatePipelineInput() CreatePipelineInputResolver {
 // CreateQueueInput returns CreateQueueInputResolver implementation.
 func (r *Resolver) CreateQueueInput() CreateQueueInputResolver { return &createQueueInputResolver{r} }
 
+// CreateRbacInput returns CreateRbacInputResolver implementation.
+func (r *Resolver) CreateRbacInput() CreateRbacInputResolver { return &createRbacInputResolver{r} }
+
 // CreateStageInput returns CreateStageInputResolver implementation.
 func (r *Resolver) CreateStageInput() CreateStageInputResolver { return &createStageInputResolver{r} }
 
@@ -1892,6 +1988,9 @@ func (r *Resolver) PipelineWhereInput() PipelineWhereInputResolver {
 
 // QueueWhereInput returns QueueWhereInputResolver implementation.
 func (r *Resolver) QueueWhereInput() QueueWhereInputResolver { return &queueWhereInputResolver{r} }
+
+// RbacWhereInput returns RbacWhereInputResolver implementation.
+func (r *Resolver) RbacWhereInput() RbacWhereInputResolver { return &rbacWhereInputResolver{r} }
 
 // StageWhereInput returns StageWhereInputResolver implementation.
 func (r *Resolver) StageWhereInput() StageWhereInputResolver { return &stageWhereInputResolver{r} }
@@ -1961,6 +2060,9 @@ func (r *Resolver) UpdatePipelineInput() UpdatePipelineInputResolver {
 // UpdateQueueInput returns UpdateQueueInputResolver implementation.
 func (r *Resolver) UpdateQueueInput() UpdateQueueInputResolver { return &updateQueueInputResolver{r} }
 
+// UpdateRbacInput returns UpdateRbacInputResolver implementation.
+func (r *Resolver) UpdateRbacInput() UpdateRbacInputResolver { return &updateRbacInputResolver{r} }
+
 // UpdateStageInput returns UpdateStageInputResolver implementation.
 func (r *Resolver) UpdateStageInput() UpdateStageInputResolver { return &updateStageInputResolver{r} }
 
@@ -1982,6 +2084,7 @@ type messageResolver struct{ *Resolver }
 type pipelineResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type queueResolver struct{ *Resolver }
+type rbacResolver struct{ *Resolver }
 type stageResolver struct{ *Resolver }
 type textResolver struct{ *Resolver }
 type chatWhereInputResolver struct{ *Resolver }
@@ -2001,6 +2104,7 @@ type createFileInputResolver struct{ *Resolver }
 type createMessageInputResolver struct{ *Resolver }
 type createPipelineInputResolver struct{ *Resolver }
 type createQueueInputResolver struct{ *Resolver }
+type createRbacInputResolver struct{ *Resolver }
 type createStageInputResolver struct{ *Resolver }
 type createTextInputResolver struct{ *Resolver }
 type crmFieldWhereInputResolver struct{ *Resolver }
@@ -2014,6 +2118,7 @@ type fileWhereInputResolver struct{ *Resolver }
 type messageWhereInputResolver struct{ *Resolver }
 type pipelineWhereInputResolver struct{ *Resolver }
 type queueWhereInputResolver struct{ *Resolver }
+type rbacWhereInputResolver struct{ *Resolver }
 type stageWhereInputResolver struct{ *Resolver }
 type textWhereInputResolver struct{ *Resolver }
 type updateChatInputResolver struct{ *Resolver }
@@ -2030,5 +2135,6 @@ type updateFileInputResolver struct{ *Resolver }
 type updateMessageInputResolver struct{ *Resolver }
 type updatePipelineInputResolver struct{ *Resolver }
 type updateQueueInputResolver struct{ *Resolver }
+type updateRbacInputResolver struct{ *Resolver }
 type updateStageInputResolver struct{ *Resolver }
 type updateTextInputResolver struct{ *Resolver }

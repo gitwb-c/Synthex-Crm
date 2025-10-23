@@ -40,6 +40,8 @@ type Tx struct {
 	Pipeline *PipelineClient
 	// Queue is the client for interacting with the Queue builders.
 	Queue *QueueClient
+	// Rbac is the client for interacting with the Rbac builders.
+	Rbac *RbacClient
 	// Stage is the client for interacting with the Stage builders.
 	Stage *StageClient
 	// Text is the client for interacting with the Text builders.
@@ -189,6 +191,7 @@ func (tx *Tx) init() {
 	tx.Message = NewMessageClient(tx.config)
 	tx.Pipeline = NewPipelineClient(tx.config)
 	tx.Queue = NewQueueClient(tx.config)
+	tx.Rbac = NewRbacClient(tx.config)
 	tx.Stage = NewStageClient(tx.config)
 	tx.Text = NewTextClient(tx.config)
 }

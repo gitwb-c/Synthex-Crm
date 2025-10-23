@@ -15,6 +15,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/google/uuid"
 )
 
@@ -81,6 +82,21 @@ func (_u *DepartmentUpdate) AddQueues(v ...*Queue) *DepartmentUpdate {
 	return _u.AddQueueIDs(ids...)
 }
 
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by IDs.
+func (_u *DepartmentUpdate) AddRbacIDs(ids ...uuid.UUID) *DepartmentUpdate {
+	_u.mutation.AddRbacIDs(ids...)
+	return _u
+}
+
+// AddRbacs adds the "rbacs" edges to the Rbac entity.
+func (_u *DepartmentUpdate) AddRbacs(v ...*Rbac) *DepartmentUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRbacIDs(ids...)
+}
+
 // Mutation returns the DepartmentMutation object of the builder.
 func (_u *DepartmentUpdate) Mutation() *DepartmentMutation {
 	return _u.mutation
@@ -126,6 +142,27 @@ func (_u *DepartmentUpdate) RemoveQueues(v ...*Queue) *DepartmentUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveQueueIDs(ids...)
+}
+
+// ClearRbacs clears all "rbacs" edges to the Rbac entity.
+func (_u *DepartmentUpdate) ClearRbacs() *DepartmentUpdate {
+	_u.mutation.ClearRbacs()
+	return _u
+}
+
+// RemoveRbacIDs removes the "rbacs" edge to Rbac entities by IDs.
+func (_u *DepartmentUpdate) RemoveRbacIDs(ids ...uuid.UUID) *DepartmentUpdate {
+	_u.mutation.RemoveRbacIDs(ids...)
+	return _u
+}
+
+// RemoveRbacs removes "rbacs" edges to Rbac entities.
+func (_u *DepartmentUpdate) RemoveRbacs(v ...*Rbac) *DepartmentUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRbacIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -282,6 +319,51 @@ func (_u *DepartmentUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRbacsIDs(); len(nodes) > 0 && !_u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RbacsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{department.Label}
@@ -352,6 +434,21 @@ func (_u *DepartmentUpdateOne) AddQueues(v ...*Queue) *DepartmentUpdateOne {
 	return _u.AddQueueIDs(ids...)
 }
 
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by IDs.
+func (_u *DepartmentUpdateOne) AddRbacIDs(ids ...uuid.UUID) *DepartmentUpdateOne {
+	_u.mutation.AddRbacIDs(ids...)
+	return _u
+}
+
+// AddRbacs adds the "rbacs" edges to the Rbac entity.
+func (_u *DepartmentUpdateOne) AddRbacs(v ...*Rbac) *DepartmentUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRbacIDs(ids...)
+}
+
 // Mutation returns the DepartmentMutation object of the builder.
 func (_u *DepartmentUpdateOne) Mutation() *DepartmentMutation {
 	return _u.mutation
@@ -397,6 +494,27 @@ func (_u *DepartmentUpdateOne) RemoveQueues(v ...*Queue) *DepartmentUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveQueueIDs(ids...)
+}
+
+// ClearRbacs clears all "rbacs" edges to the Rbac entity.
+func (_u *DepartmentUpdateOne) ClearRbacs() *DepartmentUpdateOne {
+	_u.mutation.ClearRbacs()
+	return _u
+}
+
+// RemoveRbacIDs removes the "rbacs" edge to Rbac entities by IDs.
+func (_u *DepartmentUpdateOne) RemoveRbacIDs(ids ...uuid.UUID) *DepartmentUpdateOne {
+	_u.mutation.RemoveRbacIDs(ids...)
+	return _u
+}
+
+// RemoveRbacs removes "rbacs" edges to Rbac entities.
+func (_u *DepartmentUpdateOne) RemoveRbacs(v ...*Rbac) *DepartmentUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRbacIDs(ids...)
 }
 
 // Where appends a list predicates to the DepartmentUpdate builder.
@@ -576,6 +694,51 @@ func (_u *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRbacsIDs(); len(nodes) > 0 && !_u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RbacsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.RbacsTable,
+			Columns: []string{department.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

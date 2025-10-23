@@ -25,6 +25,8 @@ const (
 	EdgeEmployee = "employee"
 	// EdgeQueues holds the string denoting the queues edge name in mutations.
 	EdgeQueues = "queues"
+	// EdgeRbacs holds the string denoting the rbacs edge name in mutations.
+	EdgeRbacs = "rbacs"
 	// Table holds the table name of the department in the database.
 	Table = "departments"
 	// EmployeeTable is the table that holds the employee relation/edge.
@@ -39,6 +41,13 @@ const (
 	// QueuesInverseTable is the table name for the Queue entity.
 	// It exists in this package in order to avoid circular dependency with the "queue" package.
 	QueuesInverseTable = "queues"
+	// RbacsTable is the table that holds the rbacs relation/edge.
+	RbacsTable = "rbacs"
+	// RbacsInverseTable is the table name for the Rbac entity.
+	// It exists in this package in order to avoid circular dependency with the "rbac" package.
+	RbacsInverseTable = "rbacs"
+	// RbacsColumn is the table column denoting the rbacs relation/edge.
+	RbacsColumn = "rbac_department"
 )
 
 // Columns holds all SQL columns for department fields.
@@ -128,6 +137,20 @@ func ByQueues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newQueuesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByRbacsCount orders the results by rbacs count.
+func ByRbacsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newRbacsStep(), opts...)
+	}
+}
+
+// ByRbacs orders the results by rbacs terms.
+func ByRbacs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRbacsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newEmployeeStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -140,5 +163,12 @@ func newQueuesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(QueuesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, QueuesTable, QueuesPrimaryKey...),
+	)
+}
+func newRbacsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RbacsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, RbacsTable, RbacsColumn),
 	)
 }

@@ -22,6 +22,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 	"github.com/google/uuid"
@@ -102,6 +103,11 @@ var queueImplementors = []string{"Queue", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Queue) IsNode() {}
+
+var rbacImplementors = []string{"Rbac", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Rbac) IsNode() {}
 
 var stageImplementors = []string{"Stage", "Node"}
 
@@ -293,6 +299,15 @@ func (c *Client) noder(ctx context.Context, table string, id uuid.UUID) (Noder, 
 			Where(queue.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, queueImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case rbac.Table:
+		query := c.Rbac.Query().
+			Where(rbac.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, rbacImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -600,6 +615,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []uuid.UUID) ([]N
 		query := c.Queue.Query().
 			Where(queue.IDIn(ids...))
 		query, err := query.CollectFields(ctx, queueImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case rbac.Table:
+		query := c.Rbac.Query().
+			Where(rbac.IDIn(ids...))
+		query, err := query.CollectFields(ctx, rbacImplementors...)
 		if err != nil {
 			return nil, err
 		}

@@ -36,14 +36,17 @@ type DepartmentEdges struct {
 	Employee []*Employee `json:"employee,omitempty"`
 	// Queues holds the value of the queues edge.
 	Queues []*Queue `json:"queues,omitempty"`
+	// Rbacs holds the value of the rbacs edge.
+	Rbacs []*Rbac `json:"rbacs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 
 	namedEmployee map[string][]*Employee
 	namedQueues   map[string][]*Queue
+	namedRbacs    map[string][]*Rbac
 }
 
 // EmployeeOrErr returns the Employee value or an error if the edge
@@ -62,6 +65,15 @@ func (e DepartmentEdges) QueuesOrErr() ([]*Queue, error) {
 		return e.Queues, nil
 	}
 	return nil, &NotLoadedError{edge: "queues"}
+}
+
+// RbacsOrErr returns the Rbacs value or an error if the edge
+// was not loaded in eager-loading.
+func (e DepartmentEdges) RbacsOrErr() ([]*Rbac, error) {
+	if e.loadedTypes[2] {
+		return e.Rbacs, nil
+	}
+	return nil, &NotLoadedError{edge: "rbacs"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -135,6 +147,11 @@ func (_m *Department) QueryEmployee() *EmployeeQuery {
 // QueryQueues queries the "queues" edge of the Department entity.
 func (_m *Department) QueryQueues() *QueueQuery {
 	return NewDepartmentClient(_m.config).QueryQueues(_m)
+}
+
+// QueryRbacs queries the "rbacs" edge of the Department entity.
+func (_m *Department) QueryRbacs() *RbacQuery {
+	return NewDepartmentClient(_m.config).QueryRbacs(_m)
 }
 
 // Update returns a builder for updating this Department.
@@ -217,6 +234,30 @@ func (_m *Department) appendNamedQueues(name string, edges ...*Queue) {
 		_m.Edges.namedQueues[name] = []*Queue{}
 	} else {
 		_m.Edges.namedQueues[name] = append(_m.Edges.namedQueues[name], edges...)
+	}
+}
+
+// NamedRbacs returns the Rbacs named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Department) NamedRbacs(name string) ([]*Rbac, error) {
+	if _m.Edges.namedRbacs == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedRbacs[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Department) appendNamedRbacs(name string, edges ...*Rbac) {
+	if _m.Edges.namedRbacs == nil {
+		_m.Edges.namedRbacs = make(map[string][]*Rbac)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedRbacs[name] = []*Rbac{}
+	} else {
+		_m.Edges.namedRbacs[name] = append(_m.Edges.namedRbacs[name], edges...)
 	}
 }
 

@@ -467,6 +467,41 @@ func (r *mutationResolver) UpdateCompanyWhere(ctx context.Context, where ent.Com
 	panic(fmt.Errorf("not implemented: UpdateCompanyWhere - updateCompanyWhere"))
 }
 
+// CreateRbac is the resolver for the createRbac field.
+func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacInput) (*ent.Rbac, error) {
+	service := wire.InitializeRbacService(r.Client)
+	rbac, err := service.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return rbac, nil
+}
+
+// UpdateRbacID is the resolver for the updateRbacID field.
+func (r *mutationResolver) UpdateRbacID(ctx context.Context, id string, input ent.UpdateRbacInput) (*ent.Rbac, error) {
+	service := wire.InitializeRbacService(r.Client)
+	rbac, err := service.UpdateID(ctx, id, input)
+	if err != nil {
+		return nil, err
+	}
+	return rbac, nil
+}
+
+// DeleteRbacID is the resolver for the deleteRbacID field.
+func (r *mutationResolver) DeleteRbacID(ctx context.Context, id string) (bool, error) {
+	service := wire.InitializeRbacService(r.Client)
+	err := service.DeleteID(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// UpdateRbacWhere is the resolver for the updateRbacWhere field.
+func (r *mutationResolver) UpdateRbacWhere(ctx context.Context, where ent.RbacWhereInput, input ent.UpdateRbacInput) ([]*ent.Rbac, error) {
+	panic(fmt.Errorf("not implemented: UpdateRbacWhere - updateRbacWhere"))
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 

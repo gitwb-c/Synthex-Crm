@@ -8,6 +8,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/google/uuid"
 )
 
@@ -534,6 +535,7 @@ type CreateDepartmentInput struct {
 	UpdatedAt   *time.Time
 	EmployeeIDs []uuid.UUID
 	QueueIDs    []uuid.UUID
+	RbacIDs     []uuid.UUID
 }
 
 // Mutate applies the CreateDepartmentInput on the DepartmentMutation builder.
@@ -550,6 +552,9 @@ func (i *CreateDepartmentInput) Mutate(m *DepartmentMutation) {
 	}
 	if v := i.QueueIDs; len(v) > 0 {
 		m.AddQueueIDs(v...)
+	}
+	if v := i.RbacIDs; len(v) > 0 {
+		m.AddRbacIDs(v...)
 	}
 }
 
@@ -569,6 +574,9 @@ type UpdateDepartmentInput struct {
 	ClearQueues       bool
 	AddQueueIDs       []uuid.UUID
 	RemoveQueueIDs    []uuid.UUID
+	ClearRbacs        bool
+	AddRbacIDs        []uuid.UUID
+	RemoveRbacIDs     []uuid.UUID
 }
 
 // Mutate applies the UpdateDepartmentInput on the DepartmentMutation builder.
@@ -596,6 +604,15 @@ func (i *UpdateDepartmentInput) Mutate(m *DepartmentMutation) {
 	}
 	if v := i.RemoveQueueIDs; len(v) > 0 {
 		m.RemoveQueueIDs(v...)
+	}
+	if i.ClearRbacs {
+		m.ClearRbacs()
+	}
+	if v := i.AddRbacIDs; len(v) > 0 {
+		m.AddRbacIDs(v...)
+	}
+	if v := i.RemoveRbacIDs; len(v) > 0 {
+		m.RemoveRbacIDs(v...)
 	}
 }
 
@@ -1231,6 +1248,64 @@ func (c *QueueUpdate) SetInput(i UpdateQueueInput) *QueueUpdate {
 
 // SetInput applies the change-set in the UpdateQueueInput on the QueueUpdateOne builder.
 func (c *QueueUpdateOne) SetInput(i UpdateQueueInput) *QueueUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateRbacInput represents a mutation input for creating rbacs.
+type CreateRbacInput struct {
+	Access       rbac.Access
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
+	DepartmentID uuid.UUID
+}
+
+// Mutate applies the CreateRbacInput on the RbacMutation builder.
+func (i *CreateRbacInput) Mutate(m *RbacMutation) {
+	m.SetAccess(i.Access)
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetDepartmentID(i.DepartmentID)
+}
+
+// SetInput applies the change-set in the CreateRbacInput on the RbacCreate builder.
+func (c *RbacCreate) SetInput(i CreateRbacInput) *RbacCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateRbacInput represents a mutation input for updating rbacs.
+type UpdateRbacInput struct {
+	Access       *rbac.Access
+	UpdatedAt    *time.Time
+	DepartmentID *uuid.UUID
+}
+
+// Mutate applies the UpdateRbacInput on the RbacMutation builder.
+func (i *UpdateRbacInput) Mutate(m *RbacMutation) {
+	if v := i.Access; v != nil {
+		m.SetAccess(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.DepartmentID; v != nil {
+		m.SetDepartmentID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateRbacInput on the RbacUpdate builder.
+func (c *RbacUpdate) SetInput(i UpdateRbacInput) *RbacUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateRbacInput on the RbacUpdateOne builder.
+func (c *RbacUpdateOne) SetInput(i UpdateRbacInput) *RbacUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

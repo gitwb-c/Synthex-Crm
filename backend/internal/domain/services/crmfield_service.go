@@ -24,6 +24,7 @@ func (s *CrmFieldService) Read(ctx context.Context) ([]*ent.CrmField, error) {
 	}
 	return crmField, nil
 }
+
 func (s *CrmFieldService) Create(ctx context.Context, input ent.CreateCrmFieldInput) (*ent.CrmField, error) {
 	crmField, err := s.repository.Create(ctx, input)
 	if err != nil {

@@ -24,7 +24,6 @@ func (s *CostumerService) Read(ctx context.Context) ([]*ent.Costumer, error) {
 	}
 	return costumer, nil
 }
-
 func (s *CostumerService) Create(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error) {
 	costumer, err := s.repository.Create(ctx, input)
 	if err != nil {

@@ -92,6 +92,12 @@ func InitializeCompanyService(client *ent.Client) *services.CompanyService {
 	return companyService
 }
 
+func InitializeRbacService(client *ent.Client) *services.RbacService {
+	rbacRepository := InitializeRbacRepository(client)
+	rbacService := services.NewRbacService(rbacRepository)
+	return rbacService
+}
+
 func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
 	chatRepository := repositories.NewChatRepository(client)
 	return chatRepository
@@ -155,4 +161,9 @@ func InitializeDealCrmFieldRepository(client *ent.Client) *repositories.DealCrmF
 func InitializeCompanyRepository(client *ent.Client) *repositories.CompanyRepository {
 	companyRepository := repositories.NewCompanyRepository(client)
 	return companyRepository
+}
+
+func InitializeRbacRepository(client *ent.Client) *repositories.RbacRepository {
+	rbacRepository := repositories.NewRbacRepository(client)
+	return rbacRepository
 }

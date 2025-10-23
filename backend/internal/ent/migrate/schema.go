@@ -291,6 +291,28 @@ var (
 		Columns:    QueuesColumns,
 		PrimaryKey: []*schema.Column{QueuesColumns[0]},
 	}
+	// RbacsColumns holds the columns for the "rbacs" table.
+	RbacsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "access", Type: field.TypeEnum, Enums: []string{"view_all_deals", "view_responsible_chat_deals", "view_department_phase_deals", "delete_deals", "change_responsible_chat_or_business", "view_all_customer_data", "view_department_customer_data", "create_deal", "edit_deals", "approve_or_deny_deals", "view_chat_history", "view_advanced_reports", "manage_users", "manage_departments", "manage_system_settings", "manage_products_or_services", "export_data", "configure_workflows", "send_notifications", "view_notifications", "configure_integrations", "view_dashboard_analytics_data", "post_sale_actions"}},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "rbac_department", Type: field.TypeUUID},
+	}
+	// RbacsTable holds the schema information for the "rbacs" table.
+	RbacsTable = &schema.Table{
+		Name:       "rbacs",
+		Columns:    RbacsColumns,
+		PrimaryKey: []*schema.Column{RbacsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "rbacs_departments_department",
+				Columns:    []*schema.Column{RbacsColumns[4]},
+				RefColumns: []*schema.Column{DepartmentsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// StagesColumns holds the columns for the "stages" table.
 	StagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -474,6 +496,7 @@ var (
 		MessagesTable,
 		PipelinesTable,
 		QueuesTable,
+		RbacsTable,
 		StagesTable,
 		TextsTable,
 		ChatEmployeesTable,
@@ -496,6 +519,7 @@ func init() {
 	MessagesTable.ForeignKeys[0].RefTable = FilesTable
 	MessagesTable.ForeignKeys[1].RefTable = ChatsTable
 	MessagesTable.ForeignKeys[2].RefTable = TextsTable
+	RbacsTable.ForeignKeys[0].RefTable = DepartmentsTable
 	StagesTable.ForeignKeys[0].RefTable = PipelinesTable
 	StagesTable.ForeignKeys[1].RefTable = QueuesTable
 	ChatEmployeesTable.ForeignKeys[0].RefTable = ChatsTable

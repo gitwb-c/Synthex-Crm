@@ -24,6 +24,7 @@ func (s *QueueService) Read(ctx context.Context) ([]*ent.Queue, error) {
 	}
 	return queue, nil
 }
+
 func (s *QueueService) Create(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error) {
 	queue, err := s.repository.Create(ctx, input)
 	if err != nil {

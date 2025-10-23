@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"log"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
@@ -27,7 +26,6 @@ func (s *DealService) Read(ctx context.Context) ([]*ent.Deal, error) {
 }
 
 func (s *DealService) Create(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error) {
-	log.Printf("service: %v", input)
 	deal, err := s.repository.Create(ctx, input)
 	if err != nil {
 		return nil, err

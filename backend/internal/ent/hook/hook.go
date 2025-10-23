@@ -177,6 +177,18 @@ func (f QueueFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.QueueMutation", m)
 }
 
+// The RbacFunc type is an adapter to allow the use of ordinary
+// function as Rbac mutator.
+type RbacFunc func(context.Context, *ent.RbacMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RbacFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RbacMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RbacMutation", m)
+}
+
 // The StageFunc type is an adapter to allow the use of ordinary
 // function as Stage mutator.
 type StageFunc func(context.Context, *ent.StageMutation) (ent.Value, error)

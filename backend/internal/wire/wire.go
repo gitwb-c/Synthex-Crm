@@ -101,6 +101,13 @@ func InitializeCompanyService(client *ent.Client) *services.CompanyService {
 	))
 }
 
+func InitializeRbacService(client *ent.Client) *services.RbacService {
+	panic(wire.Build(
+		services.NewRbacService,
+		InitializeRbacRepository,
+	))
+}
+
 func InitializeChatRepository(client *ent.Client) *repositories.ChatRepository {
 	panic(wire.Build(repositories.NewChatRepository))
 }
@@ -149,4 +156,7 @@ func InitializeDealCrmFieldRepository(client *ent.Client) *repositories.DealCrmF
 }
 func InitializeCompanyRepository(client *ent.Client) *repositories.CompanyRepository {
 	panic(wire.Build(repositories.NewCompanyRepository))
+}
+func InitializeRbacRepository(client *ent.Client) *repositories.RbacRepository {
+	panic(wire.Build(repositories.NewRbacRepository))
 }

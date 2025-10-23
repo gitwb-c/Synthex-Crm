@@ -31,11 +31,16 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// if claims, ok := token.Claims.(*jwt.MapClaims); ok && token.Valid {
-		// 	ctx.Set("employeId", claims["employeeId"])
-		// 	ctx.Set("companyId", claims["companyId"])
-		// 	ctx.Set("departmentId", claims["departmentId"])
-		// }
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			ctx.Set("employeeId", claims["employeeId"])
+			ctx.Set("companyId", claims["companyId"])
+			ctx.Set("departmentId", claims["departmentId"])
+		} else {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid claims"})
+			ctx.Abort()
+			return
+		}
+
 		ctx.Next()
 	}
 }
