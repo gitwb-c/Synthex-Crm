@@ -17,7 +17,7 @@ type TokenClaims struct {
 }
 
 func GenerateToken(employeeId string, company string, departmentId string) (string, error) {
-	token := jwt.New(jwt.SigningMethodES256)
+	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["employeeId"] = employeeId
 	claims["company"] = company

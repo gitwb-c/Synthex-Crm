@@ -23,7 +23,9 @@ func (s *EmployeeAuthRepository) Read(ctx context.Context) ([]*ent.EmployeeAuth,
 }
 
 func (s *EmployeeAuthRepository) ReadEmail(ctx context.Context, email string) (*ent.EmployeeAuth, error) {
-	return s.client.EmployeeAuth.Query().Where(employeeauth.Email(email)).Only(ctx)
+	return s.client.EmployeeAuth.Query().Where(employeeauth.Email(email)).WithEmployee(func(q *ent.EmployeeQuery) {
+		q.WithCompany().WithDepartment()
+	}).Only(ctx)
 }
 
 func (s *EmployeeAuthRepository) Create(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error) {

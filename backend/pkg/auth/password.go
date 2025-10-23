@@ -20,17 +20,21 @@ func CheckPasswordHash(password, hash string) bool {
 
 func ValidatePasswordLenght(password string) (bool, error) {
 	passwordMaxLenStr := os.Getenv("EMPLOYEEAUTH_PASSWORD_MAXLEN")
-	if len(passwordMaxLenStr) == 0 {
-		return false, fmt.Errorf("EMPLOYEEAUTH_PASSWORD_MAXLEN not set")
+	passwordMinLenStr := os.Getenv("EMPLOYEEAUTH_PASSWORD_MINLEN")
+
+	if len(passwordMinLenStr) == 0 || len(passwordMaxLenStr) == 0 {
+		return false, fmt.Errorf("EMPLOYEEAUTH_PASSWORD_MAXLEN or EMPLOYEEAUTH_PASSWORD_MINLEN not set")
 	}
 
-	passwordMaxLen, err := strconv.Atoi(passwordMaxLenStr)
-	if err != nil {
-		return false, fmt.Errorf("invalid EMPLOYEEAUTH_PASSWORD_MAXLEN value, must be an integer")
+	passwordMaxLen, errMax := strconv.Atoi(passwordMaxLenStr)
+	passwordMinLen, errMin := strconv.Atoi(passwordMinLenStr)
+
+	if errMax != nil || errMin != nil {
+		return false, fmt.Errorf("invalid password length values, must be integers")
 	}
 
-	if len(password) == 0 || len(password) > passwordMaxLen {
-		return false, fmt.Errorf("invalid password length")
+	if len(password) < passwordMinLen || len(password) > passwordMaxLen {
+		return false, fmt.Errorf("password length must be between %d and %d characters", passwordMinLen, passwordMaxLen)
 	}
 
 	return true, nil

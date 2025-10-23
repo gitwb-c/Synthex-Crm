@@ -5,14 +5,14 @@ import (
 
 	"github.com/gitwb-c/crm.saas/backend/internal/db"
 	"github.com/gitwb-c/crm.saas/backend/internal/http"
-	"github.com/joho/godotenv"
+	"github.com/gitwb-c/crm.saas/backend/pkg/env"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println(".env file not found")
+	err := env.InitEnv()
+	if err != nil {
+		return
 	}
-
 	client, er := db.NewClient()
 	if er != nil {
 		log.Fatalf("failed to init Ent client: %v", er)

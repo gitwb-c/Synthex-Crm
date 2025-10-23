@@ -8,18 +8,23 @@ import (
 
 func ValidateNameLenght(name string) (bool, error) {
 	nameMaxLenStr := os.Getenv("EMPLOYEEAUTH_PASSWORD_MAXLEN")
-	if len(nameMaxLenStr) == 0 {
-		return false, fmt.Errorf("EMPLOYEEAUTH_PASSWORD_MAXLEN not set")
+	nameMinLenStr := os.Getenv("EMPLOYEEAUTH_PASSWORD_MINLEN")
+
+	if len(nameMinLenStr) == 0 || len(nameMaxLenStr) == 0 {
+		return false, fmt.Errorf("EMPLOYEEAUTH_PASSWORD_MAXLEN or EMPLOYEEAUTH_PASSWORD_MINLEN not set")
 	}
 
-	nameMaxLen, err := strconv.Atoi(nameMaxLenStr)
-	if err != nil {
-		return false, fmt.Errorf("invalid EMPLOYEEAUTH_PASSWORD_MAXLEN value, must be an integer")
+	nameMaxLen, errMax := strconv.Atoi(nameMaxLenStr)
+	nameMinLen, errMin := strconv.Atoi(nameMinLenStr)
+
+	if errMax != nil || errMin != nil {
+		return false, fmt.Errorf("invalid name length values, must be integers")
 	}
 
-	if len(name) == 0 || len(name) > nameMaxLen {
-		return false, fmt.Errorf("invalid name length")
+	if len(name) < nameMinLen || len(name) > nameMaxLen {
+		return false, fmt.Errorf("name length must be between %d and %d characters", nameMinLen, nameMaxLen)
 	}
 
 	return true, nil
+
 }
