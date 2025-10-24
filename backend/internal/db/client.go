@@ -15,14 +15,11 @@ import (
 var Client *ent.Client
 
 func NewClient() (*ent.Client, error) {
-	Client, err := ent.Open("postgres", os.Getenv("DB_POSTGRES_URL"))
+	client, err := ent.Open("postgres", os.Getenv("DB_POSTGRES_URL"))
 	if err != nil {
 		return nil, err
 	}
-	// Client.Use(hooks.TenantFilterHook)
-
-	return Client, nil
-
+	return client, nil
 }
 
 func Init(client *ent.Client) (*handler.Server, error) {

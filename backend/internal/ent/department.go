@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/google/uuid"
 )
@@ -24,6 +25,8 @@ type Department struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DepartmentQuery when eager-loading is set.
 	Edges        DepartmentEdges `json:"edges"`
@@ -32,6 +35,8 @@ type Department struct {
 
 // DepartmentEdges holds the relations/edges for other nodes in the graph.
 type DepartmentEdges struct {
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// Employee holds the value of the employee edge.
 	Employee []*Employee `json:"employee,omitempty"`
 	// Queues holds the value of the queues edge.
@@ -40,19 +45,30 @@ type DepartmentEdges struct {
 	Rbacs []*Rbac `json:"rbacs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
 
 	namedEmployee map[string][]*Employee
 	namedQueues   map[string][]*Queue
 	namedRbacs    map[string][]*Rbac
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DepartmentEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // EmployeeOrErr returns the Employee value or an error if the edge
 // was not loaded in eager-loading.
 func (e DepartmentEdges) EmployeeOrErr() ([]*Employee, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Employee, nil
 	}
 	return nil, &NotLoadedError{edge: "employee"}
@@ -61,7 +77,7 @@ func (e DepartmentEdges) EmployeeOrErr() ([]*Employee, error) {
 // QueuesOrErr returns the Queues value or an error if the edge
 // was not loaded in eager-loading.
 func (e DepartmentEdges) QueuesOrErr() ([]*Queue, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[2] {
 		return e.Queues, nil
 	}
 	return nil, &NotLoadedError{edge: "queues"}
@@ -70,7 +86,7 @@ func (e DepartmentEdges) QueuesOrErr() ([]*Queue, error) {
 // RbacsOrErr returns the Rbacs value or an error if the edge
 // was not loaded in eager-loading.
 func (e DepartmentEdges) RbacsOrErr() ([]*Rbac, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		return e.Rbacs, nil
 	}
 	return nil, &NotLoadedError{edge: "rbacs"}
@@ -85,7 +101,7 @@ func (*Department) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case department.FieldCreatedAt, department.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case department.FieldID:
+		case department.FieldID, department.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -126,6 +142,12 @@ func (_m *Department) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case department.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -137,6 +159,11 @@ func (_m *Department) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Department) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryTenant queries the "tenant" edge of the Department entity.
+func (_m *Department) QueryTenant() *CompanyQuery {
+	return NewDepartmentClient(_m.config).QueryTenant(_m)
 }
 
 // QueryEmployee queries the "employee" edge of the Department entity.
@@ -185,6 +212,9 @@ func (_m *Department) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

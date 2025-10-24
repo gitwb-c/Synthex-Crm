@@ -28,10 +28,14 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// EdgeDropdownList holds the string denoting the dropdownlist edge name in mutations.
 	EdgeDropdownList = "dropdownList"
 	// EdgeDealCrmField holds the string denoting the dealcrmfield edge name in mutations.
 	EdgeDealCrmField = "dealCrmField"
+	// EdgeTenant holds the string denoting the tenant edge name in mutations.
+	EdgeTenant = "tenant"
 	// Table holds the table name of the crmfield in the database.
 	Table = "crm_fields"
 	// DropdownListTable is the table that holds the dropdownList relation/edge. The primary key declared below.
@@ -46,6 +50,13 @@ const (
 	DealCrmFieldInverseTable = "deal_crm_fields"
 	// DealCrmFieldColumn is the table column denoting the dealCrmField relation/edge.
 	DealCrmFieldColumn = "deal_crm_field_crm_field"
+	// TenantTable is the table that holds the tenant relation/edge.
+	TenantTable = "crm_fields"
+	// TenantInverseTable is the table name for the Company entity.
+	// It exists in this package in order to avoid circular dependency with the "company" package.
+	TenantInverseTable = "companies"
+	// TenantColumn is the table column denoting the tenant relation/edge.
+	TenantColumn = "tenant_id"
 )
 
 // Columns holds all SQL columns for crmfield fields.
@@ -56,6 +67,7 @@ var Columns = []string{
 	FieldType,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldTenantId,
 }
 
 var (
@@ -145,6 +157,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByDropdownListCount orders the results by dropdownList count.
 func ByDropdownListCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -172,6 +189,13 @@ func ByDealCrmField(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newDealCrmFieldStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByTenantField orders the results by tenant field.
+func ByTenantField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTenantStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newDropdownListStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -184,6 +208,13 @@ func newDealCrmFieldStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DealCrmFieldInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, DealCrmFieldTable, DealCrmFieldColumn),
+	)
+}
+func newTenantStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TenantInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
 	)
 }
 

@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
@@ -69,6 +70,20 @@ func (_c *CrmFieldCreate) SetNillableUpdatedAt(v *time.Time) *CrmFieldCreate {
 	return _c
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *CrmFieldCreate) SetTenantId(v uuid.UUID) *CrmFieldCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_c *CrmFieldCreate) SetNillableTenantId(v *uuid.UUID) *CrmFieldCreate {
+	if v != nil {
+		_c.SetTenantId(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *CrmFieldCreate) SetID(v uuid.UUID) *CrmFieldCreate {
 	_c.mutation.SetID(v)
@@ -111,6 +126,25 @@ func (_c *CrmFieldCreate) AddDealCrmField(v ...*DealCrmField) *CrmFieldCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddDealCrmFieldIDs(ids...)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_c *CrmFieldCreate) SetTenantID(id uuid.UUID) *CrmFieldCreate {
+	_c.mutation.SetTenantID(id)
+	return _c
+}
+
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_c *CrmFieldCreate) SetNillableTenantID(id *uuid.UUID) *CrmFieldCreate {
+	if id != nil {
+		_c = _c.SetTenantID(*id)
+	}
+	return _c
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_c *CrmFieldCreate) SetTenant(v *Company) *CrmFieldCreate {
+	return _c.SetTenantID(v.ID)
 }
 
 // Mutation returns the CrmFieldMutation object of the builder.
@@ -274,6 +308,23 @@ func (_c *CrmFieldCreate) createSpec() (*CrmField, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   crmfield.TenantTable,
+			Columns: []string{crmfield.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TenantId = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

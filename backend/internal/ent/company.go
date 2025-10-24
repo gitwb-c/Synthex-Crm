@@ -32,24 +32,204 @@ type Company struct {
 
 // CompanyEdges holds the relations/edges for other nodes in the graph.
 type CompanyEdges struct {
-	// Employee holds the value of the employee edge.
-	Employee []*Employee `json:"employee,omitempty"`
+	// Employees holds the value of the employees edge.
+	Employees []*Employee `json:"employees,omitempty"`
+	// Costumers holds the value of the costumers edge.
+	Costumers []*Costumer `json:"costumers,omitempty"`
+	// Deals holds the value of the deals edge.
+	Deals []*Deal `json:"deals,omitempty"`
+	// Chats holds the value of the chats edge.
+	Chats []*Chat `json:"chats,omitempty"`
+	// Departments holds the value of the departments edge.
+	Departments []*Department `json:"departments,omitempty"`
+	// Pipelines holds the value of the pipelines edge.
+	Pipelines []*Pipeline `json:"pipelines,omitempty"`
+	// CrmFields holds the value of the crmFields edge.
+	CrmFields []*CrmField `json:"crmFields,omitempty"`
+	// DealCrmFields holds the value of the dealCrmFields edge.
+	DealCrmFields []*DealCrmField `json:"dealCrmFields,omitempty"`
+	// DropdownLists holds the value of the dropdownLists edge.
+	DropdownLists []*DropdownList `json:"dropdownLists,omitempty"`
+	// EmployeeAuths holds the value of the employeeAuths edge.
+	EmployeeAuths []*EmployeeAuth `json:"employeeAuths,omitempty"`
+	// Files holds the value of the files edge.
+	Files []*File `json:"files,omitempty"`
+	// Messages holds the value of the messages edge.
+	Messages []*Message `json:"messages,omitempty"`
+	// Queues holds the value of the queues edge.
+	Queues []*Queue `json:"queues,omitempty"`
+	// Rbacs holds the value of the rbacs edge.
+	Rbacs []*Rbac `json:"rbacs,omitempty"`
+	// Stages holds the value of the stages edge.
+	Stages []*Stage `json:"stages,omitempty"`
+	// Texts holds the value of the texts edge.
+	Texts []*Text `json:"texts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [16]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [16]map[string]int
 
-	namedEmployee map[string][]*Employee
+	namedEmployees     map[string][]*Employee
+	namedCostumers     map[string][]*Costumer
+	namedDeals         map[string][]*Deal
+	namedChats         map[string][]*Chat
+	namedDepartments   map[string][]*Department
+	namedPipelines     map[string][]*Pipeline
+	namedCrmFields     map[string][]*CrmField
+	namedDealCrmFields map[string][]*DealCrmField
+	namedDropdownLists map[string][]*DropdownList
+	namedEmployeeAuths map[string][]*EmployeeAuth
+	namedFiles         map[string][]*File
+	namedMessages      map[string][]*Message
+	namedQueues        map[string][]*Queue
+	namedRbacs         map[string][]*Rbac
+	namedStages        map[string][]*Stage
+	namedTexts         map[string][]*Text
 }
 
-// EmployeeOrErr returns the Employee value or an error if the edge
+// EmployeesOrErr returns the Employees value or an error if the edge
 // was not loaded in eager-loading.
-func (e CompanyEdges) EmployeeOrErr() ([]*Employee, error) {
+func (e CompanyEdges) EmployeesOrErr() ([]*Employee, error) {
 	if e.loadedTypes[0] {
-		return e.Employee, nil
+		return e.Employees, nil
 	}
-	return nil, &NotLoadedError{edge: "employee"}
+	return nil, &NotLoadedError{edge: "employees"}
+}
+
+// CostumersOrErr returns the Costumers value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) CostumersOrErr() ([]*Costumer, error) {
+	if e.loadedTypes[1] {
+		return e.Costumers, nil
+	}
+	return nil, &NotLoadedError{edge: "costumers"}
+}
+
+// DealsOrErr returns the Deals value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) DealsOrErr() ([]*Deal, error) {
+	if e.loadedTypes[2] {
+		return e.Deals, nil
+	}
+	return nil, &NotLoadedError{edge: "deals"}
+}
+
+// ChatsOrErr returns the Chats value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) ChatsOrErr() ([]*Chat, error) {
+	if e.loadedTypes[3] {
+		return e.Chats, nil
+	}
+	return nil, &NotLoadedError{edge: "chats"}
+}
+
+// DepartmentsOrErr returns the Departments value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) DepartmentsOrErr() ([]*Department, error) {
+	if e.loadedTypes[4] {
+		return e.Departments, nil
+	}
+	return nil, &NotLoadedError{edge: "departments"}
+}
+
+// PipelinesOrErr returns the Pipelines value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) PipelinesOrErr() ([]*Pipeline, error) {
+	if e.loadedTypes[5] {
+		return e.Pipelines, nil
+	}
+	return nil, &NotLoadedError{edge: "pipelines"}
+}
+
+// CrmFieldsOrErr returns the CrmFields value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) CrmFieldsOrErr() ([]*CrmField, error) {
+	if e.loadedTypes[6] {
+		return e.CrmFields, nil
+	}
+	return nil, &NotLoadedError{edge: "crmFields"}
+}
+
+// DealCrmFieldsOrErr returns the DealCrmFields value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) DealCrmFieldsOrErr() ([]*DealCrmField, error) {
+	if e.loadedTypes[7] {
+		return e.DealCrmFields, nil
+	}
+	return nil, &NotLoadedError{edge: "dealCrmFields"}
+}
+
+// DropdownListsOrErr returns the DropdownLists value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) DropdownListsOrErr() ([]*DropdownList, error) {
+	if e.loadedTypes[8] {
+		return e.DropdownLists, nil
+	}
+	return nil, &NotLoadedError{edge: "dropdownLists"}
+}
+
+// EmployeeAuthsOrErr returns the EmployeeAuths value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) EmployeeAuthsOrErr() ([]*EmployeeAuth, error) {
+	if e.loadedTypes[9] {
+		return e.EmployeeAuths, nil
+	}
+	return nil, &NotLoadedError{edge: "employeeAuths"}
+}
+
+// FilesOrErr returns the Files value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) FilesOrErr() ([]*File, error) {
+	if e.loadedTypes[10] {
+		return e.Files, nil
+	}
+	return nil, &NotLoadedError{edge: "files"}
+}
+
+// MessagesOrErr returns the Messages value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) MessagesOrErr() ([]*Message, error) {
+	if e.loadedTypes[11] {
+		return e.Messages, nil
+	}
+	return nil, &NotLoadedError{edge: "messages"}
+}
+
+// QueuesOrErr returns the Queues value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) QueuesOrErr() ([]*Queue, error) {
+	if e.loadedTypes[12] {
+		return e.Queues, nil
+	}
+	return nil, &NotLoadedError{edge: "queues"}
+}
+
+// RbacsOrErr returns the Rbacs value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) RbacsOrErr() ([]*Rbac, error) {
+	if e.loadedTypes[13] {
+		return e.Rbacs, nil
+	}
+	return nil, &NotLoadedError{edge: "rbacs"}
+}
+
+// StagesOrErr returns the Stages value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) StagesOrErr() ([]*Stage, error) {
+	if e.loadedTypes[14] {
+		return e.Stages, nil
+	}
+	return nil, &NotLoadedError{edge: "stages"}
+}
+
+// TextsOrErr returns the Texts value or an error if the edge
+// was not loaded in eager-loading.
+func (e CompanyEdges) TextsOrErr() ([]*Text, error) {
+	if e.loadedTypes[15] {
+		return e.Texts, nil
+	}
+	return nil, &NotLoadedError{edge: "texts"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -115,9 +295,84 @@ func (_m *Company) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryEmployee queries the "employee" edge of the Company entity.
-func (_m *Company) QueryEmployee() *EmployeeQuery {
-	return NewCompanyClient(_m.config).QueryEmployee(_m)
+// QueryEmployees queries the "employees" edge of the Company entity.
+func (_m *Company) QueryEmployees() *EmployeeQuery {
+	return NewCompanyClient(_m.config).QueryEmployees(_m)
+}
+
+// QueryCostumers queries the "costumers" edge of the Company entity.
+func (_m *Company) QueryCostumers() *CostumerQuery {
+	return NewCompanyClient(_m.config).QueryCostumers(_m)
+}
+
+// QueryDeals queries the "deals" edge of the Company entity.
+func (_m *Company) QueryDeals() *DealQuery {
+	return NewCompanyClient(_m.config).QueryDeals(_m)
+}
+
+// QueryChats queries the "chats" edge of the Company entity.
+func (_m *Company) QueryChats() *ChatQuery {
+	return NewCompanyClient(_m.config).QueryChats(_m)
+}
+
+// QueryDepartments queries the "departments" edge of the Company entity.
+func (_m *Company) QueryDepartments() *DepartmentQuery {
+	return NewCompanyClient(_m.config).QueryDepartments(_m)
+}
+
+// QueryPipelines queries the "pipelines" edge of the Company entity.
+func (_m *Company) QueryPipelines() *PipelineQuery {
+	return NewCompanyClient(_m.config).QueryPipelines(_m)
+}
+
+// QueryCrmFields queries the "crmFields" edge of the Company entity.
+func (_m *Company) QueryCrmFields() *CrmFieldQuery {
+	return NewCompanyClient(_m.config).QueryCrmFields(_m)
+}
+
+// QueryDealCrmFields queries the "dealCrmFields" edge of the Company entity.
+func (_m *Company) QueryDealCrmFields() *DealCrmFieldQuery {
+	return NewCompanyClient(_m.config).QueryDealCrmFields(_m)
+}
+
+// QueryDropdownLists queries the "dropdownLists" edge of the Company entity.
+func (_m *Company) QueryDropdownLists() *DropdownListQuery {
+	return NewCompanyClient(_m.config).QueryDropdownLists(_m)
+}
+
+// QueryEmployeeAuths queries the "employeeAuths" edge of the Company entity.
+func (_m *Company) QueryEmployeeAuths() *EmployeeAuthQuery {
+	return NewCompanyClient(_m.config).QueryEmployeeAuths(_m)
+}
+
+// QueryFiles queries the "files" edge of the Company entity.
+func (_m *Company) QueryFiles() *FileQuery {
+	return NewCompanyClient(_m.config).QueryFiles(_m)
+}
+
+// QueryMessages queries the "messages" edge of the Company entity.
+func (_m *Company) QueryMessages() *MessageQuery {
+	return NewCompanyClient(_m.config).QueryMessages(_m)
+}
+
+// QueryQueues queries the "queues" edge of the Company entity.
+func (_m *Company) QueryQueues() *QueueQuery {
+	return NewCompanyClient(_m.config).QueryQueues(_m)
+}
+
+// QueryRbacs queries the "rbacs" edge of the Company entity.
+func (_m *Company) QueryRbacs() *RbacQuery {
+	return NewCompanyClient(_m.config).QueryRbacs(_m)
+}
+
+// QueryStages queries the "stages" edge of the Company entity.
+func (_m *Company) QueryStages() *StageQuery {
+	return NewCompanyClient(_m.config).QueryStages(_m)
+}
+
+// QueryTexts queries the "texts" edge of the Company entity.
+func (_m *Company) QueryTexts() *TextQuery {
+	return NewCompanyClient(_m.config).QueryTexts(_m)
 }
 
 // Update returns a builder for updating this Company.
@@ -155,27 +410,387 @@ func (_m *Company) String() string {
 	return builder.String()
 }
 
-// NamedEmployee returns the Employee named value or an error if the edge was not
+// NamedEmployees returns the Employees named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (_m *Company) NamedEmployee(name string) ([]*Employee, error) {
-	if _m.Edges.namedEmployee == nil {
+func (_m *Company) NamedEmployees(name string) ([]*Employee, error) {
+	if _m.Edges.namedEmployees == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := _m.Edges.namedEmployee[name]
+	nodes, ok := _m.Edges.namedEmployees[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (_m *Company) appendNamedEmployee(name string, edges ...*Employee) {
-	if _m.Edges.namedEmployee == nil {
-		_m.Edges.namedEmployee = make(map[string][]*Employee)
+func (_m *Company) appendNamedEmployees(name string, edges ...*Employee) {
+	if _m.Edges.namedEmployees == nil {
+		_m.Edges.namedEmployees = make(map[string][]*Employee)
 	}
 	if len(edges) == 0 {
-		_m.Edges.namedEmployee[name] = []*Employee{}
+		_m.Edges.namedEmployees[name] = []*Employee{}
 	} else {
-		_m.Edges.namedEmployee[name] = append(_m.Edges.namedEmployee[name], edges...)
+		_m.Edges.namedEmployees[name] = append(_m.Edges.namedEmployees[name], edges...)
+	}
+}
+
+// NamedCostumers returns the Costumers named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedCostumers(name string) ([]*Costumer, error) {
+	if _m.Edges.namedCostumers == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedCostumers[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedCostumers(name string, edges ...*Costumer) {
+	if _m.Edges.namedCostumers == nil {
+		_m.Edges.namedCostumers = make(map[string][]*Costumer)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedCostumers[name] = []*Costumer{}
+	} else {
+		_m.Edges.namedCostumers[name] = append(_m.Edges.namedCostumers[name], edges...)
+	}
+}
+
+// NamedDeals returns the Deals named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedDeals(name string) ([]*Deal, error) {
+	if _m.Edges.namedDeals == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedDeals[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedDeals(name string, edges ...*Deal) {
+	if _m.Edges.namedDeals == nil {
+		_m.Edges.namedDeals = make(map[string][]*Deal)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedDeals[name] = []*Deal{}
+	} else {
+		_m.Edges.namedDeals[name] = append(_m.Edges.namedDeals[name], edges...)
+	}
+}
+
+// NamedChats returns the Chats named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedChats(name string) ([]*Chat, error) {
+	if _m.Edges.namedChats == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedChats[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedChats(name string, edges ...*Chat) {
+	if _m.Edges.namedChats == nil {
+		_m.Edges.namedChats = make(map[string][]*Chat)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedChats[name] = []*Chat{}
+	} else {
+		_m.Edges.namedChats[name] = append(_m.Edges.namedChats[name], edges...)
+	}
+}
+
+// NamedDepartments returns the Departments named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedDepartments(name string) ([]*Department, error) {
+	if _m.Edges.namedDepartments == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedDepartments[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedDepartments(name string, edges ...*Department) {
+	if _m.Edges.namedDepartments == nil {
+		_m.Edges.namedDepartments = make(map[string][]*Department)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedDepartments[name] = []*Department{}
+	} else {
+		_m.Edges.namedDepartments[name] = append(_m.Edges.namedDepartments[name], edges...)
+	}
+}
+
+// NamedPipelines returns the Pipelines named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedPipelines(name string) ([]*Pipeline, error) {
+	if _m.Edges.namedPipelines == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedPipelines[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedPipelines(name string, edges ...*Pipeline) {
+	if _m.Edges.namedPipelines == nil {
+		_m.Edges.namedPipelines = make(map[string][]*Pipeline)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedPipelines[name] = []*Pipeline{}
+	} else {
+		_m.Edges.namedPipelines[name] = append(_m.Edges.namedPipelines[name], edges...)
+	}
+}
+
+// NamedCrmFields returns the CrmFields named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedCrmFields(name string) ([]*CrmField, error) {
+	if _m.Edges.namedCrmFields == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedCrmFields[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedCrmFields(name string, edges ...*CrmField) {
+	if _m.Edges.namedCrmFields == nil {
+		_m.Edges.namedCrmFields = make(map[string][]*CrmField)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedCrmFields[name] = []*CrmField{}
+	} else {
+		_m.Edges.namedCrmFields[name] = append(_m.Edges.namedCrmFields[name], edges...)
+	}
+}
+
+// NamedDealCrmFields returns the DealCrmFields named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedDealCrmFields(name string) ([]*DealCrmField, error) {
+	if _m.Edges.namedDealCrmFields == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedDealCrmFields[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedDealCrmFields(name string, edges ...*DealCrmField) {
+	if _m.Edges.namedDealCrmFields == nil {
+		_m.Edges.namedDealCrmFields = make(map[string][]*DealCrmField)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedDealCrmFields[name] = []*DealCrmField{}
+	} else {
+		_m.Edges.namedDealCrmFields[name] = append(_m.Edges.namedDealCrmFields[name], edges...)
+	}
+}
+
+// NamedDropdownLists returns the DropdownLists named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedDropdownLists(name string) ([]*DropdownList, error) {
+	if _m.Edges.namedDropdownLists == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedDropdownLists[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedDropdownLists(name string, edges ...*DropdownList) {
+	if _m.Edges.namedDropdownLists == nil {
+		_m.Edges.namedDropdownLists = make(map[string][]*DropdownList)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedDropdownLists[name] = []*DropdownList{}
+	} else {
+		_m.Edges.namedDropdownLists[name] = append(_m.Edges.namedDropdownLists[name], edges...)
+	}
+}
+
+// NamedEmployeeAuths returns the EmployeeAuths named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedEmployeeAuths(name string) ([]*EmployeeAuth, error) {
+	if _m.Edges.namedEmployeeAuths == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedEmployeeAuths[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedEmployeeAuths(name string, edges ...*EmployeeAuth) {
+	if _m.Edges.namedEmployeeAuths == nil {
+		_m.Edges.namedEmployeeAuths = make(map[string][]*EmployeeAuth)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedEmployeeAuths[name] = []*EmployeeAuth{}
+	} else {
+		_m.Edges.namedEmployeeAuths[name] = append(_m.Edges.namedEmployeeAuths[name], edges...)
+	}
+}
+
+// NamedFiles returns the Files named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedFiles(name string) ([]*File, error) {
+	if _m.Edges.namedFiles == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedFiles[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedFiles(name string, edges ...*File) {
+	if _m.Edges.namedFiles == nil {
+		_m.Edges.namedFiles = make(map[string][]*File)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedFiles[name] = []*File{}
+	} else {
+		_m.Edges.namedFiles[name] = append(_m.Edges.namedFiles[name], edges...)
+	}
+}
+
+// NamedMessages returns the Messages named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedMessages(name string) ([]*Message, error) {
+	if _m.Edges.namedMessages == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedMessages[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedMessages(name string, edges ...*Message) {
+	if _m.Edges.namedMessages == nil {
+		_m.Edges.namedMessages = make(map[string][]*Message)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedMessages[name] = []*Message{}
+	} else {
+		_m.Edges.namedMessages[name] = append(_m.Edges.namedMessages[name], edges...)
+	}
+}
+
+// NamedQueues returns the Queues named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedQueues(name string) ([]*Queue, error) {
+	if _m.Edges.namedQueues == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedQueues[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedQueues(name string, edges ...*Queue) {
+	if _m.Edges.namedQueues == nil {
+		_m.Edges.namedQueues = make(map[string][]*Queue)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedQueues[name] = []*Queue{}
+	} else {
+		_m.Edges.namedQueues[name] = append(_m.Edges.namedQueues[name], edges...)
+	}
+}
+
+// NamedRbacs returns the Rbacs named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedRbacs(name string) ([]*Rbac, error) {
+	if _m.Edges.namedRbacs == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedRbacs[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedRbacs(name string, edges ...*Rbac) {
+	if _m.Edges.namedRbacs == nil {
+		_m.Edges.namedRbacs = make(map[string][]*Rbac)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedRbacs[name] = []*Rbac{}
+	} else {
+		_m.Edges.namedRbacs[name] = append(_m.Edges.namedRbacs[name], edges...)
+	}
+}
+
+// NamedStages returns the Stages named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedStages(name string) ([]*Stage, error) {
+	if _m.Edges.namedStages == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedStages[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedStages(name string, edges ...*Stage) {
+	if _m.Edges.namedStages == nil {
+		_m.Edges.namedStages = make(map[string][]*Stage)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedStages[name] = []*Stage{}
+	} else {
+		_m.Edges.namedStages[name] = append(_m.Edges.namedStages[name], edges...)
+	}
+}
+
+// NamedTexts returns the Texts named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Company) NamedTexts(name string) ([]*Text, error) {
+	if _m.Edges.namedTexts == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedTexts[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Company) appendNamedTexts(name string, edges ...*Text) {
+	if _m.Edges.namedTexts == nil {
+		_m.Edges.namedTexts = make(map[string][]*Text)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedTexts[name] = []*Text{}
+	} else {
+		_m.Edges.namedTexts[name] = append(_m.Edges.namedTexts[name], edges...)
 	}
 }
 

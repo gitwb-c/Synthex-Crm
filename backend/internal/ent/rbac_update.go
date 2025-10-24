@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
@@ -50,6 +51,26 @@ func (_u *RbacUpdate) SetUpdatedAt(v time.Time) *RbacUpdate {
 	return _u
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_u *RbacUpdate) SetTenantId(v uuid.UUID) *RbacUpdate {
+	_u.mutation.SetTenantId(v)
+	return _u
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_u *RbacUpdate) SetNillableTenantId(v *uuid.UUID) *RbacUpdate {
+	if v != nil {
+		_u.SetTenantId(*v)
+	}
+	return _u
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (_u *RbacUpdate) ClearTenantId() *RbacUpdate {
+	_u.mutation.ClearTenantId()
+	return _u
+}
+
 // SetDepartmentID sets the "department" edge to the Department entity by ID.
 func (_u *RbacUpdate) SetDepartmentID(id uuid.UUID) *RbacUpdate {
 	_u.mutation.SetDepartmentID(id)
@@ -61,6 +82,25 @@ func (_u *RbacUpdate) SetDepartment(v *Department) *RbacUpdate {
 	return _u.SetDepartmentID(v.ID)
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_u *RbacUpdate) SetTenantID(id uuid.UUID) *RbacUpdate {
+	_u.mutation.SetTenantID(id)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_u *RbacUpdate) SetNillableTenantID(id *uuid.UUID) *RbacUpdate {
+	if id != nil {
+		_u = _u.SetTenantID(*id)
+	}
+	return _u
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_u *RbacUpdate) SetTenant(v *Company) *RbacUpdate {
+	return _u.SetTenantID(v.ID)
+}
+
 // Mutation returns the RbacMutation object of the builder.
 func (_u *RbacUpdate) Mutation() *RbacMutation {
 	return _u.mutation
@@ -69,6 +109,12 @@ func (_u *RbacUpdate) Mutation() *RbacMutation {
 // ClearDepartment clears the "department" edge to the Department entity.
 func (_u *RbacUpdate) ClearDepartment() *RbacUpdate {
 	_u.mutation.ClearDepartment()
+	return _u
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (_u *RbacUpdate) ClearTenant() *RbacUpdate {
+	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -168,6 +214,35 @@ func (_u *RbacUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.TenantCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   rbac.TenantTable,
+			Columns: []string{rbac.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   rbac.TenantTable,
+			Columns: []string{rbac.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{rbac.Label}
@@ -208,6 +283,26 @@ func (_u *RbacUpdateOne) SetUpdatedAt(v time.Time) *RbacUpdateOne {
 	return _u
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_u *RbacUpdateOne) SetTenantId(v uuid.UUID) *RbacUpdateOne {
+	_u.mutation.SetTenantId(v)
+	return _u
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_u *RbacUpdateOne) SetNillableTenantId(v *uuid.UUID) *RbacUpdateOne {
+	if v != nil {
+		_u.SetTenantId(*v)
+	}
+	return _u
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (_u *RbacUpdateOne) ClearTenantId() *RbacUpdateOne {
+	_u.mutation.ClearTenantId()
+	return _u
+}
+
 // SetDepartmentID sets the "department" edge to the Department entity by ID.
 func (_u *RbacUpdateOne) SetDepartmentID(id uuid.UUID) *RbacUpdateOne {
 	_u.mutation.SetDepartmentID(id)
@@ -219,6 +314,25 @@ func (_u *RbacUpdateOne) SetDepartment(v *Department) *RbacUpdateOne {
 	return _u.SetDepartmentID(v.ID)
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_u *RbacUpdateOne) SetTenantID(id uuid.UUID) *RbacUpdateOne {
+	_u.mutation.SetTenantID(id)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_u *RbacUpdateOne) SetNillableTenantID(id *uuid.UUID) *RbacUpdateOne {
+	if id != nil {
+		_u = _u.SetTenantID(*id)
+	}
+	return _u
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_u *RbacUpdateOne) SetTenant(v *Company) *RbacUpdateOne {
+	return _u.SetTenantID(v.ID)
+}
+
 // Mutation returns the RbacMutation object of the builder.
 func (_u *RbacUpdateOne) Mutation() *RbacMutation {
 	return _u.mutation
@@ -227,6 +341,12 @@ func (_u *RbacUpdateOne) Mutation() *RbacMutation {
 // ClearDepartment clears the "department" edge to the Department entity.
 func (_u *RbacUpdateOne) ClearDepartment() *RbacUpdateOne {
 	_u.mutation.ClearDepartment()
+	return _u
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (_u *RbacUpdateOne) ClearTenant() *RbacUpdateOne {
+	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -349,6 +469,35 @@ func (_u *RbacUpdateOne) sqlSave(ctx context.Context) (_node *Rbac, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TenantCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   rbac.TenantTable,
+			Columns: []string{rbac.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   rbac.TenantTable,
+			Columns: []string{rbac.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

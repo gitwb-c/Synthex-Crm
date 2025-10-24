@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
@@ -26,6 +27,7 @@ type DropdownListQuery struct {
 	inters            []Interceptor
 	predicates        []predicate.DropdownList
 	withCrmField      *CrmFieldQuery
+	withTenant        *CompanyQuery
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*DropdownList) error
 	withNamedCrmField map[string]*CrmFieldQuery
@@ -80,6 +82,28 @@ func (_q *DropdownListQuery) QueryCrmField() *CrmFieldQuery {
 			sqlgraph.From(dropdownlist.Table, dropdownlist.FieldID, selector),
 			sqlgraph.To(crmfield.Table, crmfield.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, dropdownlist.CrmFieldTable, dropdownlist.CrmFieldPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *DropdownListQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dropdownlist.Table, dropdownlist.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dropdownlist.TenantTable, dropdownlist.TenantColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -280,6 +304,7 @@ func (_q *DropdownListQuery) Clone() *DropdownListQuery {
 		inters:       append([]Interceptor{}, _q.inters...),
 		predicates:   append([]predicate.DropdownList{}, _q.predicates...),
 		withCrmField: _q.withCrmField.Clone(),
+		withTenant:   _q.withTenant.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -294,6 +319,17 @@ func (_q *DropdownListQuery) WithCrmField(opts ...func(*CrmFieldQuery)) *Dropdow
 		opt(query)
 	}
 	_q.withCrmField = query
+	return _q
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DropdownListQuery) WithTenant(opts ...func(*CompanyQuery)) *DropdownListQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
 	return _q
 }
 
@@ -375,8 +411,9 @@ func (_q *DropdownListQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	var (
 		nodes       = []*DropdownList{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withCrmField != nil,
+			_q.withTenant != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -404,6 +441,12 @@ func (_q *DropdownListQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		if err := _q.loadCrmField(ctx, query, nodes,
 			func(n *DropdownList) { n.Edges.CrmField = []*CrmField{} },
 			func(n *DropdownList, e *CrmField) { n.Edges.CrmField = append(n.Edges.CrmField, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *DropdownList, e *Company) { n.Edges.Tenant = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -483,6 +526,35 @@ func (_q *DropdownListQuery) loadCrmField(ctx context.Context, query *CrmFieldQu
 	}
 	return nil
 }
+func (_q *DropdownListQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*DropdownList, init func(*DropdownList), assign func(*DropdownList, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*DropdownList)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *DropdownListQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -511,6 +583,9 @@ func (_q *DropdownListQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != dropdownlist.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(dropdownlist.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

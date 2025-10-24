@@ -494,6 +494,22 @@ func (c *ChatClient) QueryMessages(_m *Chat) *MessageQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a Chat.
+func (c *ChatClient) QueryTenant(_m *Chat) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(chat.Table, chat.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, chat.TenantTable, chat.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ChatClient) Hooks() []Hook {
 	return c.hooks.Chat
@@ -627,15 +643,255 @@ func (c *CompanyClient) GetX(ctx context.Context, id uuid.UUID) *Company {
 	return obj
 }
 
-// QueryEmployee queries the employee edge of a Company.
-func (c *CompanyClient) QueryEmployee(_m *Company) *EmployeeQuery {
+// QueryEmployees queries the employees edge of a Company.
+func (c *CompanyClient) QueryEmployees(_m *Company) *EmployeeQuery {
 	query := (&EmployeeClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(company.Table, company.FieldID, id),
 			sqlgraph.To(employee.Table, employee.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, company.EmployeeTable, company.EmployeeColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.EmployeesTable, company.EmployeesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCostumers queries the costumers edge of a Company.
+func (c *CompanyClient) QueryCostumers(_m *Company) *CostumerQuery {
+	query := (&CostumerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(costumer.Table, costumer.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.CostumersTable, company.CostumersColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDeals queries the deals edge of a Company.
+func (c *CompanyClient) QueryDeals(_m *Company) *DealQuery {
+	query := (&DealClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(deal.Table, deal.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DealsTable, company.DealsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChats queries the chats edge of a Company.
+func (c *CompanyClient) QueryChats(_m *Company) *ChatQuery {
+	query := (&ChatClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(chat.Table, chat.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.ChatsTable, company.ChatsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDepartments queries the departments edge of a Company.
+func (c *CompanyClient) QueryDepartments(_m *Company) *DepartmentQuery {
+	query := (&DepartmentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(department.Table, department.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DepartmentsTable, company.DepartmentsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPipelines queries the pipelines edge of a Company.
+func (c *CompanyClient) QueryPipelines(_m *Company) *PipelineQuery {
+	query := (&PipelineClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(pipeline.Table, pipeline.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.PipelinesTable, company.PipelinesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCrmFields queries the crmFields edge of a Company.
+func (c *CompanyClient) QueryCrmFields(_m *Company) *CrmFieldQuery {
+	query := (&CrmFieldClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(crmfield.Table, crmfield.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.CrmFieldsTable, company.CrmFieldsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDealCrmFields queries the dealCrmFields edge of a Company.
+func (c *CompanyClient) QueryDealCrmFields(_m *Company) *DealCrmFieldQuery {
+	query := (&DealCrmFieldClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(dealcrmfield.Table, dealcrmfield.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DealCrmFieldsTable, company.DealCrmFieldsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDropdownLists queries the dropdownLists edge of a Company.
+func (c *CompanyClient) QueryDropdownLists(_m *Company) *DropdownListQuery {
+	query := (&DropdownListClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(dropdownlist.Table, dropdownlist.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DropdownListsTable, company.DropdownListsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEmployeeAuths queries the employeeAuths edge of a Company.
+func (c *CompanyClient) QueryEmployeeAuths(_m *Company) *EmployeeAuthQuery {
+	query := (&EmployeeAuthClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(employeeauth.Table, employeeauth.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.EmployeeAuthsTable, company.EmployeeAuthsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFiles queries the files edge of a Company.
+func (c *CompanyClient) QueryFiles(_m *Company) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.FilesTable, company.FilesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryMessages queries the messages edge of a Company.
+func (c *CompanyClient) QueryMessages(_m *Company) *MessageQuery {
+	query := (&MessageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(message.Table, message.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.MessagesTable, company.MessagesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryQueues queries the queues edge of a Company.
+func (c *CompanyClient) QueryQueues(_m *Company) *QueueQuery {
+	query := (&QueueClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(queue.Table, queue.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.QueuesTable, company.QueuesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryRbacs queries the rbacs edge of a Company.
+func (c *CompanyClient) QueryRbacs(_m *Company) *RbacQuery {
+	query := (&RbacClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(rbac.Table, rbac.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.RbacsTable, company.RbacsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStages queries the stages edge of a Company.
+func (c *CompanyClient) QueryStages(_m *Company) *StageQuery {
+	query := (&StageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(stage.Table, stage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.StagesTable, company.StagesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTexts queries the texts edge of a Company.
+func (c *CompanyClient) QueryTexts(_m *Company) *TextQuery {
+	query := (&TextClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, id),
+			sqlgraph.To(text.Table, text.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.TextsTable, company.TextsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -774,6 +1030,22 @@ func (c *CostumerClient) GetX(ctx context.Context, id uuid.UUID) *Costumer {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryTenant queries the tenant edge of a Costumer.
+func (c *CostumerClient) QueryTenant(_m *Costumer) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(costumer.Table, costumer.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, costumer.TenantTable, costumer.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryDeals queries the deals edge of a Costumer.
@@ -957,6 +1229,22 @@ func (c *CrmFieldClient) QueryDealCrmField(_m *CrmField) *DealCrmFieldQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a CrmField.
+func (c *CrmFieldClient) QueryTenant(_m *CrmField) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(crmfield.Table, crmfield.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, crmfield.TenantTable, crmfield.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CrmFieldClient) Hooks() []Hook {
 	return c.hooks.CrmField
@@ -1088,6 +1376,22 @@ func (c *DealClient) GetX(ctx context.Context, id uuid.UUID) *Deal {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryTenant queries the tenant edge of a Deal.
+func (c *DealClient) QueryTenant(_m *Deal) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deal.Table, deal.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, deal.TenantTable, deal.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryCostumer queries the costumer edge of a Deal.
@@ -1319,6 +1623,22 @@ func (c *DealCrmFieldClient) QueryCrmField(_m *DealCrmField) *CrmFieldQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a DealCrmField.
+func (c *DealCrmFieldClient) QueryTenant(_m *DealCrmField) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dealcrmfield.Table, dealcrmfield.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dealcrmfield.TenantTable, dealcrmfield.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *DealCrmFieldClient) Hooks() []Hook {
 	return c.hooks.DealCrmField
@@ -1450,6 +1770,22 @@ func (c *DepartmentClient) GetX(ctx context.Context, id uuid.UUID) *Department {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryTenant queries the tenant edge of a Department.
+func (c *DepartmentClient) QueryTenant(_m *Department) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(department.Table, department.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, department.TenantTable, department.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryEmployee queries the employee edge of a Department.
@@ -1649,6 +1985,22 @@ func (c *DropdownListClient) QueryCrmField(_m *DropdownList) *CrmFieldQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a DropdownList.
+func (c *DropdownListClient) QueryTenant(_m *DropdownList) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dropdownlist.Table, dropdownlist.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dropdownlist.TenantTable, dropdownlist.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *DropdownListClient) Hooks() []Hook {
 	return c.hooks.DropdownList
@@ -1798,15 +2150,15 @@ func (c *EmployeeClient) QueryEmployeeAuth(_m *Employee) *EmployeeAuthQuery {
 	return query
 }
 
-// QueryCompany queries the company edge of a Employee.
-func (c *EmployeeClient) QueryCompany(_m *Employee) *CompanyQuery {
+// QueryTenant queries the tenant edge of a Employee.
+func (c *EmployeeClient) QueryTenant(_m *Employee) *CompanyQuery {
 	query := (&CompanyClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(employee.Table, employee.FieldID, id),
 			sqlgraph.To(company.Table, company.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, employee.CompanyTable, employee.CompanyColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, employee.TenantTable, employee.TenantColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -2027,6 +2379,22 @@ func (c *EmployeeAuthClient) QueryEmployee(_m *EmployeeAuth) *EmployeeQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a EmployeeAuth.
+func (c *EmployeeAuthClient) QueryTenant(_m *EmployeeAuth) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(employeeauth.Table, employeeauth.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, employeeauth.TenantTable, employeeauth.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *EmployeeAuthClient) Hooks() []Hook {
 	return c.hooks.EmployeeAuth
@@ -2169,6 +2537,22 @@ func (c *FileClient) QueryMessage(_m *File) *MessageQuery {
 			sqlgraph.From(file.Table, file.FieldID, id),
 			sqlgraph.To(message.Table, message.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, file.MessageTable, file.MessageColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTenant queries the tenant edge of a File.
+func (c *FileClient) QueryTenant(_m *File) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, file.TenantTable, file.TenantColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -2373,6 +2757,22 @@ func (c *MessageClient) QueryFile(_m *Message) *FileQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a Message.
+func (c *MessageClient) QueryTenant(_m *Message) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(message.Table, message.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, message.TenantTable, message.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *MessageClient) Hooks() []Hook {
 	return c.hooks.Message
@@ -2504,6 +2904,22 @@ func (c *PipelineClient) GetX(ctx context.Context, id uuid.UUID) *Pipeline {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryTenant queries the tenant edge of a Pipeline.
+func (c *PipelineClient) QueryTenant(_m *Pipeline) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(pipeline.Table, pipeline.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, pipeline.TenantTable, pipeline.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryStages queries the stages edge of a Pipeline.
@@ -2703,6 +3119,22 @@ func (c *QueueClient) QueryDepartment(_m *Queue) *DepartmentQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a Queue.
+func (c *QueueClient) QueryTenant(_m *Queue) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(queue.Table, queue.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, queue.TenantTable, queue.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *QueueClient) Hooks() []Hook {
 	return c.hooks.Queue
@@ -2845,6 +3277,22 @@ func (c *RbacClient) QueryDepartment(_m *Rbac) *DepartmentQuery {
 			sqlgraph.From(rbac.Table, rbac.FieldID, id),
 			sqlgraph.To(department.Table, department.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, rbac.DepartmentTable, rbac.DepartmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTenant queries the tenant edge of a Rbac.
+func (c *RbacClient) QueryTenant(_m *Rbac) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(rbac.Table, rbac.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, rbac.TenantTable, rbac.TenantColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -3033,6 +3481,22 @@ func (c *StageClient) QueryQueue(_m *Stage) *QueueQuery {
 	return query
 }
 
+// QueryTenant queries the tenant edge of a Stage.
+func (c *StageClient) QueryTenant(_m *Stage) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(stage.Table, stage.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, stage.TenantTable, stage.TenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *StageClient) Hooks() []Hook {
 	return c.hooks.Stage
@@ -3175,6 +3639,22 @@ func (c *TextClient) QueryMessage(_m *Text) *MessageQuery {
 			sqlgraph.From(text.Table, text.FieldID, id),
 			sqlgraph.To(message.Table, message.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, text.MessageTable, text.MessageColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTenant queries the tenant edge of a Text.
+func (c *TextClient) QueryTenant(_m *Text) *CompanyQuery {
+	query := (&CompanyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(text.Table, text.FieldID, id),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, text.TenantTable, text.TenantColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil

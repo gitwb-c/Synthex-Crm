@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
@@ -30,6 +31,8 @@ type Stage struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the StageQuery when eager-loading is set.
 	Edges          StageEdges `json:"edges"`
@@ -46,11 +49,13 @@ type StageEdges struct {
 	Deals []*Deal `json:"deals,omitempty"`
 	// Queue holds the value of the queue edge.
 	Queue *Queue `json:"queue,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
 
 	namedDeals map[string][]*Deal
 }
@@ -86,6 +91,17 @@ func (e StageEdges) QueueOrErr() (*Queue, error) {
 	return nil, &NotLoadedError{edge: "queue"}
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e StageEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Stage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -97,7 +113,7 @@ func (*Stage) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case stage.FieldCreatedAt, stage.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case stage.FieldID:
+		case stage.FieldID, stage.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		case stage.ForeignKeys[0]: // stage_pipeline
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
@@ -154,6 +170,12 @@ func (_m *Stage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case stage.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case stage.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field stage_pipeline", values[i])
@@ -196,6 +218,11 @@ func (_m *Stage) QueryQueue() *QueueQuery {
 	return NewStageClient(_m.config).QueryQueue(_m)
 }
 
+// QueryTenant queries the "tenant" edge of the Stage entity.
+func (_m *Stage) QueryTenant() *CompanyQuery {
+	return NewStageClient(_m.config).QueryTenant(_m)
+}
+
 // Update returns a builder for updating this Stage.
 // Note that you need to call Stage.Unwrap() before calling this method if this Stage
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -233,6 +260,9 @@ func (_m *Stage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

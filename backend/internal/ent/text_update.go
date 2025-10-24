@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
@@ -43,6 +44,26 @@ func (_u *TextUpdate) SetNillableText(v *string) *TextUpdate {
 	return _u
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_u *TextUpdate) SetTenantId(v uuid.UUID) *TextUpdate {
+	_u.mutation.SetTenantId(v)
+	return _u
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_u *TextUpdate) SetNillableTenantId(v *uuid.UUID) *TextUpdate {
+	if v != nil {
+		_u.SetTenantId(*v)
+	}
+	return _u
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (_u *TextUpdate) ClearTenantId() *TextUpdate {
+	_u.mutation.ClearTenantId()
+	return _u
+}
+
 // SetMessageID sets the "message" edge to the Message entity by ID.
 func (_u *TextUpdate) SetMessageID(id uuid.UUID) *TextUpdate {
 	_u.mutation.SetMessageID(id)
@@ -54,6 +75,25 @@ func (_u *TextUpdate) SetMessage(v *Message) *TextUpdate {
 	return _u.SetMessageID(v.ID)
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_u *TextUpdate) SetTenantID(id uuid.UUID) *TextUpdate {
+	_u.mutation.SetTenantID(id)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_u *TextUpdate) SetNillableTenantID(id *uuid.UUID) *TextUpdate {
+	if id != nil {
+		_u = _u.SetTenantID(*id)
+	}
+	return _u
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_u *TextUpdate) SetTenant(v *Company) *TextUpdate {
+	return _u.SetTenantID(v.ID)
+}
+
 // Mutation returns the TextMutation object of the builder.
 func (_u *TextUpdate) Mutation() *TextMutation {
 	return _u.mutation
@@ -62,6 +102,12 @@ func (_u *TextUpdate) Mutation() *TextMutation {
 // ClearMessage clears the "message" edge to the Message entity.
 func (_u *TextUpdate) ClearMessage() *TextUpdate {
 	_u.mutation.ClearMessage()
+	return _u
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (_u *TextUpdate) ClearTenant() *TextUpdate {
+	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -149,6 +195,35 @@ func (_u *TextUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.TenantCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   text.TenantTable,
+			Columns: []string{text.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   text.TenantTable,
+			Columns: []string{text.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{text.Label}
@@ -183,6 +258,26 @@ func (_u *TextUpdateOne) SetNillableText(v *string) *TextUpdateOne {
 	return _u
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_u *TextUpdateOne) SetTenantId(v uuid.UUID) *TextUpdateOne {
+	_u.mutation.SetTenantId(v)
+	return _u
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_u *TextUpdateOne) SetNillableTenantId(v *uuid.UUID) *TextUpdateOne {
+	if v != nil {
+		_u.SetTenantId(*v)
+	}
+	return _u
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (_u *TextUpdateOne) ClearTenantId() *TextUpdateOne {
+	_u.mutation.ClearTenantId()
+	return _u
+}
+
 // SetMessageID sets the "message" edge to the Message entity by ID.
 func (_u *TextUpdateOne) SetMessageID(id uuid.UUID) *TextUpdateOne {
 	_u.mutation.SetMessageID(id)
@@ -194,6 +289,25 @@ func (_u *TextUpdateOne) SetMessage(v *Message) *TextUpdateOne {
 	return _u.SetMessageID(v.ID)
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_u *TextUpdateOne) SetTenantID(id uuid.UUID) *TextUpdateOne {
+	_u.mutation.SetTenantID(id)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_u *TextUpdateOne) SetNillableTenantID(id *uuid.UUID) *TextUpdateOne {
+	if id != nil {
+		_u = _u.SetTenantID(*id)
+	}
+	return _u
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_u *TextUpdateOne) SetTenant(v *Company) *TextUpdateOne {
+	return _u.SetTenantID(v.ID)
+}
+
 // Mutation returns the TextMutation object of the builder.
 func (_u *TextUpdateOne) Mutation() *TextMutation {
 	return _u.mutation
@@ -202,6 +316,12 @@ func (_u *TextUpdateOne) Mutation() *TextMutation {
 // ClearMessage clears the "message" edge to the Message entity.
 func (_u *TextUpdateOne) ClearMessage() *TextUpdateOne {
 	_u.mutation.ClearMessage()
+	return _u
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (_u *TextUpdateOne) ClearTenant() *TextUpdateOne {
+	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -312,6 +432,35 @@ func (_u *TextUpdateOne) sqlSave(ctx context.Context) (_node *Text, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TenantCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   text.TenantTable,
+			Columns: []string{text.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   text.TenantTable,
+			Columns: []string{text.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -216,21 +216,366 @@ func UpdatedAtLTE(v time.Time) predicate.Company {
 	return predicate.Company(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// HasEmployee applies the HasEdge predicate on the "employee" edge.
-func HasEmployee() predicate.Company {
+// HasEmployees applies the HasEdge predicate on the "employees" edge.
+func HasEmployees() predicate.Company {
 	return predicate.Company(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, EmployeeTable, EmployeeColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, EmployeesTable, EmployeesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasEmployeeWith applies the HasEdge predicate on the "employee" edge with a given conditions (other predicates).
-func HasEmployeeWith(preds ...predicate.Employee) predicate.Company {
+// HasEmployeesWith applies the HasEdge predicate on the "employees" edge with a given conditions (other predicates).
+func HasEmployeesWith(preds ...predicate.Employee) predicate.Company {
 	return predicate.Company(func(s *sql.Selector) {
-		step := newEmployeeStep()
+		step := newEmployeesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCostumers applies the HasEdge predicate on the "costumers" edge.
+func HasCostumers() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CostumersTable, CostumersColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCostumersWith applies the HasEdge predicate on the "costumers" edge with a given conditions (other predicates).
+func HasCostumersWith(preds ...predicate.Costumer) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newCostumersStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDeals applies the HasEdge predicate on the "deals" edge.
+func HasDeals() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DealsTable, DealsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDealsWith applies the HasEdge predicate on the "deals" edge with a given conditions (other predicates).
+func HasDealsWith(preds ...predicate.Deal) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newDealsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasChats applies the HasEdge predicate on the "chats" edge.
+func HasChats() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ChatsTable, ChatsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasChatsWith applies the HasEdge predicate on the "chats" edge with a given conditions (other predicates).
+func HasChatsWith(preds ...predicate.Chat) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newChatsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDepartments applies the HasEdge predicate on the "departments" edge.
+func HasDepartments() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DepartmentsTable, DepartmentsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDepartmentsWith applies the HasEdge predicate on the "departments" edge with a given conditions (other predicates).
+func HasDepartmentsWith(preds ...predicate.Department) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newDepartmentsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPipelines applies the HasEdge predicate on the "pipelines" edge.
+func HasPipelines() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PipelinesTable, PipelinesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPipelinesWith applies the HasEdge predicate on the "pipelines" edge with a given conditions (other predicates).
+func HasPipelinesWith(preds ...predicate.Pipeline) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newPipelinesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCrmFields applies the HasEdge predicate on the "crmFields" edge.
+func HasCrmFields() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CrmFieldsTable, CrmFieldsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCrmFieldsWith applies the HasEdge predicate on the "crmFields" edge with a given conditions (other predicates).
+func HasCrmFieldsWith(preds ...predicate.CrmField) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newCrmFieldsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDealCrmFields applies the HasEdge predicate on the "dealCrmFields" edge.
+func HasDealCrmFields() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DealCrmFieldsTable, DealCrmFieldsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDealCrmFieldsWith applies the HasEdge predicate on the "dealCrmFields" edge with a given conditions (other predicates).
+func HasDealCrmFieldsWith(preds ...predicate.DealCrmField) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newDealCrmFieldsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDropdownLists applies the HasEdge predicate on the "dropdownLists" edge.
+func HasDropdownLists() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DropdownListsTable, DropdownListsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDropdownListsWith applies the HasEdge predicate on the "dropdownLists" edge with a given conditions (other predicates).
+func HasDropdownListsWith(preds ...predicate.DropdownList) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newDropdownListsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasEmployeeAuths applies the HasEdge predicate on the "employeeAuths" edge.
+func HasEmployeeAuths() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EmployeeAuthsTable, EmployeeAuthsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEmployeeAuthsWith applies the HasEdge predicate on the "employeeAuths" edge with a given conditions (other predicates).
+func HasEmployeeAuthsWith(preds ...predicate.EmployeeAuth) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newEmployeeAuthsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasFiles applies the HasEdge predicate on the "files" edge.
+func HasFiles() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FilesTable, FilesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFilesWith applies the HasEdge predicate on the "files" edge with a given conditions (other predicates).
+func HasFilesWith(preds ...predicate.File) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newFilesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasMessages applies the HasEdge predicate on the "messages" edge.
+func HasMessages() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, MessagesTable, MessagesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasMessagesWith applies the HasEdge predicate on the "messages" edge with a given conditions (other predicates).
+func HasMessagesWith(preds ...predicate.Message) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newMessagesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasQueues applies the HasEdge predicate on the "queues" edge.
+func HasQueues() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, QueuesTable, QueuesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasQueuesWith applies the HasEdge predicate on the "queues" edge with a given conditions (other predicates).
+func HasQueuesWith(preds ...predicate.Queue) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newQueuesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasRbacs applies the HasEdge predicate on the "rbacs" edge.
+func HasRbacs() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, RbacsTable, RbacsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRbacsWith applies the HasEdge predicate on the "rbacs" edge with a given conditions (other predicates).
+func HasRbacsWith(preds ...predicate.Rbac) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newRbacsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStages applies the HasEdge predicate on the "stages" edge.
+func HasStages() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, StagesTable, StagesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStagesWith applies the HasEdge predicate on the "stages" edge with a given conditions (other predicates).
+func HasStagesWith(preds ...predicate.Stage) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newStagesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTexts applies the HasEdge predicate on the "texts" edge.
+func HasTexts() predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TextsTable, TextsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTextsWith applies the HasEdge predicate on the "texts" edge with a given conditions (other predicates).
+func HasTextsWith(preds ...predicate.Text) predicate.Company {
+	return predicate.Company(func(s *sql.Selector) {
+		step := newTextsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
+	"github.com/google/uuid"
 )
 
 type DealCrmFieldService struct {
@@ -39,8 +40,8 @@ func (s *DealCrmFieldService) UpdateID(ctx context.Context, id string, input ent
 	}
 	return dealCrmField, nil
 }
-func (s *DealCrmFieldService) DeleteID(ctx context.Context, id string) error {
-	err := s.repository.DeleteID(ctx, id)
+func (s *DealCrmFieldService) Delete(ctx context.Context, ids []uuid.UUID) error {
+	err := s.repository.Delete(ctx, ids)
 	if err != nil {
 		return err
 	}

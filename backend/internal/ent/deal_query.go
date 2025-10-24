@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
@@ -28,6 +29,7 @@ type DealQuery struct {
 	order                  []deal.OrderOption
 	inters                 []Interceptor
 	predicates             []predicate.Deal
+	withTenant             *CompanyQuery
 	withCostumer           *CostumerQuery
 	withChat               *ChatQuery
 	withStage              *StageQuery
@@ -70,6 +72,28 @@ func (_q *DealQuery) Unique(unique bool) *DealQuery {
 func (_q *DealQuery) Order(o ...deal.OrderOption) *DealQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *DealQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deal.Table, deal.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, deal.TenantTable, deal.TenantColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryCostumer chains the current query on the "costumer" edge.
@@ -352,6 +376,7 @@ func (_q *DealQuery) Clone() *DealQuery {
 		order:             append([]deal.OrderOption{}, _q.order...),
 		inters:            append([]Interceptor{}, _q.inters...),
 		predicates:        append([]predicate.Deal{}, _q.predicates...),
+		withTenant:        _q.withTenant.Clone(),
 		withCostumer:      _q.withCostumer.Clone(),
 		withChat:          _q.withChat.Clone(),
 		withStage:         _q.withStage.Clone(),
@@ -360,6 +385,17 @@ func (_q *DealQuery) Clone() *DealQuery {
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DealQuery) WithTenant(opts ...func(*CompanyQuery)) *DealQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
+	return _q
 }
 
 // WithCostumer tells the query-builder to eager-load the nodes that are connected to
@@ -485,7 +521,8 @@ func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, e
 		nodes       = []*Deal{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [5]bool{
+			_q.withTenant != nil,
 			_q.withCostumer != nil,
 			_q.withChat != nil,
 			_q.withStage != nil,
@@ -518,6 +555,12 @@ func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, e
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *Deal, e *Company) { n.Edges.Tenant = e }); err != nil {
+			return nil, err
+		}
 	}
 	if query := _q.withCostumer; query != nil {
 		if err := _q.loadCostumer(ctx, query, nodes, nil,
@@ -559,6 +602,35 @@ func (_q *DealQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Deal, e
 	return nodes, nil
 }
 
+func (_q *DealQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*Deal, init func(*Deal), assign func(*Deal, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Deal)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (_q *DealQuery) loadCostumer(ctx context.Context, query *CostumerQuery, nodes []*Deal, init func(*Deal), assign func(*Deal, *Costumer)) error {
 	ids := make([]uuid.UUID, 0, len(nodes))
 	nodeids := make(map[uuid.UUID][]*Deal)
@@ -714,6 +786,9 @@ func (_q *DealQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != deal.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(deal.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

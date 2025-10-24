@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
@@ -78,6 +79,20 @@ func (_c *StageCreate) SetNillableUpdatedAt(v *time.Time) *StageCreate {
 	return _c
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *StageCreate) SetTenantId(v uuid.UUID) *StageCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_c *StageCreate) SetNillableTenantId(v *uuid.UUID) *StageCreate {
+	if v != nil {
+		_c.SetTenantId(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *StageCreate) SetID(v uuid.UUID) *StageCreate {
 	_c.mutation.SetID(v)
@@ -135,6 +150,25 @@ func (_c *StageCreate) SetNillableQueueID(id *uuid.UUID) *StageCreate {
 // SetQueue sets the "queue" edge to the Queue entity.
 func (_c *StageCreate) SetQueue(v *Queue) *StageCreate {
 	return _c.SetQueueID(v.ID)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_c *StageCreate) SetTenantID(id uuid.UUID) *StageCreate {
+	_c.mutation.SetTenantID(id)
+	return _c
+}
+
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_c *StageCreate) SetNillableTenantID(id *uuid.UUID) *StageCreate {
+	if id != nil {
+		_c = _c.SetTenantID(*id)
+	}
+	return _c
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_c *StageCreate) SetTenant(v *Company) *StageCreate {
+	return _c.SetTenantID(v.ID)
 }
 
 // Mutation returns the StageMutation object of the builder.
@@ -323,6 +357,23 @@ func (_c *StageCreate) createSpec() (*Stage, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.stage_queue = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   stage.TenantTable,
+			Columns: []string{stage.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TenantId = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

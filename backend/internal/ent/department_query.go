@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
@@ -27,6 +28,7 @@ type DepartmentQuery struct {
 	order             []department.OrderOption
 	inters            []Interceptor
 	predicates        []predicate.Department
+	withTenant        *CompanyQuery
 	withEmployee      *EmployeeQuery
 	withQueues        *QueueQuery
 	withRbacs         *RbacQuery
@@ -69,6 +71,28 @@ func (_q *DepartmentQuery) Unique(unique bool) *DepartmentQuery {
 func (_q *DepartmentQuery) Order(o ...department.OrderOption) *DepartmentQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *DepartmentQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(department.Table, department.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, department.TenantTable, department.TenantColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryEmployee chains the current query on the "employee" edge.
@@ -329,6 +353,7 @@ func (_q *DepartmentQuery) Clone() *DepartmentQuery {
 		order:        append([]department.OrderOption{}, _q.order...),
 		inters:       append([]Interceptor{}, _q.inters...),
 		predicates:   append([]predicate.Department{}, _q.predicates...),
+		withTenant:   _q.withTenant.Clone(),
 		withEmployee: _q.withEmployee.Clone(),
 		withQueues:   _q.withQueues.Clone(),
 		withRbacs:    _q.withRbacs.Clone(),
@@ -336,6 +361,17 @@ func (_q *DepartmentQuery) Clone() *DepartmentQuery {
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DepartmentQuery) WithTenant(opts ...func(*CompanyQuery)) *DepartmentQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
+	return _q
 }
 
 // WithEmployee tells the query-builder to eager-load the nodes that are connected to
@@ -449,7 +485,8 @@ func (_q *DepartmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 	var (
 		nodes       = []*Department{}
 		_spec       = _q.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
+			_q.withTenant != nil,
 			_q.withEmployee != nil,
 			_q.withQueues != nil,
 			_q.withRbacs != nil,
@@ -475,6 +512,12 @@ func (_q *DepartmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *Department, e *Company) { n.Edges.Tenant = e }); err != nil {
+			return nil, err
+		}
 	}
 	if query := _q.withEmployee; query != nil {
 		if err := _q.loadEmployee(ctx, query, nodes,
@@ -526,6 +569,35 @@ func (_q *DepartmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 	return nodes, nil
 }
 
+func (_q *DepartmentQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*Department, init func(*Department), assign func(*Department, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Department)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (_q *DepartmentQuery) loadEmployee(ctx context.Context, query *EmployeeQuery, nodes []*Department, init func(*Department), assign func(*Department, *Employee)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[uuid.UUID]*Department)
@@ -677,6 +749,9 @@ func (_q *DepartmentQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != department.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(department.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

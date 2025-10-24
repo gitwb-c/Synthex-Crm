@@ -8,7 +8,6 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema/mixin"
 	"github.com/google/uuid"
 )
 
@@ -24,6 +23,7 @@ func (CrmField) Fields() []ent.Field {
 		field.Enum("type").Values("txt", "date", "checkbox", "dropdownList").Immutable().Annotations(entgql.QueryField(), entgql.OrderField("TYPE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
+		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
@@ -31,7 +31,7 @@ func (CrmField) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("dropdownList", DropdownList.Type).Ref("crmField"),
 		edge.From("dealCrmField", DealCrmField.Type).Ref("crmField"),
-		edge.From("company", Company.Type).Ref("crmFields").Field("tenant_id").Required().Unique(),
+		edge.From("tenant", Company.Type).Ref("crmFields").Field("tenantId").Unique(),
 	}
 }
 
@@ -46,6 +46,6 @@ func (CrmField) Annotations() []schema.Annotation {
 
 func (CrmField) Mixins() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.TenantMixin{},
+		TenantMixin{},
 	}
 }

@@ -76,6 +76,11 @@ func UpdatedAt(v time.Time) predicate.Employee {
 	return predicate.Employee(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Employee {
+	return predicate.Employee(sql.FieldEQ(FieldTenantId, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.Employee {
 	return predicate.Employee(sql.FieldEQ(FieldName, v))
@@ -231,6 +236,36 @@ func UpdatedAtLTE(v time.Time) predicate.Employee {
 	return predicate.Employee(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Employee {
+	return predicate.Employee(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Employee {
+	return predicate.Employee(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Employee {
+	return predicate.Employee(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Employee {
+	return predicate.Employee(sql.FieldNotIn(FieldTenantId, vs...))
+}
+
+// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
+func TenantIdIsNil() predicate.Employee {
+	return predicate.Employee(sql.FieldIsNull(FieldTenantId))
+}
+
+// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
+func TenantIdNotNil() predicate.Employee {
+	return predicate.Employee(sql.FieldNotNull(FieldTenantId))
+}
+
 // HasEmployeeAuth applies the HasEdge predicate on the "employeeAuth" edge.
 func HasEmployeeAuth() predicate.Employee {
 	return predicate.Employee(func(s *sql.Selector) {
@@ -254,21 +289,21 @@ func HasEmployeeAuthWith(preds ...predicate.EmployeeAuth) predicate.Employee {
 	})
 }
 
-// HasCompany applies the HasEdge predicate on the "company" edge.
-func HasCompany() predicate.Employee {
+// HasTenant applies the HasEdge predicate on the "tenant" edge.
+func HasTenant() predicate.Employee {
 	return predicate.Employee(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, CompanyTable, CompanyColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasCompanyWith applies the HasEdge predicate on the "company" edge with a given conditions (other predicates).
-func HasCompanyWith(preds ...predicate.Company) predicate.Employee {
+// HasTenantWith applies the HasEdge predicate on the "tenant" edge with a given conditions (other predicates).
+func HasTenantWith(preds ...predicate.Company) predicate.Employee {
 	return predicate.Employee(func(s *sql.Selector) {
-		step := newCompanyStep()
+		step := newTenantStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

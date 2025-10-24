@@ -8,7 +8,6 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema/mixin"
 	"github.com/google/uuid"
 )
 
@@ -24,6 +23,7 @@ func (Message) Fields() []ent.Field {
 		field.Enum("type").Values("text", "audio", "image", "file").Annotations(entgql.QueryField(), entgql.OrderField("TYPE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
+		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
@@ -33,7 +33,7 @@ func (Message) Edges() []ent.Edge {
 		edge.To("employee", Employee.Type),
 		edge.From("text", Text.Type).Ref("message").Unique(),
 		edge.From("file", File.Type).Ref("message").Unique(),
-		edge.From("company", Company.Type).Ref("messages").Field("tenant_id").Required().Unique(),
+		edge.From("tenant", Company.Type).Ref("messages").Field("tenantId").Unique(),
 	}
 }
 
@@ -48,6 +48,6 @@ func (Message) Annotations() []schema.Annotation {
 
 func (Message) Mixins() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.TenantMixin{},
+		TenantMixin{},
 	}
 }

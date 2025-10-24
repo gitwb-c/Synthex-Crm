@@ -10,8 +10,23 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 	"github.com/google/uuid"
 )
 
@@ -70,19 +85,244 @@ func (_c *CompanyCreate) SetNillableID(v *uuid.UUID) *CompanyCreate {
 	return _c
 }
 
-// AddEmployeeIDs adds the "employee" edge to the Employee entity by IDs.
+// AddEmployeeIDs adds the "employees" edge to the Employee entity by IDs.
 func (_c *CompanyCreate) AddEmployeeIDs(ids ...uuid.UUID) *CompanyCreate {
 	_c.mutation.AddEmployeeIDs(ids...)
 	return _c
 }
 
-// AddEmployee adds the "employee" edges to the Employee entity.
-func (_c *CompanyCreate) AddEmployee(v ...*Employee) *CompanyCreate {
+// AddEmployees adds the "employees" edges to the Employee entity.
+func (_c *CompanyCreate) AddEmployees(v ...*Employee) *CompanyCreate {
 	ids := make([]uuid.UUID, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
 	return _c.AddEmployeeIDs(ids...)
+}
+
+// AddCostumerIDs adds the "costumers" edge to the Costumer entity by IDs.
+func (_c *CompanyCreate) AddCostumerIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddCostumerIDs(ids...)
+	return _c
+}
+
+// AddCostumers adds the "costumers" edges to the Costumer entity.
+func (_c *CompanyCreate) AddCostumers(v ...*Costumer) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddCostumerIDs(ids...)
+}
+
+// AddDealIDs adds the "deals" edge to the Deal entity by IDs.
+func (_c *CompanyCreate) AddDealIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddDealIDs(ids...)
+	return _c
+}
+
+// AddDeals adds the "deals" edges to the Deal entity.
+func (_c *CompanyCreate) AddDeals(v ...*Deal) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddDealIDs(ids...)
+}
+
+// AddChatIDs adds the "chats" edge to the Chat entity by IDs.
+func (_c *CompanyCreate) AddChatIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddChatIDs(ids...)
+	return _c
+}
+
+// AddChats adds the "chats" edges to the Chat entity.
+func (_c *CompanyCreate) AddChats(v ...*Chat) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddChatIDs(ids...)
+}
+
+// AddDepartmentIDs adds the "departments" edge to the Department entity by IDs.
+func (_c *CompanyCreate) AddDepartmentIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddDepartmentIDs(ids...)
+	return _c
+}
+
+// AddDepartments adds the "departments" edges to the Department entity.
+func (_c *CompanyCreate) AddDepartments(v ...*Department) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddDepartmentIDs(ids...)
+}
+
+// AddPipelineIDs adds the "pipelines" edge to the Pipeline entity by IDs.
+func (_c *CompanyCreate) AddPipelineIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddPipelineIDs(ids...)
+	return _c
+}
+
+// AddPipelines adds the "pipelines" edges to the Pipeline entity.
+func (_c *CompanyCreate) AddPipelines(v ...*Pipeline) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddPipelineIDs(ids...)
+}
+
+// AddCrmFieldIDs adds the "crmFields" edge to the CrmField entity by IDs.
+func (_c *CompanyCreate) AddCrmFieldIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddCrmFieldIDs(ids...)
+	return _c
+}
+
+// AddCrmFields adds the "crmFields" edges to the CrmField entity.
+func (_c *CompanyCreate) AddCrmFields(v ...*CrmField) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddCrmFieldIDs(ids...)
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (_c *CompanyCreate) AddDealCrmFieldIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddDealCrmFieldIDs(ids...)
+	return _c
+}
+
+// AddDealCrmFields adds the "dealCrmFields" edges to the DealCrmField entity.
+func (_c *CompanyCreate) AddDealCrmFields(v ...*DealCrmField) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddDealCrmFieldIDs(ids...)
+}
+
+// AddDropdownListIDs adds the "dropdownLists" edge to the DropdownList entity by IDs.
+func (_c *CompanyCreate) AddDropdownListIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddDropdownListIDs(ids...)
+	return _c
+}
+
+// AddDropdownLists adds the "dropdownLists" edges to the DropdownList entity.
+func (_c *CompanyCreate) AddDropdownLists(v ...*DropdownList) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddDropdownListIDs(ids...)
+}
+
+// AddEmployeeAuthIDs adds the "employeeAuths" edge to the EmployeeAuth entity by IDs.
+func (_c *CompanyCreate) AddEmployeeAuthIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddEmployeeAuthIDs(ids...)
+	return _c
+}
+
+// AddEmployeeAuths adds the "employeeAuths" edges to the EmployeeAuth entity.
+func (_c *CompanyCreate) AddEmployeeAuths(v ...*EmployeeAuth) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddEmployeeAuthIDs(ids...)
+}
+
+// AddFileIDs adds the "files" edge to the File entity by IDs.
+func (_c *CompanyCreate) AddFileIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddFileIDs(ids...)
+	return _c
+}
+
+// AddFiles adds the "files" edges to the File entity.
+func (_c *CompanyCreate) AddFiles(v ...*File) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddFileIDs(ids...)
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (_c *CompanyCreate) AddMessageIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddMessageIDs(ids...)
+	return _c
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (_c *CompanyCreate) AddMessages(v ...*Message) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddMessageIDs(ids...)
+}
+
+// AddQueueIDs adds the "queues" edge to the Queue entity by IDs.
+func (_c *CompanyCreate) AddQueueIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddQueueIDs(ids...)
+	return _c
+}
+
+// AddQueues adds the "queues" edges to the Queue entity.
+func (_c *CompanyCreate) AddQueues(v ...*Queue) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddQueueIDs(ids...)
+}
+
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by IDs.
+func (_c *CompanyCreate) AddRbacIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddRbacIDs(ids...)
+	return _c
+}
+
+// AddRbacs adds the "rbacs" edges to the Rbac entity.
+func (_c *CompanyCreate) AddRbacs(v ...*Rbac) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddRbacIDs(ids...)
+}
+
+// AddStageIDs adds the "stages" edge to the Stage entity by IDs.
+func (_c *CompanyCreate) AddStageIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddStageIDs(ids...)
+	return _c
+}
+
+// AddStages adds the "stages" edges to the Stage entity.
+func (_c *CompanyCreate) AddStages(v ...*Stage) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddStageIDs(ids...)
+}
+
+// AddTextIDs adds the "texts" edge to the Text entity by IDs.
+func (_c *CompanyCreate) AddTextIDs(ids ...uuid.UUID) *CompanyCreate {
+	_c.mutation.AddTextIDs(ids...)
+	return _c
+}
+
+// AddTexts adds the "texts" edges to the Text entity.
+func (_c *CompanyCreate) AddTexts(v ...*Text) *CompanyCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddTextIDs(ids...)
 }
 
 // Mutation returns the CompanyMutation object of the builder.
@@ -197,15 +437,255 @@ func (_c *CompanyCreate) createSpec() (*Company, *sqlgraph.CreateSpec) {
 		_spec.SetField(company.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := _c.mutation.EmployeeIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.EmployeesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CostumersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.DealsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ChatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PipelinesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.DealCrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.DropdownListsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.EmployeeAuthsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.FilesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.QueuesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.RbacsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.StagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TextsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

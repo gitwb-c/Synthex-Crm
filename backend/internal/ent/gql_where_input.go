@@ -88,6 +88,14 @@ type ChatWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "deal" edge predicates.
 	HasDeal     *bool             `json:"hasDeal,omitempty"`
 	HasDealWith []*DealWhereInput `json:"hasDealWith,omitempty"`
@@ -99,6 +107,10 @@ type ChatWhereInput struct {
 	// "messages" edge predicates.
 	HasMessages     *bool                `json:"hasMessages,omitempty"`
 	HasMessagesWith []*MessageWhereInput `json:"hasMessagesWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -295,6 +307,24 @@ func (i *ChatWhereInput) P() (predicate.Chat, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, chat.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, chat.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, chat.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, chat.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, chat.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, chat.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, chat.TenantIdNotNil())
+	}
 
 	if i.HasDeal != nil {
 		p := chat.HasDeal()
@@ -349,6 +379,24 @@ func (i *ChatWhereInput) P() (predicate.Chat, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, chat.HasMessagesWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := chat.HasTenant()
+		if !*i.HasTenant {
+			p = chat.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, chat.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -412,9 +460,69 @@ type CompanyWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
-	// "employee" edge predicates.
-	HasEmployee     *bool                 `json:"hasEmployee,omitempty"`
-	HasEmployeeWith []*EmployeeWhereInput `json:"hasEmployeeWith,omitempty"`
+	// "employees" edge predicates.
+	HasEmployees     *bool                 `json:"hasEmployees,omitempty"`
+	HasEmployeesWith []*EmployeeWhereInput `json:"hasEmployeesWith,omitempty"`
+
+	// "costumers" edge predicates.
+	HasCostumers     *bool                 `json:"hasCostumers,omitempty"`
+	HasCostumersWith []*CostumerWhereInput `json:"hasCostumersWith,omitempty"`
+
+	// "deals" edge predicates.
+	HasDeals     *bool             `json:"hasDeals,omitempty"`
+	HasDealsWith []*DealWhereInput `json:"hasDealsWith,omitempty"`
+
+	// "chats" edge predicates.
+	HasChats     *bool             `json:"hasChats,omitempty"`
+	HasChatsWith []*ChatWhereInput `json:"hasChatsWith,omitempty"`
+
+	// "departments" edge predicates.
+	HasDepartments     *bool                   `json:"hasDepartments,omitempty"`
+	HasDepartmentsWith []*DepartmentWhereInput `json:"hasDepartmentsWith,omitempty"`
+
+	// "pipelines" edge predicates.
+	HasPipelines     *bool                 `json:"hasPipelines,omitempty"`
+	HasPipelinesWith []*PipelineWhereInput `json:"hasPipelinesWith,omitempty"`
+
+	// "crmFields" edge predicates.
+	HasCrmFields     *bool                 `json:"hasCrmFields,omitempty"`
+	HasCrmFieldsWith []*CrmFieldWhereInput `json:"hasCrmFieldsWith,omitempty"`
+
+	// "dealCrmFields" edge predicates.
+	HasDealCrmFields     *bool                     `json:"hasDealCrmFields,omitempty"`
+	HasDealCrmFieldsWith []*DealCrmFieldWhereInput `json:"hasDealCrmFieldsWith,omitempty"`
+
+	// "dropdownLists" edge predicates.
+	HasDropdownLists     *bool                     `json:"hasDropdownLists,omitempty"`
+	HasDropdownListsWith []*DropdownListWhereInput `json:"hasDropdownListsWith,omitempty"`
+
+	// "employeeAuths" edge predicates.
+	HasEmployeeAuths     *bool                     `json:"hasEmployeeAuths,omitempty"`
+	HasEmployeeAuthsWith []*EmployeeAuthWhereInput `json:"hasEmployeeAuthsWith,omitempty"`
+
+	// "files" edge predicates.
+	HasFiles     *bool             `json:"hasFiles,omitempty"`
+	HasFilesWith []*FileWhereInput `json:"hasFilesWith,omitempty"`
+
+	// "messages" edge predicates.
+	HasMessages     *bool                `json:"hasMessages,omitempty"`
+	HasMessagesWith []*MessageWhereInput `json:"hasMessagesWith,omitempty"`
+
+	// "queues" edge predicates.
+	HasQueues     *bool              `json:"hasQueues,omitempty"`
+	HasQueuesWith []*QueueWhereInput `json:"hasQueuesWith,omitempty"`
+
+	// "rbacs" edge predicates.
+	HasRbacs     *bool             `json:"hasRbacs,omitempty"`
+	HasRbacsWith []*RbacWhereInput `json:"hasRbacsWith,omitempty"`
+
+	// "stages" edge predicates.
+	HasStages     *bool              `json:"hasStages,omitempty"`
+	HasStagesWith []*StageWhereInput `json:"hasStagesWith,omitempty"`
+
+	// "texts" edge predicates.
+	HasTexts     *bool             `json:"hasTexts,omitempty"`
+	HasTextsWith []*TextWhereInput `json:"hasTextsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -600,23 +708,293 @@ func (i *CompanyWhereInput) P() (predicate.Company, error) {
 		predicates = append(predicates, company.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
 
-	if i.HasEmployee != nil {
-		p := company.HasEmployee()
-		if !*i.HasEmployee {
+	if i.HasEmployees != nil {
+		p := company.HasEmployees()
+		if !*i.HasEmployees {
 			p = company.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasEmployeeWith) > 0 {
-		with := make([]predicate.Employee, 0, len(i.HasEmployeeWith))
-		for _, w := range i.HasEmployeeWith {
+	if len(i.HasEmployeesWith) > 0 {
+		with := make([]predicate.Employee, 0, len(i.HasEmployeesWith))
+		for _, w := range i.HasEmployeesWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasEmployeeWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasEmployeesWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, company.HasEmployeeWith(with...))
+		predicates = append(predicates, company.HasEmployeesWith(with...))
+	}
+	if i.HasCostumers != nil {
+		p := company.HasCostumers()
+		if !*i.HasCostumers {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasCostumersWith) > 0 {
+		with := make([]predicate.Costumer, 0, len(i.HasCostumersWith))
+		for _, w := range i.HasCostumersWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasCostumersWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasCostumersWith(with...))
+	}
+	if i.HasDeals != nil {
+		p := company.HasDeals()
+		if !*i.HasDeals {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDealsWith) > 0 {
+		with := make([]predicate.Deal, 0, len(i.HasDealsWith))
+		for _, w := range i.HasDealsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasDealsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasDealsWith(with...))
+	}
+	if i.HasChats != nil {
+		p := company.HasChats()
+		if !*i.HasChats {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasChatsWith) > 0 {
+		with := make([]predicate.Chat, 0, len(i.HasChatsWith))
+		for _, w := range i.HasChatsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasChatsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasChatsWith(with...))
+	}
+	if i.HasDepartments != nil {
+		p := company.HasDepartments()
+		if !*i.HasDepartments {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDepartmentsWith) > 0 {
+		with := make([]predicate.Department, 0, len(i.HasDepartmentsWith))
+		for _, w := range i.HasDepartmentsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasDepartmentsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasDepartmentsWith(with...))
+	}
+	if i.HasPipelines != nil {
+		p := company.HasPipelines()
+		if !*i.HasPipelines {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasPipelinesWith) > 0 {
+		with := make([]predicate.Pipeline, 0, len(i.HasPipelinesWith))
+		for _, w := range i.HasPipelinesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasPipelinesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasPipelinesWith(with...))
+	}
+	if i.HasCrmFields != nil {
+		p := company.HasCrmFields()
+		if !*i.HasCrmFields {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasCrmFieldsWith) > 0 {
+		with := make([]predicate.CrmField, 0, len(i.HasCrmFieldsWith))
+		for _, w := range i.HasCrmFieldsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasCrmFieldsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasCrmFieldsWith(with...))
+	}
+	if i.HasDealCrmFields != nil {
+		p := company.HasDealCrmFields()
+		if !*i.HasDealCrmFields {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDealCrmFieldsWith) > 0 {
+		with := make([]predicate.DealCrmField, 0, len(i.HasDealCrmFieldsWith))
+		for _, w := range i.HasDealCrmFieldsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasDealCrmFieldsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasDealCrmFieldsWith(with...))
+	}
+	if i.HasDropdownLists != nil {
+		p := company.HasDropdownLists()
+		if !*i.HasDropdownLists {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDropdownListsWith) > 0 {
+		with := make([]predicate.DropdownList, 0, len(i.HasDropdownListsWith))
+		for _, w := range i.HasDropdownListsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasDropdownListsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasDropdownListsWith(with...))
+	}
+	if i.HasEmployeeAuths != nil {
+		p := company.HasEmployeeAuths()
+		if !*i.HasEmployeeAuths {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasEmployeeAuthsWith) > 0 {
+		with := make([]predicate.EmployeeAuth, 0, len(i.HasEmployeeAuthsWith))
+		for _, w := range i.HasEmployeeAuthsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasEmployeeAuthsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasEmployeeAuthsWith(with...))
+	}
+	if i.HasFiles != nil {
+		p := company.HasFiles()
+		if !*i.HasFiles {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFilesWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasFilesWith))
+		for _, w := range i.HasFilesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFilesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasFilesWith(with...))
+	}
+	if i.HasMessages != nil {
+		p := company.HasMessages()
+		if !*i.HasMessages {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasMessagesWith) > 0 {
+		with := make([]predicate.Message, 0, len(i.HasMessagesWith))
+		for _, w := range i.HasMessagesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasMessagesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasMessagesWith(with...))
+	}
+	if i.HasQueues != nil {
+		p := company.HasQueues()
+		if !*i.HasQueues {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasQueuesWith) > 0 {
+		with := make([]predicate.Queue, 0, len(i.HasQueuesWith))
+		for _, w := range i.HasQueuesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasQueuesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasQueuesWith(with...))
+	}
+	if i.HasRbacs != nil {
+		p := company.HasRbacs()
+		if !*i.HasRbacs {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasRbacsWith) > 0 {
+		with := make([]predicate.Rbac, 0, len(i.HasRbacsWith))
+		for _, w := range i.HasRbacsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasRbacsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasRbacsWith(with...))
+	}
+	if i.HasStages != nil {
+		p := company.HasStages()
+		if !*i.HasStages {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasStagesWith) > 0 {
+		with := make([]predicate.Stage, 0, len(i.HasStagesWith))
+		for _, w := range i.HasStagesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasStagesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasStagesWith(with...))
+	}
+	if i.HasTexts != nil {
+		p := company.HasTexts()
+		if !*i.HasTexts {
+			p = company.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTextsWith) > 0 {
+		with := make([]predicate.Text, 0, len(i.HasTextsWith))
+		for _, w := range i.HasTextsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTextsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, company.HasTextsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -709,6 +1087,18 @@ type CostumerWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
+
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 
 	// "deals" edge predicates.
 	HasDeals     *bool             `json:"hasDeals,omitempty"`
@@ -975,7 +1365,43 @@ func (i *CostumerWhereInput) P() (predicate.Costumer, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, costumer.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, costumer.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, costumer.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, costumer.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, costumer.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, costumer.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, costumer.TenantIdNotNil())
+	}
 
+	if i.HasTenant != nil {
+		p := costumer.HasTenant()
+		if !*i.HasTenant {
+			p = costumer.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, costumer.HasTenantWith(with...))
+	}
 	if i.HasDeals != nil {
 		p := costumer.HasDeals()
 		if !*i.HasDeals {
@@ -1077,6 +1503,14 @@ type CrmFieldWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "dropdownList" edge predicates.
 	HasDropdownList     *bool                     `json:"hasDropdownList,omitempty"`
 	HasDropdownListWith []*DropdownListWhereInput `json:"hasDropdownListWith,omitempty"`
@@ -1084,6 +1518,10 @@ type CrmFieldWhereInput struct {
 	// "dealCrmField" edge predicates.
 	HasDealCrmField     *bool                     `json:"hasDealCrmField,omitempty"`
 	HasDealCrmFieldWith []*DealCrmFieldWhereInput `json:"hasDealCrmFieldWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1319,6 +1757,24 @@ func (i *CrmFieldWhereInput) P() (predicate.CrmField, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, crmfield.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, crmfield.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, crmfield.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, crmfield.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, crmfield.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, crmfield.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, crmfield.TenantIdNotNil())
+	}
 
 	if i.HasDropdownList != nil {
 		p := crmfield.HasDropdownList()
@@ -1355,6 +1811,24 @@ func (i *CrmFieldWhereInput) P() (predicate.CrmField, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, crmfield.HasDealCrmFieldWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := crmfield.HasTenant()
+		if !*i.HasTenant {
+			p = crmfield.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, crmfield.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -1432,6 +1906,18 @@ type DealWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
+
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 
 	// "costumer" edge predicates.
 	HasCostumer     *bool                 `json:"hasCostumer,omitempty"`
@@ -1671,7 +2157,43 @@ func (i *DealWhereInput) P() (predicate.Deal, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, deal.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, deal.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, deal.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, deal.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, deal.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, deal.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, deal.TenantIdNotNil())
+	}
 
+	if i.HasTenant != nil {
+		p := deal.HasTenant()
+		if !*i.HasTenant {
+			p = deal.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, deal.HasTenantWith(with...))
+	}
 	if i.HasCostumer != nil {
 		p := deal.HasCostumer()
 		if !*i.HasCostumer {
@@ -1806,6 +2328,14 @@ type DealCrmFieldWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "deal" edge predicates.
 	HasDeal     *bool             `json:"hasDeal,omitempty"`
 	HasDealWith []*DealWhereInput `json:"hasDealWith,omitempty"`
@@ -1813,6 +2343,10 @@ type DealCrmFieldWhereInput struct {
 	// "crmField" edge predicates.
 	HasCrmField     *bool                 `json:"hasCrmField,omitempty"`
 	HasCrmFieldWith []*CrmFieldWhereInput `json:"hasCrmFieldWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1997,6 +2531,24 @@ func (i *DealCrmFieldWhereInput) P() (predicate.DealCrmField, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, dealcrmfield.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, dealcrmfield.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, dealcrmfield.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, dealcrmfield.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, dealcrmfield.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, dealcrmfield.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, dealcrmfield.TenantIdNotNil())
+	}
 
 	if i.HasDeal != nil {
 		p := dealcrmfield.HasDeal()
@@ -2033,6 +2585,24 @@ func (i *DealCrmFieldWhereInput) P() (predicate.DealCrmField, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, dealcrmfield.HasCrmFieldWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := dealcrmfield.HasTenant()
+		if !*i.HasTenant {
+			p = dealcrmfield.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, dealcrmfield.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -2095,6 +2665,18 @@ type DepartmentWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
+
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 
 	// "employee" edge predicates.
 	HasEmployee     *bool                 `json:"hasEmployee,omitempty"`
@@ -2291,7 +2873,43 @@ func (i *DepartmentWhereInput) P() (predicate.Department, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, department.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, department.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, department.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, department.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, department.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, department.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, department.TenantIdNotNil())
+	}
 
+	if i.HasTenant != nil {
+		p := department.HasTenant()
+		if !*i.HasTenant {
+			p = department.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, department.HasTenantWith(with...))
+	}
 	if i.HasEmployee != nil {
 		p := department.HasEmployee()
 		if !*i.HasEmployee {
@@ -2408,9 +3026,21 @@ type DropdownListWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "crmField" edge predicates.
 	HasCrmField     *bool                 `json:"hasCrmField,omitempty"`
 	HasCrmFieldWith []*CrmFieldWhereInput `json:"hasCrmFieldWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -2595,6 +3225,24 @@ func (i *DropdownListWhereInput) P() (predicate.DropdownList, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, dropdownlist.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, dropdownlist.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, dropdownlist.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, dropdownlist.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, dropdownlist.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, dropdownlist.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, dropdownlist.TenantIdNotNil())
+	}
 
 	if i.HasCrmField != nil {
 		p := dropdownlist.HasCrmField()
@@ -2613,6 +3261,24 @@ func (i *DropdownListWhereInput) P() (predicate.DropdownList, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, dropdownlist.HasCrmFieldWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := dropdownlist.HasTenant()
+		if !*i.HasTenant {
+			p = dropdownlist.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, dropdownlist.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -2680,13 +3346,21 @@ type EmployeeWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "employeeAuth" edge predicates.
 	HasEmployeeAuth     *bool                     `json:"hasEmployeeAuth,omitempty"`
 	HasEmployeeAuthWith []*EmployeeAuthWhereInput `json:"hasEmployeeAuthWith,omitempty"`
 
-	// "company" edge predicates.
-	HasCompany     *bool                `json:"hasCompany,omitempty"`
-	HasCompanyWith []*CompanyWhereInput `json:"hasCompanyWith,omitempty"`
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 
 	// "department" edge predicates.
 	HasDepartment     *bool                   `json:"hasDepartment,omitempty"`
@@ -2893,6 +3567,24 @@ func (i *EmployeeWhereInput) P() (predicate.Employee, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, employee.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, employee.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, employee.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, employee.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, employee.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, employee.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, employee.TenantIdNotNil())
+	}
 
 	if i.HasEmployeeAuth != nil {
 		p := employee.HasEmployeeAuth()
@@ -2912,23 +3604,23 @@ func (i *EmployeeWhereInput) P() (predicate.Employee, error) {
 		}
 		predicates = append(predicates, employee.HasEmployeeAuthWith(with...))
 	}
-	if i.HasCompany != nil {
-		p := employee.HasCompany()
-		if !*i.HasCompany {
+	if i.HasTenant != nil {
+		p := employee.HasTenant()
+		if !*i.HasTenant {
 			p = employee.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasCompanyWith) > 0 {
-		with := make([]predicate.Company, 0, len(i.HasCompanyWith))
-		for _, w := range i.HasCompanyWith {
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasCompanyWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, employee.HasCompanyWith(with...))
+		predicates = append(predicates, employee.HasTenantWith(with...))
 	}
 	if i.HasDepartment != nil {
 		p := employee.HasDepartment()
@@ -3094,9 +3786,19 @@ type EmployeeAuthWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "employee" edge predicates.
 	HasEmployee     *bool                 `json:"hasEmployee,omitempty"`
 	HasEmployeeWith []*EmployeeWhereInput `json:"hasEmployeeWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -3359,6 +4061,18 @@ func (i *EmployeeAuthWhereInput) P() (predicate.EmployeeAuth, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, employeeauth.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, employeeauth.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, employeeauth.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, employeeauth.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, employeeauth.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 
 	if i.HasEmployee != nil {
 		p := employeeauth.HasEmployee()
@@ -3377,6 +4091,24 @@ func (i *EmployeeAuthWhereInput) P() (predicate.EmployeeAuth, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, employeeauth.HasEmployeeWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := employeeauth.HasTenant()
+		if !*i.HasTenant {
+			p = employeeauth.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, employeeauth.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -3467,9 +4199,21 @@ type FileWhereInput struct {
 	FileNameEqualFold    *string  `json:"filenameEqualFold,omitempty"`
 	FileNameContainsFold *string  `json:"filenameContainsFold,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "message" edge predicates.
 	HasMessage     *bool                `json:"hasMessage,omitempty"`
 	HasMessageWith []*MessageWhereInput `json:"hasMessageWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -3729,6 +4473,24 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 	if i.FileNameContainsFold != nil {
 		predicates = append(predicates, file.FileNameContainsFold(*i.FileNameContainsFold))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, file.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, file.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, file.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, file.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, file.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, file.TenantIdNotNil())
+	}
 
 	if i.HasMessage != nil {
 		p := file.HasMessage()
@@ -3747,6 +4509,24 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, file.HasMessageWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := file.HasTenant()
+		if !*i.HasTenant {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -3811,6 +4591,14 @@ type MessageWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "chat" edge predicates.
 	HasChat     *bool             `json:"hasChat,omitempty"`
 	HasChatWith []*ChatWhereInput `json:"hasChatWith,omitempty"`
@@ -3826,6 +4614,10 @@ type MessageWhereInput struct {
 	// "file" edge predicates.
 	HasFile     *bool             `json:"hasFile,omitempty"`
 	HasFileWith []*FileWhereInput `json:"hasFileWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -4001,6 +4793,24 @@ func (i *MessageWhereInput) P() (predicate.Message, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, message.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, message.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, message.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, message.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, message.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, message.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, message.TenantIdNotNil())
+	}
 
 	if i.HasChat != nil {
 		p := message.HasChat()
@@ -4074,6 +4884,24 @@ func (i *MessageWhereInput) P() (predicate.Message, error) {
 		}
 		predicates = append(predicates, message.HasFileWith(with...))
 	}
+	if i.HasTenant != nil {
+		p := message.HasTenant()
+		if !*i.HasTenant {
+			p = message.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, message.HasTenantWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyMessageWhereInput
@@ -4135,6 +4963,18 @@ type PipelineWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
+
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 
 	// "stages" edge predicates.
 	HasStages     *bool              `json:"hasStages,omitempty"`
@@ -4323,7 +5163,43 @@ func (i *PipelineWhereInput) P() (predicate.Pipeline, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, pipeline.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, pipeline.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, pipeline.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, pipeline.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, pipeline.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, pipeline.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, pipeline.TenantIdNotNil())
+	}
 
+	if i.HasTenant != nil {
+		p := pipeline.HasTenant()
+		if !*i.HasTenant {
+			p = pipeline.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, pipeline.HasTenantWith(with...))
+	}
 	if i.HasStages != nil {
 		p := pipeline.HasStages()
 		if !*i.HasStages {
@@ -4410,6 +5286,14 @@ type QueueWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "stages" edge predicates.
 	HasStages     *bool              `json:"hasStages,omitempty"`
 	HasStagesWith []*StageWhereInput `json:"hasStagesWith,omitempty"`
@@ -4421,6 +5305,10 @@ type QueueWhereInput struct {
 	// "department" edge predicates.
 	HasDepartment     *bool                   `json:"hasDepartment,omitempty"`
 	HasDepartmentWith []*DepartmentWhereInput `json:"hasDepartmentWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -4617,6 +5505,24 @@ func (i *QueueWhereInput) P() (predicate.Queue, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, queue.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, queue.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, queue.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, queue.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, queue.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, queue.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, queue.TenantIdNotNil())
+	}
 
 	if i.HasStages != nil {
 		p := queue.HasStages()
@@ -4672,6 +5578,24 @@ func (i *QueueWhereInput) P() (predicate.Queue, error) {
 		}
 		predicates = append(predicates, queue.HasDepartmentWith(with...))
 	}
+	if i.HasTenant != nil {
+		p := queue.HasTenant()
+		if !*i.HasTenant {
+			p = queue.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, queue.HasTenantWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyQueueWhereInput
@@ -4725,9 +5649,21 @@ type RbacWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "department" edge predicates.
 	HasDepartment     *bool                   `json:"hasDepartment,omitempty"`
 	HasDepartmentWith []*DepartmentWhereInput `json:"hasDepartmentWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -4885,6 +5821,24 @@ func (i *RbacWhereInput) P() (predicate.Rbac, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, rbac.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, rbac.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, rbac.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, rbac.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, rbac.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, rbac.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, rbac.TenantIdNotNil())
+	}
 
 	if i.HasDepartment != nil {
 		p := rbac.HasDepartment()
@@ -4903,6 +5857,24 @@ func (i *RbacWhereInput) P() (predicate.Rbac, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, rbac.HasDepartmentWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := rbac.HasTenant()
+		if !*i.HasTenant {
+			p = rbac.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, rbac.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -4985,6 +5957,14 @@ type StageWhereInput struct {
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "pipeline" edge predicates.
 	HasPipeline     *bool                 `json:"hasPipeline,omitempty"`
 	HasPipelineWith []*PipelineWhereInput `json:"hasPipelineWith,omitempty"`
@@ -4996,6 +5976,10 @@ type StageWhereInput struct {
 	// "queue" edge predicates.
 	HasQueue     *bool              `json:"hasQueue,omitempty"`
 	HasQueueWith []*QueueWhereInput `json:"hasQueueWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -5225,6 +6209,24 @@ func (i *StageWhereInput) P() (predicate.Stage, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, stage.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, stage.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, stage.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, stage.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, stage.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, stage.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, stage.TenantIdNotNil())
+	}
 
 	if i.HasPipeline != nil {
 		p := stage.HasPipeline()
@@ -5280,6 +6282,24 @@ func (i *StageWhereInput) P() (predicate.Stage, error) {
 		}
 		predicates = append(predicates, stage.HasQueueWith(with...))
 	}
+	if i.HasTenant != nil {
+		p := stage.HasTenant()
+		if !*i.HasTenant {
+			p = stage.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, stage.HasTenantWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyStageWhereInput
@@ -5322,9 +6342,21 @@ type TextWhereInput struct {
 	TextEqualFold    *string  `json:"textEqualFold,omitempty"`
 	TextContainsFold *string  `json:"textContainsFold,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
+	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
+	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
+
 	// "message" edge predicates.
 	HasMessage     *bool                `json:"hasMessage,omitempty"`
 	HasMessageWith []*MessageWhereInput `json:"hasMessageWith,omitempty"`
+
+	// "tenant" edge predicates.
+	HasTenant     *bool                `json:"hasTenant,omitempty"`
+	HasTenantWith []*CompanyWhereInput `json:"hasTenantWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -5461,6 +6493,24 @@ func (i *TextWhereInput) P() (predicate.Text, error) {
 	if i.TextContainsFold != nil {
 		predicates = append(predicates, text.TextContainsFold(*i.TextContainsFold))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, text.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, text.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, text.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, text.TenantIdNotIn(i.TenantIdNotIn...))
+	}
+	if i.TenantIdIsNil {
+		predicates = append(predicates, text.TenantIdIsNil())
+	}
+	if i.TenantIdNotNil {
+		predicates = append(predicates, text.TenantIdNotNil())
+	}
 
 	if i.HasMessage != nil {
 		p := text.HasMessage()
@@ -5479,6 +6529,24 @@ func (i *TextWhereInput) P() (predicate.Text, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, text.HasMessageWith(with...))
+	}
+	if i.HasTenant != nil {
+		p := text.HasTenant()
+		if !*i.HasTenant {
+			p = text.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTenantWith) > 0 {
+		with := make([]predicate.Company, 0, len(i.HasTenantWith))
+		for _, w := range i.HasTenantWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTenantWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, text.HasTenantWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

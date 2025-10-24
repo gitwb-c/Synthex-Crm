@@ -2,8 +2,10 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/google/uuid"
 )
 
@@ -32,14 +34,22 @@ func (s *PipelineRepository) UpdateID(ctx context.Context, id string, input ent.
 	}
 	return s.client.Pipeline.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *PipelineRepository) DeleteID(ctx context.Context, id string) error {
-	uuidId, e := uuid.Parse(id)
-	if e != nil {
-		return e
-	}
-	err := s.client.Pipeline.DeleteOneID(uuidId).Exec(ctx)
+func (s *PipelineRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("error: %w", err)
 	}
+
+	_, err = tx.Pipeline.Delete().Where(pipeline.IDIn(ids...)).Exec(ctx)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("error: %w", err)
+	}
+
 	return nil
 }

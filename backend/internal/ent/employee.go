@@ -29,10 +29,11 @@ type Employee struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EmployeeQuery when eager-loading is set.
 	Edges               EmployeeEdges `json:"edges"`
-	employee_company    *uuid.UUID
 	employee_department *uuid.UUID
 	selectValues        sql.SelectValues
 }
@@ -41,8 +42,8 @@ type Employee struct {
 type EmployeeEdges struct {
 	// EmployeeAuth holds the value of the employeeAuth edge.
 	EmployeeAuth *EmployeeAuth `json:"employeeAuth,omitempty"`
-	// Company holds the value of the company edge.
-	Company *Company `json:"company,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// Department holds the value of the department edge.
 	Department *Department `json:"department,omitempty"`
 	// Chat holds the value of the chat edge.
@@ -73,15 +74,15 @@ func (e EmployeeEdges) EmployeeAuthOrErr() (*EmployeeAuth, error) {
 	return nil, &NotLoadedError{edge: "employeeAuth"}
 }
 
-// CompanyOrErr returns the Company value or an error if the edge
+// TenantOrErr returns the Tenant value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e EmployeeEdges) CompanyOrErr() (*Company, error) {
-	if e.Company != nil {
-		return e.Company, nil
+func (e EmployeeEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
 	} else if e.loadedTypes[1] {
 		return nil, &NotFoundError{label: company.Label}
 	}
-	return nil, &NotLoadedError{edge: "company"}
+	return nil, &NotLoadedError{edge: "tenant"}
 }
 
 // DepartmentOrErr returns the Department value or an error if the edge
@@ -133,11 +134,9 @@ func (*Employee) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case employee.FieldCreatedAt, employee.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case employee.FieldID:
+		case employee.FieldID, employee.FieldTenantId:
 			values[i] = new(uuid.UUID)
-		case employee.ForeignKeys[0]: // employee_company
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case employee.ForeignKeys[1]: // employee_department
+		case employee.ForeignKeys[0]: // employee_department
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
@@ -184,14 +183,13 @@ func (_m *Employee) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case employee.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field employee_company", values[i])
-			} else if value.Valid {
-				_m.employee_company = new(uuid.UUID)
-				*_m.employee_company = *value.S.(*uuid.UUID)
+		case employee.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
 			}
-		case employee.ForeignKeys[1]:
+		case employee.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field employee_department", values[i])
 			} else if value.Valid {
@@ -216,9 +214,9 @@ func (_m *Employee) QueryEmployeeAuth() *EmployeeAuthQuery {
 	return NewEmployeeClient(_m.config).QueryEmployeeAuth(_m)
 }
 
-// QueryCompany queries the "company" edge of the Employee entity.
-func (_m *Employee) QueryCompany() *CompanyQuery {
-	return NewEmployeeClient(_m.config).QueryCompany(_m)
+// QueryTenant queries the "tenant" edge of the Employee entity.
+func (_m *Employee) QueryTenant() *CompanyQuery {
+	return NewEmployeeClient(_m.config).QueryTenant(_m)
 }
 
 // QueryDepartment queries the "department" edge of the Employee entity.
@@ -275,6 +273,9 @@ func (_m *Employee) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

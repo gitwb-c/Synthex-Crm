@@ -22,16 +22,6 @@ func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealI
 	return deal, nil
 }
 
-// UpdateDealID is the resolver for the updateDealID field.
-func (r *mutationResolver) UpdateDealID(ctx context.Context, id string, input ent.UpdateDealInput) (*ent.Deal, error) {
-	service := wire.InitializeDealService(r.Client)
-	deal, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return deal, nil
-}
-
 // DeleteDealID is the resolver for the deleteDealID field.
 func (r *mutationResolver) DeleteDealID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeDealService(r.Client)
@@ -51,16 +41,6 @@ func (r *mutationResolver) UpdateDealWhere(ctx context.Context, where ent.DealWh
 func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreatePipelineInput) (*ent.Pipeline, error) {
 	service := wire.InitializePipelineService(r.Client)
 	pipeline, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return pipeline, nil
-}
-
-// UpdatePipelineID is the resolver for the updatePipelineID field.
-func (r *mutationResolver) UpdatePipelineID(ctx context.Context, id string, input ent.UpdatePipelineInput) (*ent.Pipeline, error) {
-	service := wire.InitializePipelineService(r.Client)
-	pipeline, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}
@@ -92,16 +72,6 @@ func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateC
 	return costumer, nil
 }
 
-// UpdateCostumerID is the resolver for the updateCostumerID field.
-func (r *mutationResolver) UpdateCostumerID(ctx context.Context, id string, input ent.UpdateCostumerInput) (*ent.Costumer, error) {
-	service := wire.InitializeCostumerService(r.Client)
-	costumer, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return costumer, nil
-}
-
 // DeleteCostumerID is the resolver for the deleteCostumerID field.
 func (r *mutationResolver) DeleteCostumerID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeCostumerService(r.Client)
@@ -121,16 +91,6 @@ func (r *mutationResolver) UpdateCostumerWhere(ctx context.Context, where ent.Co
 func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStageInput) (*ent.Stage, error) {
 	service := wire.InitializeStageService(r.Client)
 	stage, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return stage, nil
-}
-
-// UpdateStageID is the resolver for the updateStageID field.
-func (r *mutationResolver) UpdateStageID(ctx context.Context, id string, input ent.UpdateStageInput) (*ent.Stage, error) {
-	service := wire.InitializeStageService(r.Client)
-	stage, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}
@@ -162,16 +122,6 @@ func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatI
 	return chat, nil
 }
 
-// UpdateChatID is the resolver for the updateChatID field.
-func (r *mutationResolver) UpdateChatID(ctx context.Context, id string, input ent.UpdateChatInput) (*ent.Chat, error) {
-	service := wire.InitializeChatService(r.Client)
-	chat, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return chat, nil
-}
-
 // DeleteChatID is the resolver for the deleteChatID field.
 func (r *mutationResolver) DeleteChatID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeChatService(r.Client)
@@ -191,16 +141,6 @@ func (r *mutationResolver) UpdateChatWhere(ctx context.Context, where ent.ChatWh
 func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
 	service := wire.InitializeEmployeeService(r.Client)
 	employee, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return employee, nil
-}
-
-// UpdateEmployeeID is the resolver for the updateEmployeeID field.
-func (r *mutationResolver) UpdateEmployeeID(ctx context.Context, id string, input ent.UpdateEmployeeInput) (*ent.Employee, error) {
-	service := wire.InitializeEmployeeService(r.Client)
-	employee, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}
@@ -232,16 +172,6 @@ func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.Cre
 	return employeeAuth, nil
 }
 
-// UpdateEmployeeAuthID is the resolver for the updateEmployeeAuthID field.
-func (r *mutationResolver) UpdateEmployeeAuthID(ctx context.Context, id string, input ent.UpdateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
-	service := wire.InitializeEmployeeAuthService(r.Client)
-	employeeAuth, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return employeeAuth, nil
-}
-
 // DeleteEmployeeAuthID is the resolver for the deleteEmployeeAuthID field.
 func (r *mutationResolver) DeleteEmployeeAuthID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeEmployeeAuthService(r.Client)
@@ -261,16 +191,6 @@ func (r *mutationResolver) UpdateEmployeeAuthWhere(ctx context.Context, where en
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
 	service := wire.InitializeDepartmentService(r.Client)
 	department, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return department, nil
-}
-
-// UpdateDepartmentID is the resolver for the updateDepartmentID field.
-func (r *mutationResolver) UpdateDepartmentID(ctx context.Context, id string, input ent.UpdateDepartmentInput) (*ent.Department, error) {
-	service := wire.InitializeDepartmentService(r.Client)
-	department, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}
@@ -302,16 +222,6 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMe
 	return message, nil
 }
 
-// UpdateMessageID is the resolver for the updateMessageID field.
-func (r *mutationResolver) UpdateMessageID(ctx context.Context, id string, input ent.UpdateMessageInput) (*ent.Message, error) {
-	service := wire.InitializeMessageService(r.Client)
-	message, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return message, nil
-}
-
 // DeleteMessageID is the resolver for the deleteMessageID field.
 func (r *mutationResolver) DeleteMessageID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeMessageService(r.Client)
@@ -331,16 +241,6 @@ func (r *mutationResolver) UpdateMessageWhere(ctx context.Context, where ent.Mes
 func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error) {
 	service := wire.InitializeQueueService(r.Client)
 	queue, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return queue, nil
-}
-
-// UpdateQueueID is the resolver for the updateQueueID field.
-func (r *mutationResolver) UpdateQueueID(ctx context.Context, id string, input ent.UpdateQueueInput) (*ent.Queue, error) {
-	service := wire.InitializeQueueService(r.Client)
-	queue, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}
@@ -372,16 +272,6 @@ func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateC
 	return crmField, nil
 }
 
-// UpdateCrmFieldID is the resolver for the updateCrmFieldID field.
-func (r *mutationResolver) UpdateCrmFieldID(ctx context.Context, id string, input ent.UpdateCrmFieldInput) (*ent.CrmField, error) {
-	service := wire.InitializeCrmFieldService(r.Client)
-	crmField, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return crmField, nil
-}
-
 // DeleteCrmFieldID is the resolver for the deleteCrmFieldID field.
 func (r *mutationResolver) DeleteCrmFieldID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeCrmFieldService(r.Client)
@@ -401,16 +291,6 @@ func (r *mutationResolver) UpdateCrmFieldWhere(ctx context.Context, where ent.Cr
 func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.CreateDealCrmFieldInput) (*ent.DealCrmField, error) {
 	service := wire.InitializeDealCrmFieldService(r.Client)
 	dealCrmField, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return dealCrmField, nil
-}
-
-// UpdateDealCrmFieldID is the resolver for the updateDealCrmFieldID field.
-func (r *mutationResolver) UpdateDealCrmFieldID(ctx context.Context, id string, input ent.UpdateDealCrmFieldInput) (*ent.DealCrmField, error) {
-	service := wire.InitializeDealCrmFieldService(r.Client)
-	dealCrmField, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}
@@ -442,16 +322,6 @@ func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCo
 	return company, nil
 }
 
-// UpdateCompanyID is the resolver for the updateCompanyID field.
-func (r *mutationResolver) UpdateCompanyID(ctx context.Context, id string, input ent.UpdateCompanyInput) (*ent.Company, error) {
-	service := wire.InitializeCompanyService(r.Client)
-	company, err := service.UpdateID(ctx, id, input)
-	if err != nil {
-		return nil, err
-	}
-	return company, nil
-}
-
 // DeleteCompanyID is the resolver for the deleteCompanyID field.
 func (r *mutationResolver) DeleteCompanyID(ctx context.Context, id string) (bool, error) {
 	service := wire.InitializeCompanyService(r.Client)
@@ -471,16 +341,6 @@ func (r *mutationResolver) UpdateCompanyWhere(ctx context.Context, where ent.Com
 func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacInput) (*ent.Rbac, error) {
 	service := wire.InitializeRbacService(r.Client)
 	rbac, err := service.Create(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	return rbac, nil
-}
-
-// UpdateRbacID is the resolver for the updateRbacID field.
-func (r *mutationResolver) UpdateRbacID(ctx context.Context, id string, input ent.UpdateRbacInput) (*ent.Rbac, error) {
-	service := wire.InitializeRbacService(r.Client)
-	rbac, err := service.UpdateID(ctx, id, input)
 	if err != nil {
 		return nil, err
 	}

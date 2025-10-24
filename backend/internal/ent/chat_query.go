@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
@@ -30,6 +31,7 @@ type ChatQuery struct {
 	withDeal           *DealQuery
 	withEmployees      *EmployeeQuery
 	withMessages       *MessageQuery
+	withTenant         *CompanyQuery
 	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*Chat) error
 	withNamedEmployees map[string]*EmployeeQuery
@@ -129,6 +131,28 @@ func (_q *ChatQuery) QueryMessages() *MessageQuery {
 			sqlgraph.From(chat.Table, chat.FieldID, selector),
 			sqlgraph.To(message.Table, message.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, chat.MessagesTable, chat.MessagesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *ChatQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(chat.Table, chat.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, chat.TenantTable, chat.TenantColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -331,6 +355,7 @@ func (_q *ChatQuery) Clone() *ChatQuery {
 		withDeal:      _q.withDeal.Clone(),
 		withEmployees: _q.withEmployees.Clone(),
 		withMessages:  _q.withMessages.Clone(),
+		withTenant:    _q.withTenant.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -367,6 +392,17 @@ func (_q *ChatQuery) WithMessages(opts ...func(*MessageQuery)) *ChatQuery {
 		opt(query)
 	}
 	_q.withMessages = query
+	return _q
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ChatQuery) WithTenant(opts ...func(*CompanyQuery)) *ChatQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
 	return _q
 }
 
@@ -448,10 +484,11 @@ func (_q *ChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Chat, e
 	var (
 		nodes       = []*Chat{}
 		_spec       = _q.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			_q.withDeal != nil,
 			_q.withEmployees != nil,
 			_q.withMessages != nil,
+			_q.withTenant != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -492,6 +529,12 @@ func (_q *ChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Chat, e
 		if err := _q.loadMessages(ctx, query, nodes,
 			func(n *Chat) { n.Edges.Messages = []*Message{} },
 			func(n *Chat, e *Message) { n.Edges.Messages = append(n.Edges.Messages, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *Chat, e *Company) { n.Edges.Tenant = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -637,6 +680,35 @@ func (_q *ChatQuery) loadMessages(ctx context.Context, query *MessageQuery, node
 	}
 	return nil
 }
+func (_q *ChatQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*Chat, init func(*Chat), assign func(*Chat, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Chat)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *ChatQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -665,6 +737,9 @@ func (_q *ChatQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != chat.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(chat.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

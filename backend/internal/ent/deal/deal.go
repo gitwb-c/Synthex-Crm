@@ -23,6 +23,10 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
+	// EdgeTenant holds the string denoting the tenant edge name in mutations.
+	EdgeTenant = "tenant"
 	// EdgeCostumer holds the string denoting the costumer edge name in mutations.
 	EdgeCostumer = "costumer"
 	// EdgeChat holds the string denoting the chat edge name in mutations.
@@ -33,6 +37,13 @@ const (
 	EdgeDealCrmFields = "dealCrmFields"
 	// Table holds the table name of the deal in the database.
 	Table = "deals"
+	// TenantTable is the table that holds the tenant relation/edge.
+	TenantTable = "deals"
+	// TenantInverseTable is the table name for the Company entity.
+	// It exists in this package in order to avoid circular dependency with the "company" package.
+	TenantInverseTable = "companies"
+	// TenantColumn is the table column denoting the tenant relation/edge.
+	TenantColumn = "tenant_id"
 	// CostumerTable is the table that holds the costumer relation/edge.
 	CostumerTable = "deals"
 	// CostumerInverseTable is the table name for the Costumer entity.
@@ -70,6 +81,7 @@ var Columns = []string{
 	FieldSource,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "deals"
@@ -136,6 +148,18 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
+// ByTenantField orders the results by tenant field.
+func ByTenantField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTenantStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByCostumerField orders the results by costumer field.
 func ByCostumerField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -169,6 +193,13 @@ func ByDealCrmFields(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newDealCrmFieldsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
+}
+func newTenantStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TenantInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
+	)
 }
 func newCostumerStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

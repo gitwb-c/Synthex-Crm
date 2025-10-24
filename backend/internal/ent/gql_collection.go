@@ -84,6 +84,21 @@ func (_q *ChatQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			_q.WithNamedMessages(alias, func(wq *MessageQuery) {
 				*wq = *query
 			})
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[chat.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, chat.FieldTenantId)
+				fieldSeen[chat.FieldTenantId] = struct{}{}
+			}
 		case "title":
 			if _, ok := fieldSeen[chat.FieldTitle]; !ok {
 				selectedFields = append(selectedFields, chat.FieldTitle)
@@ -108,6 +123,11 @@ func (_q *ChatQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			if _, ok := fieldSeen[chat.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, chat.FieldUpdatedAt)
 				fieldSeen[chat.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[chat.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, chat.FieldTenantId)
+				fieldSeen[chat.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -200,7 +220,7 @@ func (_q *CompanyQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
-		case "employee":
+		case "employees":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -209,7 +229,202 @@ func (_q *CompanyQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, employeeImplementors)...); err != nil {
 				return err
 			}
-			_q.WithNamedEmployee(alias, func(wq *EmployeeQuery) {
+			_q.WithNamedEmployees(alias, func(wq *EmployeeQuery) {
+				*wq = *query
+			})
+
+		case "costumers":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CostumerClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, costumerImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedCostumers(alias, func(wq *CostumerQuery) {
+				*wq = *query
+			})
+
+		case "deals":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DealClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dealImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedDeals(alias, func(wq *DealQuery) {
+				*wq = *query
+			})
+
+		case "chats":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ChatClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, chatImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedChats(alias, func(wq *ChatQuery) {
+				*wq = *query
+			})
+
+		case "departments":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DepartmentClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, departmentImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedDepartments(alias, func(wq *DepartmentQuery) {
+				*wq = *query
+			})
+
+		case "pipelines":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PipelineClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, pipelineImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedPipelines(alias, func(wq *PipelineQuery) {
+				*wq = *query
+			})
+
+		case "crmfields":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CrmFieldClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, crmfieldImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedCrmFields(alias, func(wq *CrmFieldQuery) {
+				*wq = *query
+			})
+
+		case "dealcrmfields":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DealCrmFieldClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dealcrmfieldImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedDealCrmFields(alias, func(wq *DealCrmFieldQuery) {
+				*wq = *query
+			})
+
+		case "dropdownlists":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DropdownListClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dropdownlistImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedDropdownLists(alias, func(wq *DropdownListQuery) {
+				*wq = *query
+			})
+
+		case "employeeauths":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EmployeeAuthClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, employeeauthImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedEmployeeAuths(alias, func(wq *EmployeeAuthQuery) {
+				*wq = *query
+			})
+
+		case "files":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedFiles(alias, func(wq *FileQuery) {
+				*wq = *query
+			})
+
+		case "messages":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MessageClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, messageImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedMessages(alias, func(wq *MessageQuery) {
+				*wq = *query
+			})
+
+		case "queues":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&QueueClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, queueImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedQueues(alias, func(wq *QueueQuery) {
+				*wq = *query
+			})
+
+		case "rbacs":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RbacClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, rbacImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedRbacs(alias, func(wq *RbacQuery) {
+				*wq = *query
+			})
+
+		case "stages":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&StageClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, stageImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedStages(alias, func(wq *StageQuery) {
+				*wq = *query
+			})
+
+		case "texts":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TextClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, textImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedTexts(alias, func(wq *TextQuery) {
 				*wq = *query
 			})
 		case "name":
@@ -318,6 +533,21 @@ func (_q *CostumerQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[costumer.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, costumer.FieldTenantId)
+				fieldSeen[costumer.FieldTenantId] = struct{}{}
+			}
+
 		case "deals":
 			var (
 				alias = field.Alias
@@ -354,6 +584,11 @@ func (_q *CostumerQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			if _, ok := fieldSeen[costumer.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, costumer.FieldUpdatedAt)
 				fieldSeen[costumer.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[costumer.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, costumer.FieldTenantId)
+				fieldSeen[costumer.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -471,6 +706,21 @@ func (_q *CrmFieldQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			_q.WithNamedDealCrmField(alias, func(wq *DealCrmFieldQuery) {
 				*wq = *query
 			})
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[crmfield.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, crmfield.FieldTenantId)
+				fieldSeen[crmfield.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[crmfield.FieldName]; !ok {
 				selectedFields = append(selectedFields, crmfield.FieldName)
@@ -495,6 +745,11 @@ func (_q *CrmFieldQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			if _, ok := fieldSeen[crmfield.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, crmfield.FieldUpdatedAt)
 				fieldSeen[crmfield.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[crmfield.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, crmfield.FieldTenantId)
+				fieldSeen[crmfield.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -587,6 +842,21 @@ func (_q *DealQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[deal.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, deal.FieldTenantId)
+				fieldSeen[deal.FieldTenantId] = struct{}{}
+			}
+
 		case "costumer":
 			var (
 				alias = field.Alias
@@ -651,6 +921,11 @@ func (_q *DealQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			if _, ok := fieldSeen[deal.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, deal.FieldUpdatedAt)
 				fieldSeen[deal.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[deal.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, deal.FieldTenantId)
+				fieldSeen[deal.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -764,6 +1039,21 @@ func (_q *DealCrmFieldQuery) collectField(ctx context.Context, oneNode bool, opC
 				return err
 			}
 			_q.withCrmField = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[dealcrmfield.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, dealcrmfield.FieldTenantId)
+				fieldSeen[dealcrmfield.FieldTenantId] = struct{}{}
+			}
 		case "value":
 			if _, ok := fieldSeen[dealcrmfield.FieldValue]; !ok {
 				selectedFields = append(selectedFields, dealcrmfield.FieldValue)
@@ -778,6 +1068,11 @@ func (_q *DealCrmFieldQuery) collectField(ctx context.Context, oneNode bool, opC
 			if _, ok := fieldSeen[dealcrmfield.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, dealcrmfield.FieldUpdatedAt)
 				fieldSeen[dealcrmfield.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[dealcrmfield.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, dealcrmfield.FieldTenantId)
+				fieldSeen[dealcrmfield.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -870,6 +1165,21 @@ func (_q *DepartmentQuery) collectField(ctx context.Context, oneNode bool, opCtx
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[department.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, department.FieldTenantId)
+				fieldSeen[department.FieldTenantId] = struct{}{}
+			}
+
 		case "employee":
 			var (
 				alias = field.Alias
@@ -922,6 +1232,11 @@ func (_q *DepartmentQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			if _, ok := fieldSeen[department.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, department.FieldUpdatedAt)
 				fieldSeen[department.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[department.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, department.FieldTenantId)
+				fieldSeen[department.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1026,6 +1341,21 @@ func (_q *DropdownListQuery) collectField(ctx context.Context, oneNode bool, opC
 			_q.WithNamedCrmField(alias, func(wq *CrmFieldQuery) {
 				*wq = *query
 			})
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[dropdownlist.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, dropdownlist.FieldTenantId)
+				fieldSeen[dropdownlist.FieldTenantId] = struct{}{}
+			}
 		case "value":
 			if _, ok := fieldSeen[dropdownlist.FieldValue]; !ok {
 				selectedFields = append(selectedFields, dropdownlist.FieldValue)
@@ -1040,6 +1370,11 @@ func (_q *DropdownListQuery) collectField(ctx context.Context, oneNode bool, opC
 			if _, ok := fieldSeen[dropdownlist.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, dropdownlist.FieldUpdatedAt)
 				fieldSeen[dropdownlist.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[dropdownlist.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, dropdownlist.FieldTenantId)
+				fieldSeen[dropdownlist.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1143,7 +1478,7 @@ func (_q *EmployeeQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			}
 			_q.withEmployeeAuth = query
 
-		case "company":
+		case "tenant":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -1152,7 +1487,11 @@ func (_q *EmployeeQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
 				return err
 			}
-			_q.withCompany = query
+			_q.withTenant = query
+			if _, ok := fieldSeen[employee.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, employee.FieldTenantId)
+				fieldSeen[employee.FieldTenantId] = struct{}{}
+			}
 
 		case "department":
 			var (
@@ -1222,6 +1561,11 @@ func (_q *EmployeeQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			if _, ok := fieldSeen[employee.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, employee.FieldUpdatedAt)
 				fieldSeen[employee.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[employee.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, employee.FieldTenantId)
+				fieldSeen[employee.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1324,6 +1668,21 @@ func (_q *EmployeeAuthQuery) collectField(ctx context.Context, oneNode bool, opC
 				return err
 			}
 			_q.withEmployee = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[employeeauth.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, employeeauth.FieldTenantId)
+				fieldSeen[employeeauth.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[employeeauth.FieldName]; !ok {
 				selectedFields = append(selectedFields, employeeauth.FieldName)
@@ -1338,6 +1697,11 @@ func (_q *EmployeeAuthQuery) collectField(ctx context.Context, oneNode bool, opC
 			if _, ok := fieldSeen[employeeauth.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, employeeauth.FieldUpdatedAt)
 				fieldSeen[employeeauth.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[employeeauth.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, employeeauth.FieldTenantId)
+				fieldSeen[employeeauth.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1440,6 +1804,21 @@ func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			_q.withMessage = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[file.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, file.FieldTenantId)
+				fieldSeen[file.FieldTenantId] = struct{}{}
+			}
 		case "url":
 			if _, ok := fieldSeen[file.FieldURL]; !ok {
 				selectedFields = append(selectedFields, file.FieldURL)
@@ -1459,6 +1838,11 @@ func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			if _, ok := fieldSeen[file.FieldFileName]; !ok {
 				selectedFields = append(selectedFields, file.FieldFileName)
 				fieldSeen[file.FieldFileName] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[file.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, file.FieldTenantId)
+				fieldSeen[file.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1590,6 +1974,21 @@ func (_q *MessageQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 				return err
 			}
 			_q.withFile = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[message.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, message.FieldTenantId)
+				fieldSeen[message.FieldTenantId] = struct{}{}
+			}
 		case "sentby":
 			if _, ok := fieldSeen[message.FieldSentBy]; !ok {
 				selectedFields = append(selectedFields, message.FieldSentBy)
@@ -1614,6 +2013,11 @@ func (_q *MessageQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 			if _, ok := fieldSeen[message.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, message.FieldUpdatedAt)
 				fieldSeen[message.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[message.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, message.FieldTenantId)
+				fieldSeen[message.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1706,6 +2110,21 @@ func (_q *PipelineQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[pipeline.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, pipeline.FieldTenantId)
+				fieldSeen[pipeline.FieldTenantId] = struct{}{}
+			}
+
 		case "stages":
 			var (
 				alias = field.Alias
@@ -1732,6 +2151,11 @@ func (_q *PipelineQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			if _, ok := fieldSeen[pipeline.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, pipeline.FieldUpdatedAt)
 				fieldSeen[pipeline.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[pipeline.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, pipeline.FieldTenantId)
+				fieldSeen[pipeline.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1862,6 +2286,21 @@ func (_q *QueueQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			_q.WithNamedDepartment(alias, func(wq *DepartmentQuery) {
 				*wq = *query
 			})
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[queue.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, queue.FieldTenantId)
+				fieldSeen[queue.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[queue.FieldName]; !ok {
 				selectedFields = append(selectedFields, queue.FieldName)
@@ -1881,6 +2320,11 @@ func (_q *QueueQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			if _, ok := fieldSeen[queue.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, queue.FieldUpdatedAt)
 				fieldSeen[queue.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[queue.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, queue.FieldTenantId)
+				fieldSeen[queue.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1983,6 +2427,21 @@ func (_q *RbacQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			_q.withDepartment = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[rbac.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, rbac.FieldTenantId)
+				fieldSeen[rbac.FieldTenantId] = struct{}{}
+			}
 		case "access":
 			if _, ok := fieldSeen[rbac.FieldAccess]; !ok {
 				selectedFields = append(selectedFields, rbac.FieldAccess)
@@ -1997,6 +2456,11 @@ func (_q *RbacQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			if _, ok := fieldSeen[rbac.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, rbac.FieldUpdatedAt)
 				fieldSeen[rbac.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[rbac.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, rbac.FieldTenantId)
+				fieldSeen[rbac.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2123,6 +2587,21 @@ func (_q *StageQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 				return err
 			}
 			_q.withQueue = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[stage.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, stage.FieldTenantId)
+				fieldSeen[stage.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[stage.FieldName]; !ok {
 				selectedFields = append(selectedFields, stage.FieldName)
@@ -2147,6 +2626,11 @@ func (_q *StageQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			if _, ok := fieldSeen[stage.FieldUpdatedAt]; !ok {
 				selectedFields = append(selectedFields, stage.FieldUpdatedAt)
 				fieldSeen[stage.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[stage.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, stage.FieldTenantId)
+				fieldSeen[stage.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2249,10 +2733,30 @@ func (_q *TextQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			_q.withMessage = query
+
+		case "tenant":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompanyClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, companyImplementors)...); err != nil {
+				return err
+			}
+			_q.withTenant = query
+			if _, ok := fieldSeen[text.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, text.FieldTenantId)
+				fieldSeen[text.FieldTenantId] = struct{}{}
+			}
 		case "text":
 			if _, ok := fieldSeen[text.FieldText]; !ok {
 				selectedFields = append(selectedFields, text.FieldText)
 				fieldSeen[text.FieldText] = struct{}{}
+			}
+		case "tenantid":
+			if _, ok := fieldSeen[text.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, text.FieldTenantId)
+				fieldSeen[text.FieldTenantId] = struct{}{}
 			}
 		case "id":
 		case "__typename":

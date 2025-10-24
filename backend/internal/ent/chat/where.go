@@ -81,6 +81,11 @@ func UpdatedAt(v time.Time) predicate.Chat {
 	return predicate.Chat(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Chat {
+	return predicate.Chat(sql.FieldEQ(FieldTenantId, v))
+}
+
 // TitleEQ applies the EQ predicate on the "title" field.
 func TitleEQ(v string) predicate.Chat {
 	return predicate.Chat(sql.FieldEQ(FieldTitle, v))
@@ -246,6 +251,36 @@ func UpdatedAtLTE(v time.Time) predicate.Chat {
 	return predicate.Chat(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Chat {
+	return predicate.Chat(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Chat {
+	return predicate.Chat(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Chat {
+	return predicate.Chat(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Chat {
+	return predicate.Chat(sql.FieldNotIn(FieldTenantId, vs...))
+}
+
+// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
+func TenantIdIsNil() predicate.Chat {
+	return predicate.Chat(sql.FieldIsNull(FieldTenantId))
+}
+
+// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
+func TenantIdNotNil() predicate.Chat {
+	return predicate.Chat(sql.FieldNotNull(FieldTenantId))
+}
+
 // HasDeal applies the HasEdge predicate on the "deal" edge.
 func HasDeal() predicate.Chat {
 	return predicate.Chat(func(s *sql.Selector) {
@@ -307,6 +342,29 @@ func HasMessages() predicate.Chat {
 func HasMessagesWith(preds ...predicate.Message) predicate.Chat {
 	return predicate.Chat(func(s *sql.Selector) {
 		step := newMessagesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTenant applies the HasEdge predicate on the "tenant" edge.
+func HasTenant() predicate.Chat {
+	return predicate.Chat(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTenantWith applies the HasEdge predicate on the "tenant" edge with a given conditions (other predicates).
+func HasTenantWith(preds ...predicate.Company) predicate.Chat {
+	return predicate.Chat(func(s *sql.Selector) {
+		step := newTenantStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

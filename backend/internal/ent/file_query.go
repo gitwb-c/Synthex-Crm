@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
@@ -26,6 +27,7 @@ type FileQuery struct {
 	inters      []Interceptor
 	predicates  []predicate.File
 	withMessage *MessageQuery
+	withTenant  *CompanyQuery
 	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*File) error
 	// intermediate query (i.e. traversal path).
@@ -79,6 +81,28 @@ func (_q *FileQuery) QueryMessage() *MessageQuery {
 			sqlgraph.From(file.Table, file.FieldID, selector),
 			sqlgraph.To(message.Table, message.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, file.MessageTable, file.MessageColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *FileQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, file.TenantTable, file.TenantColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -279,6 +303,7 @@ func (_q *FileQuery) Clone() *FileQuery {
 		inters:      append([]Interceptor{}, _q.inters...),
 		predicates:  append([]predicate.File{}, _q.predicates...),
 		withMessage: _q.withMessage.Clone(),
+		withTenant:  _q.withTenant.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -293,6 +318,17 @@ func (_q *FileQuery) WithMessage(opts ...func(*MessageQuery)) *FileQuery {
 		opt(query)
 	}
 	_q.withMessage = query
+	return _q
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithTenant(opts ...func(*CompanyQuery)) *FileQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
 	return _q
 }
 
@@ -374,8 +410,9 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 	var (
 		nodes       = []*File{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withMessage != nil,
+			_q.withTenant != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -402,6 +439,12 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 	if query := _q.withMessage; query != nil {
 		if err := _q.loadMessage(ctx, query, nodes, nil,
 			func(n *File, e *Message) { n.Edges.Message = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *File, e *Company) { n.Edges.Tenant = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -441,6 +484,35 @@ func (_q *FileQuery) loadMessage(ctx context.Context, query *MessageQuery, nodes
 	}
 	return nil
 }
+func (_q *FileQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*File, init func(*File), assign func(*File, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*File)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *FileQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -469,6 +541,9 @@ func (_q *FileQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != file.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(file.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

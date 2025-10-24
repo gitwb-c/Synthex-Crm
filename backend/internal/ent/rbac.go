@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
 	"github.com/google/uuid"
@@ -25,6 +26,8 @@ type Rbac struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RbacQuery when eager-loading is set.
 	Edges           RbacEdges `json:"edges"`
@@ -36,11 +39,13 @@ type Rbac struct {
 type RbacEdges struct {
 	// Department holds the value of the department edge.
 	Department *Department `json:"department,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 }
 
 // DepartmentOrErr returns the Department value or an error if the edge
@@ -54,6 +59,17 @@ func (e RbacEdges) DepartmentOrErr() (*Department, error) {
 	return nil, &NotLoadedError{edge: "department"}
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e RbacEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Rbac) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -63,7 +79,7 @@ func (*Rbac) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case rbac.FieldCreatedAt, rbac.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case rbac.FieldID:
+		case rbac.FieldID, rbac.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		case rbac.ForeignKeys[0]: // rbac_department
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
@@ -106,6 +122,12 @@ func (_m *Rbac) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case rbac.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case rbac.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field rbac_department", values[i])
@@ -129,6 +151,11 @@ func (_m *Rbac) Value(name string) (ent.Value, error) {
 // QueryDepartment queries the "department" edge of the Rbac entity.
 func (_m *Rbac) QueryDepartment() *DepartmentQuery {
 	return NewRbacClient(_m.config).QueryDepartment(_m)
+}
+
+// QueryTenant queries the "tenant" edge of the Rbac entity.
+func (_m *Rbac) QueryTenant() *CompanyQuery {
+	return NewRbacClient(_m.config).QueryTenant(_m)
 }
 
 // Update returns a builder for updating this Rbac.
@@ -162,6 +189,9 @@ func (_m *Rbac) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -59,6 +59,11 @@ func Text(v string) predicate.Text {
 	return predicate.Text(sql.FieldEQ(FieldText, v))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldEQ(FieldTenantId, v))
+}
+
 // TextEQ applies the EQ predicate on the "text" field.
 func TextEQ(v string) predicate.Text {
 	return predicate.Text(sql.FieldEQ(FieldText, v))
@@ -124,6 +129,36 @@ func TextContainsFold(v string) predicate.Text {
 	return predicate.Text(sql.FieldContainsFold(FieldText, v))
 }
 
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldNotIn(FieldTenantId, vs...))
+}
+
+// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
+func TenantIdIsNil() predicate.Text {
+	return predicate.Text(sql.FieldIsNull(FieldTenantId))
+}
+
+// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
+func TenantIdNotNil() predicate.Text {
+	return predicate.Text(sql.FieldNotNull(FieldTenantId))
+}
+
 // HasMessage applies the HasEdge predicate on the "message" edge.
 func HasMessage() predicate.Text {
 	return predicate.Text(func(s *sql.Selector) {
@@ -139,6 +174,29 @@ func HasMessage() predicate.Text {
 func HasMessageWith(preds ...predicate.Message) predicate.Text {
 	return predicate.Text(func(s *sql.Selector) {
 		step := newMessageStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTenant applies the HasEdge predicate on the "tenant" edge.
+func HasTenant() predicate.Text {
+	return predicate.Text(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTenantWith applies the HasEdge predicate on the "tenant" edge with a given conditions (other predicates).
+func HasTenantWith(preds ...predicate.Company) predicate.Text {
+	return predicate.Text(func(s *sql.Selector) {
+		step := newTenantStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
@@ -24,7 +25,7 @@ func (s *EmployeeAuthRepository) Read(ctx context.Context) ([]*ent.EmployeeAuth,
 
 func (s *EmployeeAuthRepository) ReadEmail(ctx context.Context, email string) (*ent.EmployeeAuth, error) {
 	return s.client.EmployeeAuth.Query().Where(employeeauth.Email(email)).WithEmployee(func(q *ent.EmployeeQuery) {
-		q.WithCompany().WithDepartment()
+		q.WithTenant().WithDepartment()
 	}).Only(ctx)
 }
 
@@ -38,14 +39,22 @@ func (s *EmployeeAuthRepository) UpdateID(ctx context.Context, id string, input 
 	}
 	return s.client.EmployeeAuth.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *EmployeeAuthRepository) DeleteID(ctx context.Context, id string) error {
-	uuidId, e := uuid.Parse(id)
-	if e != nil {
-		return e
-	}
-	err := s.client.EmployeeAuth.DeleteOneID(uuidId).Exec(ctx)
+func (s *EmployeeAuthRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("error: %w", err)
 	}
+
+	_, err = tx.EmployeeAuth.Delete().Where(employeeauth.IDIn(ids...)).Exec(ctx)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("error: %w", err)
+	}
+
 	return nil
 }

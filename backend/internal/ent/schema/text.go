@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema/mixin"
 	"github.com/google/uuid"
 )
 
@@ -18,13 +17,14 @@ func (Text) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
 		field.String("text").NotEmpty().Annotations(entgql.QueryField(), entgql.OrderField("TEXT")),
+		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (Text) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("message", Message.Type).Unique().Required(),
-		edge.From("company", Company.Type).Ref("texts").Field("tenant_id").Required().Unique(),
+		edge.From("tenant", Company.Type).Ref("texts").Field("tenantId").Unique(),
 	}
 }
 
@@ -36,6 +36,6 @@ func (Text) Annotations() []schema.Annotation {
 
 func (Text) Mixins() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.TenantMixin{},
+		TenantMixin{},
 	}
 }

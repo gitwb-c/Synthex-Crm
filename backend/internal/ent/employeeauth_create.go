@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
 	"github.com/google/uuid"
@@ -68,6 +69,12 @@ func (_c *EmployeeAuthCreate) SetNillableUpdatedAt(v *time.Time) *EmployeeAuthCr
 	return _c
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *EmployeeAuthCreate) SetTenantId(v uuid.UUID) *EmployeeAuthCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *EmployeeAuthCreate) SetID(v uuid.UUID) *EmployeeAuthCreate {
 	_c.mutation.SetID(v)
@@ -99,6 +106,17 @@ func (_c *EmployeeAuthCreate) SetNillableEmployeeID(id *uuid.UUID) *EmployeeAuth
 // SetEmployee sets the "employee" edge to the Employee entity.
 func (_c *EmployeeAuthCreate) SetEmployee(v *Employee) *EmployeeAuthCreate {
 	return _c.SetEmployeeID(v.ID)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_c *EmployeeAuthCreate) SetTenantID(id uuid.UUID) *EmployeeAuthCreate {
+	_c.mutation.SetTenantID(id)
+	return _c
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_c *EmployeeAuthCreate) SetTenant(v *Company) *EmployeeAuthCreate {
+	return _c.SetTenantID(v.ID)
 }
 
 // Mutation returns the EmployeeAuthMutation object of the builder.
@@ -182,6 +200,12 @@ func (_c *EmployeeAuthCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "EmployeeAuth.updatedAt"`)}
 	}
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "EmployeeAuth.tenantId"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "EmployeeAuth.tenant"`)}
+	}
 	return nil
 }
 
@@ -252,6 +276,23 @@ func (_c *EmployeeAuthCreate) createSpec() (*EmployeeAuth, *sqlgraph.CreateSpec)
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.employee_employee_auth = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   employeeauth.TenantTable,
+			Columns: []string{employeeauth.TenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TenantId = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

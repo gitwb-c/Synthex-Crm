@@ -69,6 +69,26 @@ func (_u *EmployeeUpdate) SetUpdatedAt(v time.Time) *EmployeeUpdate {
 	return _u
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_u *EmployeeUpdate) SetTenantId(v uuid.UUID) *EmployeeUpdate {
+	_u.mutation.SetTenantId(v)
+	return _u
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_u *EmployeeUpdate) SetNillableTenantId(v *uuid.UUID) *EmployeeUpdate {
+	if v != nil {
+		_u.SetTenantId(*v)
+	}
+	return _u
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (_u *EmployeeUpdate) ClearTenantId() *EmployeeUpdate {
+	_u.mutation.ClearTenantId()
+	return _u
+}
+
 // SetEmployeeAuthID sets the "employeeAuth" edge to the EmployeeAuth entity by ID.
 func (_u *EmployeeUpdate) SetEmployeeAuthID(id uuid.UUID) *EmployeeUpdate {
 	_u.mutation.SetEmployeeAuthID(id)
@@ -80,15 +100,23 @@ func (_u *EmployeeUpdate) SetEmployeeAuth(v *EmployeeAuth) *EmployeeUpdate {
 	return _u.SetEmployeeAuthID(v.ID)
 }
 
-// SetCompanyID sets the "company" edge to the Company entity by ID.
-func (_u *EmployeeUpdate) SetCompanyID(id uuid.UUID) *EmployeeUpdate {
-	_u.mutation.SetCompanyID(id)
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_u *EmployeeUpdate) SetTenantID(id uuid.UUID) *EmployeeUpdate {
+	_u.mutation.SetTenantID(id)
 	return _u
 }
 
-// SetCompany sets the "company" edge to the Company entity.
-func (_u *EmployeeUpdate) SetCompany(v *Company) *EmployeeUpdate {
-	return _u.SetCompanyID(v.ID)
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_u *EmployeeUpdate) SetNillableTenantID(id *uuid.UUID) *EmployeeUpdate {
+	if id != nil {
+		_u = _u.SetTenantID(*id)
+	}
+	return _u
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_u *EmployeeUpdate) SetTenant(v *Company) *EmployeeUpdate {
+	return _u.SetTenantID(v.ID)
 }
 
 // SetDepartmentID sets the "department" edge to the Department entity by ID.
@@ -158,9 +186,9 @@ func (_u *EmployeeUpdate) ClearEmployeeAuth() *EmployeeUpdate {
 	return _u
 }
 
-// ClearCompany clears the "company" edge to the Company entity.
-func (_u *EmployeeUpdate) ClearCompany() *EmployeeUpdate {
-	_u.mutation.ClearCompany()
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (_u *EmployeeUpdate) ClearTenant() *EmployeeUpdate {
+	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -279,9 +307,6 @@ func (_u *EmployeeUpdate) check() error {
 	if _u.mutation.EmployeeAuthCleared() && len(_u.mutation.EmployeeAuthIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Employee.employeeAuth"`)
 	}
-	if _u.mutation.CompanyCleared() && len(_u.mutation.CompanyIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Employee.company"`)
-	}
 	if _u.mutation.DepartmentCleared() && len(_u.mutation.DepartmentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Employee.department"`)
 	}
@@ -338,12 +363,12 @@ func (_u *EmployeeUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.CompanyCleared() {
+	if _u.mutation.TenantCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   employee.CompanyTable,
-			Columns: []string{employee.CompanyColumn},
+			Inverse: true,
+			Table:   employee.TenantTable,
+			Columns: []string{employee.TenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
@@ -351,12 +376,12 @@ func (_u *EmployeeUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.CompanyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   employee.CompanyTable,
-			Columns: []string{employee.CompanyColumn},
+			Inverse: true,
+			Table:   employee.TenantTable,
+			Columns: []string{employee.TenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
@@ -585,6 +610,26 @@ func (_u *EmployeeUpdateOne) SetUpdatedAt(v time.Time) *EmployeeUpdateOne {
 	return _u
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_u *EmployeeUpdateOne) SetTenantId(v uuid.UUID) *EmployeeUpdateOne {
+	_u.mutation.SetTenantId(v)
+	return _u
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_u *EmployeeUpdateOne) SetNillableTenantId(v *uuid.UUID) *EmployeeUpdateOne {
+	if v != nil {
+		_u.SetTenantId(*v)
+	}
+	return _u
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (_u *EmployeeUpdateOne) ClearTenantId() *EmployeeUpdateOne {
+	_u.mutation.ClearTenantId()
+	return _u
+}
+
 // SetEmployeeAuthID sets the "employeeAuth" edge to the EmployeeAuth entity by ID.
 func (_u *EmployeeUpdateOne) SetEmployeeAuthID(id uuid.UUID) *EmployeeUpdateOne {
 	_u.mutation.SetEmployeeAuthID(id)
@@ -596,15 +641,23 @@ func (_u *EmployeeUpdateOne) SetEmployeeAuth(v *EmployeeAuth) *EmployeeUpdateOne
 	return _u.SetEmployeeAuthID(v.ID)
 }
 
-// SetCompanyID sets the "company" edge to the Company entity by ID.
-func (_u *EmployeeUpdateOne) SetCompanyID(id uuid.UUID) *EmployeeUpdateOne {
-	_u.mutation.SetCompanyID(id)
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_u *EmployeeUpdateOne) SetTenantID(id uuid.UUID) *EmployeeUpdateOne {
+	_u.mutation.SetTenantID(id)
 	return _u
 }
 
-// SetCompany sets the "company" edge to the Company entity.
-func (_u *EmployeeUpdateOne) SetCompany(v *Company) *EmployeeUpdateOne {
-	return _u.SetCompanyID(v.ID)
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_u *EmployeeUpdateOne) SetNillableTenantID(id *uuid.UUID) *EmployeeUpdateOne {
+	if id != nil {
+		_u = _u.SetTenantID(*id)
+	}
+	return _u
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_u *EmployeeUpdateOne) SetTenant(v *Company) *EmployeeUpdateOne {
+	return _u.SetTenantID(v.ID)
 }
 
 // SetDepartmentID sets the "department" edge to the Department entity by ID.
@@ -674,9 +727,9 @@ func (_u *EmployeeUpdateOne) ClearEmployeeAuth() *EmployeeUpdateOne {
 	return _u
 }
 
-// ClearCompany clears the "company" edge to the Company entity.
-func (_u *EmployeeUpdateOne) ClearCompany() *EmployeeUpdateOne {
-	_u.mutation.ClearCompany()
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (_u *EmployeeUpdateOne) ClearTenant() *EmployeeUpdateOne {
+	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -808,9 +861,6 @@ func (_u *EmployeeUpdateOne) check() error {
 	if _u.mutation.EmployeeAuthCleared() && len(_u.mutation.EmployeeAuthIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Employee.employeeAuth"`)
 	}
-	if _u.mutation.CompanyCleared() && len(_u.mutation.CompanyIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Employee.company"`)
-	}
 	if _u.mutation.DepartmentCleared() && len(_u.mutation.DepartmentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Employee.department"`)
 	}
@@ -884,12 +934,12 @@ func (_u *EmployeeUpdateOne) sqlSave(ctx context.Context) (_node *Employee, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.CompanyCleared() {
+	if _u.mutation.TenantCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   employee.CompanyTable,
-			Columns: []string{employee.CompanyColumn},
+			Inverse: true,
+			Table:   employee.TenantTable,
+			Columns: []string{employee.TenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
@@ -897,12 +947,12 @@ func (_u *EmployeeUpdateOne) sqlSave(ctx context.Context) (_node *Employee, err 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.CompanyIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   employee.CompanyTable,
-			Columns: []string{employee.CompanyColumn},
+			Inverse: true,
+			Table:   employee.TenantTable,
+			Columns: []string{employee.TenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/google/uuid"
@@ -26,6 +27,8 @@ type File struct {
 	MimeType string `json:"mimeType,omitempty"`
 	// FileName holds the value of the "fileName" field.
 	FileName string `json:"fileName,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
 	Edges        FileEdges `json:"edges"`
@@ -36,11 +39,13 @@ type File struct {
 type FileEdges struct {
 	// Message holds the value of the message edge.
 	Message *Message `json:"message,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 }
 
 // MessageOrErr returns the Message value or an error if the edge
@@ -54,6 +59,17 @@ func (e FileEdges) MessageOrErr() (*Message, error) {
 	return nil, &NotLoadedError{edge: "message"}
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FileEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*File) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -61,7 +77,7 @@ func (*File) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case file.FieldURL, file.FieldCaption, file.FieldMimeType, file.FieldFileName:
 			values[i] = new(sql.NullString)
-		case file.FieldID:
+		case file.FieldID, file.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -108,6 +124,12 @@ func (_m *File) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.FileName = value.String
 			}
+		case file.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -124,6 +146,11 @@ func (_m *File) Value(name string) (ent.Value, error) {
 // QueryMessage queries the "message" edge of the File entity.
 func (_m *File) QueryMessage() *MessageQuery {
 	return NewFileClient(_m.config).QueryMessage(_m)
+}
+
+// QueryTenant queries the "tenant" edge of the File entity.
+func (_m *File) QueryTenant() *CompanyQuery {
+	return NewFileClient(_m.config).QueryTenant(_m)
 }
 
 // Update returns a builder for updating this File.
@@ -160,6 +187,9 @@ func (_m *File) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("fileName=")
 	builder.WriteString(_m.FileName)
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

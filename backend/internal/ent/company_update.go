@@ -11,9 +11,24 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 	"github.com/google/uuid"
 )
 
@@ -50,14 +65,14 @@ func (_u *CompanyUpdate) SetUpdatedAt(v time.Time) *CompanyUpdate {
 	return _u
 }
 
-// AddEmployeeIDs adds the "employee" edge to the Employee entity by IDs.
+// AddEmployeeIDs adds the "employees" edge to the Employee entity by IDs.
 func (_u *CompanyUpdate) AddEmployeeIDs(ids ...uuid.UUID) *CompanyUpdate {
 	_u.mutation.AddEmployeeIDs(ids...)
 	return _u
 }
 
-// AddEmployee adds the "employee" edges to the Employee entity.
-func (_u *CompanyUpdate) AddEmployee(v ...*Employee) *CompanyUpdate {
+// AddEmployees adds the "employees" edges to the Employee entity.
+func (_u *CompanyUpdate) AddEmployees(v ...*Employee) *CompanyUpdate {
 	ids := make([]uuid.UUID, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -65,30 +80,570 @@ func (_u *CompanyUpdate) AddEmployee(v ...*Employee) *CompanyUpdate {
 	return _u.AddEmployeeIDs(ids...)
 }
 
+// AddCostumerIDs adds the "costumers" edge to the Costumer entity by IDs.
+func (_u *CompanyUpdate) AddCostumerIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddCostumerIDs(ids...)
+	return _u
+}
+
+// AddCostumers adds the "costumers" edges to the Costumer entity.
+func (_u *CompanyUpdate) AddCostumers(v ...*Costumer) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCostumerIDs(ids...)
+}
+
+// AddDealIDs adds the "deals" edge to the Deal entity by IDs.
+func (_u *CompanyUpdate) AddDealIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddDealIDs(ids...)
+	return _u
+}
+
+// AddDeals adds the "deals" edges to the Deal entity.
+func (_u *CompanyUpdate) AddDeals(v ...*Deal) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDealIDs(ids...)
+}
+
+// AddChatIDs adds the "chats" edge to the Chat entity by IDs.
+func (_u *CompanyUpdate) AddChatIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddChatIDs(ids...)
+	return _u
+}
+
+// AddChats adds the "chats" edges to the Chat entity.
+func (_u *CompanyUpdate) AddChats(v ...*Chat) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddChatIDs(ids...)
+}
+
+// AddDepartmentIDs adds the "departments" edge to the Department entity by IDs.
+func (_u *CompanyUpdate) AddDepartmentIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddDepartmentIDs(ids...)
+	return _u
+}
+
+// AddDepartments adds the "departments" edges to the Department entity.
+func (_u *CompanyUpdate) AddDepartments(v ...*Department) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDepartmentIDs(ids...)
+}
+
+// AddPipelineIDs adds the "pipelines" edge to the Pipeline entity by IDs.
+func (_u *CompanyUpdate) AddPipelineIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddPipelineIDs(ids...)
+	return _u
+}
+
+// AddPipelines adds the "pipelines" edges to the Pipeline entity.
+func (_u *CompanyUpdate) AddPipelines(v ...*Pipeline) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPipelineIDs(ids...)
+}
+
+// AddCrmFieldIDs adds the "crmFields" edge to the CrmField entity by IDs.
+func (_u *CompanyUpdate) AddCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddCrmFieldIDs(ids...)
+	return _u
+}
+
+// AddCrmFields adds the "crmFields" edges to the CrmField entity.
+func (_u *CompanyUpdate) AddCrmFields(v ...*CrmField) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCrmFieldIDs(ids...)
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (_u *CompanyUpdate) AddDealCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// AddDealCrmFields adds the "dealCrmFields" edges to the DealCrmField entity.
+func (_u *CompanyUpdate) AddDealCrmFields(v ...*DealCrmField) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDealCrmFieldIDs(ids...)
+}
+
+// AddDropdownListIDs adds the "dropdownLists" edge to the DropdownList entity by IDs.
+func (_u *CompanyUpdate) AddDropdownListIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddDropdownListIDs(ids...)
+	return _u
+}
+
+// AddDropdownLists adds the "dropdownLists" edges to the DropdownList entity.
+func (_u *CompanyUpdate) AddDropdownLists(v ...*DropdownList) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDropdownListIDs(ids...)
+}
+
+// AddEmployeeAuthIDs adds the "employeeAuths" edge to the EmployeeAuth entity by IDs.
+func (_u *CompanyUpdate) AddEmployeeAuthIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddEmployeeAuthIDs(ids...)
+	return _u
+}
+
+// AddEmployeeAuths adds the "employeeAuths" edges to the EmployeeAuth entity.
+func (_u *CompanyUpdate) AddEmployeeAuths(v ...*EmployeeAuth) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddEmployeeAuthIDs(ids...)
+}
+
+// AddFileIDs adds the "files" edge to the File entity by IDs.
+func (_u *CompanyUpdate) AddFileIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddFileIDs(ids...)
+	return _u
+}
+
+// AddFiles adds the "files" edges to the File entity.
+func (_u *CompanyUpdate) AddFiles(v ...*File) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFileIDs(ids...)
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (_u *CompanyUpdate) AddMessageIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddMessageIDs(ids...)
+	return _u
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (_u *CompanyUpdate) AddMessages(v ...*Message) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddMessageIDs(ids...)
+}
+
+// AddQueueIDs adds the "queues" edge to the Queue entity by IDs.
+func (_u *CompanyUpdate) AddQueueIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddQueueIDs(ids...)
+	return _u
+}
+
+// AddQueues adds the "queues" edges to the Queue entity.
+func (_u *CompanyUpdate) AddQueues(v ...*Queue) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddQueueIDs(ids...)
+}
+
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by IDs.
+func (_u *CompanyUpdate) AddRbacIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddRbacIDs(ids...)
+	return _u
+}
+
+// AddRbacs adds the "rbacs" edges to the Rbac entity.
+func (_u *CompanyUpdate) AddRbacs(v ...*Rbac) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRbacIDs(ids...)
+}
+
+// AddStageIDs adds the "stages" edge to the Stage entity by IDs.
+func (_u *CompanyUpdate) AddStageIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddStageIDs(ids...)
+	return _u
+}
+
+// AddStages adds the "stages" edges to the Stage entity.
+func (_u *CompanyUpdate) AddStages(v ...*Stage) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddStageIDs(ids...)
+}
+
+// AddTextIDs adds the "texts" edge to the Text entity by IDs.
+func (_u *CompanyUpdate) AddTextIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.AddTextIDs(ids...)
+	return _u
+}
+
+// AddTexts adds the "texts" edges to the Text entity.
+func (_u *CompanyUpdate) AddTexts(v ...*Text) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddTextIDs(ids...)
+}
+
 // Mutation returns the CompanyMutation object of the builder.
 func (_u *CompanyUpdate) Mutation() *CompanyMutation {
 	return _u.mutation
 }
 
-// ClearEmployee clears all "employee" edges to the Employee entity.
-func (_u *CompanyUpdate) ClearEmployee() *CompanyUpdate {
-	_u.mutation.ClearEmployee()
+// ClearEmployees clears all "employees" edges to the Employee entity.
+func (_u *CompanyUpdate) ClearEmployees() *CompanyUpdate {
+	_u.mutation.ClearEmployees()
 	return _u
 }
 
-// RemoveEmployeeIDs removes the "employee" edge to Employee entities by IDs.
+// RemoveEmployeeIDs removes the "employees" edge to Employee entities by IDs.
 func (_u *CompanyUpdate) RemoveEmployeeIDs(ids ...uuid.UUID) *CompanyUpdate {
 	_u.mutation.RemoveEmployeeIDs(ids...)
 	return _u
 }
 
-// RemoveEmployee removes "employee" edges to Employee entities.
-func (_u *CompanyUpdate) RemoveEmployee(v ...*Employee) *CompanyUpdate {
+// RemoveEmployees removes "employees" edges to Employee entities.
+func (_u *CompanyUpdate) RemoveEmployees(v ...*Employee) *CompanyUpdate {
 	ids := make([]uuid.UUID, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveEmployeeIDs(ids...)
+}
+
+// ClearCostumers clears all "costumers" edges to the Costumer entity.
+func (_u *CompanyUpdate) ClearCostumers() *CompanyUpdate {
+	_u.mutation.ClearCostumers()
+	return _u
+}
+
+// RemoveCostumerIDs removes the "costumers" edge to Costumer entities by IDs.
+func (_u *CompanyUpdate) RemoveCostumerIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveCostumerIDs(ids...)
+	return _u
+}
+
+// RemoveCostumers removes "costumers" edges to Costumer entities.
+func (_u *CompanyUpdate) RemoveCostumers(v ...*Costumer) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCostumerIDs(ids...)
+}
+
+// ClearDeals clears all "deals" edges to the Deal entity.
+func (_u *CompanyUpdate) ClearDeals() *CompanyUpdate {
+	_u.mutation.ClearDeals()
+	return _u
+}
+
+// RemoveDealIDs removes the "deals" edge to Deal entities by IDs.
+func (_u *CompanyUpdate) RemoveDealIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveDealIDs(ids...)
+	return _u
+}
+
+// RemoveDeals removes "deals" edges to Deal entities.
+func (_u *CompanyUpdate) RemoveDeals(v ...*Deal) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDealIDs(ids...)
+}
+
+// ClearChats clears all "chats" edges to the Chat entity.
+func (_u *CompanyUpdate) ClearChats() *CompanyUpdate {
+	_u.mutation.ClearChats()
+	return _u
+}
+
+// RemoveChatIDs removes the "chats" edge to Chat entities by IDs.
+func (_u *CompanyUpdate) RemoveChatIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveChatIDs(ids...)
+	return _u
+}
+
+// RemoveChats removes "chats" edges to Chat entities.
+func (_u *CompanyUpdate) RemoveChats(v ...*Chat) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveChatIDs(ids...)
+}
+
+// ClearDepartments clears all "departments" edges to the Department entity.
+func (_u *CompanyUpdate) ClearDepartments() *CompanyUpdate {
+	_u.mutation.ClearDepartments()
+	return _u
+}
+
+// RemoveDepartmentIDs removes the "departments" edge to Department entities by IDs.
+func (_u *CompanyUpdate) RemoveDepartmentIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveDepartmentIDs(ids...)
+	return _u
+}
+
+// RemoveDepartments removes "departments" edges to Department entities.
+func (_u *CompanyUpdate) RemoveDepartments(v ...*Department) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDepartmentIDs(ids...)
+}
+
+// ClearPipelines clears all "pipelines" edges to the Pipeline entity.
+func (_u *CompanyUpdate) ClearPipelines() *CompanyUpdate {
+	_u.mutation.ClearPipelines()
+	return _u
+}
+
+// RemovePipelineIDs removes the "pipelines" edge to Pipeline entities by IDs.
+func (_u *CompanyUpdate) RemovePipelineIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemovePipelineIDs(ids...)
+	return _u
+}
+
+// RemovePipelines removes "pipelines" edges to Pipeline entities.
+func (_u *CompanyUpdate) RemovePipelines(v ...*Pipeline) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePipelineIDs(ids...)
+}
+
+// ClearCrmFields clears all "crmFields" edges to the CrmField entity.
+func (_u *CompanyUpdate) ClearCrmFields() *CompanyUpdate {
+	_u.mutation.ClearCrmFields()
+	return _u
+}
+
+// RemoveCrmFieldIDs removes the "crmFields" edge to CrmField entities by IDs.
+func (_u *CompanyUpdate) RemoveCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveCrmFieldIDs(ids...)
+	return _u
+}
+
+// RemoveCrmFields removes "crmFields" edges to CrmField entities.
+func (_u *CompanyUpdate) RemoveCrmFields(v ...*CrmField) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCrmFieldIDs(ids...)
+}
+
+// ClearDealCrmFields clears all "dealCrmFields" edges to the DealCrmField entity.
+func (_u *CompanyUpdate) ClearDealCrmFields() *CompanyUpdate {
+	_u.mutation.ClearDealCrmFields()
+	return _u
+}
+
+// RemoveDealCrmFieldIDs removes the "dealCrmFields" edge to DealCrmField entities by IDs.
+func (_u *CompanyUpdate) RemoveDealCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// RemoveDealCrmFields removes "dealCrmFields" edges to DealCrmField entities.
+func (_u *CompanyUpdate) RemoveDealCrmFields(v ...*DealCrmField) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDealCrmFieldIDs(ids...)
+}
+
+// ClearDropdownLists clears all "dropdownLists" edges to the DropdownList entity.
+func (_u *CompanyUpdate) ClearDropdownLists() *CompanyUpdate {
+	_u.mutation.ClearDropdownLists()
+	return _u
+}
+
+// RemoveDropdownListIDs removes the "dropdownLists" edge to DropdownList entities by IDs.
+func (_u *CompanyUpdate) RemoveDropdownListIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveDropdownListIDs(ids...)
+	return _u
+}
+
+// RemoveDropdownLists removes "dropdownLists" edges to DropdownList entities.
+func (_u *CompanyUpdate) RemoveDropdownLists(v ...*DropdownList) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDropdownListIDs(ids...)
+}
+
+// ClearEmployeeAuths clears all "employeeAuths" edges to the EmployeeAuth entity.
+func (_u *CompanyUpdate) ClearEmployeeAuths() *CompanyUpdate {
+	_u.mutation.ClearEmployeeAuths()
+	return _u
+}
+
+// RemoveEmployeeAuthIDs removes the "employeeAuths" edge to EmployeeAuth entities by IDs.
+func (_u *CompanyUpdate) RemoveEmployeeAuthIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveEmployeeAuthIDs(ids...)
+	return _u
+}
+
+// RemoveEmployeeAuths removes "employeeAuths" edges to EmployeeAuth entities.
+func (_u *CompanyUpdate) RemoveEmployeeAuths(v ...*EmployeeAuth) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveEmployeeAuthIDs(ids...)
+}
+
+// ClearFiles clears all "files" edges to the File entity.
+func (_u *CompanyUpdate) ClearFiles() *CompanyUpdate {
+	_u.mutation.ClearFiles()
+	return _u
+}
+
+// RemoveFileIDs removes the "files" edge to File entities by IDs.
+func (_u *CompanyUpdate) RemoveFileIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveFileIDs(ids...)
+	return _u
+}
+
+// RemoveFiles removes "files" edges to File entities.
+func (_u *CompanyUpdate) RemoveFiles(v ...*File) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFileIDs(ids...)
+}
+
+// ClearMessages clears all "messages" edges to the Message entity.
+func (_u *CompanyUpdate) ClearMessages() *CompanyUpdate {
+	_u.mutation.ClearMessages()
+	return _u
+}
+
+// RemoveMessageIDs removes the "messages" edge to Message entities by IDs.
+func (_u *CompanyUpdate) RemoveMessageIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveMessageIDs(ids...)
+	return _u
+}
+
+// RemoveMessages removes "messages" edges to Message entities.
+func (_u *CompanyUpdate) RemoveMessages(v ...*Message) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveMessageIDs(ids...)
+}
+
+// ClearQueues clears all "queues" edges to the Queue entity.
+func (_u *CompanyUpdate) ClearQueues() *CompanyUpdate {
+	_u.mutation.ClearQueues()
+	return _u
+}
+
+// RemoveQueueIDs removes the "queues" edge to Queue entities by IDs.
+func (_u *CompanyUpdate) RemoveQueueIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveQueueIDs(ids...)
+	return _u
+}
+
+// RemoveQueues removes "queues" edges to Queue entities.
+func (_u *CompanyUpdate) RemoveQueues(v ...*Queue) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveQueueIDs(ids...)
+}
+
+// ClearRbacs clears all "rbacs" edges to the Rbac entity.
+func (_u *CompanyUpdate) ClearRbacs() *CompanyUpdate {
+	_u.mutation.ClearRbacs()
+	return _u
+}
+
+// RemoveRbacIDs removes the "rbacs" edge to Rbac entities by IDs.
+func (_u *CompanyUpdate) RemoveRbacIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveRbacIDs(ids...)
+	return _u
+}
+
+// RemoveRbacs removes "rbacs" edges to Rbac entities.
+func (_u *CompanyUpdate) RemoveRbacs(v ...*Rbac) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRbacIDs(ids...)
+}
+
+// ClearStages clears all "stages" edges to the Stage entity.
+func (_u *CompanyUpdate) ClearStages() *CompanyUpdate {
+	_u.mutation.ClearStages()
+	return _u
+}
+
+// RemoveStageIDs removes the "stages" edge to Stage entities by IDs.
+func (_u *CompanyUpdate) RemoveStageIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveStageIDs(ids...)
+	return _u
+}
+
+// RemoveStages removes "stages" edges to Stage entities.
+func (_u *CompanyUpdate) RemoveStages(v ...*Stage) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveStageIDs(ids...)
+}
+
+// ClearTexts clears all "texts" edges to the Text entity.
+func (_u *CompanyUpdate) ClearTexts() *CompanyUpdate {
+	_u.mutation.ClearTexts()
+	return _u
+}
+
+// RemoveTextIDs removes the "texts" edge to Text entities by IDs.
+func (_u *CompanyUpdate) RemoveTextIDs(ids ...uuid.UUID) *CompanyUpdate {
+	_u.mutation.RemoveTextIDs(ids...)
+	return _u
+}
+
+// RemoveTexts removes "texts" edges to Text entities.
+func (_u *CompanyUpdate) RemoveTexts(v ...*Text) *CompanyUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveTextIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -155,12 +710,12 @@ func (_u *CompanyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(company.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.EmployeeCleared() {
+	if _u.mutation.EmployeesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
@@ -168,12 +723,12 @@ func (_u *CompanyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedEmployeeIDs(); len(nodes) > 0 && !_u.mutation.EmployeeCleared() {
+	if nodes := _u.mutation.RemovedEmployeesIDs(); len(nodes) > 0 && !_u.mutation.EmployeesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
@@ -184,15 +739,690 @@ func (_u *CompanyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.EmployeeIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.EmployeesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CostumersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCostumersIDs(); len(nodes) > 0 && !_u.mutation.CostumersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CostumersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DealsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDealsIDs(); len(nodes) > 0 && !_u.mutation.DealsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DealsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ChatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedChatsIDs(); len(nodes) > 0 && !_u.mutation.ChatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDepartmentsIDs(); len(nodes) > 0 && !_u.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PipelinesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPipelinesIDs(); len(nodes) > 0 && !_u.mutation.PipelinesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PipelinesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCrmFieldsIDs(); len(nodes) > 0 && !_u.mutation.CrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDealCrmFieldsIDs(); len(nodes) > 0 && !_u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DealCrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DropdownListsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDropdownListsIDs(); len(nodes) > 0 && !_u.mutation.DropdownListsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DropdownListsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.EmployeeAuthsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedEmployeeAuthsIDs(); len(nodes) > 0 && !_u.mutation.EmployeeAuthsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EmployeeAuthsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.FilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFilesIDs(); len(nodes) > 0 && !_u.mutation.FilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FilesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedMessagesIDs(); len(nodes) > 0 && !_u.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.QueuesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedQueuesIDs(); len(nodes) > 0 && !_u.mutation.QueuesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.QueuesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRbacsIDs(); len(nodes) > 0 && !_u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RbacsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.StagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedStagesIDs(); len(nodes) > 0 && !_u.mutation.StagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TextsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedTextsIDs(); len(nodes) > 0 && !_u.mutation.TextsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TextsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -240,14 +1470,14 @@ func (_u *CompanyUpdateOne) SetUpdatedAt(v time.Time) *CompanyUpdateOne {
 	return _u
 }
 
-// AddEmployeeIDs adds the "employee" edge to the Employee entity by IDs.
+// AddEmployeeIDs adds the "employees" edge to the Employee entity by IDs.
 func (_u *CompanyUpdateOne) AddEmployeeIDs(ids ...uuid.UUID) *CompanyUpdateOne {
 	_u.mutation.AddEmployeeIDs(ids...)
 	return _u
 }
 
-// AddEmployee adds the "employee" edges to the Employee entity.
-func (_u *CompanyUpdateOne) AddEmployee(v ...*Employee) *CompanyUpdateOne {
+// AddEmployees adds the "employees" edges to the Employee entity.
+func (_u *CompanyUpdateOne) AddEmployees(v ...*Employee) *CompanyUpdateOne {
 	ids := make([]uuid.UUID, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -255,30 +1485,570 @@ func (_u *CompanyUpdateOne) AddEmployee(v ...*Employee) *CompanyUpdateOne {
 	return _u.AddEmployeeIDs(ids...)
 }
 
+// AddCostumerIDs adds the "costumers" edge to the Costumer entity by IDs.
+func (_u *CompanyUpdateOne) AddCostumerIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddCostumerIDs(ids...)
+	return _u
+}
+
+// AddCostumers adds the "costumers" edges to the Costumer entity.
+func (_u *CompanyUpdateOne) AddCostumers(v ...*Costumer) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCostumerIDs(ids...)
+}
+
+// AddDealIDs adds the "deals" edge to the Deal entity by IDs.
+func (_u *CompanyUpdateOne) AddDealIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddDealIDs(ids...)
+	return _u
+}
+
+// AddDeals adds the "deals" edges to the Deal entity.
+func (_u *CompanyUpdateOne) AddDeals(v ...*Deal) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDealIDs(ids...)
+}
+
+// AddChatIDs adds the "chats" edge to the Chat entity by IDs.
+func (_u *CompanyUpdateOne) AddChatIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddChatIDs(ids...)
+	return _u
+}
+
+// AddChats adds the "chats" edges to the Chat entity.
+func (_u *CompanyUpdateOne) AddChats(v ...*Chat) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddChatIDs(ids...)
+}
+
+// AddDepartmentIDs adds the "departments" edge to the Department entity by IDs.
+func (_u *CompanyUpdateOne) AddDepartmentIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddDepartmentIDs(ids...)
+	return _u
+}
+
+// AddDepartments adds the "departments" edges to the Department entity.
+func (_u *CompanyUpdateOne) AddDepartments(v ...*Department) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDepartmentIDs(ids...)
+}
+
+// AddPipelineIDs adds the "pipelines" edge to the Pipeline entity by IDs.
+func (_u *CompanyUpdateOne) AddPipelineIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddPipelineIDs(ids...)
+	return _u
+}
+
+// AddPipelines adds the "pipelines" edges to the Pipeline entity.
+func (_u *CompanyUpdateOne) AddPipelines(v ...*Pipeline) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPipelineIDs(ids...)
+}
+
+// AddCrmFieldIDs adds the "crmFields" edge to the CrmField entity by IDs.
+func (_u *CompanyUpdateOne) AddCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddCrmFieldIDs(ids...)
+	return _u
+}
+
+// AddCrmFields adds the "crmFields" edges to the CrmField entity.
+func (_u *CompanyUpdateOne) AddCrmFields(v ...*CrmField) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCrmFieldIDs(ids...)
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (_u *CompanyUpdateOne) AddDealCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// AddDealCrmFields adds the "dealCrmFields" edges to the DealCrmField entity.
+func (_u *CompanyUpdateOne) AddDealCrmFields(v ...*DealCrmField) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDealCrmFieldIDs(ids...)
+}
+
+// AddDropdownListIDs adds the "dropdownLists" edge to the DropdownList entity by IDs.
+func (_u *CompanyUpdateOne) AddDropdownListIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddDropdownListIDs(ids...)
+	return _u
+}
+
+// AddDropdownLists adds the "dropdownLists" edges to the DropdownList entity.
+func (_u *CompanyUpdateOne) AddDropdownLists(v ...*DropdownList) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDropdownListIDs(ids...)
+}
+
+// AddEmployeeAuthIDs adds the "employeeAuths" edge to the EmployeeAuth entity by IDs.
+func (_u *CompanyUpdateOne) AddEmployeeAuthIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddEmployeeAuthIDs(ids...)
+	return _u
+}
+
+// AddEmployeeAuths adds the "employeeAuths" edges to the EmployeeAuth entity.
+func (_u *CompanyUpdateOne) AddEmployeeAuths(v ...*EmployeeAuth) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddEmployeeAuthIDs(ids...)
+}
+
+// AddFileIDs adds the "files" edge to the File entity by IDs.
+func (_u *CompanyUpdateOne) AddFileIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddFileIDs(ids...)
+	return _u
+}
+
+// AddFiles adds the "files" edges to the File entity.
+func (_u *CompanyUpdateOne) AddFiles(v ...*File) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFileIDs(ids...)
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (_u *CompanyUpdateOne) AddMessageIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddMessageIDs(ids...)
+	return _u
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (_u *CompanyUpdateOne) AddMessages(v ...*Message) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddMessageIDs(ids...)
+}
+
+// AddQueueIDs adds the "queues" edge to the Queue entity by IDs.
+func (_u *CompanyUpdateOne) AddQueueIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddQueueIDs(ids...)
+	return _u
+}
+
+// AddQueues adds the "queues" edges to the Queue entity.
+func (_u *CompanyUpdateOne) AddQueues(v ...*Queue) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddQueueIDs(ids...)
+}
+
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by IDs.
+func (_u *CompanyUpdateOne) AddRbacIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddRbacIDs(ids...)
+	return _u
+}
+
+// AddRbacs adds the "rbacs" edges to the Rbac entity.
+func (_u *CompanyUpdateOne) AddRbacs(v ...*Rbac) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRbacIDs(ids...)
+}
+
+// AddStageIDs adds the "stages" edge to the Stage entity by IDs.
+func (_u *CompanyUpdateOne) AddStageIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddStageIDs(ids...)
+	return _u
+}
+
+// AddStages adds the "stages" edges to the Stage entity.
+func (_u *CompanyUpdateOne) AddStages(v ...*Stage) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddStageIDs(ids...)
+}
+
+// AddTextIDs adds the "texts" edge to the Text entity by IDs.
+func (_u *CompanyUpdateOne) AddTextIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.AddTextIDs(ids...)
+	return _u
+}
+
+// AddTexts adds the "texts" edges to the Text entity.
+func (_u *CompanyUpdateOne) AddTexts(v ...*Text) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddTextIDs(ids...)
+}
+
 // Mutation returns the CompanyMutation object of the builder.
 func (_u *CompanyUpdateOne) Mutation() *CompanyMutation {
 	return _u.mutation
 }
 
-// ClearEmployee clears all "employee" edges to the Employee entity.
-func (_u *CompanyUpdateOne) ClearEmployee() *CompanyUpdateOne {
-	_u.mutation.ClearEmployee()
+// ClearEmployees clears all "employees" edges to the Employee entity.
+func (_u *CompanyUpdateOne) ClearEmployees() *CompanyUpdateOne {
+	_u.mutation.ClearEmployees()
 	return _u
 }
 
-// RemoveEmployeeIDs removes the "employee" edge to Employee entities by IDs.
+// RemoveEmployeeIDs removes the "employees" edge to Employee entities by IDs.
 func (_u *CompanyUpdateOne) RemoveEmployeeIDs(ids ...uuid.UUID) *CompanyUpdateOne {
 	_u.mutation.RemoveEmployeeIDs(ids...)
 	return _u
 }
 
-// RemoveEmployee removes "employee" edges to Employee entities.
-func (_u *CompanyUpdateOne) RemoveEmployee(v ...*Employee) *CompanyUpdateOne {
+// RemoveEmployees removes "employees" edges to Employee entities.
+func (_u *CompanyUpdateOne) RemoveEmployees(v ...*Employee) *CompanyUpdateOne {
 	ids := make([]uuid.UUID, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveEmployeeIDs(ids...)
+}
+
+// ClearCostumers clears all "costumers" edges to the Costumer entity.
+func (_u *CompanyUpdateOne) ClearCostumers() *CompanyUpdateOne {
+	_u.mutation.ClearCostumers()
+	return _u
+}
+
+// RemoveCostumerIDs removes the "costumers" edge to Costumer entities by IDs.
+func (_u *CompanyUpdateOne) RemoveCostumerIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveCostumerIDs(ids...)
+	return _u
+}
+
+// RemoveCostumers removes "costumers" edges to Costumer entities.
+func (_u *CompanyUpdateOne) RemoveCostumers(v ...*Costumer) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCostumerIDs(ids...)
+}
+
+// ClearDeals clears all "deals" edges to the Deal entity.
+func (_u *CompanyUpdateOne) ClearDeals() *CompanyUpdateOne {
+	_u.mutation.ClearDeals()
+	return _u
+}
+
+// RemoveDealIDs removes the "deals" edge to Deal entities by IDs.
+func (_u *CompanyUpdateOne) RemoveDealIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveDealIDs(ids...)
+	return _u
+}
+
+// RemoveDeals removes "deals" edges to Deal entities.
+func (_u *CompanyUpdateOne) RemoveDeals(v ...*Deal) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDealIDs(ids...)
+}
+
+// ClearChats clears all "chats" edges to the Chat entity.
+func (_u *CompanyUpdateOne) ClearChats() *CompanyUpdateOne {
+	_u.mutation.ClearChats()
+	return _u
+}
+
+// RemoveChatIDs removes the "chats" edge to Chat entities by IDs.
+func (_u *CompanyUpdateOne) RemoveChatIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveChatIDs(ids...)
+	return _u
+}
+
+// RemoveChats removes "chats" edges to Chat entities.
+func (_u *CompanyUpdateOne) RemoveChats(v ...*Chat) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveChatIDs(ids...)
+}
+
+// ClearDepartments clears all "departments" edges to the Department entity.
+func (_u *CompanyUpdateOne) ClearDepartments() *CompanyUpdateOne {
+	_u.mutation.ClearDepartments()
+	return _u
+}
+
+// RemoveDepartmentIDs removes the "departments" edge to Department entities by IDs.
+func (_u *CompanyUpdateOne) RemoveDepartmentIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveDepartmentIDs(ids...)
+	return _u
+}
+
+// RemoveDepartments removes "departments" edges to Department entities.
+func (_u *CompanyUpdateOne) RemoveDepartments(v ...*Department) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDepartmentIDs(ids...)
+}
+
+// ClearPipelines clears all "pipelines" edges to the Pipeline entity.
+func (_u *CompanyUpdateOne) ClearPipelines() *CompanyUpdateOne {
+	_u.mutation.ClearPipelines()
+	return _u
+}
+
+// RemovePipelineIDs removes the "pipelines" edge to Pipeline entities by IDs.
+func (_u *CompanyUpdateOne) RemovePipelineIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemovePipelineIDs(ids...)
+	return _u
+}
+
+// RemovePipelines removes "pipelines" edges to Pipeline entities.
+func (_u *CompanyUpdateOne) RemovePipelines(v ...*Pipeline) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePipelineIDs(ids...)
+}
+
+// ClearCrmFields clears all "crmFields" edges to the CrmField entity.
+func (_u *CompanyUpdateOne) ClearCrmFields() *CompanyUpdateOne {
+	_u.mutation.ClearCrmFields()
+	return _u
+}
+
+// RemoveCrmFieldIDs removes the "crmFields" edge to CrmField entities by IDs.
+func (_u *CompanyUpdateOne) RemoveCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveCrmFieldIDs(ids...)
+	return _u
+}
+
+// RemoveCrmFields removes "crmFields" edges to CrmField entities.
+func (_u *CompanyUpdateOne) RemoveCrmFields(v ...*CrmField) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCrmFieldIDs(ids...)
+}
+
+// ClearDealCrmFields clears all "dealCrmFields" edges to the DealCrmField entity.
+func (_u *CompanyUpdateOne) ClearDealCrmFields() *CompanyUpdateOne {
+	_u.mutation.ClearDealCrmFields()
+	return _u
+}
+
+// RemoveDealCrmFieldIDs removes the "dealCrmFields" edge to DealCrmField entities by IDs.
+func (_u *CompanyUpdateOne) RemoveDealCrmFieldIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveDealCrmFieldIDs(ids...)
+	return _u
+}
+
+// RemoveDealCrmFields removes "dealCrmFields" edges to DealCrmField entities.
+func (_u *CompanyUpdateOne) RemoveDealCrmFields(v ...*DealCrmField) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDealCrmFieldIDs(ids...)
+}
+
+// ClearDropdownLists clears all "dropdownLists" edges to the DropdownList entity.
+func (_u *CompanyUpdateOne) ClearDropdownLists() *CompanyUpdateOne {
+	_u.mutation.ClearDropdownLists()
+	return _u
+}
+
+// RemoveDropdownListIDs removes the "dropdownLists" edge to DropdownList entities by IDs.
+func (_u *CompanyUpdateOne) RemoveDropdownListIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveDropdownListIDs(ids...)
+	return _u
+}
+
+// RemoveDropdownLists removes "dropdownLists" edges to DropdownList entities.
+func (_u *CompanyUpdateOne) RemoveDropdownLists(v ...*DropdownList) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDropdownListIDs(ids...)
+}
+
+// ClearEmployeeAuths clears all "employeeAuths" edges to the EmployeeAuth entity.
+func (_u *CompanyUpdateOne) ClearEmployeeAuths() *CompanyUpdateOne {
+	_u.mutation.ClearEmployeeAuths()
+	return _u
+}
+
+// RemoveEmployeeAuthIDs removes the "employeeAuths" edge to EmployeeAuth entities by IDs.
+func (_u *CompanyUpdateOne) RemoveEmployeeAuthIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveEmployeeAuthIDs(ids...)
+	return _u
+}
+
+// RemoveEmployeeAuths removes "employeeAuths" edges to EmployeeAuth entities.
+func (_u *CompanyUpdateOne) RemoveEmployeeAuths(v ...*EmployeeAuth) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveEmployeeAuthIDs(ids...)
+}
+
+// ClearFiles clears all "files" edges to the File entity.
+func (_u *CompanyUpdateOne) ClearFiles() *CompanyUpdateOne {
+	_u.mutation.ClearFiles()
+	return _u
+}
+
+// RemoveFileIDs removes the "files" edge to File entities by IDs.
+func (_u *CompanyUpdateOne) RemoveFileIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveFileIDs(ids...)
+	return _u
+}
+
+// RemoveFiles removes "files" edges to File entities.
+func (_u *CompanyUpdateOne) RemoveFiles(v ...*File) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFileIDs(ids...)
+}
+
+// ClearMessages clears all "messages" edges to the Message entity.
+func (_u *CompanyUpdateOne) ClearMessages() *CompanyUpdateOne {
+	_u.mutation.ClearMessages()
+	return _u
+}
+
+// RemoveMessageIDs removes the "messages" edge to Message entities by IDs.
+func (_u *CompanyUpdateOne) RemoveMessageIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveMessageIDs(ids...)
+	return _u
+}
+
+// RemoveMessages removes "messages" edges to Message entities.
+func (_u *CompanyUpdateOne) RemoveMessages(v ...*Message) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveMessageIDs(ids...)
+}
+
+// ClearQueues clears all "queues" edges to the Queue entity.
+func (_u *CompanyUpdateOne) ClearQueues() *CompanyUpdateOne {
+	_u.mutation.ClearQueues()
+	return _u
+}
+
+// RemoveQueueIDs removes the "queues" edge to Queue entities by IDs.
+func (_u *CompanyUpdateOne) RemoveQueueIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveQueueIDs(ids...)
+	return _u
+}
+
+// RemoveQueues removes "queues" edges to Queue entities.
+func (_u *CompanyUpdateOne) RemoveQueues(v ...*Queue) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveQueueIDs(ids...)
+}
+
+// ClearRbacs clears all "rbacs" edges to the Rbac entity.
+func (_u *CompanyUpdateOne) ClearRbacs() *CompanyUpdateOne {
+	_u.mutation.ClearRbacs()
+	return _u
+}
+
+// RemoveRbacIDs removes the "rbacs" edge to Rbac entities by IDs.
+func (_u *CompanyUpdateOne) RemoveRbacIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveRbacIDs(ids...)
+	return _u
+}
+
+// RemoveRbacs removes "rbacs" edges to Rbac entities.
+func (_u *CompanyUpdateOne) RemoveRbacs(v ...*Rbac) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRbacIDs(ids...)
+}
+
+// ClearStages clears all "stages" edges to the Stage entity.
+func (_u *CompanyUpdateOne) ClearStages() *CompanyUpdateOne {
+	_u.mutation.ClearStages()
+	return _u
+}
+
+// RemoveStageIDs removes the "stages" edge to Stage entities by IDs.
+func (_u *CompanyUpdateOne) RemoveStageIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveStageIDs(ids...)
+	return _u
+}
+
+// RemoveStages removes "stages" edges to Stage entities.
+func (_u *CompanyUpdateOne) RemoveStages(v ...*Stage) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveStageIDs(ids...)
+}
+
+// ClearTexts clears all "texts" edges to the Text entity.
+func (_u *CompanyUpdateOne) ClearTexts() *CompanyUpdateOne {
+	_u.mutation.ClearTexts()
+	return _u
+}
+
+// RemoveTextIDs removes the "texts" edge to Text entities by IDs.
+func (_u *CompanyUpdateOne) RemoveTextIDs(ids ...uuid.UUID) *CompanyUpdateOne {
+	_u.mutation.RemoveTextIDs(ids...)
+	return _u
+}
+
+// RemoveTexts removes "texts" edges to Text entities.
+func (_u *CompanyUpdateOne) RemoveTexts(v ...*Text) *CompanyUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveTextIDs(ids...)
 }
 
 // Where appends a list predicates to the CompanyUpdate builder.
@@ -375,12 +2145,12 @@ func (_u *CompanyUpdateOne) sqlSave(ctx context.Context) (_node *Company, err er
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(company.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.EmployeeCleared() {
+	if _u.mutation.EmployeesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
@@ -388,12 +2158,12 @@ func (_u *CompanyUpdateOne) sqlSave(ctx context.Context) (_node *Company, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedEmployeeIDs(); len(nodes) > 0 && !_u.mutation.EmployeeCleared() {
+	if nodes := _u.mutation.RemovedEmployeesIDs(); len(nodes) > 0 && !_u.mutation.EmployeesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
@@ -404,15 +2174,690 @@ func (_u *CompanyUpdateOne) sqlSave(ctx context.Context) (_node *Company, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.EmployeeIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.EmployeesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   company.EmployeeTable,
-			Columns: []string{company.EmployeeColumn},
+			Inverse: false,
+			Table:   company.EmployeesTable,
+			Columns: []string{company.EmployeesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(employee.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CostumersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCostumersIDs(); len(nodes) > 0 && !_u.mutation.CostumersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CostumersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CostumersTable,
+			Columns: []string{company.CostumersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(costumer.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DealsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDealsIDs(); len(nodes) > 0 && !_u.mutation.DealsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DealsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealsTable,
+			Columns: []string{company.DealsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deal.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ChatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedChatsIDs(); len(nodes) > 0 && !_u.mutation.ChatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.ChatsTable,
+			Columns: []string{company.ChatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chat.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDepartmentsIDs(); len(nodes) > 0 && !_u.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DepartmentsTable,
+			Columns: []string{company.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PipelinesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPipelinesIDs(); len(nodes) > 0 && !_u.mutation.PipelinesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PipelinesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.PipelinesTable,
+			Columns: []string{company.PipelinesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pipeline.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCrmFieldsIDs(); len(nodes) > 0 && !_u.mutation.CrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.CrmFieldsTable,
+			Columns: []string{company.CrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDealCrmFieldsIDs(); len(nodes) > 0 && !_u.mutation.DealCrmFieldsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DealCrmFieldsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DealCrmFieldsTable,
+			Columns: []string{company.DealCrmFieldsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dealcrmfield.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DropdownListsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDropdownListsIDs(); len(nodes) > 0 && !_u.mutation.DropdownListsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DropdownListsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.DropdownListsTable,
+			Columns: []string{company.DropdownListsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dropdownlist.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.EmployeeAuthsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedEmployeeAuthsIDs(); len(nodes) > 0 && !_u.mutation.EmployeeAuthsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EmployeeAuthsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.EmployeeAuthsTable,
+			Columns: []string{company.EmployeeAuthsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(employeeauth.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.FilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFilesIDs(); len(nodes) > 0 && !_u.mutation.FilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FilesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.FilesTable,
+			Columns: []string{company.FilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedMessagesIDs(); len(nodes) > 0 && !_u.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.MessagesTable,
+			Columns: []string{company.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(message.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.QueuesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedQueuesIDs(); len(nodes) > 0 && !_u.mutation.QueuesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.QueuesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.QueuesTable,
+			Columns: []string{company.QueuesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(queue.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRbacsIDs(); len(nodes) > 0 && !_u.mutation.RbacsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RbacsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.RbacsTable,
+			Columns: []string{company.RbacsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rbac.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.StagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedStagesIDs(); len(nodes) > 0 && !_u.mutation.StagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.StagesTable,
+			Columns: []string{company.StagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(stage.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TextsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedTextsIDs(); len(nodes) > 0 && !_u.mutation.TextsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TextsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   company.TextsTable,
+			Columns: []string{company.TextsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(text.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

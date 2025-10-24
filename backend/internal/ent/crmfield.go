@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/google/uuid"
 )
@@ -28,6 +29,8 @@ type CrmField struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CrmFieldQuery when eager-loading is set.
 	Edges        CrmFieldEdges `json:"edges"`
@@ -40,11 +43,13 @@ type CrmFieldEdges struct {
 	DropdownList []*DropdownList `json:"dropdownList,omitempty"`
 	// DealCrmField holds the value of the dealCrmField edge.
 	DealCrmField []*DealCrmField `json:"dealCrmField,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 
 	namedDropdownList map[string][]*DropdownList
 	namedDealCrmField map[string][]*DealCrmField
@@ -68,6 +73,17 @@ func (e CrmFieldEdges) DealCrmFieldOrErr() ([]*DealCrmField, error) {
 	return nil, &NotLoadedError{edge: "dealCrmField"}
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CrmFieldEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*CrmField) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -77,7 +93,7 @@ func (*CrmField) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case crmfield.FieldCreatedAt, crmfield.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case crmfield.FieldID:
+		case crmfield.FieldID, crmfield.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -130,6 +146,12 @@ func (_m *CrmField) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case crmfield.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -151,6 +173,11 @@ func (_m *CrmField) QueryDropdownList() *DropdownListQuery {
 // QueryDealCrmField queries the "dealCrmField" edge of the CrmField entity.
 func (_m *CrmField) QueryDealCrmField() *DealCrmFieldQuery {
 	return NewCrmFieldClient(_m.config).QueryDealCrmField(_m)
+}
+
+// QueryTenant queries the "tenant" edge of the CrmField entity.
+func (_m *CrmField) QueryTenant() *CompanyQuery {
+	return NewCrmFieldClient(_m.config).QueryTenant(_m)
 }
 
 // Update returns a builder for updating this CrmField.
@@ -190,6 +217,9 @@ func (_m *CrmField) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

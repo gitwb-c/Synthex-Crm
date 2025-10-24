@@ -80,6 +80,8 @@ type ChatMutation struct {
 	messages         map[uuid.UUID]struct{}
 	removedmessages  map[uuid.UUID]struct{}
 	clearedmessages  bool
+	tenant           *uuid.UUID
+	clearedtenant    bool
 	done             bool
 	oldValue         func(context.Context) (*Chat, error)
 	predicates       []predicate.Chat
@@ -369,6 +371,55 @@ func (m *ChatMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *ChatMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *ChatMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Chat entity.
+// If the Chat object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ChatMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *ChatMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[chat.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *ChatMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[chat.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *ChatMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, chat.FieldTenantId)
+}
+
 // SetDealID sets the "deal" edge to the Deal entity by id.
 func (m *ChatMutation) SetDealID(id uuid.UUID) {
 	m.deal = &id
@@ -516,6 +567,46 @@ func (m *ChatMutation) ResetMessages() {
 	m.removedmessages = nil
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *ChatMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *ChatMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[chat.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *ChatMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *ChatMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *ChatMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *ChatMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the ChatMutation builder.
 func (m *ChatMutation) Where(ps ...predicate.Chat) {
 	m.predicates = append(m.predicates, ps...)
@@ -550,7 +641,7 @@ func (m *ChatMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ChatMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.title != nil {
 		fields = append(fields, chat.FieldTitle)
 	}
@@ -565,6 +656,9 @@ func (m *ChatMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, chat.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, chat.FieldTenantId)
 	}
 	return fields
 }
@@ -584,6 +678,8 @@ func (m *ChatMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case chat.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case chat.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -603,6 +699,8 @@ func (m *ChatMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCreatedAt(ctx)
 	case chat.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case chat.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Chat field %s", name)
 }
@@ -647,6 +745,13 @@ func (m *ChatMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case chat.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Chat field %s", name)
 }
@@ -676,7 +781,11 @@ func (m *ChatMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ChatMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(chat.FieldTenantId) {
+		fields = append(fields, chat.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -689,6 +798,11 @@ func (m *ChatMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ChatMutation) ClearField(name string) error {
+	switch name {
+	case chat.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Chat nullable field %s", name)
 }
 
@@ -711,13 +825,16 @@ func (m *ChatMutation) ResetField(name string) error {
 	case chat.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case chat.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Chat field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ChatMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.deal != nil {
 		edges = append(edges, chat.EdgeDeal)
 	}
@@ -726,6 +843,9 @@ func (m *ChatMutation) AddedEdges() []string {
 	}
 	if m.messages != nil {
 		edges = append(edges, chat.EdgeMessages)
+	}
+	if m.tenant != nil {
+		edges = append(edges, chat.EdgeTenant)
 	}
 	return edges
 }
@@ -750,13 +870,17 @@ func (m *ChatMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case chat.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ChatMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedemployees != nil {
 		edges = append(edges, chat.EdgeEmployees)
 	}
@@ -788,7 +912,7 @@ func (m *ChatMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ChatMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.cleareddeal {
 		edges = append(edges, chat.EdgeDeal)
 	}
@@ -797,6 +921,9 @@ func (m *ChatMutation) ClearedEdges() []string {
 	}
 	if m.clearedmessages {
 		edges = append(edges, chat.EdgeMessages)
+	}
+	if m.clearedtenant {
+		edges = append(edges, chat.EdgeTenant)
 	}
 	return edges
 }
@@ -811,6 +938,8 @@ func (m *ChatMutation) EdgeCleared(name string) bool {
 		return m.clearedemployees
 	case chat.EdgeMessages:
 		return m.clearedmessages
+	case chat.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -821,6 +950,9 @@ func (m *ChatMutation) ClearEdge(name string) error {
 	switch name {
 	case chat.EdgeDeal:
 		m.ClearDeal()
+		return nil
+	case chat.EdgeTenant:
+		m.ClearTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown Chat unique edge %s", name)
@@ -839,6 +971,9 @@ func (m *ChatMutation) ResetEdge(name string) error {
 	case chat.EdgeMessages:
 		m.ResetMessages()
 		return nil
+	case chat.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Chat edge %s", name)
 }
@@ -846,19 +981,64 @@ func (m *ChatMutation) ResetEdge(name string) error {
 // CompanyMutation represents an operation that mutates the Company nodes in the graph.
 type CompanyMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uuid.UUID
-	name            *string
-	createdAt       *time.Time
-	updatedAt       *time.Time
-	clearedFields   map[string]struct{}
-	employee        map[uuid.UUID]struct{}
-	removedemployee map[uuid.UUID]struct{}
-	clearedemployee bool
-	done            bool
-	oldValue        func(context.Context) (*Company, error)
-	predicates      []predicate.Company
+	op                   Op
+	typ                  string
+	id                   *uuid.UUID
+	name                 *string
+	createdAt            *time.Time
+	updatedAt            *time.Time
+	clearedFields        map[string]struct{}
+	employees            map[uuid.UUID]struct{}
+	removedemployees     map[uuid.UUID]struct{}
+	clearedemployees     bool
+	costumers            map[uuid.UUID]struct{}
+	removedcostumers     map[uuid.UUID]struct{}
+	clearedcostumers     bool
+	deals                map[uuid.UUID]struct{}
+	removeddeals         map[uuid.UUID]struct{}
+	cleareddeals         bool
+	chats                map[uuid.UUID]struct{}
+	removedchats         map[uuid.UUID]struct{}
+	clearedchats         bool
+	departments          map[uuid.UUID]struct{}
+	removeddepartments   map[uuid.UUID]struct{}
+	cleareddepartments   bool
+	pipelines            map[uuid.UUID]struct{}
+	removedpipelines     map[uuid.UUID]struct{}
+	clearedpipelines     bool
+	crmFields            map[uuid.UUID]struct{}
+	removedcrmFields     map[uuid.UUID]struct{}
+	clearedcrmFields     bool
+	dealCrmFields        map[uuid.UUID]struct{}
+	removeddealCrmFields map[uuid.UUID]struct{}
+	cleareddealCrmFields bool
+	dropdownLists        map[uuid.UUID]struct{}
+	removeddropdownLists map[uuid.UUID]struct{}
+	cleareddropdownLists bool
+	employeeAuths        map[uuid.UUID]struct{}
+	removedemployeeAuths map[uuid.UUID]struct{}
+	clearedemployeeAuths bool
+	files                map[uuid.UUID]struct{}
+	removedfiles         map[uuid.UUID]struct{}
+	clearedfiles         bool
+	messages             map[uuid.UUID]struct{}
+	removedmessages      map[uuid.UUID]struct{}
+	clearedmessages      bool
+	queues               map[uuid.UUID]struct{}
+	removedqueues        map[uuid.UUID]struct{}
+	clearedqueues        bool
+	rbacs                map[uuid.UUID]struct{}
+	removedrbacs         map[uuid.UUID]struct{}
+	clearedrbacs         bool
+	stages               map[uuid.UUID]struct{}
+	removedstages        map[uuid.UUID]struct{}
+	clearedstages        bool
+	texts                map[uuid.UUID]struct{}
+	removedtexts         map[uuid.UUID]struct{}
+	clearedtexts         bool
+	done                 bool
+	oldValue             func(context.Context) (*Company, error)
+	predicates           []predicate.Company
 }
 
 var _ ent.Mutation = (*CompanyMutation)(nil)
@@ -1073,58 +1253,868 @@ func (m *CompanyMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// AddEmployeeIDs adds the "employee" edge to the Employee entity by ids.
+// AddEmployeeIDs adds the "employees" edge to the Employee entity by ids.
 func (m *CompanyMutation) AddEmployeeIDs(ids ...uuid.UUID) {
-	if m.employee == nil {
-		m.employee = make(map[uuid.UUID]struct{})
+	if m.employees == nil {
+		m.employees = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
-		m.employee[ids[i]] = struct{}{}
+		m.employees[ids[i]] = struct{}{}
 	}
 }
 
-// ClearEmployee clears the "employee" edge to the Employee entity.
-func (m *CompanyMutation) ClearEmployee() {
-	m.clearedemployee = true
+// ClearEmployees clears the "employees" edge to the Employee entity.
+func (m *CompanyMutation) ClearEmployees() {
+	m.clearedemployees = true
 }
 
-// EmployeeCleared reports if the "employee" edge to the Employee entity was cleared.
-func (m *CompanyMutation) EmployeeCleared() bool {
-	return m.clearedemployee
+// EmployeesCleared reports if the "employees" edge to the Employee entity was cleared.
+func (m *CompanyMutation) EmployeesCleared() bool {
+	return m.clearedemployees
 }
 
-// RemoveEmployeeIDs removes the "employee" edge to the Employee entity by IDs.
+// RemoveEmployeeIDs removes the "employees" edge to the Employee entity by IDs.
 func (m *CompanyMutation) RemoveEmployeeIDs(ids ...uuid.UUID) {
-	if m.removedemployee == nil {
-		m.removedemployee = make(map[uuid.UUID]struct{})
+	if m.removedemployees == nil {
+		m.removedemployees = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
-		delete(m.employee, ids[i])
-		m.removedemployee[ids[i]] = struct{}{}
+		delete(m.employees, ids[i])
+		m.removedemployees[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedEmployee returns the removed IDs of the "employee" edge to the Employee entity.
-func (m *CompanyMutation) RemovedEmployeeIDs() (ids []uuid.UUID) {
-	for id := range m.removedemployee {
+// RemovedEmployees returns the removed IDs of the "employees" edge to the Employee entity.
+func (m *CompanyMutation) RemovedEmployeesIDs() (ids []uuid.UUID) {
+	for id := range m.removedemployees {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// EmployeeIDs returns the "employee" edge IDs in the mutation.
-func (m *CompanyMutation) EmployeeIDs() (ids []uuid.UUID) {
-	for id := range m.employee {
+// EmployeesIDs returns the "employees" edge IDs in the mutation.
+func (m *CompanyMutation) EmployeesIDs() (ids []uuid.UUID) {
+	for id := range m.employees {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetEmployee resets all changes to the "employee" edge.
-func (m *CompanyMutation) ResetEmployee() {
-	m.employee = nil
-	m.clearedemployee = false
-	m.removedemployee = nil
+// ResetEmployees resets all changes to the "employees" edge.
+func (m *CompanyMutation) ResetEmployees() {
+	m.employees = nil
+	m.clearedemployees = false
+	m.removedemployees = nil
+}
+
+// AddCostumerIDs adds the "costumers" edge to the Costumer entity by ids.
+func (m *CompanyMutation) AddCostumerIDs(ids ...uuid.UUID) {
+	if m.costumers == nil {
+		m.costumers = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.costumers[ids[i]] = struct{}{}
+	}
+}
+
+// ClearCostumers clears the "costumers" edge to the Costumer entity.
+func (m *CompanyMutation) ClearCostumers() {
+	m.clearedcostumers = true
+}
+
+// CostumersCleared reports if the "costumers" edge to the Costumer entity was cleared.
+func (m *CompanyMutation) CostumersCleared() bool {
+	return m.clearedcostumers
+}
+
+// RemoveCostumerIDs removes the "costumers" edge to the Costumer entity by IDs.
+func (m *CompanyMutation) RemoveCostumerIDs(ids ...uuid.UUID) {
+	if m.removedcostumers == nil {
+		m.removedcostumers = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.costumers, ids[i])
+		m.removedcostumers[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCostumers returns the removed IDs of the "costumers" edge to the Costumer entity.
+func (m *CompanyMutation) RemovedCostumersIDs() (ids []uuid.UUID) {
+	for id := range m.removedcostumers {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CostumersIDs returns the "costumers" edge IDs in the mutation.
+func (m *CompanyMutation) CostumersIDs() (ids []uuid.UUID) {
+	for id := range m.costumers {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCostumers resets all changes to the "costumers" edge.
+func (m *CompanyMutation) ResetCostumers() {
+	m.costumers = nil
+	m.clearedcostumers = false
+	m.removedcostumers = nil
+}
+
+// AddDealIDs adds the "deals" edge to the Deal entity by ids.
+func (m *CompanyMutation) AddDealIDs(ids ...uuid.UUID) {
+	if m.deals == nil {
+		m.deals = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.deals[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDeals clears the "deals" edge to the Deal entity.
+func (m *CompanyMutation) ClearDeals() {
+	m.cleareddeals = true
+}
+
+// DealsCleared reports if the "deals" edge to the Deal entity was cleared.
+func (m *CompanyMutation) DealsCleared() bool {
+	return m.cleareddeals
+}
+
+// RemoveDealIDs removes the "deals" edge to the Deal entity by IDs.
+func (m *CompanyMutation) RemoveDealIDs(ids ...uuid.UUID) {
+	if m.removeddeals == nil {
+		m.removeddeals = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.deals, ids[i])
+		m.removeddeals[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDeals returns the removed IDs of the "deals" edge to the Deal entity.
+func (m *CompanyMutation) RemovedDealsIDs() (ids []uuid.UUID) {
+	for id := range m.removeddeals {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DealsIDs returns the "deals" edge IDs in the mutation.
+func (m *CompanyMutation) DealsIDs() (ids []uuid.UUID) {
+	for id := range m.deals {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDeals resets all changes to the "deals" edge.
+func (m *CompanyMutation) ResetDeals() {
+	m.deals = nil
+	m.cleareddeals = false
+	m.removeddeals = nil
+}
+
+// AddChatIDs adds the "chats" edge to the Chat entity by ids.
+func (m *CompanyMutation) AddChatIDs(ids ...uuid.UUID) {
+	if m.chats == nil {
+		m.chats = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.chats[ids[i]] = struct{}{}
+	}
+}
+
+// ClearChats clears the "chats" edge to the Chat entity.
+func (m *CompanyMutation) ClearChats() {
+	m.clearedchats = true
+}
+
+// ChatsCleared reports if the "chats" edge to the Chat entity was cleared.
+func (m *CompanyMutation) ChatsCleared() bool {
+	return m.clearedchats
+}
+
+// RemoveChatIDs removes the "chats" edge to the Chat entity by IDs.
+func (m *CompanyMutation) RemoveChatIDs(ids ...uuid.UUID) {
+	if m.removedchats == nil {
+		m.removedchats = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.chats, ids[i])
+		m.removedchats[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedChats returns the removed IDs of the "chats" edge to the Chat entity.
+func (m *CompanyMutation) RemovedChatsIDs() (ids []uuid.UUID) {
+	for id := range m.removedchats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ChatsIDs returns the "chats" edge IDs in the mutation.
+func (m *CompanyMutation) ChatsIDs() (ids []uuid.UUID) {
+	for id := range m.chats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetChats resets all changes to the "chats" edge.
+func (m *CompanyMutation) ResetChats() {
+	m.chats = nil
+	m.clearedchats = false
+	m.removedchats = nil
+}
+
+// AddDepartmentIDs adds the "departments" edge to the Department entity by ids.
+func (m *CompanyMutation) AddDepartmentIDs(ids ...uuid.UUID) {
+	if m.departments == nil {
+		m.departments = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.departments[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDepartments clears the "departments" edge to the Department entity.
+func (m *CompanyMutation) ClearDepartments() {
+	m.cleareddepartments = true
+}
+
+// DepartmentsCleared reports if the "departments" edge to the Department entity was cleared.
+func (m *CompanyMutation) DepartmentsCleared() bool {
+	return m.cleareddepartments
+}
+
+// RemoveDepartmentIDs removes the "departments" edge to the Department entity by IDs.
+func (m *CompanyMutation) RemoveDepartmentIDs(ids ...uuid.UUID) {
+	if m.removeddepartments == nil {
+		m.removeddepartments = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.departments, ids[i])
+		m.removeddepartments[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDepartments returns the removed IDs of the "departments" edge to the Department entity.
+func (m *CompanyMutation) RemovedDepartmentsIDs() (ids []uuid.UUID) {
+	for id := range m.removeddepartments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DepartmentsIDs returns the "departments" edge IDs in the mutation.
+func (m *CompanyMutation) DepartmentsIDs() (ids []uuid.UUID) {
+	for id := range m.departments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDepartments resets all changes to the "departments" edge.
+func (m *CompanyMutation) ResetDepartments() {
+	m.departments = nil
+	m.cleareddepartments = false
+	m.removeddepartments = nil
+}
+
+// AddPipelineIDs adds the "pipelines" edge to the Pipeline entity by ids.
+func (m *CompanyMutation) AddPipelineIDs(ids ...uuid.UUID) {
+	if m.pipelines == nil {
+		m.pipelines = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.pipelines[ids[i]] = struct{}{}
+	}
+}
+
+// ClearPipelines clears the "pipelines" edge to the Pipeline entity.
+func (m *CompanyMutation) ClearPipelines() {
+	m.clearedpipelines = true
+}
+
+// PipelinesCleared reports if the "pipelines" edge to the Pipeline entity was cleared.
+func (m *CompanyMutation) PipelinesCleared() bool {
+	return m.clearedpipelines
+}
+
+// RemovePipelineIDs removes the "pipelines" edge to the Pipeline entity by IDs.
+func (m *CompanyMutation) RemovePipelineIDs(ids ...uuid.UUID) {
+	if m.removedpipelines == nil {
+		m.removedpipelines = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.pipelines, ids[i])
+		m.removedpipelines[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPipelines returns the removed IDs of the "pipelines" edge to the Pipeline entity.
+func (m *CompanyMutation) RemovedPipelinesIDs() (ids []uuid.UUID) {
+	for id := range m.removedpipelines {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PipelinesIDs returns the "pipelines" edge IDs in the mutation.
+func (m *CompanyMutation) PipelinesIDs() (ids []uuid.UUID) {
+	for id := range m.pipelines {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPipelines resets all changes to the "pipelines" edge.
+func (m *CompanyMutation) ResetPipelines() {
+	m.pipelines = nil
+	m.clearedpipelines = false
+	m.removedpipelines = nil
+}
+
+// AddCrmFieldIDs adds the "crmFields" edge to the CrmField entity by ids.
+func (m *CompanyMutation) AddCrmFieldIDs(ids ...uuid.UUID) {
+	if m.crmFields == nil {
+		m.crmFields = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.crmFields[ids[i]] = struct{}{}
+	}
+}
+
+// ClearCrmFields clears the "crmFields" edge to the CrmField entity.
+func (m *CompanyMutation) ClearCrmFields() {
+	m.clearedcrmFields = true
+}
+
+// CrmFieldsCleared reports if the "crmFields" edge to the CrmField entity was cleared.
+func (m *CompanyMutation) CrmFieldsCleared() bool {
+	return m.clearedcrmFields
+}
+
+// RemoveCrmFieldIDs removes the "crmFields" edge to the CrmField entity by IDs.
+func (m *CompanyMutation) RemoveCrmFieldIDs(ids ...uuid.UUID) {
+	if m.removedcrmFields == nil {
+		m.removedcrmFields = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.crmFields, ids[i])
+		m.removedcrmFields[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCrmFields returns the removed IDs of the "crmFields" edge to the CrmField entity.
+func (m *CompanyMutation) RemovedCrmFieldsIDs() (ids []uuid.UUID) {
+	for id := range m.removedcrmFields {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CrmFieldsIDs returns the "crmFields" edge IDs in the mutation.
+func (m *CompanyMutation) CrmFieldsIDs() (ids []uuid.UUID) {
+	for id := range m.crmFields {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCrmFields resets all changes to the "crmFields" edge.
+func (m *CompanyMutation) ResetCrmFields() {
+	m.crmFields = nil
+	m.clearedcrmFields = false
+	m.removedcrmFields = nil
+}
+
+// AddDealCrmFieldIDs adds the "dealCrmFields" edge to the DealCrmField entity by ids.
+func (m *CompanyMutation) AddDealCrmFieldIDs(ids ...uuid.UUID) {
+	if m.dealCrmFields == nil {
+		m.dealCrmFields = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.dealCrmFields[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDealCrmFields clears the "dealCrmFields" edge to the DealCrmField entity.
+func (m *CompanyMutation) ClearDealCrmFields() {
+	m.cleareddealCrmFields = true
+}
+
+// DealCrmFieldsCleared reports if the "dealCrmFields" edge to the DealCrmField entity was cleared.
+func (m *CompanyMutation) DealCrmFieldsCleared() bool {
+	return m.cleareddealCrmFields
+}
+
+// RemoveDealCrmFieldIDs removes the "dealCrmFields" edge to the DealCrmField entity by IDs.
+func (m *CompanyMutation) RemoveDealCrmFieldIDs(ids ...uuid.UUID) {
+	if m.removeddealCrmFields == nil {
+		m.removeddealCrmFields = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.dealCrmFields, ids[i])
+		m.removeddealCrmFields[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDealCrmFields returns the removed IDs of the "dealCrmFields" edge to the DealCrmField entity.
+func (m *CompanyMutation) RemovedDealCrmFieldsIDs() (ids []uuid.UUID) {
+	for id := range m.removeddealCrmFields {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DealCrmFieldsIDs returns the "dealCrmFields" edge IDs in the mutation.
+func (m *CompanyMutation) DealCrmFieldsIDs() (ids []uuid.UUID) {
+	for id := range m.dealCrmFields {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDealCrmFields resets all changes to the "dealCrmFields" edge.
+func (m *CompanyMutation) ResetDealCrmFields() {
+	m.dealCrmFields = nil
+	m.cleareddealCrmFields = false
+	m.removeddealCrmFields = nil
+}
+
+// AddDropdownListIDs adds the "dropdownLists" edge to the DropdownList entity by ids.
+func (m *CompanyMutation) AddDropdownListIDs(ids ...uuid.UUID) {
+	if m.dropdownLists == nil {
+		m.dropdownLists = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.dropdownLists[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDropdownLists clears the "dropdownLists" edge to the DropdownList entity.
+func (m *CompanyMutation) ClearDropdownLists() {
+	m.cleareddropdownLists = true
+}
+
+// DropdownListsCleared reports if the "dropdownLists" edge to the DropdownList entity was cleared.
+func (m *CompanyMutation) DropdownListsCleared() bool {
+	return m.cleareddropdownLists
+}
+
+// RemoveDropdownListIDs removes the "dropdownLists" edge to the DropdownList entity by IDs.
+func (m *CompanyMutation) RemoveDropdownListIDs(ids ...uuid.UUID) {
+	if m.removeddropdownLists == nil {
+		m.removeddropdownLists = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.dropdownLists, ids[i])
+		m.removeddropdownLists[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDropdownLists returns the removed IDs of the "dropdownLists" edge to the DropdownList entity.
+func (m *CompanyMutation) RemovedDropdownListsIDs() (ids []uuid.UUID) {
+	for id := range m.removeddropdownLists {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DropdownListsIDs returns the "dropdownLists" edge IDs in the mutation.
+func (m *CompanyMutation) DropdownListsIDs() (ids []uuid.UUID) {
+	for id := range m.dropdownLists {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDropdownLists resets all changes to the "dropdownLists" edge.
+func (m *CompanyMutation) ResetDropdownLists() {
+	m.dropdownLists = nil
+	m.cleareddropdownLists = false
+	m.removeddropdownLists = nil
+}
+
+// AddEmployeeAuthIDs adds the "employeeAuths" edge to the EmployeeAuth entity by ids.
+func (m *CompanyMutation) AddEmployeeAuthIDs(ids ...uuid.UUID) {
+	if m.employeeAuths == nil {
+		m.employeeAuths = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.employeeAuths[ids[i]] = struct{}{}
+	}
+}
+
+// ClearEmployeeAuths clears the "employeeAuths" edge to the EmployeeAuth entity.
+func (m *CompanyMutation) ClearEmployeeAuths() {
+	m.clearedemployeeAuths = true
+}
+
+// EmployeeAuthsCleared reports if the "employeeAuths" edge to the EmployeeAuth entity was cleared.
+func (m *CompanyMutation) EmployeeAuthsCleared() bool {
+	return m.clearedemployeeAuths
+}
+
+// RemoveEmployeeAuthIDs removes the "employeeAuths" edge to the EmployeeAuth entity by IDs.
+func (m *CompanyMutation) RemoveEmployeeAuthIDs(ids ...uuid.UUID) {
+	if m.removedemployeeAuths == nil {
+		m.removedemployeeAuths = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.employeeAuths, ids[i])
+		m.removedemployeeAuths[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedEmployeeAuths returns the removed IDs of the "employeeAuths" edge to the EmployeeAuth entity.
+func (m *CompanyMutation) RemovedEmployeeAuthsIDs() (ids []uuid.UUID) {
+	for id := range m.removedemployeeAuths {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// EmployeeAuthsIDs returns the "employeeAuths" edge IDs in the mutation.
+func (m *CompanyMutation) EmployeeAuthsIDs() (ids []uuid.UUID) {
+	for id := range m.employeeAuths {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetEmployeeAuths resets all changes to the "employeeAuths" edge.
+func (m *CompanyMutation) ResetEmployeeAuths() {
+	m.employeeAuths = nil
+	m.clearedemployeeAuths = false
+	m.removedemployeeAuths = nil
+}
+
+// AddFileIDs adds the "files" edge to the File entity by ids.
+func (m *CompanyMutation) AddFileIDs(ids ...uuid.UUID) {
+	if m.files == nil {
+		m.files = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.files[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFiles clears the "files" edge to the File entity.
+func (m *CompanyMutation) ClearFiles() {
+	m.clearedfiles = true
+}
+
+// FilesCleared reports if the "files" edge to the File entity was cleared.
+func (m *CompanyMutation) FilesCleared() bool {
+	return m.clearedfiles
+}
+
+// RemoveFileIDs removes the "files" edge to the File entity by IDs.
+func (m *CompanyMutation) RemoveFileIDs(ids ...uuid.UUID) {
+	if m.removedfiles == nil {
+		m.removedfiles = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.files, ids[i])
+		m.removedfiles[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFiles returns the removed IDs of the "files" edge to the File entity.
+func (m *CompanyMutation) RemovedFilesIDs() (ids []uuid.UUID) {
+	for id := range m.removedfiles {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FilesIDs returns the "files" edge IDs in the mutation.
+func (m *CompanyMutation) FilesIDs() (ids []uuid.UUID) {
+	for id := range m.files {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFiles resets all changes to the "files" edge.
+func (m *CompanyMutation) ResetFiles() {
+	m.files = nil
+	m.clearedfiles = false
+	m.removedfiles = nil
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by ids.
+func (m *CompanyMutation) AddMessageIDs(ids ...uuid.UUID) {
+	if m.messages == nil {
+		m.messages = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.messages[ids[i]] = struct{}{}
+	}
+}
+
+// ClearMessages clears the "messages" edge to the Message entity.
+func (m *CompanyMutation) ClearMessages() {
+	m.clearedmessages = true
+}
+
+// MessagesCleared reports if the "messages" edge to the Message entity was cleared.
+func (m *CompanyMutation) MessagesCleared() bool {
+	return m.clearedmessages
+}
+
+// RemoveMessageIDs removes the "messages" edge to the Message entity by IDs.
+func (m *CompanyMutation) RemoveMessageIDs(ids ...uuid.UUID) {
+	if m.removedmessages == nil {
+		m.removedmessages = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.messages, ids[i])
+		m.removedmessages[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedMessages returns the removed IDs of the "messages" edge to the Message entity.
+func (m *CompanyMutation) RemovedMessagesIDs() (ids []uuid.UUID) {
+	for id := range m.removedmessages {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// MessagesIDs returns the "messages" edge IDs in the mutation.
+func (m *CompanyMutation) MessagesIDs() (ids []uuid.UUID) {
+	for id := range m.messages {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetMessages resets all changes to the "messages" edge.
+func (m *CompanyMutation) ResetMessages() {
+	m.messages = nil
+	m.clearedmessages = false
+	m.removedmessages = nil
+}
+
+// AddQueueIDs adds the "queues" edge to the Queue entity by ids.
+func (m *CompanyMutation) AddQueueIDs(ids ...uuid.UUID) {
+	if m.queues == nil {
+		m.queues = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.queues[ids[i]] = struct{}{}
+	}
+}
+
+// ClearQueues clears the "queues" edge to the Queue entity.
+func (m *CompanyMutation) ClearQueues() {
+	m.clearedqueues = true
+}
+
+// QueuesCleared reports if the "queues" edge to the Queue entity was cleared.
+func (m *CompanyMutation) QueuesCleared() bool {
+	return m.clearedqueues
+}
+
+// RemoveQueueIDs removes the "queues" edge to the Queue entity by IDs.
+func (m *CompanyMutation) RemoveQueueIDs(ids ...uuid.UUID) {
+	if m.removedqueues == nil {
+		m.removedqueues = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.queues, ids[i])
+		m.removedqueues[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedQueues returns the removed IDs of the "queues" edge to the Queue entity.
+func (m *CompanyMutation) RemovedQueuesIDs() (ids []uuid.UUID) {
+	for id := range m.removedqueues {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// QueuesIDs returns the "queues" edge IDs in the mutation.
+func (m *CompanyMutation) QueuesIDs() (ids []uuid.UUID) {
+	for id := range m.queues {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetQueues resets all changes to the "queues" edge.
+func (m *CompanyMutation) ResetQueues() {
+	m.queues = nil
+	m.clearedqueues = false
+	m.removedqueues = nil
+}
+
+// AddRbacIDs adds the "rbacs" edge to the Rbac entity by ids.
+func (m *CompanyMutation) AddRbacIDs(ids ...uuid.UUID) {
+	if m.rbacs == nil {
+		m.rbacs = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.rbacs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearRbacs clears the "rbacs" edge to the Rbac entity.
+func (m *CompanyMutation) ClearRbacs() {
+	m.clearedrbacs = true
+}
+
+// RbacsCleared reports if the "rbacs" edge to the Rbac entity was cleared.
+func (m *CompanyMutation) RbacsCleared() bool {
+	return m.clearedrbacs
+}
+
+// RemoveRbacIDs removes the "rbacs" edge to the Rbac entity by IDs.
+func (m *CompanyMutation) RemoveRbacIDs(ids ...uuid.UUID) {
+	if m.removedrbacs == nil {
+		m.removedrbacs = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.rbacs, ids[i])
+		m.removedrbacs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedRbacs returns the removed IDs of the "rbacs" edge to the Rbac entity.
+func (m *CompanyMutation) RemovedRbacsIDs() (ids []uuid.UUID) {
+	for id := range m.removedrbacs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// RbacsIDs returns the "rbacs" edge IDs in the mutation.
+func (m *CompanyMutation) RbacsIDs() (ids []uuid.UUID) {
+	for id := range m.rbacs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetRbacs resets all changes to the "rbacs" edge.
+func (m *CompanyMutation) ResetRbacs() {
+	m.rbacs = nil
+	m.clearedrbacs = false
+	m.removedrbacs = nil
+}
+
+// AddStageIDs adds the "stages" edge to the Stage entity by ids.
+func (m *CompanyMutation) AddStageIDs(ids ...uuid.UUID) {
+	if m.stages == nil {
+		m.stages = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.stages[ids[i]] = struct{}{}
+	}
+}
+
+// ClearStages clears the "stages" edge to the Stage entity.
+func (m *CompanyMutation) ClearStages() {
+	m.clearedstages = true
+}
+
+// StagesCleared reports if the "stages" edge to the Stage entity was cleared.
+func (m *CompanyMutation) StagesCleared() bool {
+	return m.clearedstages
+}
+
+// RemoveStageIDs removes the "stages" edge to the Stage entity by IDs.
+func (m *CompanyMutation) RemoveStageIDs(ids ...uuid.UUID) {
+	if m.removedstages == nil {
+		m.removedstages = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.stages, ids[i])
+		m.removedstages[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedStages returns the removed IDs of the "stages" edge to the Stage entity.
+func (m *CompanyMutation) RemovedStagesIDs() (ids []uuid.UUID) {
+	for id := range m.removedstages {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// StagesIDs returns the "stages" edge IDs in the mutation.
+func (m *CompanyMutation) StagesIDs() (ids []uuid.UUID) {
+	for id := range m.stages {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetStages resets all changes to the "stages" edge.
+func (m *CompanyMutation) ResetStages() {
+	m.stages = nil
+	m.clearedstages = false
+	m.removedstages = nil
+}
+
+// AddTextIDs adds the "texts" edge to the Text entity by ids.
+func (m *CompanyMutation) AddTextIDs(ids ...uuid.UUID) {
+	if m.texts == nil {
+		m.texts = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.texts[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTexts clears the "texts" edge to the Text entity.
+func (m *CompanyMutation) ClearTexts() {
+	m.clearedtexts = true
+}
+
+// TextsCleared reports if the "texts" edge to the Text entity was cleared.
+func (m *CompanyMutation) TextsCleared() bool {
+	return m.clearedtexts
+}
+
+// RemoveTextIDs removes the "texts" edge to the Text entity by IDs.
+func (m *CompanyMutation) RemoveTextIDs(ids ...uuid.UUID) {
+	if m.removedtexts == nil {
+		m.removedtexts = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.texts, ids[i])
+		m.removedtexts[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTexts returns the removed IDs of the "texts" edge to the Text entity.
+func (m *CompanyMutation) RemovedTextsIDs() (ids []uuid.UUID) {
+	for id := range m.removedtexts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TextsIDs returns the "texts" edge IDs in the mutation.
+func (m *CompanyMutation) TextsIDs() (ids []uuid.UUID) {
+	for id := range m.texts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTexts resets all changes to the "texts" edge.
+func (m *CompanyMutation) ResetTexts() {
+	m.texts = nil
+	m.clearedtexts = false
+	m.removedtexts = nil
 }
 
 // Where appends a list predicates to the CompanyMutation builder.
@@ -1294,9 +2284,54 @@ func (m *CompanyMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CompanyMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.employee != nil {
-		edges = append(edges, company.EdgeEmployee)
+	edges := make([]string, 0, 16)
+	if m.employees != nil {
+		edges = append(edges, company.EdgeEmployees)
+	}
+	if m.costumers != nil {
+		edges = append(edges, company.EdgeCostumers)
+	}
+	if m.deals != nil {
+		edges = append(edges, company.EdgeDeals)
+	}
+	if m.chats != nil {
+		edges = append(edges, company.EdgeChats)
+	}
+	if m.departments != nil {
+		edges = append(edges, company.EdgeDepartments)
+	}
+	if m.pipelines != nil {
+		edges = append(edges, company.EdgePipelines)
+	}
+	if m.crmFields != nil {
+		edges = append(edges, company.EdgeCrmFields)
+	}
+	if m.dealCrmFields != nil {
+		edges = append(edges, company.EdgeDealCrmFields)
+	}
+	if m.dropdownLists != nil {
+		edges = append(edges, company.EdgeDropdownLists)
+	}
+	if m.employeeAuths != nil {
+		edges = append(edges, company.EdgeEmployeeAuths)
+	}
+	if m.files != nil {
+		edges = append(edges, company.EdgeFiles)
+	}
+	if m.messages != nil {
+		edges = append(edges, company.EdgeMessages)
+	}
+	if m.queues != nil {
+		edges = append(edges, company.EdgeQueues)
+	}
+	if m.rbacs != nil {
+		edges = append(edges, company.EdgeRbacs)
+	}
+	if m.stages != nil {
+		edges = append(edges, company.EdgeStages)
+	}
+	if m.texts != nil {
+		edges = append(edges, company.EdgeTexts)
 	}
 	return edges
 }
@@ -1305,9 +2340,99 @@ func (m *CompanyMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *CompanyMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case company.EdgeEmployee:
-		ids := make([]ent.Value, 0, len(m.employee))
-		for id := range m.employee {
+	case company.EdgeEmployees:
+		ids := make([]ent.Value, 0, len(m.employees))
+		for id := range m.employees {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeCostumers:
+		ids := make([]ent.Value, 0, len(m.costumers))
+		for id := range m.costumers {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDeals:
+		ids := make([]ent.Value, 0, len(m.deals))
+		for id := range m.deals {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeChats:
+		ids := make([]ent.Value, 0, len(m.chats))
+		for id := range m.chats {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDepartments:
+		ids := make([]ent.Value, 0, len(m.departments))
+		for id := range m.departments {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgePipelines:
+		ids := make([]ent.Value, 0, len(m.pipelines))
+		for id := range m.pipelines {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeCrmFields:
+		ids := make([]ent.Value, 0, len(m.crmFields))
+		for id := range m.crmFields {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDealCrmFields:
+		ids := make([]ent.Value, 0, len(m.dealCrmFields))
+		for id := range m.dealCrmFields {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDropdownLists:
+		ids := make([]ent.Value, 0, len(m.dropdownLists))
+		for id := range m.dropdownLists {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeEmployeeAuths:
+		ids := make([]ent.Value, 0, len(m.employeeAuths))
+		for id := range m.employeeAuths {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.files))
+		for id := range m.files {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeMessages:
+		ids := make([]ent.Value, 0, len(m.messages))
+		for id := range m.messages {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeQueues:
+		ids := make([]ent.Value, 0, len(m.queues))
+		for id := range m.queues {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeRbacs:
+		ids := make([]ent.Value, 0, len(m.rbacs))
+		for id := range m.rbacs {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeStages:
+		ids := make([]ent.Value, 0, len(m.stages))
+		for id := range m.stages {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeTexts:
+		ids := make([]ent.Value, 0, len(m.texts))
+		for id := range m.texts {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1317,9 +2442,54 @@ func (m *CompanyMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CompanyMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedemployee != nil {
-		edges = append(edges, company.EdgeEmployee)
+	edges := make([]string, 0, 16)
+	if m.removedemployees != nil {
+		edges = append(edges, company.EdgeEmployees)
+	}
+	if m.removedcostumers != nil {
+		edges = append(edges, company.EdgeCostumers)
+	}
+	if m.removeddeals != nil {
+		edges = append(edges, company.EdgeDeals)
+	}
+	if m.removedchats != nil {
+		edges = append(edges, company.EdgeChats)
+	}
+	if m.removeddepartments != nil {
+		edges = append(edges, company.EdgeDepartments)
+	}
+	if m.removedpipelines != nil {
+		edges = append(edges, company.EdgePipelines)
+	}
+	if m.removedcrmFields != nil {
+		edges = append(edges, company.EdgeCrmFields)
+	}
+	if m.removeddealCrmFields != nil {
+		edges = append(edges, company.EdgeDealCrmFields)
+	}
+	if m.removeddropdownLists != nil {
+		edges = append(edges, company.EdgeDropdownLists)
+	}
+	if m.removedemployeeAuths != nil {
+		edges = append(edges, company.EdgeEmployeeAuths)
+	}
+	if m.removedfiles != nil {
+		edges = append(edges, company.EdgeFiles)
+	}
+	if m.removedmessages != nil {
+		edges = append(edges, company.EdgeMessages)
+	}
+	if m.removedqueues != nil {
+		edges = append(edges, company.EdgeQueues)
+	}
+	if m.removedrbacs != nil {
+		edges = append(edges, company.EdgeRbacs)
+	}
+	if m.removedstages != nil {
+		edges = append(edges, company.EdgeStages)
+	}
+	if m.removedtexts != nil {
+		edges = append(edges, company.EdgeTexts)
 	}
 	return edges
 }
@@ -1328,9 +2498,99 @@ func (m *CompanyMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *CompanyMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case company.EdgeEmployee:
-		ids := make([]ent.Value, 0, len(m.removedemployee))
-		for id := range m.removedemployee {
+	case company.EdgeEmployees:
+		ids := make([]ent.Value, 0, len(m.removedemployees))
+		for id := range m.removedemployees {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeCostumers:
+		ids := make([]ent.Value, 0, len(m.removedcostumers))
+		for id := range m.removedcostumers {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDeals:
+		ids := make([]ent.Value, 0, len(m.removeddeals))
+		for id := range m.removeddeals {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeChats:
+		ids := make([]ent.Value, 0, len(m.removedchats))
+		for id := range m.removedchats {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDepartments:
+		ids := make([]ent.Value, 0, len(m.removeddepartments))
+		for id := range m.removeddepartments {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgePipelines:
+		ids := make([]ent.Value, 0, len(m.removedpipelines))
+		for id := range m.removedpipelines {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeCrmFields:
+		ids := make([]ent.Value, 0, len(m.removedcrmFields))
+		for id := range m.removedcrmFields {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDealCrmFields:
+		ids := make([]ent.Value, 0, len(m.removeddealCrmFields))
+		for id := range m.removeddealCrmFields {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeDropdownLists:
+		ids := make([]ent.Value, 0, len(m.removeddropdownLists))
+		for id := range m.removeddropdownLists {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeEmployeeAuths:
+		ids := make([]ent.Value, 0, len(m.removedemployeeAuths))
+		for id := range m.removedemployeeAuths {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.removedfiles))
+		for id := range m.removedfiles {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeMessages:
+		ids := make([]ent.Value, 0, len(m.removedmessages))
+		for id := range m.removedmessages {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeQueues:
+		ids := make([]ent.Value, 0, len(m.removedqueues))
+		for id := range m.removedqueues {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeRbacs:
+		ids := make([]ent.Value, 0, len(m.removedrbacs))
+		for id := range m.removedrbacs {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeStages:
+		ids := make([]ent.Value, 0, len(m.removedstages))
+		for id := range m.removedstages {
+			ids = append(ids, id)
+		}
+		return ids
+	case company.EdgeTexts:
+		ids := make([]ent.Value, 0, len(m.removedtexts))
+		for id := range m.removedtexts {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1340,9 +2600,54 @@ func (m *CompanyMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CompanyMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedemployee {
-		edges = append(edges, company.EdgeEmployee)
+	edges := make([]string, 0, 16)
+	if m.clearedemployees {
+		edges = append(edges, company.EdgeEmployees)
+	}
+	if m.clearedcostumers {
+		edges = append(edges, company.EdgeCostumers)
+	}
+	if m.cleareddeals {
+		edges = append(edges, company.EdgeDeals)
+	}
+	if m.clearedchats {
+		edges = append(edges, company.EdgeChats)
+	}
+	if m.cleareddepartments {
+		edges = append(edges, company.EdgeDepartments)
+	}
+	if m.clearedpipelines {
+		edges = append(edges, company.EdgePipelines)
+	}
+	if m.clearedcrmFields {
+		edges = append(edges, company.EdgeCrmFields)
+	}
+	if m.cleareddealCrmFields {
+		edges = append(edges, company.EdgeDealCrmFields)
+	}
+	if m.cleareddropdownLists {
+		edges = append(edges, company.EdgeDropdownLists)
+	}
+	if m.clearedemployeeAuths {
+		edges = append(edges, company.EdgeEmployeeAuths)
+	}
+	if m.clearedfiles {
+		edges = append(edges, company.EdgeFiles)
+	}
+	if m.clearedmessages {
+		edges = append(edges, company.EdgeMessages)
+	}
+	if m.clearedqueues {
+		edges = append(edges, company.EdgeQueues)
+	}
+	if m.clearedrbacs {
+		edges = append(edges, company.EdgeRbacs)
+	}
+	if m.clearedstages {
+		edges = append(edges, company.EdgeStages)
+	}
+	if m.clearedtexts {
+		edges = append(edges, company.EdgeTexts)
 	}
 	return edges
 }
@@ -1351,8 +2656,38 @@ func (m *CompanyMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *CompanyMutation) EdgeCleared(name string) bool {
 	switch name {
-	case company.EdgeEmployee:
-		return m.clearedemployee
+	case company.EdgeEmployees:
+		return m.clearedemployees
+	case company.EdgeCostumers:
+		return m.clearedcostumers
+	case company.EdgeDeals:
+		return m.cleareddeals
+	case company.EdgeChats:
+		return m.clearedchats
+	case company.EdgeDepartments:
+		return m.cleareddepartments
+	case company.EdgePipelines:
+		return m.clearedpipelines
+	case company.EdgeCrmFields:
+		return m.clearedcrmFields
+	case company.EdgeDealCrmFields:
+		return m.cleareddealCrmFields
+	case company.EdgeDropdownLists:
+		return m.cleareddropdownLists
+	case company.EdgeEmployeeAuths:
+		return m.clearedemployeeAuths
+	case company.EdgeFiles:
+		return m.clearedfiles
+	case company.EdgeMessages:
+		return m.clearedmessages
+	case company.EdgeQueues:
+		return m.clearedqueues
+	case company.EdgeRbacs:
+		return m.clearedrbacs
+	case company.EdgeStages:
+		return m.clearedstages
+	case company.EdgeTexts:
+		return m.clearedtexts
 	}
 	return false
 }
@@ -1369,8 +2704,53 @@ func (m *CompanyMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *CompanyMutation) ResetEdge(name string) error {
 	switch name {
-	case company.EdgeEmployee:
-		m.ResetEmployee()
+	case company.EdgeEmployees:
+		m.ResetEmployees()
+		return nil
+	case company.EdgeCostumers:
+		m.ResetCostumers()
+		return nil
+	case company.EdgeDeals:
+		m.ResetDeals()
+		return nil
+	case company.EdgeChats:
+		m.ResetChats()
+		return nil
+	case company.EdgeDepartments:
+		m.ResetDepartments()
+		return nil
+	case company.EdgePipelines:
+		m.ResetPipelines()
+		return nil
+	case company.EdgeCrmFields:
+		m.ResetCrmFields()
+		return nil
+	case company.EdgeDealCrmFields:
+		m.ResetDealCrmFields()
+		return nil
+	case company.EdgeDropdownLists:
+		m.ResetDropdownLists()
+		return nil
+	case company.EdgeEmployeeAuths:
+		m.ResetEmployeeAuths()
+		return nil
+	case company.EdgeFiles:
+		m.ResetFiles()
+		return nil
+	case company.EdgeMessages:
+		m.ResetMessages()
+		return nil
+	case company.EdgeQueues:
+		m.ResetQueues()
+		return nil
+	case company.EdgeRbacs:
+		m.ResetRbacs()
+		return nil
+	case company.EdgeStages:
+		m.ResetStages()
+		return nil
+	case company.EdgeTexts:
+		m.ResetTexts()
 		return nil
 	}
 	return fmt.Errorf("unknown Company edge %s", name)
@@ -1388,6 +2768,8 @@ type CostumerMutation struct {
 	createdAt     *time.Time
 	updatedAt     *time.Time
 	clearedFields map[string]struct{}
+	tenant        *uuid.UUID
+	clearedtenant bool
 	deals         map[uuid.UUID]struct{}
 	removeddeals  map[uuid.UUID]struct{}
 	cleareddeals  bool
@@ -1680,6 +3062,95 @@ func (m *CostumerMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *CostumerMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *CostumerMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Costumer entity.
+// If the Costumer object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CostumerMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *CostumerMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[costumer.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *CostumerMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[costumer.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *CostumerMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, costumer.FieldTenantId)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *CostumerMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *CostumerMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[costumer.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *CostumerMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *CostumerMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *CostumerMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *CostumerMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // AddDealIDs adds the "deals" edge to the Deal entity by ids.
 func (m *CostumerMutation) AddDealIDs(ids ...uuid.UUID) {
 	if m.deals == nil {
@@ -1768,7 +3239,7 @@ func (m *CostumerMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CostumerMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, costumer.FieldName)
 	}
@@ -1783,6 +3254,9 @@ func (m *CostumerMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, costumer.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, costumer.FieldTenantId)
 	}
 	return fields
 }
@@ -1802,6 +3276,8 @@ func (m *CostumerMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case costumer.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case costumer.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -1821,6 +3297,8 @@ func (m *CostumerMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case costumer.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case costumer.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Costumer field %s", name)
 }
@@ -1865,6 +3343,13 @@ func (m *CostumerMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case costumer.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Costumer field %s", name)
 }
@@ -1894,7 +3379,11 @@ func (m *CostumerMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CostumerMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(costumer.FieldTenantId) {
+		fields = append(fields, costumer.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1907,6 +3396,11 @@ func (m *CostumerMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CostumerMutation) ClearField(name string) error {
+	switch name {
+	case costumer.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Costumer nullable field %s", name)
 }
 
@@ -1929,13 +3423,19 @@ func (m *CostumerMutation) ResetField(name string) error {
 	case costumer.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case costumer.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Costumer field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CostumerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.tenant != nil {
+		edges = append(edges, costumer.EdgeTenant)
+	}
 	if m.deals != nil {
 		edges = append(edges, costumer.EdgeDeals)
 	}
@@ -1946,6 +3446,10 @@ func (m *CostumerMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *CostumerMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case costumer.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	case costumer.EdgeDeals:
 		ids := make([]ent.Value, 0, len(m.deals))
 		for id := range m.deals {
@@ -1958,7 +3462,7 @@ func (m *CostumerMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CostumerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removeddeals != nil {
 		edges = append(edges, costumer.EdgeDeals)
 	}
@@ -1981,7 +3485,10 @@ func (m *CostumerMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CostumerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.clearedtenant {
+		edges = append(edges, costumer.EdgeTenant)
+	}
 	if m.cleareddeals {
 		edges = append(edges, costumer.EdgeDeals)
 	}
@@ -1992,6 +3499,8 @@ func (m *CostumerMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *CostumerMutation) EdgeCleared(name string) bool {
 	switch name {
+	case costumer.EdgeTenant:
+		return m.clearedtenant
 	case costumer.EdgeDeals:
 		return m.cleareddeals
 	}
@@ -2002,6 +3511,9 @@ func (m *CostumerMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *CostumerMutation) ClearEdge(name string) error {
 	switch name {
+	case costumer.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Costumer unique edge %s", name)
 }
@@ -2010,6 +3522,9 @@ func (m *CostumerMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *CostumerMutation) ResetEdge(name string) error {
 	switch name {
+	case costumer.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	case costumer.EdgeDeals:
 		m.ResetDeals()
 		return nil
@@ -2035,6 +3550,8 @@ type CrmFieldMutation struct {
 	dealCrmField        map[uuid.UUID]struct{}
 	removeddealCrmField map[uuid.UUID]struct{}
 	cleareddealCrmField bool
+	tenant              *uuid.UUID
+	clearedtenant       bool
 	done                bool
 	oldValue            func(context.Context) (*CrmField, error)
 	predicates          []predicate.CrmField
@@ -2324,6 +3841,55 @@ func (m *CrmFieldMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *CrmFieldMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *CrmFieldMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the CrmField entity.
+// If the CrmField object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CrmFieldMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *CrmFieldMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[crmfield.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *CrmFieldMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[crmfield.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *CrmFieldMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, crmfield.FieldTenantId)
+}
+
 // AddDropdownListIDs adds the "dropdownList" edge to the DropdownList entity by ids.
 func (m *CrmFieldMutation) AddDropdownListIDs(ids ...uuid.UUID) {
 	if m.dropdownList == nil {
@@ -2432,6 +3998,46 @@ func (m *CrmFieldMutation) ResetDealCrmField() {
 	m.removeddealCrmField = nil
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *CrmFieldMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *CrmFieldMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[crmfield.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *CrmFieldMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *CrmFieldMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *CrmFieldMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *CrmFieldMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the CrmFieldMutation builder.
 func (m *CrmFieldMutation) Where(ps ...predicate.CrmField) {
 	m.predicates = append(m.predicates, ps...)
@@ -2466,7 +4072,7 @@ func (m *CrmFieldMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CrmFieldMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, crmfield.FieldName)
 	}
@@ -2481,6 +4087,9 @@ func (m *CrmFieldMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, crmfield.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, crmfield.FieldTenantId)
 	}
 	return fields
 }
@@ -2500,6 +4109,8 @@ func (m *CrmFieldMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case crmfield.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case crmfield.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -2519,6 +4130,8 @@ func (m *CrmFieldMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case crmfield.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case crmfield.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown CrmField field %s", name)
 }
@@ -2563,6 +4176,13 @@ func (m *CrmFieldMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case crmfield.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CrmField field %s", name)
 }
@@ -2592,7 +4212,11 @@ func (m *CrmFieldMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CrmFieldMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(crmfield.FieldTenantId) {
+		fields = append(fields, crmfield.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2605,6 +4229,11 @@ func (m *CrmFieldMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CrmFieldMutation) ClearField(name string) error {
+	switch name {
+	case crmfield.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown CrmField nullable field %s", name)
 }
 
@@ -2627,18 +4256,24 @@ func (m *CrmFieldMutation) ResetField(name string) error {
 	case crmfield.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case crmfield.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown CrmField field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CrmFieldMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.dropdownList != nil {
 		edges = append(edges, crmfield.EdgeDropdownList)
 	}
 	if m.dealCrmField != nil {
 		edges = append(edges, crmfield.EdgeDealCrmField)
+	}
+	if m.tenant != nil {
+		edges = append(edges, crmfield.EdgeTenant)
 	}
 	return edges
 }
@@ -2659,13 +4294,17 @@ func (m *CrmFieldMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case crmfield.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CrmFieldMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.removeddropdownList != nil {
 		edges = append(edges, crmfield.EdgeDropdownList)
 	}
@@ -2697,12 +4336,15 @@ func (m *CrmFieldMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CrmFieldMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.cleareddropdownList {
 		edges = append(edges, crmfield.EdgeDropdownList)
 	}
 	if m.cleareddealCrmField {
 		edges = append(edges, crmfield.EdgeDealCrmField)
+	}
+	if m.clearedtenant {
+		edges = append(edges, crmfield.EdgeTenant)
 	}
 	return edges
 }
@@ -2715,6 +4357,8 @@ func (m *CrmFieldMutation) EdgeCleared(name string) bool {
 		return m.cleareddropdownList
 	case crmfield.EdgeDealCrmField:
 		return m.cleareddealCrmField
+	case crmfield.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -2723,6 +4367,9 @@ func (m *CrmFieldMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *CrmFieldMutation) ClearEdge(name string) error {
 	switch name {
+	case crmfield.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown CrmField unique edge %s", name)
 }
@@ -2736,6 +4383,9 @@ func (m *CrmFieldMutation) ResetEdge(name string) error {
 		return nil
 	case crmfield.EdgeDealCrmField:
 		m.ResetDealCrmField()
+		return nil
+	case crmfield.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown CrmField edge %s", name)
@@ -2752,6 +4402,8 @@ type DealMutation struct {
 	createdAt            *time.Time
 	updatedAt            *time.Time
 	clearedFields        map[string]struct{}
+	tenant               *uuid.UUID
+	clearedtenant        bool
 	costumer             *uuid.UUID
 	clearedcostumer      bool
 	chat                 *uuid.UUID
@@ -3014,6 +4666,95 @@ func (m *DealMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DealMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DealMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Deal entity.
+// If the Deal object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DealMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *DealMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[deal.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *DealMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[deal.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DealMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, deal.FieldTenantId)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *DealMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *DealMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[deal.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *DealMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *DealMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *DealMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *DealMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // SetCostumerID sets the "costumer" edge to the Costumer entity by id.
 func (m *DealMutation) SetCostumerID(id uuid.UUID) {
 	m.costumer = &id
@@ -3219,7 +4960,7 @@ func (m *DealMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DealMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.title != nil {
 		fields = append(fields, deal.FieldTitle)
 	}
@@ -3231,6 +4972,9 @@ func (m *DealMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, deal.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, deal.FieldTenantId)
 	}
 	return fields
 }
@@ -3248,6 +4992,8 @@ func (m *DealMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case deal.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case deal.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -3265,6 +5011,8 @@ func (m *DealMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCreatedAt(ctx)
 	case deal.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case deal.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Deal field %s", name)
 }
@@ -3302,6 +5050,13 @@ func (m *DealMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case deal.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Deal field %s", name)
 }
@@ -3331,7 +5086,11 @@ func (m *DealMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DealMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(deal.FieldTenantId) {
+		fields = append(fields, deal.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3344,6 +5103,11 @@ func (m *DealMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DealMutation) ClearField(name string) error {
+	switch name {
+	case deal.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Deal nullable field %s", name)
 }
 
@@ -3363,13 +5127,19 @@ func (m *DealMutation) ResetField(name string) error {
 	case deal.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case deal.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Deal field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DealMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
+	if m.tenant != nil {
+		edges = append(edges, deal.EdgeTenant)
+	}
 	if m.costumer != nil {
 		edges = append(edges, deal.EdgeCostumer)
 	}
@@ -3389,6 +5159,10 @@ func (m *DealMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *DealMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case deal.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	case deal.EdgeCostumer:
 		if id := m.costumer; id != nil {
 			return []ent.Value{*id}
@@ -3413,7 +5187,7 @@ func (m *DealMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DealMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.removeddealCrmFields != nil {
 		edges = append(edges, deal.EdgeDealCrmFields)
 	}
@@ -3436,7 +5210,10 @@ func (m *DealMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DealMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
+	if m.clearedtenant {
+		edges = append(edges, deal.EdgeTenant)
+	}
 	if m.clearedcostumer {
 		edges = append(edges, deal.EdgeCostumer)
 	}
@@ -3456,6 +5233,8 @@ func (m *DealMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *DealMutation) EdgeCleared(name string) bool {
 	switch name {
+	case deal.EdgeTenant:
+		return m.clearedtenant
 	case deal.EdgeCostumer:
 		return m.clearedcostumer
 	case deal.EdgeChat:
@@ -3472,6 +5251,9 @@ func (m *DealMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *DealMutation) ClearEdge(name string) error {
 	switch name {
+	case deal.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	case deal.EdgeCostumer:
 		m.ClearCostumer()
 		return nil
@@ -3489,6 +5271,9 @@ func (m *DealMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *DealMutation) ResetEdge(name string) error {
 	switch name {
+	case deal.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	case deal.EdgeCostumer:
 		m.ResetCostumer()
 		return nil
@@ -3519,6 +5304,8 @@ type DealCrmFieldMutation struct {
 	cleareddeal     bool
 	crmField        *uuid.UUID
 	clearedcrmField bool
+	tenant          *uuid.UUID
+	clearedtenant   bool
 	done            bool
 	oldValue        func(context.Context) (*DealCrmField, error)
 	predicates      []predicate.DealCrmField
@@ -3736,6 +5523,55 @@ func (m *DealCrmFieldMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DealCrmFieldMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DealCrmFieldMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the DealCrmField entity.
+// If the DealCrmField object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DealCrmFieldMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *DealCrmFieldMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[dealcrmfield.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *DealCrmFieldMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[dealcrmfield.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DealCrmFieldMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, dealcrmfield.FieldTenantId)
+}
+
 // SetDealID sets the "deal" edge to the Deal entity by id.
 func (m *DealCrmFieldMutation) SetDealID(id uuid.UUID) {
 	m.deal = &id
@@ -3814,6 +5650,46 @@ func (m *DealCrmFieldMutation) ResetCrmField() {
 	m.clearedcrmField = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *DealCrmFieldMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *DealCrmFieldMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[dealcrmfield.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *DealCrmFieldMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *DealCrmFieldMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *DealCrmFieldMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *DealCrmFieldMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the DealCrmFieldMutation builder.
 func (m *DealCrmFieldMutation) Where(ps ...predicate.DealCrmField) {
 	m.predicates = append(m.predicates, ps...)
@@ -3848,7 +5724,7 @@ func (m *DealCrmFieldMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DealCrmFieldMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.value != nil {
 		fields = append(fields, dealcrmfield.FieldValue)
 	}
@@ -3857,6 +5733,9 @@ func (m *DealCrmFieldMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, dealcrmfield.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, dealcrmfield.FieldTenantId)
 	}
 	return fields
 }
@@ -3872,6 +5751,8 @@ func (m *DealCrmFieldMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case dealcrmfield.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case dealcrmfield.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -3887,6 +5768,8 @@ func (m *DealCrmFieldMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldCreatedAt(ctx)
 	case dealcrmfield.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case dealcrmfield.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown DealCrmField field %s", name)
 }
@@ -3917,6 +5800,13 @@ func (m *DealCrmFieldMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case dealcrmfield.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown DealCrmField field %s", name)
 }
@@ -3946,7 +5836,11 @@ func (m *DealCrmFieldMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DealCrmFieldMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(dealcrmfield.FieldTenantId) {
+		fields = append(fields, dealcrmfield.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3959,6 +5853,11 @@ func (m *DealCrmFieldMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DealCrmFieldMutation) ClearField(name string) error {
+	switch name {
+	case dealcrmfield.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown DealCrmField nullable field %s", name)
 }
 
@@ -3975,18 +5874,24 @@ func (m *DealCrmFieldMutation) ResetField(name string) error {
 	case dealcrmfield.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case dealcrmfield.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown DealCrmField field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DealCrmFieldMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.deal != nil {
 		edges = append(edges, dealcrmfield.EdgeDeal)
 	}
 	if m.crmField != nil {
 		edges = append(edges, dealcrmfield.EdgeCrmField)
+	}
+	if m.tenant != nil {
+		edges = append(edges, dealcrmfield.EdgeTenant)
 	}
 	return edges
 }
@@ -4003,13 +5908,17 @@ func (m *DealCrmFieldMutation) AddedIDs(name string) []ent.Value {
 		if id := m.crmField; id != nil {
 			return []ent.Value{*id}
 		}
+	case dealcrmfield.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DealCrmFieldMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
@@ -4021,12 +5930,15 @@ func (m *DealCrmFieldMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DealCrmFieldMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.cleareddeal {
 		edges = append(edges, dealcrmfield.EdgeDeal)
 	}
 	if m.clearedcrmField {
 		edges = append(edges, dealcrmfield.EdgeCrmField)
+	}
+	if m.clearedtenant {
+		edges = append(edges, dealcrmfield.EdgeTenant)
 	}
 	return edges
 }
@@ -4039,6 +5951,8 @@ func (m *DealCrmFieldMutation) EdgeCleared(name string) bool {
 		return m.cleareddeal
 	case dealcrmfield.EdgeCrmField:
 		return m.clearedcrmField
+	case dealcrmfield.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -4052,6 +5966,9 @@ func (m *DealCrmFieldMutation) ClearEdge(name string) error {
 		return nil
 	case dealcrmfield.EdgeCrmField:
 		m.ClearCrmField()
+		return nil
+	case dealcrmfield.EdgeTenant:
+		m.ClearTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown DealCrmField unique edge %s", name)
@@ -4067,6 +5984,9 @@ func (m *DealCrmFieldMutation) ResetEdge(name string) error {
 	case dealcrmfield.EdgeCrmField:
 		m.ResetCrmField()
 		return nil
+	case dealcrmfield.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown DealCrmField edge %s", name)
 }
@@ -4081,6 +6001,8 @@ type DepartmentMutation struct {
 	createdAt       *time.Time
 	updatedAt       *time.Time
 	clearedFields   map[string]struct{}
+	tenant          *uuid.UUID
+	clearedtenant   bool
 	employee        map[uuid.UUID]struct{}
 	removedemployee map[uuid.UUID]struct{}
 	clearedemployee bool
@@ -4307,6 +6229,95 @@ func (m *DepartmentMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DepartmentMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DepartmentMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Department entity.
+// If the Department object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DepartmentMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *DepartmentMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[department.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *DepartmentMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[department.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DepartmentMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, department.FieldTenantId)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *DepartmentMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *DepartmentMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[department.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *DepartmentMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *DepartmentMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *DepartmentMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *DepartmentMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // AddEmployeeIDs adds the "employee" edge to the Employee entity by ids.
 func (m *DepartmentMutation) AddEmployeeIDs(ids ...uuid.UUID) {
 	if m.employee == nil {
@@ -4503,7 +6514,7 @@ func (m *DepartmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DepartmentMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, department.FieldName)
 	}
@@ -4512,6 +6523,9 @@ func (m *DepartmentMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, department.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, department.FieldTenantId)
 	}
 	return fields
 }
@@ -4527,6 +6541,8 @@ func (m *DepartmentMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case department.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case department.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -4542,6 +6558,8 @@ func (m *DepartmentMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldCreatedAt(ctx)
 	case department.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case department.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Department field %s", name)
 }
@@ -4572,6 +6590,13 @@ func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case department.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Department field %s", name)
 }
@@ -4601,7 +6626,11 @@ func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DepartmentMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(department.FieldTenantId) {
+		fields = append(fields, department.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -4614,6 +6643,11 @@ func (m *DepartmentMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DepartmentMutation) ClearField(name string) error {
+	switch name {
+	case department.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Department nullable field %s", name)
 }
 
@@ -4630,13 +6664,19 @@ func (m *DepartmentMutation) ResetField(name string) error {
 	case department.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case department.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Department field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DepartmentMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
+	if m.tenant != nil {
+		edges = append(edges, department.EdgeTenant)
+	}
 	if m.employee != nil {
 		edges = append(edges, department.EdgeEmployee)
 	}
@@ -4653,6 +6693,10 @@ func (m *DepartmentMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *DepartmentMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case department.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	case department.EdgeEmployee:
 		ids := make([]ent.Value, 0, len(m.employee))
 		for id := range m.employee {
@@ -4677,7 +6721,7 @@ func (m *DepartmentMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DepartmentMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedemployee != nil {
 		edges = append(edges, department.EdgeEmployee)
 	}
@@ -4718,7 +6762,10 @@ func (m *DepartmentMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DepartmentMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
+	if m.clearedtenant {
+		edges = append(edges, department.EdgeTenant)
+	}
 	if m.clearedemployee {
 		edges = append(edges, department.EdgeEmployee)
 	}
@@ -4735,6 +6782,8 @@ func (m *DepartmentMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *DepartmentMutation) EdgeCleared(name string) bool {
 	switch name {
+	case department.EdgeTenant:
+		return m.clearedtenant
 	case department.EdgeEmployee:
 		return m.clearedemployee
 	case department.EdgeQueues:
@@ -4749,6 +6798,9 @@ func (m *DepartmentMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *DepartmentMutation) ClearEdge(name string) error {
 	switch name {
+	case department.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Department unique edge %s", name)
 }
@@ -4757,6 +6809,9 @@ func (m *DepartmentMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *DepartmentMutation) ResetEdge(name string) error {
 	switch name {
+	case department.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	case department.EdgeEmployee:
 		m.ResetEmployee()
 		return nil
@@ -4783,6 +6838,8 @@ type DropdownListMutation struct {
 	crmField        map[uuid.UUID]struct{}
 	removedcrmField map[uuid.UUID]struct{}
 	clearedcrmField bool
+	tenant          *uuid.UUID
+	clearedtenant   bool
 	done            bool
 	oldValue        func(context.Context) (*DropdownList, error)
 	predicates      []predicate.DropdownList
@@ -5000,6 +7057,55 @@ func (m *DropdownListMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DropdownListMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DropdownListMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the DropdownList entity.
+// If the DropdownList object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DropdownListMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *DropdownListMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[dropdownlist.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *DropdownListMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[dropdownlist.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DropdownListMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, dropdownlist.FieldTenantId)
+}
+
 // AddCrmFieldIDs adds the "crmField" edge to the CrmField entity by ids.
 func (m *DropdownListMutation) AddCrmFieldIDs(ids ...uuid.UUID) {
 	if m.crmField == nil {
@@ -5054,6 +7160,46 @@ func (m *DropdownListMutation) ResetCrmField() {
 	m.removedcrmField = nil
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *DropdownListMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *DropdownListMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[dropdownlist.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *DropdownListMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *DropdownListMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *DropdownListMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *DropdownListMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the DropdownListMutation builder.
 func (m *DropdownListMutation) Where(ps ...predicate.DropdownList) {
 	m.predicates = append(m.predicates, ps...)
@@ -5088,7 +7234,7 @@ func (m *DropdownListMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DropdownListMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.value != nil {
 		fields = append(fields, dropdownlist.FieldValue)
 	}
@@ -5097,6 +7243,9 @@ func (m *DropdownListMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, dropdownlist.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, dropdownlist.FieldTenantId)
 	}
 	return fields
 }
@@ -5112,6 +7261,8 @@ func (m *DropdownListMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case dropdownlist.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case dropdownlist.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -5127,6 +7278,8 @@ func (m *DropdownListMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldCreatedAt(ctx)
 	case dropdownlist.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case dropdownlist.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown DropdownList field %s", name)
 }
@@ -5157,6 +7310,13 @@ func (m *DropdownListMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case dropdownlist.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown DropdownList field %s", name)
 }
@@ -5186,7 +7346,11 @@ func (m *DropdownListMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DropdownListMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(dropdownlist.FieldTenantId) {
+		fields = append(fields, dropdownlist.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -5199,6 +7363,11 @@ func (m *DropdownListMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DropdownListMutation) ClearField(name string) error {
+	switch name {
+	case dropdownlist.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown DropdownList nullable field %s", name)
 }
 
@@ -5215,15 +7384,21 @@ func (m *DropdownListMutation) ResetField(name string) error {
 	case dropdownlist.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case dropdownlist.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown DropdownList field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DropdownListMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.crmField != nil {
 		edges = append(edges, dropdownlist.EdgeCrmField)
+	}
+	if m.tenant != nil {
+		edges = append(edges, dropdownlist.EdgeTenant)
 	}
 	return edges
 }
@@ -5238,13 +7413,17 @@ func (m *DropdownListMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case dropdownlist.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DropdownListMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedcrmField != nil {
 		edges = append(edges, dropdownlist.EdgeCrmField)
 	}
@@ -5267,9 +7446,12 @@ func (m *DropdownListMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DropdownListMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedcrmField {
 		edges = append(edges, dropdownlist.EdgeCrmField)
+	}
+	if m.clearedtenant {
+		edges = append(edges, dropdownlist.EdgeTenant)
 	}
 	return edges
 }
@@ -5280,6 +7462,8 @@ func (m *DropdownListMutation) EdgeCleared(name string) bool {
 	switch name {
 	case dropdownlist.EdgeCrmField:
 		return m.clearedcrmField
+	case dropdownlist.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -5288,6 +7472,9 @@ func (m *DropdownListMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *DropdownListMutation) ClearEdge(name string) error {
 	switch name {
+	case dropdownlist.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown DropdownList unique edge %s", name)
 }
@@ -5298,6 +7485,9 @@ func (m *DropdownListMutation) ResetEdge(name string) error {
 	switch name {
 	case dropdownlist.EdgeCrmField:
 		m.ResetCrmField()
+		return nil
+	case dropdownlist.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown DropdownList edge %s", name)
@@ -5316,8 +7506,8 @@ type EmployeeMutation struct {
 	clearedFields       map[string]struct{}
 	employeeAuth        *uuid.UUID
 	clearedemployeeAuth bool
-	company             *uuid.UUID
-	clearedcompany      bool
+	tenant              *uuid.UUID
+	clearedtenant       bool
 	department          *uuid.UUID
 	cleareddepartment   bool
 	chat                map[uuid.UUID]struct{}
@@ -5582,6 +7772,55 @@ func (m *EmployeeMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *EmployeeMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *EmployeeMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Employee entity.
+// If the Employee object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EmployeeMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *EmployeeMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[employee.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *EmployeeMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[employee.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *EmployeeMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, employee.FieldTenantId)
+}
+
 // SetEmployeeAuthID sets the "employeeAuth" edge to the EmployeeAuth entity by id.
 func (m *EmployeeMutation) SetEmployeeAuthID(id uuid.UUID) {
 	m.employeeAuth = &id
@@ -5621,43 +7860,44 @@ func (m *EmployeeMutation) ResetEmployeeAuth() {
 	m.clearedemployeeAuth = false
 }
 
-// SetCompanyID sets the "company" edge to the Company entity by id.
-func (m *EmployeeMutation) SetCompanyID(id uuid.UUID) {
-	m.company = &id
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *EmployeeMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
 }
 
-// ClearCompany clears the "company" edge to the Company entity.
-func (m *EmployeeMutation) ClearCompany() {
-	m.clearedcompany = true
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *EmployeeMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[employee.FieldTenantId] = struct{}{}
 }
 
-// CompanyCleared reports if the "company" edge to the Company entity was cleared.
-func (m *EmployeeMutation) CompanyCleared() bool {
-	return m.clearedcompany
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *EmployeeMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
 }
 
-// CompanyID returns the "company" edge ID in the mutation.
-func (m *EmployeeMutation) CompanyID() (id uuid.UUID, exists bool) {
-	if m.company != nil {
-		return *m.company, true
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *EmployeeMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
 	}
 	return
 }
 
-// CompanyIDs returns the "company" edge IDs in the mutation.
+// TenantIDs returns the "tenant" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// CompanyID instead. It exists only for internal usage by the builders.
-func (m *EmployeeMutation) CompanyIDs() (ids []uuid.UUID) {
-	if id := m.company; id != nil {
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *EmployeeMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetCompany resets all changes to the "company" edge.
-func (m *EmployeeMutation) ResetCompany() {
-	m.company = nil
-	m.clearedcompany = false
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *EmployeeMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
 }
 
 // SetDepartmentID sets the "department" edge to the Department entity by id.
@@ -5895,7 +8135,7 @@ func (m *EmployeeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EmployeeMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.name != nil {
 		fields = append(fields, employee.FieldName)
 	}
@@ -5907,6 +8147,9 @@ func (m *EmployeeMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, employee.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, employee.FieldTenantId)
 	}
 	return fields
 }
@@ -5924,6 +8167,8 @@ func (m *EmployeeMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case employee.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case employee.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -5941,6 +8186,8 @@ func (m *EmployeeMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case employee.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case employee.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Employee field %s", name)
 }
@@ -5978,6 +8225,13 @@ func (m *EmployeeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case employee.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Employee field %s", name)
 }
@@ -6007,7 +8261,11 @@ func (m *EmployeeMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *EmployeeMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(employee.FieldTenantId) {
+		fields = append(fields, employee.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -6020,6 +8278,11 @@ func (m *EmployeeMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *EmployeeMutation) ClearField(name string) error {
+	switch name {
+	case employee.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Employee nullable field %s", name)
 }
 
@@ -6039,6 +8302,9 @@ func (m *EmployeeMutation) ResetField(name string) error {
 	case employee.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case employee.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Employee field %s", name)
 }
@@ -6049,8 +8315,8 @@ func (m *EmployeeMutation) AddedEdges() []string {
 	if m.employeeAuth != nil {
 		edges = append(edges, employee.EdgeEmployeeAuth)
 	}
-	if m.company != nil {
-		edges = append(edges, employee.EdgeCompany)
+	if m.tenant != nil {
+		edges = append(edges, employee.EdgeTenant)
 	}
 	if m.department != nil {
 		edges = append(edges, employee.EdgeDepartment)
@@ -6075,8 +8341,8 @@ func (m *EmployeeMutation) AddedIDs(name string) []ent.Value {
 		if id := m.employeeAuth; id != nil {
 			return []ent.Value{*id}
 		}
-	case employee.EdgeCompany:
-		if id := m.company; id != nil {
+	case employee.EdgeTenant:
+		if id := m.tenant; id != nil {
 			return []ent.Value{*id}
 		}
 	case employee.EdgeDepartment:
@@ -6152,8 +8418,8 @@ func (m *EmployeeMutation) ClearedEdges() []string {
 	if m.clearedemployeeAuth {
 		edges = append(edges, employee.EdgeEmployeeAuth)
 	}
-	if m.clearedcompany {
-		edges = append(edges, employee.EdgeCompany)
+	if m.clearedtenant {
+		edges = append(edges, employee.EdgeTenant)
 	}
 	if m.cleareddepartment {
 		edges = append(edges, employee.EdgeDepartment)
@@ -6176,8 +8442,8 @@ func (m *EmployeeMutation) EdgeCleared(name string) bool {
 	switch name {
 	case employee.EdgeEmployeeAuth:
 		return m.clearedemployeeAuth
-	case employee.EdgeCompany:
-		return m.clearedcompany
+	case employee.EdgeTenant:
+		return m.clearedtenant
 	case employee.EdgeDepartment:
 		return m.cleareddepartment
 	case employee.EdgeChat:
@@ -6197,8 +8463,8 @@ func (m *EmployeeMutation) ClearEdge(name string) error {
 	case employee.EdgeEmployeeAuth:
 		m.ClearEmployeeAuth()
 		return nil
-	case employee.EdgeCompany:
-		m.ClearCompany()
+	case employee.EdgeTenant:
+		m.ClearTenant()
 		return nil
 	case employee.EdgeDepartment:
 		m.ClearDepartment()
@@ -6214,8 +8480,8 @@ func (m *EmployeeMutation) ResetEdge(name string) error {
 	case employee.EdgeEmployeeAuth:
 		m.ResetEmployeeAuth()
 		return nil
-	case employee.EdgeCompany:
-		m.ResetCompany()
+	case employee.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	case employee.EdgeDepartment:
 		m.ResetDepartment()
@@ -6247,6 +8513,8 @@ type EmployeeAuthMutation struct {
 	clearedFields   map[string]struct{}
 	employee        *uuid.UUID
 	clearedemployee bool
+	tenant          *uuid.UUID
+	clearedtenant   bool
 	done            bool
 	oldValue        func(context.Context) (*EmployeeAuth, error)
 	predicates      []predicate.EmployeeAuth
@@ -6536,6 +8804,42 @@ func (m *EmployeeAuthMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *EmployeeAuthMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *EmployeeAuthMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the EmployeeAuth entity.
+// If the EmployeeAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EmployeeAuthMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *EmployeeAuthMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetEmployeeID sets the "employee" edge to the Employee entity by id.
 func (m *EmployeeAuthMutation) SetEmployeeID(id uuid.UUID) {
 	m.employee = &id
@@ -6575,6 +8879,46 @@ func (m *EmployeeAuthMutation) ResetEmployee() {
 	m.clearedemployee = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *EmployeeAuthMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *EmployeeAuthMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[employeeauth.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *EmployeeAuthMutation) TenantCleared() bool {
+	return m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *EmployeeAuthMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *EmployeeAuthMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *EmployeeAuthMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the EmployeeAuthMutation builder.
 func (m *EmployeeAuthMutation) Where(ps ...predicate.EmployeeAuth) {
 	m.predicates = append(m.predicates, ps...)
@@ -6609,7 +8953,7 @@ func (m *EmployeeAuthMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EmployeeAuthMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, employeeauth.FieldName)
 	}
@@ -6624,6 +8968,9 @@ func (m *EmployeeAuthMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, employeeauth.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, employeeauth.FieldTenantId)
 	}
 	return fields
 }
@@ -6643,6 +8990,8 @@ func (m *EmployeeAuthMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case employeeauth.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case employeeauth.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -6662,6 +9011,8 @@ func (m *EmployeeAuthMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldCreatedAt(ctx)
 	case employeeauth.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case employeeauth.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown EmployeeAuth field %s", name)
 }
@@ -6705,6 +9056,13 @@ func (m *EmployeeAuthMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case employeeauth.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown EmployeeAuth field %s", name)
@@ -6770,15 +9128,21 @@ func (m *EmployeeAuthMutation) ResetField(name string) error {
 	case employeeauth.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case employeeauth.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown EmployeeAuth field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *EmployeeAuthMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.employee != nil {
 		edges = append(edges, employeeauth.EdgeEmployee)
+	}
+	if m.tenant != nil {
+		edges = append(edges, employeeauth.EdgeTenant)
 	}
 	return edges
 }
@@ -6791,13 +9155,17 @@ func (m *EmployeeAuthMutation) AddedIDs(name string) []ent.Value {
 		if id := m.employee; id != nil {
 			return []ent.Value{*id}
 		}
+	case employeeauth.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *EmployeeAuthMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -6809,9 +9177,12 @@ func (m *EmployeeAuthMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *EmployeeAuthMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedemployee {
 		edges = append(edges, employeeauth.EdgeEmployee)
+	}
+	if m.clearedtenant {
+		edges = append(edges, employeeauth.EdgeTenant)
 	}
 	return edges
 }
@@ -6822,6 +9193,8 @@ func (m *EmployeeAuthMutation) EdgeCleared(name string) bool {
 	switch name {
 	case employeeauth.EdgeEmployee:
 		return m.clearedemployee
+	case employeeauth.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -6833,6 +9206,9 @@ func (m *EmployeeAuthMutation) ClearEdge(name string) error {
 	case employeeauth.EdgeEmployee:
 		m.ClearEmployee()
 		return nil
+	case employeeauth.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown EmployeeAuth unique edge %s", name)
 }
@@ -6843,6 +9219,9 @@ func (m *EmployeeAuthMutation) ResetEdge(name string) error {
 	switch name {
 	case employeeauth.EdgeEmployee:
 		m.ResetEmployee()
+		return nil
+	case employeeauth.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown EmployeeAuth edge %s", name)
@@ -6861,6 +9240,8 @@ type FileMutation struct {
 	clearedFields  map[string]struct{}
 	message        *uuid.UUID
 	clearedmessage bool
+	tenant         *uuid.UUID
+	clearedtenant  bool
 	done           bool
 	oldValue       func(context.Context) (*File, error)
 	predicates     []predicate.File
@@ -7127,6 +9508,55 @@ func (m *FileMutation) ResetFileName() {
 	m.fileName = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *FileMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *FileMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *FileMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[file.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *FileMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[file.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *FileMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, file.FieldTenantId)
+}
+
 // SetMessageID sets the "message" edge to the Message entity by id.
 func (m *FileMutation) SetMessageID(id uuid.UUID) {
 	m.message = &id
@@ -7166,6 +9596,46 @@ func (m *FileMutation) ResetMessage() {
 	m.clearedmessage = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *FileMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *FileMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[file.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *FileMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *FileMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *FileMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *FileMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the FileMutation builder.
 func (m *FileMutation) Where(ps ...predicate.File) {
 	m.predicates = append(m.predicates, ps...)
@@ -7200,7 +9670,7 @@ func (m *FileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.url != nil {
 		fields = append(fields, file.FieldURL)
 	}
@@ -7212,6 +9682,9 @@ func (m *FileMutation) Fields() []string {
 	}
 	if m.fileName != nil {
 		fields = append(fields, file.FieldFileName)
+	}
+	if m.tenant != nil {
+		fields = append(fields, file.FieldTenantId)
 	}
 	return fields
 }
@@ -7229,6 +9702,8 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 		return m.MimeType()
 	case file.FieldFileName:
 		return m.FileName()
+	case file.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -7246,6 +9721,8 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldMimeType(ctx)
 	case file.FieldFileName:
 		return m.OldFileName(ctx)
+	case file.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown File field %s", name)
 }
@@ -7283,6 +9760,13 @@ func (m *FileMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFileName(v)
 		return nil
+	case file.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)
 }
@@ -7316,6 +9800,9 @@ func (m *FileMutation) ClearedFields() []string {
 	if m.FieldCleared(file.FieldCaption) {
 		fields = append(fields, file.FieldCaption)
 	}
+	if m.FieldCleared(file.FieldTenantId) {
+		fields = append(fields, file.FieldTenantId)
+	}
 	return fields
 }
 
@@ -7332,6 +9819,9 @@ func (m *FileMutation) ClearField(name string) error {
 	switch name {
 	case file.FieldCaption:
 		m.ClearCaption()
+		return nil
+	case file.FieldTenantId:
+		m.ClearTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown File nullable field %s", name)
@@ -7353,15 +9843,21 @@ func (m *FileMutation) ResetField(name string) error {
 	case file.FieldFileName:
 		m.ResetFileName()
 		return nil
+	case file.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.message != nil {
 		edges = append(edges, file.EdgeMessage)
+	}
+	if m.tenant != nil {
+		edges = append(edges, file.EdgeTenant)
 	}
 	return edges
 }
@@ -7374,13 +9870,17 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 		if id := m.message; id != nil {
 			return []ent.Value{*id}
 		}
+	case file.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -7392,9 +9892,12 @@ func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedmessage {
 		edges = append(edges, file.EdgeMessage)
+	}
+	if m.clearedtenant {
+		edges = append(edges, file.EdgeTenant)
 	}
 	return edges
 }
@@ -7405,6 +9908,8 @@ func (m *FileMutation) EdgeCleared(name string) bool {
 	switch name {
 	case file.EdgeMessage:
 		return m.clearedmessage
+	case file.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -7416,6 +9921,9 @@ func (m *FileMutation) ClearEdge(name string) error {
 	case file.EdgeMessage:
 		m.ClearMessage()
 		return nil
+	case file.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown File unique edge %s", name)
 }
@@ -7426,6 +9934,9 @@ func (m *FileMutation) ResetEdge(name string) error {
 	switch name {
 	case file.EdgeMessage:
 		m.ResetMessage()
+		return nil
+	case file.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown File edge %s", name)
@@ -7452,6 +9963,8 @@ type MessageMutation struct {
 	clearedtext     bool
 	file            *uuid.UUID
 	clearedfile     bool
+	tenant          *uuid.UUID
+	clearedtenant   bool
 	done            bool
 	oldValue        func(context.Context) (*Message, error)
 	predicates      []predicate.Message
@@ -7741,6 +10254,55 @@ func (m *MessageMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *MessageMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *MessageMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Message entity.
+// If the Message object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MessageMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *MessageMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[message.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *MessageMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[message.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *MessageMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, message.FieldTenantId)
+}
+
 // SetChatID sets the "chat" edge to the Chat entity by id.
 func (m *MessageMutation) SetChatID(id uuid.UUID) {
 	m.chat = &id
@@ -7912,6 +10474,46 @@ func (m *MessageMutation) ResetFile() {
 	m.clearedfile = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *MessageMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *MessageMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[message.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *MessageMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *MessageMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *MessageMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *MessageMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the MessageMutation builder.
 func (m *MessageMutation) Where(ps ...predicate.Message) {
 	m.predicates = append(m.predicates, ps...)
@@ -7946,7 +10548,7 @@ func (m *MessageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MessageMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.sentBy != nil {
 		fields = append(fields, message.FieldSentBy)
 	}
@@ -7961,6 +10563,9 @@ func (m *MessageMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, message.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, message.FieldTenantId)
 	}
 	return fields
 }
@@ -7980,6 +10585,8 @@ func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case message.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case message.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -7999,6 +10606,8 @@ func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCreatedAt(ctx)
 	case message.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case message.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Message field %s", name)
 }
@@ -8043,6 +10652,13 @@ func (m *MessageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case message.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
 }
@@ -8072,7 +10688,11 @@ func (m *MessageMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *MessageMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(message.FieldTenantId) {
+		fields = append(fields, message.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -8085,6 +10705,11 @@ func (m *MessageMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *MessageMutation) ClearField(name string) error {
+	switch name {
+	case message.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Message nullable field %s", name)
 }
 
@@ -8107,13 +10732,16 @@ func (m *MessageMutation) ResetField(name string) error {
 	case message.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case message.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *MessageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.chat != nil {
 		edges = append(edges, message.EdgeChat)
 	}
@@ -8125,6 +10753,9 @@ func (m *MessageMutation) AddedEdges() []string {
 	}
 	if m.file != nil {
 		edges = append(edges, message.EdgeFile)
+	}
+	if m.tenant != nil {
+		edges = append(edges, message.EdgeTenant)
 	}
 	return edges
 }
@@ -8151,13 +10782,17 @@ func (m *MessageMutation) AddedIDs(name string) []ent.Value {
 		if id := m.file; id != nil {
 			return []ent.Value{*id}
 		}
+	case message.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MessageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.removedemployee != nil {
 		edges = append(edges, message.EdgeEmployee)
 	}
@@ -8180,7 +10815,7 @@ func (m *MessageMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *MessageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.clearedchat {
 		edges = append(edges, message.EdgeChat)
 	}
@@ -8192,6 +10827,9 @@ func (m *MessageMutation) ClearedEdges() []string {
 	}
 	if m.clearedfile {
 		edges = append(edges, message.EdgeFile)
+	}
+	if m.clearedtenant {
+		edges = append(edges, message.EdgeTenant)
 	}
 	return edges
 }
@@ -8208,6 +10846,8 @@ func (m *MessageMutation) EdgeCleared(name string) bool {
 		return m.clearedtext
 	case message.EdgeFile:
 		return m.clearedfile
+	case message.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -8224,6 +10864,9 @@ func (m *MessageMutation) ClearEdge(name string) error {
 		return nil
 	case message.EdgeFile:
 		m.ClearFile()
+		return nil
+	case message.EdgeTenant:
+		m.ClearTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown Message unique edge %s", name)
@@ -8245,6 +10888,9 @@ func (m *MessageMutation) ResetEdge(name string) error {
 	case message.EdgeFile:
 		m.ResetFile()
 		return nil
+	case message.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Message edge %s", name)
 }
@@ -8259,6 +10905,8 @@ type PipelineMutation struct {
 	createdAt     *time.Time
 	updatedAt     *time.Time
 	clearedFields map[string]struct{}
+	tenant        *uuid.UUID
+	clearedtenant bool
 	stages        map[uuid.UUID]struct{}
 	removedstages map[uuid.UUID]struct{}
 	clearedstages bool
@@ -8479,6 +11127,95 @@ func (m *PipelineMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *PipelineMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *PipelineMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Pipeline entity.
+// If the Pipeline object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PipelineMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *PipelineMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[pipeline.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *PipelineMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[pipeline.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *PipelineMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, pipeline.FieldTenantId)
+}
+
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *PipelineMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *PipelineMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[pipeline.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *PipelineMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *PipelineMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *PipelineMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *PipelineMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // AddStageIDs adds the "stages" edge to the Stage entity by ids.
 func (m *PipelineMutation) AddStageIDs(ids ...uuid.UUID) {
 	if m.stages == nil {
@@ -8567,7 +11304,7 @@ func (m *PipelineMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PipelineMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, pipeline.FieldName)
 	}
@@ -8576,6 +11313,9 @@ func (m *PipelineMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, pipeline.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, pipeline.FieldTenantId)
 	}
 	return fields
 }
@@ -8591,6 +11331,8 @@ func (m *PipelineMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case pipeline.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case pipeline.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -8606,6 +11348,8 @@ func (m *PipelineMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case pipeline.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case pipeline.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Pipeline field %s", name)
 }
@@ -8636,6 +11380,13 @@ func (m *PipelineMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case pipeline.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Pipeline field %s", name)
 }
@@ -8665,7 +11416,11 @@ func (m *PipelineMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *PipelineMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(pipeline.FieldTenantId) {
+		fields = append(fields, pipeline.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -8678,6 +11433,11 @@ func (m *PipelineMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *PipelineMutation) ClearField(name string) error {
+	switch name {
+	case pipeline.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Pipeline nullable field %s", name)
 }
 
@@ -8694,13 +11454,19 @@ func (m *PipelineMutation) ResetField(name string) error {
 	case pipeline.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case pipeline.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Pipeline field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *PipelineMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.tenant != nil {
+		edges = append(edges, pipeline.EdgeTenant)
+	}
 	if m.stages != nil {
 		edges = append(edges, pipeline.EdgeStages)
 	}
@@ -8711,6 +11477,10 @@ func (m *PipelineMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *PipelineMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case pipeline.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	case pipeline.EdgeStages:
 		ids := make([]ent.Value, 0, len(m.stages))
 		for id := range m.stages {
@@ -8723,7 +11493,7 @@ func (m *PipelineMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PipelineMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedstages != nil {
 		edges = append(edges, pipeline.EdgeStages)
 	}
@@ -8746,7 +11516,10 @@ func (m *PipelineMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *PipelineMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.clearedtenant {
+		edges = append(edges, pipeline.EdgeTenant)
+	}
 	if m.clearedstages {
 		edges = append(edges, pipeline.EdgeStages)
 	}
@@ -8757,6 +11530,8 @@ func (m *PipelineMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *PipelineMutation) EdgeCleared(name string) bool {
 	switch name {
+	case pipeline.EdgeTenant:
+		return m.clearedtenant
 	case pipeline.EdgeStages:
 		return m.clearedstages
 	}
@@ -8767,6 +11542,9 @@ func (m *PipelineMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *PipelineMutation) ClearEdge(name string) error {
 	switch name {
+	case pipeline.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Pipeline unique edge %s", name)
 }
@@ -8775,6 +11553,9 @@ func (m *PipelineMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *PipelineMutation) ResetEdge(name string) error {
 	switch name {
+	case pipeline.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	case pipeline.EdgeStages:
 		m.ResetStages()
 		return nil
@@ -8802,6 +11583,8 @@ type QueueMutation struct {
 	department        map[uuid.UUID]struct{}
 	removeddepartment map[uuid.UUID]struct{}
 	cleareddepartment bool
+	tenant            *uuid.UUID
+	clearedtenant     bool
 	done              bool
 	oldValue          func(context.Context) (*Queue, error)
 	predicates        []predicate.Queue
@@ -9055,6 +11838,55 @@ func (m *QueueMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *QueueMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *QueueMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Queue entity.
+// If the Queue object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *QueueMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *QueueMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[queue.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *QueueMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[queue.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *QueueMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, queue.FieldTenantId)
+}
+
 // AddStageIDs adds the "stages" edge to the Stage entity by ids.
 func (m *QueueMutation) AddStageIDs(ids ...uuid.UUID) {
 	if m.stages == nil {
@@ -9217,6 +12049,46 @@ func (m *QueueMutation) ResetDepartment() {
 	m.removeddepartment = nil
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *QueueMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *QueueMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[queue.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *QueueMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *QueueMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *QueueMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *QueueMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the QueueMutation builder.
 func (m *QueueMutation) Where(ps ...predicate.Queue) {
 	m.predicates = append(m.predicates, ps...)
@@ -9251,7 +12123,7 @@ func (m *QueueMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *QueueMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.name != nil {
 		fields = append(fields, queue.FieldName)
 	}
@@ -9263,6 +12135,9 @@ func (m *QueueMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, queue.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, queue.FieldTenantId)
 	}
 	return fields
 }
@@ -9280,6 +12155,8 @@ func (m *QueueMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case queue.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case queue.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -9297,6 +12174,8 @@ func (m *QueueMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldCreatedAt(ctx)
 	case queue.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case queue.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Queue field %s", name)
 }
@@ -9334,6 +12213,13 @@ func (m *QueueMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case queue.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Queue field %s", name)
 }
@@ -9363,7 +12249,11 @@ func (m *QueueMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *QueueMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(queue.FieldTenantId) {
+		fields = append(fields, queue.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -9376,6 +12266,11 @@ func (m *QueueMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *QueueMutation) ClearField(name string) error {
+	switch name {
+	case queue.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Queue nullable field %s", name)
 }
 
@@ -9395,13 +12290,16 @@ func (m *QueueMutation) ResetField(name string) error {
 	case queue.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case queue.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Queue field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *QueueMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.stages != nil {
 		edges = append(edges, queue.EdgeStages)
 	}
@@ -9410,6 +12308,9 @@ func (m *QueueMutation) AddedEdges() []string {
 	}
 	if m.department != nil {
 		edges = append(edges, queue.EdgeDepartment)
+	}
+	if m.tenant != nil {
+		edges = append(edges, queue.EdgeTenant)
 	}
 	return edges
 }
@@ -9436,13 +12337,17 @@ func (m *QueueMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case queue.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *QueueMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedstages != nil {
 		edges = append(edges, queue.EdgeStages)
 	}
@@ -9483,7 +12388,7 @@ func (m *QueueMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *QueueMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedstages {
 		edges = append(edges, queue.EdgeStages)
 	}
@@ -9492,6 +12397,9 @@ func (m *QueueMutation) ClearedEdges() []string {
 	}
 	if m.cleareddepartment {
 		edges = append(edges, queue.EdgeDepartment)
+	}
+	if m.clearedtenant {
+		edges = append(edges, queue.EdgeTenant)
 	}
 	return edges
 }
@@ -9506,6 +12414,8 @@ func (m *QueueMutation) EdgeCleared(name string) bool {
 		return m.clearedemployees
 	case queue.EdgeDepartment:
 		return m.cleareddepartment
+	case queue.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -9514,6 +12424,9 @@ func (m *QueueMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *QueueMutation) ClearEdge(name string) error {
 	switch name {
+	case queue.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Queue unique edge %s", name)
 }
@@ -9531,6 +12444,9 @@ func (m *QueueMutation) ResetEdge(name string) error {
 	case queue.EdgeDepartment:
 		m.ResetDepartment()
 		return nil
+	case queue.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Queue edge %s", name)
 }
@@ -9547,6 +12463,8 @@ type RbacMutation struct {
 	clearedFields     map[string]struct{}
 	department        *uuid.UUID
 	cleareddepartment bool
+	tenant            *uuid.UUID
+	clearedtenant     bool
 	done              bool
 	oldValue          func(context.Context) (*Rbac, error)
 	predicates        []predicate.Rbac
@@ -9764,6 +12682,55 @@ func (m *RbacMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *RbacMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *RbacMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Rbac entity.
+// If the Rbac object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RbacMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *RbacMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[rbac.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *RbacMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[rbac.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *RbacMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, rbac.FieldTenantId)
+}
+
 // SetDepartmentID sets the "department" edge to the Department entity by id.
 func (m *RbacMutation) SetDepartmentID(id uuid.UUID) {
 	m.department = &id
@@ -9803,6 +12770,46 @@ func (m *RbacMutation) ResetDepartment() {
 	m.cleareddepartment = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *RbacMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *RbacMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[rbac.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *RbacMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *RbacMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *RbacMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *RbacMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the RbacMutation builder.
 func (m *RbacMutation) Where(ps ...predicate.Rbac) {
 	m.predicates = append(m.predicates, ps...)
@@ -9837,7 +12844,7 @@ func (m *RbacMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RbacMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.access != nil {
 		fields = append(fields, rbac.FieldAccess)
 	}
@@ -9846,6 +12853,9 @@ func (m *RbacMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, rbac.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, rbac.FieldTenantId)
 	}
 	return fields
 }
@@ -9861,6 +12871,8 @@ func (m *RbacMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case rbac.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case rbac.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -9876,6 +12888,8 @@ func (m *RbacMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCreatedAt(ctx)
 	case rbac.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case rbac.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Rbac field %s", name)
 }
@@ -9906,6 +12920,13 @@ func (m *RbacMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case rbac.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Rbac field %s", name)
 }
@@ -9935,7 +12956,11 @@ func (m *RbacMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RbacMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(rbac.FieldTenantId) {
+		fields = append(fields, rbac.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -9948,6 +12973,11 @@ func (m *RbacMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RbacMutation) ClearField(name string) error {
+	switch name {
+	case rbac.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Rbac nullable field %s", name)
 }
 
@@ -9964,15 +12994,21 @@ func (m *RbacMutation) ResetField(name string) error {
 	case rbac.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case rbac.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Rbac field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *RbacMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.department != nil {
 		edges = append(edges, rbac.EdgeDepartment)
+	}
+	if m.tenant != nil {
+		edges = append(edges, rbac.EdgeTenant)
 	}
 	return edges
 }
@@ -9985,13 +13021,17 @@ func (m *RbacMutation) AddedIDs(name string) []ent.Value {
 		if id := m.department; id != nil {
 			return []ent.Value{*id}
 		}
+	case rbac.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RbacMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -10003,9 +13043,12 @@ func (m *RbacMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *RbacMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.cleareddepartment {
 		edges = append(edges, rbac.EdgeDepartment)
+	}
+	if m.clearedtenant {
+		edges = append(edges, rbac.EdgeTenant)
 	}
 	return edges
 }
@@ -10016,6 +13059,8 @@ func (m *RbacMutation) EdgeCleared(name string) bool {
 	switch name {
 	case rbac.EdgeDepartment:
 		return m.cleareddepartment
+	case rbac.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -10027,6 +13072,9 @@ func (m *RbacMutation) ClearEdge(name string) error {
 	case rbac.EdgeDepartment:
 		m.ClearDepartment()
 		return nil
+	case rbac.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Rbac unique edge %s", name)
 }
@@ -10037,6 +13085,9 @@ func (m *RbacMutation) ResetEdge(name string) error {
 	switch name {
 	case rbac.EdgeDepartment:
 		m.ResetDepartment()
+		return nil
+	case rbac.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown Rbac edge %s", name)
@@ -10061,6 +13112,8 @@ type StageMutation struct {
 	cleareddeals    bool
 	queue           *uuid.UUID
 	clearedqueue    bool
+	tenant          *uuid.UUID
+	clearedtenant   bool
 	done            bool
 	oldValue        func(context.Context) (*Stage, error)
 	predicates      []predicate.Stage
@@ -10350,6 +13403,55 @@ func (m *StageMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *StageMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *StageMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Stage entity.
+// If the Stage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StageMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *StageMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[stage.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *StageMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[stage.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *StageMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, stage.FieldTenantId)
+}
+
 // SetPipelineID sets the "pipeline" edge to the Pipeline entity by id.
 func (m *StageMutation) SetPipelineID(id uuid.UUID) {
 	m.pipeline = &id
@@ -10482,6 +13584,46 @@ func (m *StageMutation) ResetQueue() {
 	m.clearedqueue = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *StageMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *StageMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[stage.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *StageMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *StageMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *StageMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *StageMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the StageMutation builder.
 func (m *StageMutation) Where(ps ...predicate.Stage) {
 	m.predicates = append(m.predicates, ps...)
@@ -10516,7 +13658,7 @@ func (m *StageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StageMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, stage.FieldName)
 	}
@@ -10531,6 +13673,9 @@ func (m *StageMutation) Fields() []string {
 	}
 	if m.updatedAt != nil {
 		fields = append(fields, stage.FieldUpdatedAt)
+	}
+	if m.tenant != nil {
+		fields = append(fields, stage.FieldTenantId)
 	}
 	return fields
 }
@@ -10550,6 +13695,8 @@ func (m *StageMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case stage.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case stage.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -10569,6 +13716,8 @@ func (m *StageMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldCreatedAt(ctx)
 	case stage.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case stage.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Stage field %s", name)
 }
@@ -10613,6 +13762,13 @@ func (m *StageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case stage.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Stage field %s", name)
 }
@@ -10642,7 +13798,11 @@ func (m *StageMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *StageMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(stage.FieldTenantId) {
+		fields = append(fields, stage.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -10655,6 +13815,11 @@ func (m *StageMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *StageMutation) ClearField(name string) error {
+	switch name {
+	case stage.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Stage nullable field %s", name)
 }
 
@@ -10677,13 +13842,16 @@ func (m *StageMutation) ResetField(name string) error {
 	case stage.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case stage.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Stage field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *StageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.pipeline != nil {
 		edges = append(edges, stage.EdgePipeline)
 	}
@@ -10692,6 +13860,9 @@ func (m *StageMutation) AddedEdges() []string {
 	}
 	if m.queue != nil {
 		edges = append(edges, stage.EdgeQueue)
+	}
+	if m.tenant != nil {
+		edges = append(edges, stage.EdgeTenant)
 	}
 	return edges
 }
@@ -10714,13 +13885,17 @@ func (m *StageMutation) AddedIDs(name string) []ent.Value {
 		if id := m.queue; id != nil {
 			return []ent.Value{*id}
 		}
+	case stage.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *StageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removeddeals != nil {
 		edges = append(edges, stage.EdgeDeals)
 	}
@@ -10743,7 +13918,7 @@ func (m *StageMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *StageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedpipeline {
 		edges = append(edges, stage.EdgePipeline)
 	}
@@ -10752,6 +13927,9 @@ func (m *StageMutation) ClearedEdges() []string {
 	}
 	if m.clearedqueue {
 		edges = append(edges, stage.EdgeQueue)
+	}
+	if m.clearedtenant {
+		edges = append(edges, stage.EdgeTenant)
 	}
 	return edges
 }
@@ -10766,6 +13944,8 @@ func (m *StageMutation) EdgeCleared(name string) bool {
 		return m.cleareddeals
 	case stage.EdgeQueue:
 		return m.clearedqueue
+	case stage.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -10779,6 +13959,9 @@ func (m *StageMutation) ClearEdge(name string) error {
 		return nil
 	case stage.EdgeQueue:
 		m.ClearQueue()
+		return nil
+	case stage.EdgeTenant:
+		m.ClearTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown Stage unique edge %s", name)
@@ -10797,6 +13980,9 @@ func (m *StageMutation) ResetEdge(name string) error {
 	case stage.EdgeQueue:
 		m.ResetQueue()
 		return nil
+	case stage.EdgeTenant:
+		m.ResetTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Stage edge %s", name)
 }
@@ -10811,6 +13997,8 @@ type TextMutation struct {
 	clearedFields  map[string]struct{}
 	message        *uuid.UUID
 	clearedmessage bool
+	tenant         *uuid.UUID
+	clearedtenant  bool
 	done           bool
 	oldValue       func(context.Context) (*Text, error)
 	predicates     []predicate.Text
@@ -10956,6 +14144,55 @@ func (m *TextMutation) ResetText() {
 	m.text = nil
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *TextMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *TextMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Text entity.
+// If the Text object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TextMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ClearTenantId clears the value of the "tenantId" field.
+func (m *TextMutation) ClearTenantId() {
+	m.tenant = nil
+	m.clearedFields[text.FieldTenantId] = struct{}{}
+}
+
+// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
+func (m *TextMutation) TenantIdCleared() bool {
+	_, ok := m.clearedFields[text.FieldTenantId]
+	return ok
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *TextMutation) ResetTenantId() {
+	m.tenant = nil
+	delete(m.clearedFields, text.FieldTenantId)
+}
+
 // SetMessageID sets the "message" edge to the Message entity by id.
 func (m *TextMutation) SetMessageID(id uuid.UUID) {
 	m.message = &id
@@ -10995,6 +14232,46 @@ func (m *TextMutation) ResetMessage() {
 	m.clearedmessage = false
 }
 
+// SetTenantID sets the "tenant" edge to the Company entity by id.
+func (m *TextMutation) SetTenantID(id uuid.UUID) {
+	m.tenant = &id
+}
+
+// ClearTenant clears the "tenant" edge to the Company entity.
+func (m *TextMutation) ClearTenant() {
+	m.clearedtenant = true
+	m.clearedFields[text.FieldTenantId] = struct{}{}
+}
+
+// TenantCleared reports if the "tenant" edge to the Company entity was cleared.
+func (m *TextMutation) TenantCleared() bool {
+	return m.TenantIdCleared() || m.clearedtenant
+}
+
+// TenantID returns the "tenant" edge ID in the mutation.
+func (m *TextMutation) TenantID() (id uuid.UUID, exists bool) {
+	if m.tenant != nil {
+		return *m.tenant, true
+	}
+	return
+}
+
+// TenantIDs returns the "tenant" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TenantID instead. It exists only for internal usage by the builders.
+func (m *TextMutation) TenantIDs() (ids []uuid.UUID) {
+	if id := m.tenant; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTenant resets all changes to the "tenant" edge.
+func (m *TextMutation) ResetTenant() {
+	m.tenant = nil
+	m.clearedtenant = false
+}
+
 // Where appends a list predicates to the TextMutation builder.
 func (m *TextMutation) Where(ps ...predicate.Text) {
 	m.predicates = append(m.predicates, ps...)
@@ -11029,9 +14306,12 @@ func (m *TextMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TextMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
 	if m.text != nil {
 		fields = append(fields, text.FieldText)
+	}
+	if m.tenant != nil {
+		fields = append(fields, text.FieldTenantId)
 	}
 	return fields
 }
@@ -11043,6 +14323,8 @@ func (m *TextMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case text.FieldText:
 		return m.Text()
+	case text.FieldTenantId:
+		return m.TenantId()
 	}
 	return nil, false
 }
@@ -11054,6 +14336,8 @@ func (m *TextMutation) OldField(ctx context.Context, name string) (ent.Value, er
 	switch name {
 	case text.FieldText:
 		return m.OldText(ctx)
+	case text.FieldTenantId:
+		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Text field %s", name)
 }
@@ -11069,6 +14353,13 @@ func (m *TextMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetText(v)
+		return nil
+	case text.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Text field %s", name)
@@ -11099,7 +14390,11 @@ func (m *TextMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *TextMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(text.FieldTenantId) {
+		fields = append(fields, text.FieldTenantId)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -11112,6 +14407,11 @@ func (m *TextMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *TextMutation) ClearField(name string) error {
+	switch name {
+	case text.FieldTenantId:
+		m.ClearTenantId()
+		return nil
+	}
 	return fmt.Errorf("unknown Text nullable field %s", name)
 }
 
@@ -11122,15 +14422,21 @@ func (m *TextMutation) ResetField(name string) error {
 	case text.FieldText:
 		m.ResetText()
 		return nil
+	case text.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	}
 	return fmt.Errorf("unknown Text field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *TextMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.message != nil {
 		edges = append(edges, text.EdgeMessage)
+	}
+	if m.tenant != nil {
+		edges = append(edges, text.EdgeTenant)
 	}
 	return edges
 }
@@ -11143,13 +14449,17 @@ func (m *TextMutation) AddedIDs(name string) []ent.Value {
 		if id := m.message; id != nil {
 			return []ent.Value{*id}
 		}
+	case text.EdgeTenant:
+		if id := m.tenant; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TextMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -11161,9 +14471,12 @@ func (m *TextMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *TextMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedmessage {
 		edges = append(edges, text.EdgeMessage)
+	}
+	if m.clearedtenant {
+		edges = append(edges, text.EdgeTenant)
 	}
 	return edges
 }
@@ -11174,6 +14487,8 @@ func (m *TextMutation) EdgeCleared(name string) bool {
 	switch name {
 	case text.EdgeMessage:
 		return m.clearedmessage
+	case text.EdgeTenant:
+		return m.clearedtenant
 	}
 	return false
 }
@@ -11185,6 +14500,9 @@ func (m *TextMutation) ClearEdge(name string) error {
 	case text.EdgeMessage:
 		m.ClearMessage()
 		return nil
+	case text.EdgeTenant:
+		m.ClearTenant()
+		return nil
 	}
 	return fmt.Errorf("unknown Text unique edge %s", name)
 }
@@ -11195,6 +14513,9 @@ func (m *TextMutation) ResetEdge(name string) error {
 	switch name {
 	case text.EdgeMessage:
 		m.ResetMessage()
+		return nil
+	case text.EdgeTenant:
+		m.ResetTenant()
 		return nil
 	}
 	return fmt.Errorf("unknown Text edge %s", name)

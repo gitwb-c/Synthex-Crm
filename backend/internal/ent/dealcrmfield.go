@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
@@ -26,6 +27,8 @@ type DealCrmField struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DealCrmFieldQuery when eager-loading is set.
 	Edges                    DealCrmFieldEdges `json:"edges"`
@@ -40,11 +43,13 @@ type DealCrmFieldEdges struct {
 	Deal *Deal `json:"deal,omitempty"`
 	// CrmField holds the value of the crmField edge.
 	CrmField *CrmField `json:"crmField,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 }
 
 // DealOrErr returns the Deal value or an error if the edge
@@ -69,6 +74,17 @@ func (e DealCrmFieldEdges) CrmFieldOrErr() (*CrmField, error) {
 	return nil, &NotLoadedError{edge: "crmField"}
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DealCrmFieldEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*DealCrmField) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -78,7 +94,7 @@ func (*DealCrmField) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case dealcrmfield.FieldCreatedAt, dealcrmfield.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case dealcrmfield.FieldID:
+		case dealcrmfield.FieldID, dealcrmfield.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		case dealcrmfield.ForeignKeys[0]: // deal_crm_field_deal
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
@@ -123,6 +139,12 @@ func (_m *DealCrmField) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case dealcrmfield.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case dealcrmfield.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field deal_crm_field_deal", values[i])
@@ -160,6 +182,11 @@ func (_m *DealCrmField) QueryCrmField() *CrmFieldQuery {
 	return NewDealCrmFieldClient(_m.config).QueryCrmField(_m)
 }
 
+// QueryTenant queries the "tenant" edge of the DealCrmField entity.
+func (_m *DealCrmField) QueryTenant() *CompanyQuery {
+	return NewDealCrmFieldClient(_m.config).QueryTenant(_m)
+}
+
 // Update returns a builder for updating this DealCrmField.
 // Note that you need to call DealCrmField.Unwrap() before calling this method if this DealCrmField
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -191,6 +218,9 @@ func (_m *DealCrmField) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

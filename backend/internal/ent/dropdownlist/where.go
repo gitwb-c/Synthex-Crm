@@ -71,6 +71,11 @@ func UpdatedAt(v time.Time) predicate.DropdownList {
 	return predicate.DropdownList(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldEQ(FieldTenantId, v))
+}
+
 // ValueEQ applies the EQ predicate on the "value" field.
 func ValueEQ(v string) predicate.DropdownList {
 	return predicate.DropdownList(sql.FieldEQ(FieldValue, v))
@@ -216,6 +221,36 @@ func UpdatedAtLTE(v time.Time) predicate.DropdownList {
 	return predicate.DropdownList(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldNotIn(FieldTenantId, vs...))
+}
+
+// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
+func TenantIdIsNil() predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldIsNull(FieldTenantId))
+}
+
+// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
+func TenantIdNotNil() predicate.DropdownList {
+	return predicate.DropdownList(sql.FieldNotNull(FieldTenantId))
+}
+
 // HasCrmField applies the HasEdge predicate on the "crmField" edge.
 func HasCrmField() predicate.DropdownList {
 	return predicate.DropdownList(func(s *sql.Selector) {
@@ -231,6 +266,29 @@ func HasCrmField() predicate.DropdownList {
 func HasCrmFieldWith(preds ...predicate.CrmField) predicate.DropdownList {
 	return predicate.DropdownList(func(s *sql.Selector) {
 		step := newCrmFieldStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTenant applies the HasEdge predicate on the "tenant" edge.
+func HasTenant() predicate.DropdownList {
+	return predicate.DropdownList(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTenantWith applies the HasEdge predicate on the "tenant" edge with a given conditions (other predicates).
+func HasTenantWith(preds ...predicate.Company) predicate.DropdownList {
+	return predicate.DropdownList(func(s *sql.Selector) {
+		step := newTenantStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

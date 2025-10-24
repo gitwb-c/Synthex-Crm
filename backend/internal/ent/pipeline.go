@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/google/uuid"
 )
@@ -24,6 +25,8 @@ type Pipeline struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PipelineQuery when eager-loading is set.
 	Edges        PipelineEdges `json:"edges"`
@@ -32,21 +35,34 @@ type Pipeline struct {
 
 // PipelineEdges holds the relations/edges for other nodes in the graph.
 type PipelineEdges struct {
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// Stages holds the value of the stages edge.
 	Stages []*Stage `json:"stages,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 
 	namedStages map[string][]*Stage
+}
+
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PipelineEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
 }
 
 // StagesOrErr returns the Stages value or an error if the edge
 // was not loaded in eager-loading.
 func (e PipelineEdges) StagesOrErr() ([]*Stage, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Stages, nil
 	}
 	return nil, &NotLoadedError{edge: "stages"}
@@ -61,7 +77,7 @@ func (*Pipeline) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case pipeline.FieldCreatedAt, pipeline.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case pipeline.FieldID:
+		case pipeline.FieldID, pipeline.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -102,6 +118,12 @@ func (_m *Pipeline) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case pipeline.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -113,6 +135,11 @@ func (_m *Pipeline) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Pipeline) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryTenant queries the "tenant" edge of the Pipeline entity.
+func (_m *Pipeline) QueryTenant() *CompanyQuery {
+	return NewPipelineClient(_m.config).QueryTenant(_m)
 }
 
 // QueryStages queries the "stages" edge of the Pipeline entity.
@@ -151,6 +178,9 @@ func (_m *Pipeline) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

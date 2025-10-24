@@ -10,6 +10,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
 	"github.com/gitwb-c/crm.saas/backend/pkg/auth"
 	"github.com/gitwb-c/crm.saas/backend/pkg/jwtpkg"
+	"github.com/google/uuid"
 )
 
 type EmployeeAuthService struct {
@@ -40,7 +41,7 @@ func (s *EmployeeAuthService) ValidateLogin(ctx context.Context, email string, p
 	}
 	tokenStr, err := jwtpkg.GenerateToken(
 		employeeAuth.Edges.Employee.ID.String(),
-		employeeAuth.Edges.Employee.Edges.Company.ID.String(),
+		employeeAuth.Edges.Employee.Edges.Tenant.ID.String(),
 		employeeAuth.Edges.Employee.Edges.Department.ID.String(),
 	)
 	if err != nil {
@@ -81,8 +82,8 @@ func (s *EmployeeAuthService) UpdateID(ctx context.Context, id string, input ent
 	return employeeAuth, nil
 }
 
-func (s *EmployeeAuthService) DeleteID(ctx context.Context, id string) error {
-	err := s.repository.DeleteID(ctx, id)
+func (s *EmployeeAuthService) Delete(ctx context.Context, ids []uuid.UUID) error {
+	err := s.repository.Delete(ctx, ids)
 	if err != nil {
 		return err
 	}

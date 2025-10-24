@@ -5,6 +5,7 @@ import (
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
+	"github.com/google/uuid"
 )
 
 type RbacService struct {
@@ -39,8 +40,8 @@ func (s *RbacService) UpdateID(ctx context.Context, id string, input ent.UpdateR
 	}
 	return chat, nil
 }
-func (s *RbacService) DeleteID(ctx context.Context, id string) error {
-	err := s.repository.DeleteID(ctx, id)
+func (s *RbacService) Delete(ctx context.Context, ids []uuid.UUID) error {
+	err := s.repository.Delete(ctx, ids)
 	if err != nil {
 		return err
 	}

@@ -23,10 +23,12 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// EdgeEmployeeAuth holds the string denoting the employeeauth edge name in mutations.
 	EdgeEmployeeAuth = "employeeAuth"
-	// EdgeCompany holds the string denoting the company edge name in mutations.
-	EdgeCompany = "company"
+	// EdgeTenant holds the string denoting the tenant edge name in mutations.
+	EdgeTenant = "tenant"
 	// EdgeDepartment holds the string denoting the department edge name in mutations.
 	EdgeDepartment = "department"
 	// EdgeChat holds the string denoting the chat edge name in mutations.
@@ -44,13 +46,13 @@ const (
 	EmployeeAuthInverseTable = "employee_auths"
 	// EmployeeAuthColumn is the table column denoting the employeeAuth relation/edge.
 	EmployeeAuthColumn = "employee_employee_auth"
-	// CompanyTable is the table that holds the company relation/edge.
-	CompanyTable = "employees"
-	// CompanyInverseTable is the table name for the Company entity.
+	// TenantTable is the table that holds the tenant relation/edge.
+	TenantTable = "employees"
+	// TenantInverseTable is the table name for the Company entity.
 	// It exists in this package in order to avoid circular dependency with the "company" package.
-	CompanyInverseTable = "companies"
-	// CompanyColumn is the table column denoting the company relation/edge.
-	CompanyColumn = "employee_company"
+	TenantInverseTable = "companies"
+	// TenantColumn is the table column denoting the tenant relation/edge.
+	TenantColumn = "tenant_id"
 	// DepartmentTable is the table that holds the department relation/edge.
 	DepartmentTable = "employees"
 	// DepartmentInverseTable is the table name for the Department entity.
@@ -82,12 +84,12 @@ var Columns = []string{
 	FieldActive,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "employees"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"employee_company",
 	"employee_department",
 }
 
@@ -161,6 +163,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByEmployeeAuthField orders the results by employeeAuth field.
 func ByEmployeeAuthField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -168,10 +175,10 @@ func ByEmployeeAuthField(field string, opts ...sql.OrderTermOption) OrderOption 
 	}
 }
 
-// ByCompanyField orders the results by company field.
-func ByCompanyField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByTenantField orders the results by tenant field.
+func ByTenantField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCompanyStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newTenantStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -230,11 +237,11 @@ func newEmployeeAuthStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2O, false, EmployeeAuthTable, EmployeeAuthColumn),
 	)
 }
-func newCompanyStep() *sqlgraph.Step {
+func newTenantStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(CompanyInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, CompanyTable, CompanyColumn),
+		sqlgraph.To(TenantInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
 	)
 }
 func newDepartmentStep() *sqlgraph.Step {

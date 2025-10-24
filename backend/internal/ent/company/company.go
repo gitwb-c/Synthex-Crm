@@ -21,17 +21,152 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeEmployee holds the string denoting the employee edge name in mutations.
-	EdgeEmployee = "employee"
+	// EdgeEmployees holds the string denoting the employees edge name in mutations.
+	EdgeEmployees = "employees"
+	// EdgeCostumers holds the string denoting the costumers edge name in mutations.
+	EdgeCostumers = "costumers"
+	// EdgeDeals holds the string denoting the deals edge name in mutations.
+	EdgeDeals = "deals"
+	// EdgeChats holds the string denoting the chats edge name in mutations.
+	EdgeChats = "chats"
+	// EdgeDepartments holds the string denoting the departments edge name in mutations.
+	EdgeDepartments = "departments"
+	// EdgePipelines holds the string denoting the pipelines edge name in mutations.
+	EdgePipelines = "pipelines"
+	// EdgeCrmFields holds the string denoting the crmfields edge name in mutations.
+	EdgeCrmFields = "crmFields"
+	// EdgeDealCrmFields holds the string denoting the dealcrmfields edge name in mutations.
+	EdgeDealCrmFields = "dealCrmFields"
+	// EdgeDropdownLists holds the string denoting the dropdownlists edge name in mutations.
+	EdgeDropdownLists = "dropdownLists"
+	// EdgeEmployeeAuths holds the string denoting the employeeauths edge name in mutations.
+	EdgeEmployeeAuths = "employeeAuths"
+	// EdgeFiles holds the string denoting the files edge name in mutations.
+	EdgeFiles = "files"
+	// EdgeMessages holds the string denoting the messages edge name in mutations.
+	EdgeMessages = "messages"
+	// EdgeQueues holds the string denoting the queues edge name in mutations.
+	EdgeQueues = "queues"
+	// EdgeRbacs holds the string denoting the rbacs edge name in mutations.
+	EdgeRbacs = "rbacs"
+	// EdgeStages holds the string denoting the stages edge name in mutations.
+	EdgeStages = "stages"
+	// EdgeTexts holds the string denoting the texts edge name in mutations.
+	EdgeTexts = "texts"
 	// Table holds the table name of the company in the database.
 	Table = "companies"
-	// EmployeeTable is the table that holds the employee relation/edge.
-	EmployeeTable = "employees"
-	// EmployeeInverseTable is the table name for the Employee entity.
+	// EmployeesTable is the table that holds the employees relation/edge.
+	EmployeesTable = "employees"
+	// EmployeesInverseTable is the table name for the Employee entity.
 	// It exists in this package in order to avoid circular dependency with the "employee" package.
-	EmployeeInverseTable = "employees"
-	// EmployeeColumn is the table column denoting the employee relation/edge.
-	EmployeeColumn = "employee_company"
+	EmployeesInverseTable = "employees"
+	// EmployeesColumn is the table column denoting the employees relation/edge.
+	EmployeesColumn = "tenant_id"
+	// CostumersTable is the table that holds the costumers relation/edge.
+	CostumersTable = "costumers"
+	// CostumersInverseTable is the table name for the Costumer entity.
+	// It exists in this package in order to avoid circular dependency with the "costumer" package.
+	CostumersInverseTable = "costumers"
+	// CostumersColumn is the table column denoting the costumers relation/edge.
+	CostumersColumn = "tenant_id"
+	// DealsTable is the table that holds the deals relation/edge.
+	DealsTable = "deals"
+	// DealsInverseTable is the table name for the Deal entity.
+	// It exists in this package in order to avoid circular dependency with the "deal" package.
+	DealsInverseTable = "deals"
+	// DealsColumn is the table column denoting the deals relation/edge.
+	DealsColumn = "tenant_id"
+	// ChatsTable is the table that holds the chats relation/edge.
+	ChatsTable = "chats"
+	// ChatsInverseTable is the table name for the Chat entity.
+	// It exists in this package in order to avoid circular dependency with the "chat" package.
+	ChatsInverseTable = "chats"
+	// ChatsColumn is the table column denoting the chats relation/edge.
+	ChatsColumn = "tenant_id"
+	// DepartmentsTable is the table that holds the departments relation/edge.
+	DepartmentsTable = "departments"
+	// DepartmentsInverseTable is the table name for the Department entity.
+	// It exists in this package in order to avoid circular dependency with the "department" package.
+	DepartmentsInverseTable = "departments"
+	// DepartmentsColumn is the table column denoting the departments relation/edge.
+	DepartmentsColumn = "tenant_id"
+	// PipelinesTable is the table that holds the pipelines relation/edge.
+	PipelinesTable = "pipelines"
+	// PipelinesInverseTable is the table name for the Pipeline entity.
+	// It exists in this package in order to avoid circular dependency with the "pipeline" package.
+	PipelinesInverseTable = "pipelines"
+	// PipelinesColumn is the table column denoting the pipelines relation/edge.
+	PipelinesColumn = "tenant_id"
+	// CrmFieldsTable is the table that holds the crmFields relation/edge.
+	CrmFieldsTable = "crm_fields"
+	// CrmFieldsInverseTable is the table name for the CrmField entity.
+	// It exists in this package in order to avoid circular dependency with the "crmfield" package.
+	CrmFieldsInverseTable = "crm_fields"
+	// CrmFieldsColumn is the table column denoting the crmFields relation/edge.
+	CrmFieldsColumn = "tenant_id"
+	// DealCrmFieldsTable is the table that holds the dealCrmFields relation/edge.
+	DealCrmFieldsTable = "deal_crm_fields"
+	// DealCrmFieldsInverseTable is the table name for the DealCrmField entity.
+	// It exists in this package in order to avoid circular dependency with the "dealcrmfield" package.
+	DealCrmFieldsInverseTable = "deal_crm_fields"
+	// DealCrmFieldsColumn is the table column denoting the dealCrmFields relation/edge.
+	DealCrmFieldsColumn = "tenant_id"
+	// DropdownListsTable is the table that holds the dropdownLists relation/edge.
+	DropdownListsTable = "dropdown_lists"
+	// DropdownListsInverseTable is the table name for the DropdownList entity.
+	// It exists in this package in order to avoid circular dependency with the "dropdownlist" package.
+	DropdownListsInverseTable = "dropdown_lists"
+	// DropdownListsColumn is the table column denoting the dropdownLists relation/edge.
+	DropdownListsColumn = "tenant_id"
+	// EmployeeAuthsTable is the table that holds the employeeAuths relation/edge.
+	EmployeeAuthsTable = "employee_auths"
+	// EmployeeAuthsInverseTable is the table name for the EmployeeAuth entity.
+	// It exists in this package in order to avoid circular dependency with the "employeeauth" package.
+	EmployeeAuthsInverseTable = "employee_auths"
+	// EmployeeAuthsColumn is the table column denoting the employeeAuths relation/edge.
+	EmployeeAuthsColumn = "tenant_id"
+	// FilesTable is the table that holds the files relation/edge.
+	FilesTable = "files"
+	// FilesInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	FilesInverseTable = "files"
+	// FilesColumn is the table column denoting the files relation/edge.
+	FilesColumn = "tenant_id"
+	// MessagesTable is the table that holds the messages relation/edge.
+	MessagesTable = "messages"
+	// MessagesInverseTable is the table name for the Message entity.
+	// It exists in this package in order to avoid circular dependency with the "message" package.
+	MessagesInverseTable = "messages"
+	// MessagesColumn is the table column denoting the messages relation/edge.
+	MessagesColumn = "tenant_id"
+	// QueuesTable is the table that holds the queues relation/edge.
+	QueuesTable = "queues"
+	// QueuesInverseTable is the table name for the Queue entity.
+	// It exists in this package in order to avoid circular dependency with the "queue" package.
+	QueuesInverseTable = "queues"
+	// QueuesColumn is the table column denoting the queues relation/edge.
+	QueuesColumn = "tenant_id"
+	// RbacsTable is the table that holds the rbacs relation/edge.
+	RbacsTable = "rbacs"
+	// RbacsInverseTable is the table name for the Rbac entity.
+	// It exists in this package in order to avoid circular dependency with the "rbac" package.
+	RbacsInverseTable = "rbacs"
+	// RbacsColumn is the table column denoting the rbacs relation/edge.
+	RbacsColumn = "tenant_id"
+	// StagesTable is the table that holds the stages relation/edge.
+	StagesTable = "stages"
+	// StagesInverseTable is the table name for the Stage entity.
+	// It exists in this package in order to avoid circular dependency with the "stage" package.
+	StagesInverseTable = "stages"
+	// StagesColumn is the table column denoting the stages relation/edge.
+	StagesColumn = "tenant_id"
+	// TextsTable is the table that holds the texts relation/edge.
+	TextsTable = "texts"
+	// TextsInverseTable is the table name for the Text entity.
+	// It exists in this package in order to avoid circular dependency with the "text" package.
+	TextsInverseTable = "texts"
+	// TextsColumn is the table column denoting the texts relation/edge.
+	TextsColumn = "tenant_id"
 )
 
 // Columns holds all SQL columns for company fields.
@@ -88,23 +223,338 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByEmployeeCount orders the results by employee count.
-func ByEmployeeCount(opts ...sql.OrderTermOption) OrderOption {
+// ByEmployeesCount orders the results by employees count.
+func ByEmployeesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newEmployeeStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newEmployeesStep(), opts...)
 	}
 }
 
-// ByEmployee orders the results by employee terms.
-func ByEmployee(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByEmployees orders the results by employees terms.
+func ByEmployees(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newEmployeeStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newEmployeesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newEmployeeStep() *sqlgraph.Step {
+
+// ByCostumersCount orders the results by costumers count.
+func ByCostumersCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCostumersStep(), opts...)
+	}
+}
+
+// ByCostumers orders the results by costumers terms.
+func ByCostumers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCostumersStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByDealsCount orders the results by deals count.
+func ByDealsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDealsStep(), opts...)
+	}
+}
+
+// ByDeals orders the results by deals terms.
+func ByDeals(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDealsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByChatsCount orders the results by chats count.
+func ByChatsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newChatsStep(), opts...)
+	}
+}
+
+// ByChats orders the results by chats terms.
+func ByChats(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChatsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByDepartmentsCount orders the results by departments count.
+func ByDepartmentsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDepartmentsStep(), opts...)
+	}
+}
+
+// ByDepartments orders the results by departments terms.
+func ByDepartments(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDepartmentsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByPipelinesCount orders the results by pipelines count.
+func ByPipelinesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPipelinesStep(), opts...)
+	}
+}
+
+// ByPipelines orders the results by pipelines terms.
+func ByPipelines(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPipelinesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByCrmFieldsCount orders the results by crmFields count.
+func ByCrmFieldsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCrmFieldsStep(), opts...)
+	}
+}
+
+// ByCrmFields orders the results by crmFields terms.
+func ByCrmFields(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCrmFieldsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByDealCrmFieldsCount orders the results by dealCrmFields count.
+func ByDealCrmFieldsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDealCrmFieldsStep(), opts...)
+	}
+}
+
+// ByDealCrmFields orders the results by dealCrmFields terms.
+func ByDealCrmFields(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDealCrmFieldsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByDropdownListsCount orders the results by dropdownLists count.
+func ByDropdownListsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDropdownListsStep(), opts...)
+	}
+}
+
+// ByDropdownLists orders the results by dropdownLists terms.
+func ByDropdownLists(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDropdownListsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByEmployeeAuthsCount orders the results by employeeAuths count.
+func ByEmployeeAuthsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newEmployeeAuthsStep(), opts...)
+	}
+}
+
+// ByEmployeeAuths orders the results by employeeAuths terms.
+func ByEmployeeAuths(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newEmployeeAuthsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByFilesCount orders the results by files count.
+func ByFilesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFilesStep(), opts...)
+	}
+}
+
+// ByFiles orders the results by files terms.
+func ByFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByMessagesCount orders the results by messages count.
+func ByMessagesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newMessagesStep(), opts...)
+	}
+}
+
+// ByMessages orders the results by messages terms.
+func ByMessages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newMessagesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByQueuesCount orders the results by queues count.
+func ByQueuesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newQueuesStep(), opts...)
+	}
+}
+
+// ByQueues orders the results by queues terms.
+func ByQueues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newQueuesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByRbacsCount orders the results by rbacs count.
+func ByRbacsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newRbacsStep(), opts...)
+	}
+}
+
+// ByRbacs orders the results by rbacs terms.
+func ByRbacs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRbacsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByStagesCount orders the results by stages count.
+func ByStagesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newStagesStep(), opts...)
+	}
+}
+
+// ByStages orders the results by stages terms.
+func ByStages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStagesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTextsCount orders the results by texts count.
+func ByTextsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTextsStep(), opts...)
+	}
+}
+
+// ByTexts orders the results by texts terms.
+func ByTexts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTextsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newEmployeesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(EmployeeInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, EmployeeTable, EmployeeColumn),
+		sqlgraph.To(EmployeesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, EmployeesTable, EmployeesColumn),
+	)
+}
+func newCostumersStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CostumersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, CostumersTable, CostumersColumn),
+	)
+}
+func newDealsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DealsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DealsTable, DealsColumn),
+	)
+}
+func newChatsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ChatsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ChatsTable, ChatsColumn),
+	)
+}
+func newDepartmentsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DepartmentsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DepartmentsTable, DepartmentsColumn),
+	)
+}
+func newPipelinesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PipelinesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PipelinesTable, PipelinesColumn),
+	)
+}
+func newCrmFieldsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CrmFieldsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, CrmFieldsTable, CrmFieldsColumn),
+	)
+}
+func newDealCrmFieldsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DealCrmFieldsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DealCrmFieldsTable, DealCrmFieldsColumn),
+	)
+}
+func newDropdownListsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DropdownListsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DropdownListsTable, DropdownListsColumn),
+	)
+}
+func newEmployeeAuthsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(EmployeeAuthsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, EmployeeAuthsTable, EmployeeAuthsColumn),
+	)
+}
+func newFilesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FilesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FilesTable, FilesColumn),
+	)
+}
+func newMessagesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(MessagesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, MessagesTable, MessagesColumn),
+	)
+}
+func newQueuesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(QueuesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, QueuesTable, QueuesColumn),
+	)
+}
+func newRbacsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RbacsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, RbacsTable, RbacsColumn),
+	)
+}
+func newStagesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StagesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, StagesTable, StagesColumn),
+	)
+}
+func newTextsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TextsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TextsTable, TextsColumn),
 	)
 }

@@ -75,6 +75,20 @@ func (_c *EmployeeCreate) SetNillableUpdatedAt(v *time.Time) *EmployeeCreate {
 	return _c
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *EmployeeCreate) SetTenantId(v uuid.UUID) *EmployeeCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
+// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
+func (_c *EmployeeCreate) SetNillableTenantId(v *uuid.UUID) *EmployeeCreate {
+	if v != nil {
+		_c.SetTenantId(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *EmployeeCreate) SetID(v uuid.UUID) *EmployeeCreate {
 	_c.mutation.SetID(v)
@@ -100,15 +114,23 @@ func (_c *EmployeeCreate) SetEmployeeAuth(v *EmployeeAuth) *EmployeeCreate {
 	return _c.SetEmployeeAuthID(v.ID)
 }
 
-// SetCompanyID sets the "company" edge to the Company entity by ID.
-func (_c *EmployeeCreate) SetCompanyID(id uuid.UUID) *EmployeeCreate {
-	_c.mutation.SetCompanyID(id)
+// SetTenantID sets the "tenant" edge to the Company entity by ID.
+func (_c *EmployeeCreate) SetTenantID(id uuid.UUID) *EmployeeCreate {
+	_c.mutation.SetTenantID(id)
 	return _c
 }
 
-// SetCompany sets the "company" edge to the Company entity.
-func (_c *EmployeeCreate) SetCompany(v *Company) *EmployeeCreate {
-	return _c.SetCompanyID(v.ID)
+// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
+func (_c *EmployeeCreate) SetNillableTenantID(id *uuid.UUID) *EmployeeCreate {
+	if id != nil {
+		_c = _c.SetTenantID(*id)
+	}
+	return _c
+}
+
+// SetTenant sets the "tenant" edge to the Company entity.
+func (_c *EmployeeCreate) SetTenant(v *Company) *EmployeeCreate {
+	return _c.SetTenantID(v.ID)
 }
 
 // SetDepartmentID sets the "department" edge to the Department entity by ID.
@@ -242,9 +264,6 @@ func (_c *EmployeeCreate) check() error {
 	if len(_c.mutation.EmployeeAuthIDs()) == 0 {
 		return &ValidationError{Name: "employeeAuth", err: errors.New(`ent: missing required edge "Employee.employeeAuth"`)}
 	}
-	if len(_c.mutation.CompanyIDs()) == 0 {
-		return &ValidationError{Name: "company", err: errors.New(`ent: missing required edge "Employee.company"`)}
-	}
 	if len(_c.mutation.DepartmentIDs()) == 0 {
 		return &ValidationError{Name: "department", err: errors.New(`ent: missing required edge "Employee.department"`)}
 	}
@@ -315,12 +334,12 @@ func (_c *EmployeeCreate) createSpec() (*Employee, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.CompanyIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   employee.CompanyTable,
-			Columns: []string{employee.CompanyColumn},
+			Inverse: true,
+			Table:   employee.TenantTable,
+			Columns: []string{employee.TenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
@@ -329,7 +348,7 @@ func (_c *EmployeeCreate) createSpec() (*Employee, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.employee_company = &nodes[0]
+		_node.TenantId = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.DepartmentIDs(); len(nodes) > 0 {

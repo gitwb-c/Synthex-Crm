@@ -16,12 +16,21 @@ var (
 		{Name: "locked", Type: field.TypeBool},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// ChatsTable holds the schema information for the "chats" table.
 	ChatsTable = &schema.Table{
 		Name:       "chats",
 		Columns:    ChatsColumns,
 		PrimaryKey: []*schema.Column{ChatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "chats_companies_chats",
+				Columns:    []*schema.Column{ChatsColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// CompaniesColumns holds the columns for the "companies" table.
 	CompaniesColumns = []*schema.Column{
@@ -44,12 +53,21 @@ var (
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// CostumersTable holds the schema information for the "costumers" table.
 	CostumersTable = &schema.Table{
 		Name:       "costumers",
 		Columns:    CostumersColumns,
 		PrimaryKey: []*schema.Column{CostumersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "costumers_companies_costumers",
+				Columns:    []*schema.Column{CostumersColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// CrmFieldsColumns holds the columns for the "crm_fields" table.
 	CrmFieldsColumns = []*schema.Column{
@@ -59,12 +77,21 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"txt", "date", "checkbox", "dropdownList"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// CrmFieldsTable holds the schema information for the "crm_fields" table.
 	CrmFieldsTable = &schema.Table{
 		Name:       "crm_fields",
 		Columns:    CrmFieldsColumns,
 		PrimaryKey: []*schema.Column{CrmFieldsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "crm_fields_companies_crmFields",
+				Columns:    []*schema.Column{CrmFieldsColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// DealsColumns holds the columns for the "deals" table.
 	DealsColumns = []*schema.Column{
@@ -74,6 +101,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "chat_deal", Type: field.TypeUUID, Unique: true, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "deal_costumer", Type: field.TypeUUID, Nullable: true},
 		{Name: "deal_stage", Type: field.TypeUUID},
 	}
@@ -90,14 +118,20 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:     "deals_costumers_costumer",
+				Symbol:     "deals_companies_deals",
 				Columns:    []*schema.Column{DealsColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "deals_costumers_costumer",
+				Columns:    []*schema.Column{DealsColumns[7]},
 				RefColumns: []*schema.Column{CostumersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "deals_stages_stage",
-				Columns:    []*schema.Column{DealsColumns[7]},
+				Columns:    []*schema.Column{DealsColumns[8]},
 				RefColumns: []*schema.Column{StagesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -109,6 +143,7 @@ var (
 		{Name: "value", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "deal_crm_field_deal", Type: field.TypeUUID},
 		{Name: "deal_crm_field_crm_field", Type: field.TypeUUID},
 	}
@@ -119,14 +154,20 @@ var (
 		PrimaryKey: []*schema.Column{DealCrmFieldsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "deal_crm_fields_deals_deal",
+				Symbol:     "deal_crm_fields_companies_dealCrmFields",
 				Columns:    []*schema.Column{DealCrmFieldsColumns[4]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "deal_crm_fields_deals_deal",
+				Columns:    []*schema.Column{DealCrmFieldsColumns[5]},
 				RefColumns: []*schema.Column{DealsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "deal_crm_fields_crm_fields_crmField",
-				Columns:    []*schema.Column{DealCrmFieldsColumns[5]},
+				Columns:    []*schema.Column{DealCrmFieldsColumns[6]},
 				RefColumns: []*schema.Column{CrmFieldsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -138,12 +179,21 @@ var (
 		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// DepartmentsTable holds the schema information for the "departments" table.
 	DepartmentsTable = &schema.Table{
 		Name:       "departments",
 		Columns:    DepartmentsColumns,
 		PrimaryKey: []*schema.Column{DepartmentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "departments_companies_departments",
+				Columns:    []*schema.Column{DepartmentsColumns[4]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// DropdownListsColumns holds the columns for the "dropdown_lists" table.
 	DropdownListsColumns = []*schema.Column{
@@ -151,12 +201,21 @@ var (
 		{Name: "value", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// DropdownListsTable holds the schema information for the "dropdown_lists" table.
 	DropdownListsTable = &schema.Table{
 		Name:       "dropdown_lists",
 		Columns:    DropdownListsColumns,
 		PrimaryKey: []*schema.Column{DropdownListsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dropdown_lists_companies_dropdownLists",
+				Columns:    []*schema.Column{DropdownListsColumns[4]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// EmployeesColumns holds the columns for the "employees" table.
 	EmployeesColumns = []*schema.Column{
@@ -165,7 +224,7 @@ var (
 		{Name: "active", Type: field.TypeBool, Default: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "employee_company", Type: field.TypeUUID},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "employee_department", Type: field.TypeUUID},
 	}
 	// EmployeesTable holds the schema information for the "employees" table.
@@ -175,10 +234,10 @@ var (
 		PrimaryKey: []*schema.Column{EmployeesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "employees_companies_company",
+				Symbol:     "employees_companies_employees",
 				Columns:    []*schema.Column{EmployeesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "employees_departments_department",
@@ -196,6 +255,7 @@ var (
 		{Name: "password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "employee_employee_auth", Type: field.TypeUUID, Unique: true, Nullable: true},
 	}
 	// EmployeeAuthsTable holds the schema information for the "employee_auths" table.
@@ -205,8 +265,14 @@ var (
 		PrimaryKey: []*schema.Column{EmployeeAuthsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "employee_auths_employees_employeeAuth",
+				Symbol:     "employee_auths_companies_employeeAuths",
 				Columns:    []*schema.Column{EmployeeAuthsColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "employee_auths_employees_employeeAuth",
+				Columns:    []*schema.Column{EmployeeAuthsColumns[7]},
 				RefColumns: []*schema.Column{EmployeesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -219,12 +285,21 @@ var (
 		{Name: "caption", Type: field.TypeString, Nullable: true},
 		{Name: "mime_type", Type: field.TypeString},
 		{Name: "file_name", Type: field.TypeString},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// FilesTable holds the schema information for the "files" table.
 	FilesTable = &schema.Table{
 		Name:       "files",
 		Columns:    FilesColumns,
 		PrimaryKey: []*schema.Column{FilesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "files_companies_files",
+				Columns:    []*schema.Column{FilesColumns[5]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// MessagesColumns holds the columns for the "messages" table.
 	MessagesColumns = []*schema.Column{
@@ -234,6 +309,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"text", "audio", "image", "file"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "file_message", Type: field.TypeUUID, Unique: true, Nullable: true},
 		{Name: "message_chat", Type: field.TypeUUID, Nullable: true},
 		{Name: "text_message", Type: field.TypeUUID, Unique: true, Nullable: true},
@@ -245,20 +321,26 @@ var (
 		PrimaryKey: []*schema.Column{MessagesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "messages_files_message",
+				Symbol:     "messages_companies_messages",
 				Columns:    []*schema.Column{MessagesColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "messages_files_message",
+				Columns:    []*schema.Column{MessagesColumns[7]},
 				RefColumns: []*schema.Column{FilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "messages_chats_chat",
-				Columns:    []*schema.Column{MessagesColumns[7]},
+				Columns:    []*schema.Column{MessagesColumns[8]},
 				RefColumns: []*schema.Column{ChatsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "messages_texts_message",
-				Columns:    []*schema.Column{MessagesColumns[8]},
+				Columns:    []*schema.Column{MessagesColumns[9]},
 				RefColumns: []*schema.Column{TextsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -270,12 +352,21 @@ var (
 		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// PipelinesTable holds the schema information for the "pipelines" table.
 	PipelinesTable = &schema.Table{
 		Name:       "pipelines",
 		Columns:    PipelinesColumns,
 		PrimaryKey: []*schema.Column{PipelinesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "pipelines_companies_pipelines",
+				Columns:    []*schema.Column{PipelinesColumns[4]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// QueuesColumns holds the columns for the "queues" table.
 	QueuesColumns = []*schema.Column{
@@ -284,12 +375,21 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"ring"}, Default: "ring"},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// QueuesTable holds the schema information for the "queues" table.
 	QueuesTable = &schema.Table{
 		Name:       "queues",
 		Columns:    QueuesColumns,
 		PrimaryKey: []*schema.Column{QueuesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "queues_companies_queues",
+				Columns:    []*schema.Column{QueuesColumns[5]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// RbacsColumns holds the columns for the "rbacs" table.
 	RbacsColumns = []*schema.Column{
@@ -297,6 +397,7 @@ var (
 		{Name: "access", Type: field.TypeEnum, Enums: []string{"view_all_deals", "view_responsible_chat_deals", "view_department_phase_deals", "delete_deals", "change_responsible_chat_or_business", "view_all_customer_data", "view_department_customer_data", "create_deal", "edit_deals", "approve_or_deny_deals", "view_chat_history", "view_advanced_reports", "manage_users", "manage_departments", "manage_system_settings", "manage_products_or_services", "export_data", "configure_workflows", "send_notifications", "view_notifications", "configure_integrations", "view_dashboard_analytics_data", "post_sale_actions"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "rbac_department", Type: field.TypeUUID},
 	}
 	// RbacsTable holds the schema information for the "rbacs" table.
@@ -306,8 +407,14 @@ var (
 		PrimaryKey: []*schema.Column{RbacsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "rbacs_departments_department",
+				Symbol:     "rbacs_companies_rbacs",
 				Columns:    []*schema.Column{RbacsColumns[4]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "rbacs_departments_department",
+				Columns:    []*schema.Column{RbacsColumns[5]},
 				RefColumns: []*schema.Column{DepartmentsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -321,6 +428,7 @@ var (
 		{Name: "loss_or_gain", Type: field.TypeBool},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "stage_pipeline", Type: field.TypeUUID},
 		{Name: "stage_queue", Type: field.TypeUUID, Nullable: true},
 	}
@@ -331,14 +439,20 @@ var (
 		PrimaryKey: []*schema.Column{StagesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "stages_pipelines_pipeline",
+				Symbol:     "stages_companies_stages",
 				Columns:    []*schema.Column{StagesColumns[6]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "stages_pipelines_pipeline",
+				Columns:    []*schema.Column{StagesColumns[7]},
 				RefColumns: []*schema.Column{PipelinesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "stages_queues_queue",
-				Columns:    []*schema.Column{StagesColumns[7]},
+				Columns:    []*schema.Column{StagesColumns[8]},
 				RefColumns: []*schema.Column{QueuesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -348,12 +462,21 @@ var (
 	TextsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "text", Type: field.TypeString},
+		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// TextsTable holds the schema information for the "texts" table.
 	TextsTable = &schema.Table{
 		Name:       "texts",
 		Columns:    TextsColumns,
 		PrimaryKey: []*schema.Column{TextsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "texts_companies_texts",
+				Columns:    []*schema.Column{TextsColumns[2]},
+				RefColumns: []*schema.Column{CompaniesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// ChatEmployeesColumns holds the columns for the "chat_employees" table.
 	ChatEmployeesColumns = []*schema.Column{
@@ -508,20 +631,35 @@ var (
 )
 
 func init() {
+	ChatsTable.ForeignKeys[0].RefTable = CompaniesTable
+	CostumersTable.ForeignKeys[0].RefTable = CompaniesTable
+	CrmFieldsTable.ForeignKeys[0].RefTable = CompaniesTable
 	DealsTable.ForeignKeys[0].RefTable = ChatsTable
-	DealsTable.ForeignKeys[1].RefTable = CostumersTable
-	DealsTable.ForeignKeys[2].RefTable = StagesTable
-	DealCrmFieldsTable.ForeignKeys[0].RefTable = DealsTable
-	DealCrmFieldsTable.ForeignKeys[1].RefTable = CrmFieldsTable
+	DealsTable.ForeignKeys[1].RefTable = CompaniesTable
+	DealsTable.ForeignKeys[2].RefTable = CostumersTable
+	DealsTable.ForeignKeys[3].RefTable = StagesTable
+	DealCrmFieldsTable.ForeignKeys[0].RefTable = CompaniesTable
+	DealCrmFieldsTable.ForeignKeys[1].RefTable = DealsTable
+	DealCrmFieldsTable.ForeignKeys[2].RefTable = CrmFieldsTable
+	DepartmentsTable.ForeignKeys[0].RefTable = CompaniesTable
+	DropdownListsTable.ForeignKeys[0].RefTable = CompaniesTable
 	EmployeesTable.ForeignKeys[0].RefTable = CompaniesTable
 	EmployeesTable.ForeignKeys[1].RefTable = DepartmentsTable
-	EmployeeAuthsTable.ForeignKeys[0].RefTable = EmployeesTable
-	MessagesTable.ForeignKeys[0].RefTable = FilesTable
-	MessagesTable.ForeignKeys[1].RefTable = ChatsTable
-	MessagesTable.ForeignKeys[2].RefTable = TextsTable
-	RbacsTable.ForeignKeys[0].RefTable = DepartmentsTable
-	StagesTable.ForeignKeys[0].RefTable = PipelinesTable
-	StagesTable.ForeignKeys[1].RefTable = QueuesTable
+	EmployeeAuthsTable.ForeignKeys[0].RefTable = CompaniesTable
+	EmployeeAuthsTable.ForeignKeys[1].RefTable = EmployeesTable
+	FilesTable.ForeignKeys[0].RefTable = CompaniesTable
+	MessagesTable.ForeignKeys[0].RefTable = CompaniesTable
+	MessagesTable.ForeignKeys[1].RefTable = FilesTable
+	MessagesTable.ForeignKeys[2].RefTable = ChatsTable
+	MessagesTable.ForeignKeys[3].RefTable = TextsTable
+	PipelinesTable.ForeignKeys[0].RefTable = CompaniesTable
+	QueuesTable.ForeignKeys[0].RefTable = CompaniesTable
+	RbacsTable.ForeignKeys[0].RefTable = CompaniesTable
+	RbacsTable.ForeignKeys[1].RefTable = DepartmentsTable
+	StagesTable.ForeignKeys[0].RefTable = CompaniesTable
+	StagesTable.ForeignKeys[1].RefTable = PipelinesTable
+	StagesTable.ForeignKeys[2].RefTable = QueuesTable
+	TextsTable.ForeignKeys[0].RefTable = CompaniesTable
 	ChatEmployeesTable.ForeignKeys[0].RefTable = ChatsTable
 	ChatEmployeesTable.ForeignKeys[1].RefTable = EmployeesTable
 	DropdownListCrmFieldTable.ForeignKeys[0].RefTable = DropdownListsTable

@@ -12,23 +12,68 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/text"
 	"github.com/google/uuid"
 )
 
 // CompanyQuery is the builder for querying Company entities.
 type CompanyQuery struct {
 	config
-	ctx               *QueryContext
-	order             []company.OrderOption
-	inters            []Interceptor
-	predicates        []predicate.Company
-	withEmployee      *EmployeeQuery
-	modifiers         []func(*sql.Selector)
-	loadTotal         []func(context.Context, []*Company) error
-	withNamedEmployee map[string]*EmployeeQuery
+	ctx                    *QueryContext
+	order                  []company.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.Company
+	withEmployees          *EmployeeQuery
+	withCostumers          *CostumerQuery
+	withDeals              *DealQuery
+	withChats              *ChatQuery
+	withDepartments        *DepartmentQuery
+	withPipelines          *PipelineQuery
+	withCrmFields          *CrmFieldQuery
+	withDealCrmFields      *DealCrmFieldQuery
+	withDropdownLists      *DropdownListQuery
+	withEmployeeAuths      *EmployeeAuthQuery
+	withFiles              *FileQuery
+	withMessages           *MessageQuery
+	withQueues             *QueueQuery
+	withRbacs              *RbacQuery
+	withStages             *StageQuery
+	withTexts              *TextQuery
+	modifiers              []func(*sql.Selector)
+	loadTotal              []func(context.Context, []*Company) error
+	withNamedEmployees     map[string]*EmployeeQuery
+	withNamedCostumers     map[string]*CostumerQuery
+	withNamedDeals         map[string]*DealQuery
+	withNamedChats         map[string]*ChatQuery
+	withNamedDepartments   map[string]*DepartmentQuery
+	withNamedPipelines     map[string]*PipelineQuery
+	withNamedCrmFields     map[string]*CrmFieldQuery
+	withNamedDealCrmFields map[string]*DealCrmFieldQuery
+	withNamedDropdownLists map[string]*DropdownListQuery
+	withNamedEmployeeAuths map[string]*EmployeeAuthQuery
+	withNamedFiles         map[string]*FileQuery
+	withNamedMessages      map[string]*MessageQuery
+	withNamedQueues        map[string]*QueueQuery
+	withNamedRbacs         map[string]*RbacQuery
+	withNamedStages        map[string]*StageQuery
+	withNamedTexts         map[string]*TextQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -65,8 +110,8 @@ func (_q *CompanyQuery) Order(o ...company.OrderOption) *CompanyQuery {
 	return _q
 }
 
-// QueryEmployee chains the current query on the "employee" edge.
-func (_q *CompanyQuery) QueryEmployee() *EmployeeQuery {
+// QueryEmployees chains the current query on the "employees" edge.
+func (_q *CompanyQuery) QueryEmployees() *EmployeeQuery {
 	query := (&EmployeeClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -79,7 +124,337 @@ func (_q *CompanyQuery) QueryEmployee() *EmployeeQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(company.Table, company.FieldID, selector),
 			sqlgraph.To(employee.Table, employee.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, company.EmployeeTable, company.EmployeeColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.EmployeesTable, company.EmployeesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCostumers chains the current query on the "costumers" edge.
+func (_q *CompanyQuery) QueryCostumers() *CostumerQuery {
+	query := (&CostumerClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(costumer.Table, costumer.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.CostumersTable, company.CostumersColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDeals chains the current query on the "deals" edge.
+func (_q *CompanyQuery) QueryDeals() *DealQuery {
+	query := (&DealClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(deal.Table, deal.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DealsTable, company.DealsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryChats chains the current query on the "chats" edge.
+func (_q *CompanyQuery) QueryChats() *ChatQuery {
+	query := (&ChatClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(chat.Table, chat.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.ChatsTable, company.ChatsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDepartments chains the current query on the "departments" edge.
+func (_q *CompanyQuery) QueryDepartments() *DepartmentQuery {
+	query := (&DepartmentClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(department.Table, department.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DepartmentsTable, company.DepartmentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPipelines chains the current query on the "pipelines" edge.
+func (_q *CompanyQuery) QueryPipelines() *PipelineQuery {
+	query := (&PipelineClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(pipeline.Table, pipeline.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.PipelinesTable, company.PipelinesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCrmFields chains the current query on the "crmFields" edge.
+func (_q *CompanyQuery) QueryCrmFields() *CrmFieldQuery {
+	query := (&CrmFieldClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(crmfield.Table, crmfield.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.CrmFieldsTable, company.CrmFieldsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDealCrmFields chains the current query on the "dealCrmFields" edge.
+func (_q *CompanyQuery) QueryDealCrmFields() *DealCrmFieldQuery {
+	query := (&DealCrmFieldClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(dealcrmfield.Table, dealcrmfield.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DealCrmFieldsTable, company.DealCrmFieldsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDropdownLists chains the current query on the "dropdownLists" edge.
+func (_q *CompanyQuery) QueryDropdownLists() *DropdownListQuery {
+	query := (&DropdownListClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(dropdownlist.Table, dropdownlist.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.DropdownListsTable, company.DropdownListsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryEmployeeAuths chains the current query on the "employeeAuths" edge.
+func (_q *CompanyQuery) QueryEmployeeAuths() *EmployeeAuthQuery {
+	query := (&EmployeeAuthClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(employeeauth.Table, employeeauth.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.EmployeeAuthsTable, company.EmployeeAuthsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFiles chains the current query on the "files" edge.
+func (_q *CompanyQuery) QueryFiles() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.FilesTable, company.FilesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryMessages chains the current query on the "messages" edge.
+func (_q *CompanyQuery) QueryMessages() *MessageQuery {
+	query := (&MessageClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(message.Table, message.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.MessagesTable, company.MessagesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryQueues chains the current query on the "queues" edge.
+func (_q *CompanyQuery) QueryQueues() *QueueQuery {
+	query := (&QueueClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(queue.Table, queue.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.QueuesTable, company.QueuesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRbacs chains the current query on the "rbacs" edge.
+func (_q *CompanyQuery) QueryRbacs() *RbacQuery {
+	query := (&RbacClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(rbac.Table, rbac.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.RbacsTable, company.RbacsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStages chains the current query on the "stages" edge.
+func (_q *CompanyQuery) QueryStages() *StageQuery {
+	query := (&StageClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(stage.Table, stage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.StagesTable, company.StagesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTexts chains the current query on the "texts" edge.
+func (_q *CompanyQuery) QueryTexts() *TextQuery {
+	query := (&TextClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(company.Table, company.FieldID, selector),
+			sqlgraph.To(text.Table, text.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, company.TextsTable, company.TextsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -274,26 +649,206 @@ func (_q *CompanyQuery) Clone() *CompanyQuery {
 		return nil
 	}
 	return &CompanyQuery{
-		config:       _q.config,
-		ctx:          _q.ctx.Clone(),
-		order:        append([]company.OrderOption{}, _q.order...),
-		inters:       append([]Interceptor{}, _q.inters...),
-		predicates:   append([]predicate.Company{}, _q.predicates...),
-		withEmployee: _q.withEmployee.Clone(),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]company.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.Company{}, _q.predicates...),
+		withEmployees:     _q.withEmployees.Clone(),
+		withCostumers:     _q.withCostumers.Clone(),
+		withDeals:         _q.withDeals.Clone(),
+		withChats:         _q.withChats.Clone(),
+		withDepartments:   _q.withDepartments.Clone(),
+		withPipelines:     _q.withPipelines.Clone(),
+		withCrmFields:     _q.withCrmFields.Clone(),
+		withDealCrmFields: _q.withDealCrmFields.Clone(),
+		withDropdownLists: _q.withDropdownLists.Clone(),
+		withEmployeeAuths: _q.withEmployeeAuths.Clone(),
+		withFiles:         _q.withFiles.Clone(),
+		withMessages:      _q.withMessages.Clone(),
+		withQueues:        _q.withQueues.Clone(),
+		withRbacs:         _q.withRbacs.Clone(),
+		withStages:        _q.withStages.Clone(),
+		withTexts:         _q.withTexts.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithEmployee tells the query-builder to eager-load the nodes that are connected to
-// the "employee" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *CompanyQuery) WithEmployee(opts ...func(*EmployeeQuery)) *CompanyQuery {
+// WithEmployees tells the query-builder to eager-load the nodes that are connected to
+// the "employees" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithEmployees(opts ...func(*EmployeeQuery)) *CompanyQuery {
 	query := (&EmployeeClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withEmployee = query
+	_q.withEmployees = query
+	return _q
+}
+
+// WithCostumers tells the query-builder to eager-load the nodes that are connected to
+// the "costumers" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithCostumers(opts ...func(*CostumerQuery)) *CompanyQuery {
+	query := (&CostumerClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCostumers = query
+	return _q
+}
+
+// WithDeals tells the query-builder to eager-load the nodes that are connected to
+// the "deals" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithDeals(opts ...func(*DealQuery)) *CompanyQuery {
+	query := (&DealClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDeals = query
+	return _q
+}
+
+// WithChats tells the query-builder to eager-load the nodes that are connected to
+// the "chats" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithChats(opts ...func(*ChatQuery)) *CompanyQuery {
+	query := (&ChatClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withChats = query
+	return _q
+}
+
+// WithDepartments tells the query-builder to eager-load the nodes that are connected to
+// the "departments" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithDepartments(opts ...func(*DepartmentQuery)) *CompanyQuery {
+	query := (&DepartmentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDepartments = query
+	return _q
+}
+
+// WithPipelines tells the query-builder to eager-load the nodes that are connected to
+// the "pipelines" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithPipelines(opts ...func(*PipelineQuery)) *CompanyQuery {
+	query := (&PipelineClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withPipelines = query
+	return _q
+}
+
+// WithCrmFields tells the query-builder to eager-load the nodes that are connected to
+// the "crmFields" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithCrmFields(opts ...func(*CrmFieldQuery)) *CompanyQuery {
+	query := (&CrmFieldClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCrmFields = query
+	return _q
+}
+
+// WithDealCrmFields tells the query-builder to eager-load the nodes that are connected to
+// the "dealCrmFields" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithDealCrmFields(opts ...func(*DealCrmFieldQuery)) *CompanyQuery {
+	query := (&DealCrmFieldClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDealCrmFields = query
+	return _q
+}
+
+// WithDropdownLists tells the query-builder to eager-load the nodes that are connected to
+// the "dropdownLists" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithDropdownLists(opts ...func(*DropdownListQuery)) *CompanyQuery {
+	query := (&DropdownListClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDropdownLists = query
+	return _q
+}
+
+// WithEmployeeAuths tells the query-builder to eager-load the nodes that are connected to
+// the "employeeAuths" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithEmployeeAuths(opts ...func(*EmployeeAuthQuery)) *CompanyQuery {
+	query := (&EmployeeAuthClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withEmployeeAuths = query
+	return _q
+}
+
+// WithFiles tells the query-builder to eager-load the nodes that are connected to
+// the "files" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithFiles(opts ...func(*FileQuery)) *CompanyQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withFiles = query
+	return _q
+}
+
+// WithMessages tells the query-builder to eager-load the nodes that are connected to
+// the "messages" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithMessages(opts ...func(*MessageQuery)) *CompanyQuery {
+	query := (&MessageClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withMessages = query
+	return _q
+}
+
+// WithQueues tells the query-builder to eager-load the nodes that are connected to
+// the "queues" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithQueues(opts ...func(*QueueQuery)) *CompanyQuery {
+	query := (&QueueClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withQueues = query
+	return _q
+}
+
+// WithRbacs tells the query-builder to eager-load the nodes that are connected to
+// the "rbacs" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithRbacs(opts ...func(*RbacQuery)) *CompanyQuery {
+	query := (&RbacClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withRbacs = query
+	return _q
+}
+
+// WithStages tells the query-builder to eager-load the nodes that are connected to
+// the "stages" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithStages(opts ...func(*StageQuery)) *CompanyQuery {
+	query := (&StageClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withStages = query
+	return _q
+}
+
+// WithTexts tells the query-builder to eager-load the nodes that are connected to
+// the "texts" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithTexts(opts ...func(*TextQuery)) *CompanyQuery {
+	query := (&TextClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTexts = query
 	return _q
 }
 
@@ -375,8 +930,23 @@ func (_q *CompanyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comp
 	var (
 		nodes       = []*Company{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
-			_q.withEmployee != nil,
+		loadedTypes = [16]bool{
+			_q.withEmployees != nil,
+			_q.withCostumers != nil,
+			_q.withDeals != nil,
+			_q.withChats != nil,
+			_q.withDepartments != nil,
+			_q.withPipelines != nil,
+			_q.withCrmFields != nil,
+			_q.withDealCrmFields != nil,
+			_q.withDropdownLists != nil,
+			_q.withEmployeeAuths != nil,
+			_q.withFiles != nil,
+			_q.withMessages != nil,
+			_q.withQueues != nil,
+			_q.withRbacs != nil,
+			_q.withStages != nil,
+			_q.withTexts != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -400,17 +970,227 @@ func (_q *CompanyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comp
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withEmployee; query != nil {
-		if err := _q.loadEmployee(ctx, query, nodes,
-			func(n *Company) { n.Edges.Employee = []*Employee{} },
-			func(n *Company, e *Employee) { n.Edges.Employee = append(n.Edges.Employee, e) }); err != nil {
+	if query := _q.withEmployees; query != nil {
+		if err := _q.loadEmployees(ctx, query, nodes,
+			func(n *Company) { n.Edges.Employees = []*Employee{} },
+			func(n *Company, e *Employee) { n.Edges.Employees = append(n.Edges.Employees, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range _q.withNamedEmployee {
-		if err := _q.loadEmployee(ctx, query, nodes,
-			func(n *Company) { n.appendNamedEmployee(name) },
-			func(n *Company, e *Employee) { n.appendNamedEmployee(name, e) }); err != nil {
+	if query := _q.withCostumers; query != nil {
+		if err := _q.loadCostumers(ctx, query, nodes,
+			func(n *Company) { n.Edges.Costumers = []*Costumer{} },
+			func(n *Company, e *Costumer) { n.Edges.Costumers = append(n.Edges.Costumers, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withDeals; query != nil {
+		if err := _q.loadDeals(ctx, query, nodes,
+			func(n *Company) { n.Edges.Deals = []*Deal{} },
+			func(n *Company, e *Deal) { n.Edges.Deals = append(n.Edges.Deals, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withChats; query != nil {
+		if err := _q.loadChats(ctx, query, nodes,
+			func(n *Company) { n.Edges.Chats = []*Chat{} },
+			func(n *Company, e *Chat) { n.Edges.Chats = append(n.Edges.Chats, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withDepartments; query != nil {
+		if err := _q.loadDepartments(ctx, query, nodes,
+			func(n *Company) { n.Edges.Departments = []*Department{} },
+			func(n *Company, e *Department) { n.Edges.Departments = append(n.Edges.Departments, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withPipelines; query != nil {
+		if err := _q.loadPipelines(ctx, query, nodes,
+			func(n *Company) { n.Edges.Pipelines = []*Pipeline{} },
+			func(n *Company, e *Pipeline) { n.Edges.Pipelines = append(n.Edges.Pipelines, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withCrmFields; query != nil {
+		if err := _q.loadCrmFields(ctx, query, nodes,
+			func(n *Company) { n.Edges.CrmFields = []*CrmField{} },
+			func(n *Company, e *CrmField) { n.Edges.CrmFields = append(n.Edges.CrmFields, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withDealCrmFields; query != nil {
+		if err := _q.loadDealCrmFields(ctx, query, nodes,
+			func(n *Company) { n.Edges.DealCrmFields = []*DealCrmField{} },
+			func(n *Company, e *DealCrmField) { n.Edges.DealCrmFields = append(n.Edges.DealCrmFields, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withDropdownLists; query != nil {
+		if err := _q.loadDropdownLists(ctx, query, nodes,
+			func(n *Company) { n.Edges.DropdownLists = []*DropdownList{} },
+			func(n *Company, e *DropdownList) { n.Edges.DropdownLists = append(n.Edges.DropdownLists, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withEmployeeAuths; query != nil {
+		if err := _q.loadEmployeeAuths(ctx, query, nodes,
+			func(n *Company) { n.Edges.EmployeeAuths = []*EmployeeAuth{} },
+			func(n *Company, e *EmployeeAuth) { n.Edges.EmployeeAuths = append(n.Edges.EmployeeAuths, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withFiles; query != nil {
+		if err := _q.loadFiles(ctx, query, nodes,
+			func(n *Company) { n.Edges.Files = []*File{} },
+			func(n *Company, e *File) { n.Edges.Files = append(n.Edges.Files, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withMessages; query != nil {
+		if err := _q.loadMessages(ctx, query, nodes,
+			func(n *Company) { n.Edges.Messages = []*Message{} },
+			func(n *Company, e *Message) { n.Edges.Messages = append(n.Edges.Messages, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withQueues; query != nil {
+		if err := _q.loadQueues(ctx, query, nodes,
+			func(n *Company) { n.Edges.Queues = []*Queue{} },
+			func(n *Company, e *Queue) { n.Edges.Queues = append(n.Edges.Queues, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withRbacs; query != nil {
+		if err := _q.loadRbacs(ctx, query, nodes,
+			func(n *Company) { n.Edges.Rbacs = []*Rbac{} },
+			func(n *Company, e *Rbac) { n.Edges.Rbacs = append(n.Edges.Rbacs, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withStages; query != nil {
+		if err := _q.loadStages(ctx, query, nodes,
+			func(n *Company) { n.Edges.Stages = []*Stage{} },
+			func(n *Company, e *Stage) { n.Edges.Stages = append(n.Edges.Stages, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTexts; query != nil {
+		if err := _q.loadTexts(ctx, query, nodes,
+			func(n *Company) { n.Edges.Texts = []*Text{} },
+			func(n *Company, e *Text) { n.Edges.Texts = append(n.Edges.Texts, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedEmployees {
+		if err := _q.loadEmployees(ctx, query, nodes,
+			func(n *Company) { n.appendNamedEmployees(name) },
+			func(n *Company, e *Employee) { n.appendNamedEmployees(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedCostumers {
+		if err := _q.loadCostumers(ctx, query, nodes,
+			func(n *Company) { n.appendNamedCostumers(name) },
+			func(n *Company, e *Costumer) { n.appendNamedCostumers(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedDeals {
+		if err := _q.loadDeals(ctx, query, nodes,
+			func(n *Company) { n.appendNamedDeals(name) },
+			func(n *Company, e *Deal) { n.appendNamedDeals(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedChats {
+		if err := _q.loadChats(ctx, query, nodes,
+			func(n *Company) { n.appendNamedChats(name) },
+			func(n *Company, e *Chat) { n.appendNamedChats(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedDepartments {
+		if err := _q.loadDepartments(ctx, query, nodes,
+			func(n *Company) { n.appendNamedDepartments(name) },
+			func(n *Company, e *Department) { n.appendNamedDepartments(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedPipelines {
+		if err := _q.loadPipelines(ctx, query, nodes,
+			func(n *Company) { n.appendNamedPipelines(name) },
+			func(n *Company, e *Pipeline) { n.appendNamedPipelines(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedCrmFields {
+		if err := _q.loadCrmFields(ctx, query, nodes,
+			func(n *Company) { n.appendNamedCrmFields(name) },
+			func(n *Company, e *CrmField) { n.appendNamedCrmFields(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedDealCrmFields {
+		if err := _q.loadDealCrmFields(ctx, query, nodes,
+			func(n *Company) { n.appendNamedDealCrmFields(name) },
+			func(n *Company, e *DealCrmField) { n.appendNamedDealCrmFields(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedDropdownLists {
+		if err := _q.loadDropdownLists(ctx, query, nodes,
+			func(n *Company) { n.appendNamedDropdownLists(name) },
+			func(n *Company, e *DropdownList) { n.appendNamedDropdownLists(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedEmployeeAuths {
+		if err := _q.loadEmployeeAuths(ctx, query, nodes,
+			func(n *Company) { n.appendNamedEmployeeAuths(name) },
+			func(n *Company, e *EmployeeAuth) { n.appendNamedEmployeeAuths(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedFiles {
+		if err := _q.loadFiles(ctx, query, nodes,
+			func(n *Company) { n.appendNamedFiles(name) },
+			func(n *Company, e *File) { n.appendNamedFiles(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedMessages {
+		if err := _q.loadMessages(ctx, query, nodes,
+			func(n *Company) { n.appendNamedMessages(name) },
+			func(n *Company, e *Message) { n.appendNamedMessages(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedQueues {
+		if err := _q.loadQueues(ctx, query, nodes,
+			func(n *Company) { n.appendNamedQueues(name) },
+			func(n *Company, e *Queue) { n.appendNamedQueues(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedRbacs {
+		if err := _q.loadRbacs(ctx, query, nodes,
+			func(n *Company) { n.appendNamedRbacs(name) },
+			func(n *Company, e *Rbac) { n.appendNamedRbacs(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedStages {
+		if err := _q.loadStages(ctx, query, nodes,
+			func(n *Company) { n.appendNamedStages(name) },
+			func(n *Company, e *Stage) { n.appendNamedStages(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedTexts {
+		if err := _q.loadTexts(ctx, query, nodes,
+			func(n *Company) { n.appendNamedTexts(name) },
+			func(n *Company, e *Text) { n.appendNamedTexts(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -422,7 +1202,7 @@ func (_q *CompanyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comp
 	return nodes, nil
 }
 
-func (_q *CompanyQuery) loadEmployee(ctx context.Context, query *EmployeeQuery, nodes []*Company, init func(*Company), assign func(*Company, *Employee)) error {
+func (_q *CompanyQuery) loadEmployees(ctx context.Context, query *EmployeeQuery, nodes []*Company, init func(*Company), assign func(*Company, *Employee)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[uuid.UUID]*Company)
 	for i := range nodes {
@@ -433,21 +1213,477 @@ func (_q *CompanyQuery) loadEmployee(ctx context.Context, query *EmployeeQuery, 
 		}
 	}
 	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(employee.FieldTenantId)
+	}
 	query.Where(predicate.Employee(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(company.EmployeeColumn), fks...))
+		s.Where(sql.InValues(s.C(company.EmployeesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.employee_company
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "employee_company" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TenantId
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "employee_company" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadCostumers(ctx context.Context, query *CostumerQuery, nodes []*Company, init func(*Company), assign func(*Company, *Costumer)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(costumer.FieldTenantId)
+	}
+	query.Where(predicate.Costumer(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.CostumersColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadDeals(ctx context.Context, query *DealQuery, nodes []*Company, init func(*Company), assign func(*Company, *Deal)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(deal.FieldTenantId)
+	}
+	query.Where(predicate.Deal(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.DealsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadChats(ctx context.Context, query *ChatQuery, nodes []*Company, init func(*Company), assign func(*Company, *Chat)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(chat.FieldTenantId)
+	}
+	query.Where(predicate.Chat(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.ChatsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadDepartments(ctx context.Context, query *DepartmentQuery, nodes []*Company, init func(*Company), assign func(*Company, *Department)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(department.FieldTenantId)
+	}
+	query.Where(predicate.Department(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.DepartmentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadPipelines(ctx context.Context, query *PipelineQuery, nodes []*Company, init func(*Company), assign func(*Company, *Pipeline)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(pipeline.FieldTenantId)
+	}
+	query.Where(predicate.Pipeline(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.PipelinesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadCrmFields(ctx context.Context, query *CrmFieldQuery, nodes []*Company, init func(*Company), assign func(*Company, *CrmField)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(crmfield.FieldTenantId)
+	}
+	query.Where(predicate.CrmField(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.CrmFieldsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadDealCrmFields(ctx context.Context, query *DealCrmFieldQuery, nodes []*Company, init func(*Company), assign func(*Company, *DealCrmField)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(dealcrmfield.FieldTenantId)
+	}
+	query.Where(predicate.DealCrmField(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.DealCrmFieldsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadDropdownLists(ctx context.Context, query *DropdownListQuery, nodes []*Company, init func(*Company), assign func(*Company, *DropdownList)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(dropdownlist.FieldTenantId)
+	}
+	query.Where(predicate.DropdownList(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.DropdownListsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadEmployeeAuths(ctx context.Context, query *EmployeeAuthQuery, nodes []*Company, init func(*Company), assign func(*Company, *EmployeeAuth)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(employeeauth.FieldTenantId)
+	}
+	query.Where(predicate.EmployeeAuth(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.EmployeeAuthsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*Company, init func(*Company), assign func(*Company, *File)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(file.FieldTenantId)
+	}
+	query.Where(predicate.File(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.FilesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadMessages(ctx context.Context, query *MessageQuery, nodes []*Company, init func(*Company), assign func(*Company, *Message)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(message.FieldTenantId)
+	}
+	query.Where(predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.MessagesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadQueues(ctx context.Context, query *QueueQuery, nodes []*Company, init func(*Company), assign func(*Company, *Queue)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(queue.FieldTenantId)
+	}
+	query.Where(predicate.Queue(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.QueuesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadRbacs(ctx context.Context, query *RbacQuery, nodes []*Company, init func(*Company), assign func(*Company, *Rbac)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(rbac.FieldTenantId)
+	}
+	query.Where(predicate.Rbac(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.RbacsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadStages(ctx context.Context, query *StageQuery, nodes []*Company, init func(*Company), assign func(*Company, *Stage)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(stage.FieldTenantId)
+	}
+	query.Where(predicate.Stage(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.StagesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CompanyQuery) loadTexts(ctx context.Context, query *TextQuery, nodes []*Company, init func(*Company), assign func(*Company, *Text)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Company)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(text.FieldTenantId)
+	}
+	query.Where(predicate.Text(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(company.TextsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantId
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenantId" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -538,17 +1774,227 @@ func (_q *CompanyQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// WithNamedEmployee tells the query-builder to eager-load the nodes that are connected to the "employee"
+// WithNamedEmployees tells the query-builder to eager-load the nodes that are connected to the "employees"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (_q *CompanyQuery) WithNamedEmployee(name string, opts ...func(*EmployeeQuery)) *CompanyQuery {
+func (_q *CompanyQuery) WithNamedEmployees(name string, opts ...func(*EmployeeQuery)) *CompanyQuery {
 	query := (&EmployeeClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if _q.withNamedEmployee == nil {
-		_q.withNamedEmployee = make(map[string]*EmployeeQuery)
+	if _q.withNamedEmployees == nil {
+		_q.withNamedEmployees = make(map[string]*EmployeeQuery)
 	}
-	_q.withNamedEmployee[name] = query
+	_q.withNamedEmployees[name] = query
+	return _q
+}
+
+// WithNamedCostumers tells the query-builder to eager-load the nodes that are connected to the "costumers"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedCostumers(name string, opts ...func(*CostumerQuery)) *CompanyQuery {
+	query := (&CostumerClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedCostumers == nil {
+		_q.withNamedCostumers = make(map[string]*CostumerQuery)
+	}
+	_q.withNamedCostumers[name] = query
+	return _q
+}
+
+// WithNamedDeals tells the query-builder to eager-load the nodes that are connected to the "deals"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedDeals(name string, opts ...func(*DealQuery)) *CompanyQuery {
+	query := (&DealClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedDeals == nil {
+		_q.withNamedDeals = make(map[string]*DealQuery)
+	}
+	_q.withNamedDeals[name] = query
+	return _q
+}
+
+// WithNamedChats tells the query-builder to eager-load the nodes that are connected to the "chats"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedChats(name string, opts ...func(*ChatQuery)) *CompanyQuery {
+	query := (&ChatClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedChats == nil {
+		_q.withNamedChats = make(map[string]*ChatQuery)
+	}
+	_q.withNamedChats[name] = query
+	return _q
+}
+
+// WithNamedDepartments tells the query-builder to eager-load the nodes that are connected to the "departments"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedDepartments(name string, opts ...func(*DepartmentQuery)) *CompanyQuery {
+	query := (&DepartmentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedDepartments == nil {
+		_q.withNamedDepartments = make(map[string]*DepartmentQuery)
+	}
+	_q.withNamedDepartments[name] = query
+	return _q
+}
+
+// WithNamedPipelines tells the query-builder to eager-load the nodes that are connected to the "pipelines"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedPipelines(name string, opts ...func(*PipelineQuery)) *CompanyQuery {
+	query := (&PipelineClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedPipelines == nil {
+		_q.withNamedPipelines = make(map[string]*PipelineQuery)
+	}
+	_q.withNamedPipelines[name] = query
+	return _q
+}
+
+// WithNamedCrmFields tells the query-builder to eager-load the nodes that are connected to the "crmFields"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedCrmFields(name string, opts ...func(*CrmFieldQuery)) *CompanyQuery {
+	query := (&CrmFieldClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedCrmFields == nil {
+		_q.withNamedCrmFields = make(map[string]*CrmFieldQuery)
+	}
+	_q.withNamedCrmFields[name] = query
+	return _q
+}
+
+// WithNamedDealCrmFields tells the query-builder to eager-load the nodes that are connected to the "dealCrmFields"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedDealCrmFields(name string, opts ...func(*DealCrmFieldQuery)) *CompanyQuery {
+	query := (&DealCrmFieldClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedDealCrmFields == nil {
+		_q.withNamedDealCrmFields = make(map[string]*DealCrmFieldQuery)
+	}
+	_q.withNamedDealCrmFields[name] = query
+	return _q
+}
+
+// WithNamedDropdownLists tells the query-builder to eager-load the nodes that are connected to the "dropdownLists"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedDropdownLists(name string, opts ...func(*DropdownListQuery)) *CompanyQuery {
+	query := (&DropdownListClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedDropdownLists == nil {
+		_q.withNamedDropdownLists = make(map[string]*DropdownListQuery)
+	}
+	_q.withNamedDropdownLists[name] = query
+	return _q
+}
+
+// WithNamedEmployeeAuths tells the query-builder to eager-load the nodes that are connected to the "employeeAuths"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedEmployeeAuths(name string, opts ...func(*EmployeeAuthQuery)) *CompanyQuery {
+	query := (&EmployeeAuthClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedEmployeeAuths == nil {
+		_q.withNamedEmployeeAuths = make(map[string]*EmployeeAuthQuery)
+	}
+	_q.withNamedEmployeeAuths[name] = query
+	return _q
+}
+
+// WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedFiles(name string, opts ...func(*FileQuery)) *CompanyQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedFiles == nil {
+		_q.withNamedFiles = make(map[string]*FileQuery)
+	}
+	_q.withNamedFiles[name] = query
+	return _q
+}
+
+// WithNamedMessages tells the query-builder to eager-load the nodes that are connected to the "messages"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedMessages(name string, opts ...func(*MessageQuery)) *CompanyQuery {
+	query := (&MessageClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedMessages == nil {
+		_q.withNamedMessages = make(map[string]*MessageQuery)
+	}
+	_q.withNamedMessages[name] = query
+	return _q
+}
+
+// WithNamedQueues tells the query-builder to eager-load the nodes that are connected to the "queues"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedQueues(name string, opts ...func(*QueueQuery)) *CompanyQuery {
+	query := (&QueueClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedQueues == nil {
+		_q.withNamedQueues = make(map[string]*QueueQuery)
+	}
+	_q.withNamedQueues[name] = query
+	return _q
+}
+
+// WithNamedRbacs tells the query-builder to eager-load the nodes that are connected to the "rbacs"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedRbacs(name string, opts ...func(*RbacQuery)) *CompanyQuery {
+	query := (&RbacClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedRbacs == nil {
+		_q.withNamedRbacs = make(map[string]*RbacQuery)
+	}
+	_q.withNamedRbacs[name] = query
+	return _q
+}
+
+// WithNamedStages tells the query-builder to eager-load the nodes that are connected to the "stages"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedStages(name string, opts ...func(*StageQuery)) *CompanyQuery {
+	query := (&StageClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedStages == nil {
+		_q.withNamedStages = make(map[string]*StageQuery)
+	}
+	_q.withNamedStages[name] = query
+	return _q
+}
+
+// WithNamedTexts tells the query-builder to eager-load the nodes that are connected to the "texts"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *CompanyQuery) WithNamedTexts(name string, opts ...func(*TextQuery)) *CompanyQuery {
+	query := (&TextClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedTexts == nil {
+		_q.withNamedTexts = make(map[string]*TextQuery)
+	}
+	_q.withNamedTexts[name] = query
 	return _q
 }
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
+	"github.com/google/uuid"
 )
 
 type PipelineService struct {
@@ -40,8 +41,8 @@ func (s *PipelineService) UpdateID(ctx context.Context, id string, input ent.Upd
 	}
 	return pipeline, nil
 }
-func (s *PipelineService) DeleteID(ctx context.Context, id string) error {
-	err := s.repository.DeleteID(ctx, id)
+func (s *PipelineService) Delete(ctx context.Context, ids []uuid.UUID) error {
+	err := s.repository.Delete(ctx, ids)
 	if err != nil {
 		return err
 	}

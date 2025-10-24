@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
@@ -25,6 +26,7 @@ type RbacQuery struct {
 	inters         []Interceptor
 	predicates     []predicate.Rbac
 	withDepartment *DepartmentQuery
+	withTenant     *CompanyQuery
 	withFKs        bool
 	modifiers      []func(*sql.Selector)
 	loadTotal      []func(context.Context, []*Rbac) error
@@ -79,6 +81,28 @@ func (_q *RbacQuery) QueryDepartment() *DepartmentQuery {
 			sqlgraph.From(rbac.Table, rbac.FieldID, selector),
 			sqlgraph.To(department.Table, department.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, rbac.DepartmentTable, rbac.DepartmentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *RbacQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(rbac.Table, rbac.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, rbac.TenantTable, rbac.TenantColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -279,6 +303,7 @@ func (_q *RbacQuery) Clone() *RbacQuery {
 		inters:         append([]Interceptor{}, _q.inters...),
 		predicates:     append([]predicate.Rbac{}, _q.predicates...),
 		withDepartment: _q.withDepartment.Clone(),
+		withTenant:     _q.withTenant.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -293,6 +318,17 @@ func (_q *RbacQuery) WithDepartment(opts ...func(*DepartmentQuery)) *RbacQuery {
 		opt(query)
 	}
 	_q.withDepartment = query
+	return _q
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *RbacQuery) WithTenant(opts ...func(*CompanyQuery)) *RbacQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
 	return _q
 }
 
@@ -375,8 +411,9 @@ func (_q *RbacQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Rbac, e
 		nodes       = []*Rbac{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withDepartment != nil,
+			_q.withTenant != nil,
 		}
 	)
 	if _q.withDepartment != nil {
@@ -409,6 +446,12 @@ func (_q *RbacQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Rbac, e
 	if query := _q.withDepartment; query != nil {
 		if err := _q.loadDepartment(ctx, query, nodes, nil,
 			func(n *Rbac, e *Department) { n.Edges.Department = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *Rbac, e *Company) { n.Edges.Tenant = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -452,6 +495,35 @@ func (_q *RbacQuery) loadDepartment(ctx context.Context, query *DepartmentQuery,
 	}
 	return nil
 }
+func (_q *RbacQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*Rbac, init func(*Rbac), assign func(*Rbac, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Rbac)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *RbacQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -480,6 +552,9 @@ func (_q *RbacQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != rbac.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(rbac.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

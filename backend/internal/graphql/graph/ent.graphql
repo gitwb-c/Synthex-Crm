@@ -7,9 +7,11 @@ type Chat implements Node {
   locked: Boolean!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   deal: Deal
   employees: [Employee!]
   messages: [Message!]
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -132,6 +134,15 @@ input ChatWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   deal edge predicates
   """
   hasDeal: Boolean
@@ -146,13 +157,33 @@ input ChatWhereInput {
   """
   hasMessages: Boolean
   hasMessagesWith: [MessageWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 type Company implements Node {
   id: ID!
   name: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
-  employee: [Employee!]
+  employees: [Employee!]
+  costumers: [Costumer!]
+  deals: [Deal!]
+  chats: [Chat!]
+  departments: [Department!]
+  pipelines: [Pipeline!]
+  crmfields: [CrmField!] @goField(name: "CrmFields", forceResolver: false)
+  dealcrmfields: [DealCrmField!] @goField(name: "DealCrmFields", forceResolver: false)
+  dropdownlists: [DropdownList!] @goField(name: "DropdownLists", forceResolver: false)
+  employeeauths: [EmployeeAuth!] @goField(name: "EmployeeAuths", forceResolver: false)
+  files: [File!]
+  messages: [Message!]
+  queues: [Queue!]
+  rbacs: [Rbac!]
+  stages: [Stage!]
+  texts: [Text!]
 }
 """
 A connection to a list of items.
@@ -263,10 +294,85 @@ input CompanyWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
-  employee edge predicates
+  employees edge predicates
   """
-  hasEmployee: Boolean
-  hasEmployeeWith: [EmployeeWhereInput!]
+  hasEmployees: Boolean
+  hasEmployeesWith: [EmployeeWhereInput!]
+  """
+  costumers edge predicates
+  """
+  hasCostumers: Boolean
+  hasCostumersWith: [CostumerWhereInput!]
+  """
+  deals edge predicates
+  """
+  hasDeals: Boolean
+  hasDealsWith: [DealWhereInput!]
+  """
+  chats edge predicates
+  """
+  hasChats: Boolean
+  hasChatsWith: [ChatWhereInput!]
+  """
+  departments edge predicates
+  """
+  hasDepartments: Boolean
+  hasDepartmentsWith: [DepartmentWhereInput!]
+  """
+  pipelines edge predicates
+  """
+  hasPipelines: Boolean
+  hasPipelinesWith: [PipelineWhereInput!]
+  """
+  crmFields edge predicates
+  """
+  hasCrmFields: Boolean
+  hasCrmFieldsWith: [CrmFieldWhereInput!]
+  """
+  dealCrmFields edge predicates
+  """
+  hasDealCrmFields: Boolean
+  hasDealCrmFieldsWith: [DealCrmFieldWhereInput!]
+  """
+  dropdownLists edge predicates
+  """
+  hasDropdownLists: Boolean
+  hasDropdownListsWith: [DropdownListWhereInput!]
+  """
+  employeeAuths edge predicates
+  """
+  hasEmployeeAuths: Boolean
+  hasEmployeeAuthsWith: [EmployeeAuthWhereInput!]
+  """
+  files edge predicates
+  """
+  hasFiles: Boolean
+  hasFilesWith: [FileWhereInput!]
+  """
+  messages edge predicates
+  """
+  hasMessages: Boolean
+  hasMessagesWith: [MessageWhereInput!]
+  """
+  queues edge predicates
+  """
+  hasQueues: Boolean
+  hasQueuesWith: [QueueWhereInput!]
+  """
+  rbacs edge predicates
+  """
+  hasRbacs: Boolean
+  hasRbacsWith: [RbacWhereInput!]
+  """
+  stages edge predicates
+  """
+  hasStages: Boolean
+  hasStagesWith: [StageWhereInput!]
+  """
+  texts edge predicates
+  """
+  hasTexts: Boolean
+  hasTextsWith: [TextWhereInput!]
 }
 type Costumer implements Node {
   id: ID!
@@ -275,6 +381,8 @@ type Costumer implements Node {
   email: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
+  tenant: Company
   deals: [Deal!]
 }
 """
@@ -420,6 +528,20 @@ input CostumerWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
+  """
   deals edge predicates
   """
   hasDeals: Boolean
@@ -438,6 +560,7 @@ input CreateChatInput {
   dealID: ID
   employeeIDs: [ID!]
   messageIDs: [ID!]
+  tenantID: ID
 }
 """
 CreateCompanyInput is used for create Company object.
@@ -448,6 +571,21 @@ input CreateCompanyInput {
   createdat: Time
   updatedat: Time
   employeeIDs: [ID!]
+  costumerIDs: [ID!]
+  dealIDs: [ID!]
+  chatIDs: [ID!]
+  departmentIDs: [ID!]
+  pipelineIDs: [ID!]
+  crmfieldIDs: [ID!]
+  dealcrmfieldIDs: [ID!]
+  dropdownlistIDs: [ID!]
+  employeeauthIDs: [ID!]
+  fileIDs: [ID!]
+  messageIDs: [ID!]
+  queueIDs: [ID!]
+  rbacIDs: [ID!]
+  stageIDs: [ID!]
+  textIDs: [ID!]
 }
 """
 CreateCostumerInput is used for create Costumer object.
@@ -459,6 +597,7 @@ input CreateCostumerInput {
   email: String!
   createdat: Time
   updatedat: Time
+  tenantID: ID
   dealIDs: [ID!]
 }
 """
@@ -473,6 +612,7 @@ input CreateCrmFieldInput {
   updatedat: Time
   dropdownlistIDs: [ID!]
   dealcrmfieldIDs: [ID!]
+  tenantID: ID
 }
 """
 CreateDealCrmFieldInput is used for create DealCrmField object.
@@ -484,6 +624,7 @@ input CreateDealCrmFieldInput {
   updatedat: Time
   dealID: ID!
   crmfieldID: ID!
+  tenantID: ID
 }
 """
 CreateDealInput is used for create Deal object.
@@ -494,6 +635,7 @@ input CreateDealInput {
   source: String!
   createdat: Time
   updatedat: Time
+  tenantID: ID
   costumerID: ID
   chatID: ID
   stageID: ID!
@@ -507,6 +649,7 @@ input CreateDepartmentInput {
   name: String!
   createdat: Time
   updatedat: Time
+  tenantID: ID
   employeeIDs: [ID!]
   queueIDs: [ID!]
   rbacIDs: [ID!]
@@ -520,6 +663,7 @@ input CreateDropdownListInput {
   createdat: Time
   updatedat: Time
   crmfieldIDs: [ID!]!
+  tenantID: ID
 }
 """
 CreateEmployeeAuthInput is used for create EmployeeAuth object.
@@ -532,6 +676,7 @@ input CreateEmployeeAuthInput {
   createdat: Time
   updatedat: Time
   employeeID: ID
+  tenantID: ID!
 }
 """
 CreateEmployeeInput is used for create Employee object.
@@ -543,7 +688,7 @@ input CreateEmployeeInput {
   createdat: Time
   updatedat: Time
   employeeauthID: ID!
-  companyID: ID!
+  tenantID: ID
   departmentID: ID!
   chatIDs: [ID!]
   queueIDs: [ID!]
@@ -559,6 +704,7 @@ input CreateFileInput {
   mimetype: String!
   filename: String!
   messageID: ID!
+  tenantID: ID
 }
 """
 CreateMessageInput is used for create Message object.
@@ -574,6 +720,7 @@ input CreateMessageInput {
   employeeIDs: [ID!]
   textID: ID
   fileID: ID
+  tenantID: ID
 }
 """
 CreatePipelineInput is used for create Pipeline object.
@@ -583,6 +730,7 @@ input CreatePipelineInput {
   name: String!
   createdat: Time
   updatedat: Time
+  tenantID: ID
   stageIDs: [ID!]
 }
 """
@@ -597,6 +745,7 @@ input CreateQueueInput {
   stageIDs: [ID!]
   employeeIDs: [ID!]
   departmentIDs: [ID!]!
+  tenantID: ID
 }
 """
 CreateRbacInput is used for create Rbac object.
@@ -607,6 +756,7 @@ input CreateRbacInput {
   createdat: Time
   updatedat: Time
   departmentID: ID!
+  tenantID: ID
 }
 """
 CreateStageInput is used for create Stage object.
@@ -621,6 +771,7 @@ input CreateStageInput {
   pipelineID: ID!
   dealIDs: [ID!]
   queueID: ID
+  tenantID: ID
 }
 """
 CreateTextInput is used for create Text object.
@@ -629,6 +780,7 @@ Input was generated by ent.
 input CreateTextInput {
   text: String!
   messageID: ID!
+  tenantID: ID
 }
 type CrmField implements Node {
   id: ID!
@@ -637,8 +789,10 @@ type CrmField implements Node {
   type: CrmFieldType!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   dropdownlist: [DropdownList!] @goField(name: "DropdownList", forceResolver: false)
   dealcrmfield: [DealCrmField!] @goField(name: "DealCrmField", forceResolver: false)
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -783,6 +937,15 @@ input CrmFieldWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   dropdownList edge predicates
   """
   hasDropdownList: Boolean
@@ -792,6 +955,11 @@ input CrmFieldWhereInput {
   """
   hasDealCrmField: Boolean
   hasDealCrmFieldWith: [DealCrmFieldWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 """
 Define a Relay Cursor type:
@@ -804,6 +972,8 @@ type Deal implements Node {
   source: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
+  tenant: Company
   costumer: Costumer
   chat: Chat
   stage: Stage!
@@ -831,8 +1001,10 @@ type DealCrmField implements Node {
   value: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   deal: Deal!
   crmfield: CrmField! @goField(name: "CrmField", forceResolver: false)
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -943,6 +1115,15 @@ input DealCrmFieldWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   deal edge predicates
   """
   hasDeal: Boolean
@@ -952,6 +1133,11 @@ input DealCrmFieldWhereInput {
   """
   hasCrmField: Boolean
   hasCrmFieldWith: [CrmFieldWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 """
 An edge in a connection.
@@ -1062,6 +1248,20 @@ input DealWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
+  """
   costumer edge predicates
   """
   hasCostumer: Boolean
@@ -1087,6 +1287,8 @@ type Department implements Node {
   name: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
+  tenant: Company
   employee: [Employee!]
   queues: [Queue!]
   rbacs: [Rbac!]
@@ -1200,6 +1402,20 @@ input DepartmentWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
+  """
   employee edge predicates
   """
   hasEmployee: Boolean
@@ -1220,7 +1436,9 @@ type DropdownList implements Node {
   value: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   crmfield: [CrmField!]! @goField(name: "CrmField", forceResolver: false)
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -1331,10 +1549,24 @@ input DropdownListWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   crmField edge predicates
   """
   hasCrmField: Boolean
   hasCrmFieldWith: [CrmFieldWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 type Employee implements Node {
   id: ID!
@@ -1342,8 +1574,9 @@ type Employee implements Node {
   active: Boolean!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   employeeauth: EmployeeAuth! @goField(name: "EmployeeAuth", forceResolver: false)
-  company: Company!
+  tenant: Company
   department: Department!
   chat: [Chat!]
   queues: [Queue!]
@@ -1354,7 +1587,9 @@ type EmployeeAuth implements Node {
   name: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID! @goField(name: "TenantId", forceResolver: false)
   employee: Employee
+  tenant: Company!
 }
 """
 A connection to a list of items.
@@ -1464,10 +1699,22 @@ input EmployeeAuthWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  """
   employee edge predicates
   """
   hasEmployee: Boolean
   hasEmployeeWith: [EmployeeWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 """
 A connection to a list of items.
@@ -1584,15 +1831,24 @@ input EmployeeWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   employeeAuth edge predicates
   """
   hasEmployeeAuth: Boolean
   hasEmployeeAuthWith: [EmployeeAuthWhereInput!]
   """
-  company edge predicates
+  tenant edge predicates
   """
-  hasCompany: Boolean
-  hasCompanyWith: [CompanyWhereInput!]
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
   """
   department edge predicates
   """
@@ -1620,7 +1876,9 @@ type File implements Node {
   caption: String
   mimetype: String! @goField(name: "MimeType", forceResolver: false)
   filename: String! @goField(name: "FileName", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   message: Message!
+  tenant: Company
 }
 """
 Ordering options for File connections
@@ -1727,10 +1985,24 @@ input FileWhereInput {
   filenameEqualFold: String
   filenameContainsFold: String
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   message edge predicates
   """
   hasMessage: Boolean
   hasMessageWith: [MessageWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 type Message implements Node {
   id: ID!
@@ -1739,10 +2011,12 @@ type Message implements Node {
   type: MessageType!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   chat: Chat
   employee: [Employee!]
   text: Text
   file: File
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -1874,6 +2148,15 @@ input MessageWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   chat edge predicates
   """
   hasChat: Boolean
@@ -1893,6 +2176,11 @@ input MessageWhereInput {
   """
   hasFile: Boolean
   hasFileWith: [FileWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 """
 An object with an ID.
@@ -1944,6 +2232,8 @@ type Pipeline implements Node {
   name: String!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
+  tenant: Company
   stages: [Stage!]
 }
 """
@@ -2054,6 +2344,20 @@ input PipelineWhereInput {
   updatedatGTE: Time
   updatedatLT: Time
   updatedatLTE: Time
+  """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
   """
   stages edge predicates
   """
@@ -2551,9 +2855,11 @@ type Queue implements Node {
   type: QueueType!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   stages: [Stage!]
   employees: [Employee!]
   department: [Department!]!
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -2678,6 +2984,15 @@ input QueueWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   stages edge predicates
   """
   hasStages: Boolean
@@ -2692,13 +3007,20 @@ input QueueWhereInput {
   """
   hasDepartment: Boolean
   hasDepartmentWith: [DepartmentWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 type Rbac implements Node {
   id: ID!
   access: RbacAccess!
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   department: Department!
+  tenant: Company
 }
 """
 RbacAccess is enum for the field access
@@ -2827,10 +3149,24 @@ input RbacWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   department edge predicates
   """
   hasDepartment: Boolean
   hasDepartmentWith: [DepartmentWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 type Stage implements Node {
   id: ID!
@@ -2839,9 +3175,11 @@ type Stage implements Node {
   lossorgain: Boolean! @goField(name: "LossOrGain", forceResolver: false)
   createdat: Time! @goField(name: "CreatedAt", forceResolver: false)
   updatedat: Time! @goField(name: "UpdatedAt", forceResolver: false)
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   pipeline: Pipeline!
   deals: [Deal!]
   queue: Queue
+  tenant: Company
 }
 """
 A connection to a list of items.
@@ -2974,6 +3312,15 @@ input StageWhereInput {
   updatedatLT: Time
   updatedatLTE: Time
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   pipeline edge predicates
   """
   hasPipeline: Boolean
@@ -2988,11 +3335,18 @@ input StageWhereInput {
   """
   hasQueue: Boolean
   hasQueueWith: [QueueWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 type Text implements Node {
   id: ID!
   text: String!
+  tenantid: ID @goField(name: "TenantId", forceResolver: false)
   message: Message!
+  tenant: Company
 }
 """
 Ordering options for Text connections
@@ -3049,10 +3403,24 @@ input TextWhereInput {
   textEqualFold: String
   textContainsFold: String
   """
+  tenantId field predicates
+  """
+  tenantid: ID
+  tenantidNEQ: ID
+  tenantidIn: [ID!]
+  tenantidNotIn: [ID!]
+  tenantidIsNil: Boolean
+  tenantidNotNil: Boolean
+  """
   message edge predicates
   """
   hasMessage: Boolean
   hasMessageWith: [MessageWhereInput!]
+  """
+  tenant edge predicates
+  """
+  hasTenant: Boolean
+  hasTenantWith: [CompanyWhereInput!]
 }
 """
 UpdateChatInput is used for update Chat object.
@@ -3071,6 +3439,8 @@ input UpdateChatInput {
   addMessageIDs: [ID!]
   removeMessageIDs: [ID!]
   clearMessages: Boolean
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateCompanyInput is used for update Company object.
@@ -3081,7 +3451,52 @@ input UpdateCompanyInput {
   updatedat: Time
   addEmployeeIDs: [ID!]
   removeEmployeeIDs: [ID!]
-  clearEmployee: Boolean
+  clearEmployees: Boolean
+  addCostumerIDs: [ID!]
+  removeCostumerIDs: [ID!]
+  clearCostumers: Boolean
+  addDealIDs: [ID!]
+  removeDealIDs: [ID!]
+  clearDeals: Boolean
+  addChatIDs: [ID!]
+  removeChatIDs: [ID!]
+  clearChats: Boolean
+  addDepartmentIDs: [ID!]
+  removeDepartmentIDs: [ID!]
+  clearDepartments: Boolean
+  addPipelineIDs: [ID!]
+  removePipelineIDs: [ID!]
+  clearPipelines: Boolean
+  addCrmFieldIDs: [ID!]
+  removeCrmFieldIDs: [ID!]
+  clearCrmFields: Boolean
+  addDealCrmFieldIDs: [ID!]
+  removeDealCrmFieldIDs: [ID!]
+  clearDealCrmFields: Boolean
+  addDropdownListIDs: [ID!]
+  removeDropdownListIDs: [ID!]
+  clearDropdownLists: Boolean
+  addEmployeeAuthIDs: [ID!]
+  removeEmployeeAuthIDs: [ID!]
+  clearEmployeeAuths: Boolean
+  addFileIDs: [ID!]
+  removeFileIDs: [ID!]
+  clearFiles: Boolean
+  addMessageIDs: [ID!]
+  removeMessageIDs: [ID!]
+  clearMessages: Boolean
+  addQueueIDs: [ID!]
+  removeQueueIDs: [ID!]
+  clearQueues: Boolean
+  addRbacIDs: [ID!]
+  removeRbacIDs: [ID!]
+  clearRbacs: Boolean
+  addStageIDs: [ID!]
+  removeStageIDs: [ID!]
+  clearStages: Boolean
+  addTextIDs: [ID!]
+  removeTextIDs: [ID!]
+  clearTexts: Boolean
 }
 """
 UpdateCostumerInput is used for update Costumer object.
@@ -3092,6 +3507,8 @@ input UpdateCostumerInput {
   phone: String
   email: String
   updatedat: Time
+  tenantID: ID
+  clearTenant: Boolean
   addDealIDs: [ID!]
   removeDealIDs: [ID!]
   clearDeals: Boolean
@@ -3110,6 +3527,8 @@ input UpdateCrmFieldInput {
   addDealCrmFieldIDs: [ID!]
   removeDealCrmFieldIDs: [ID!]
   clearDealCrmField: Boolean
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateDealCrmFieldInput is used for update DealCrmField object.
@@ -3120,6 +3539,8 @@ input UpdateDealCrmFieldInput {
   updatedat: Time
   dealID: ID
   crmfieldID: ID
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateDealInput is used for update Deal object.
@@ -3129,6 +3550,8 @@ input UpdateDealInput {
   title: String
   source: String
   updatedat: Time
+  tenantID: ID
+  clearTenant: Boolean
   costumerID: ID
   clearCostumer: Boolean
   chatID: ID
@@ -3145,6 +3568,8 @@ Input was generated by ent.
 input UpdateDepartmentInput {
   name: String
   updatedat: Time
+  tenantID: ID
+  clearTenant: Boolean
   addEmployeeIDs: [ID!]
   removeEmployeeIDs: [ID!]
   clearEmployee: Boolean
@@ -3164,6 +3589,8 @@ input UpdateDropdownListInput {
   updatedat: Time
   addCrmFieldIDs: [ID!]
   removeCrmFieldIDs: [ID!]
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateEmployeeAuthInput is used for update EmployeeAuth object.
@@ -3176,6 +3603,7 @@ input UpdateEmployeeAuthInput {
   updatedat: Time
   employeeID: ID
   clearEmployee: Boolean
+  tenantID: ID
 }
 """
 UpdateEmployeeInput is used for update Employee object.
@@ -3186,7 +3614,8 @@ input UpdateEmployeeInput {
   active: Boolean
   updatedat: Time
   employeeauthID: ID
-  companyID: ID
+  tenantID: ID
+  clearTenant: Boolean
   departmentID: ID
   addChatIDs: [ID!]
   removeChatIDs: [ID!]
@@ -3209,6 +3638,8 @@ input UpdateFileInput {
   mimetype: String
   filename: String
   messageID: ID
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateMessageInput is used for update Message object.
@@ -3228,6 +3659,8 @@ input UpdateMessageInput {
   clearText: Boolean
   fileID: ID
   clearFile: Boolean
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdatePipelineInput is used for update Pipeline object.
@@ -3236,6 +3669,8 @@ Input was generated by ent.
 input UpdatePipelineInput {
   name: String
   updatedat: Time
+  tenantID: ID
+  clearTenant: Boolean
   addStageIDs: [ID!]
   removeStageIDs: [ID!]
   clearStages: Boolean
@@ -3256,6 +3691,8 @@ input UpdateQueueInput {
   clearEmployees: Boolean
   addDepartmentIDs: [ID!]
   removeDepartmentIDs: [ID!]
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateRbacInput is used for update Rbac object.
@@ -3265,6 +3702,8 @@ input UpdateRbacInput {
   access: RbacAccess
   updatedat: Time
   departmentID: ID
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateStageInput is used for update Stage object.
@@ -3281,6 +3720,8 @@ input UpdateStageInput {
   clearDeals: Boolean
   queueID: ID
   clearQueue: Boolean
+  tenantID: ID
+  clearTenant: Boolean
 }
 """
 UpdateTextInput is used for update Text object.
@@ -3289,4 +3730,6 @@ Input was generated by ent.
 input UpdateTextInput {
   text: String
   messageID: ID
+  tenantID: ID
+  clearTenant: Boolean
 }

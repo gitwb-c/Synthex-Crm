@@ -40,16 +40,212 @@ func (_m *Chat) Messages(ctx context.Context) (result []*Message, err error) {
 	return result, err
 }
 
-func (_m *Company) Employee(ctx context.Context) (result []*Employee, err error) {
+func (_m *Chat) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Company) Employees(ctx context.Context) (result []*Employee, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedEmployee(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedEmployees(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = _m.Edges.EmployeeOrErr()
+		result, err = _m.Edges.EmployeesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = _m.QueryEmployee().All(ctx)
+		result, err = _m.QueryEmployees().All(ctx)
 	}
 	return result, err
+}
+
+func (_m *Company) Costumers(ctx context.Context) (result []*Costumer, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedCostumers(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.CostumersOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryCostumers().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Deals(ctx context.Context) (result []*Deal, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedDeals(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.DealsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDeals().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Chats(ctx context.Context) (result []*Chat, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedChats(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.ChatsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryChats().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Departments(ctx context.Context) (result []*Department, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedDepartments(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.DepartmentsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDepartments().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Pipelines(ctx context.Context) (result []*Pipeline, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedPipelines(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.PipelinesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryPipelines().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) CrmFields(ctx context.Context) (result []*CrmField, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedCrmFields(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.CrmFieldsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryCrmFields().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) DealCrmFields(ctx context.Context) (result []*DealCrmField, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedDealCrmFields(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.DealCrmFieldsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDealCrmFields().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) DropdownLists(ctx context.Context) (result []*DropdownList, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedDropdownLists(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.DropdownListsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDropdownLists().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) EmployeeAuths(ctx context.Context) (result []*EmployeeAuth, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedEmployeeAuths(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.EmployeeAuthsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryEmployeeAuths().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Files(ctx context.Context) (result []*File, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedFiles(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.FilesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFiles().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Messages(ctx context.Context) (result []*Message, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedMessages(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.MessagesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMessages().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Queues(ctx context.Context) (result []*Queue, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedQueues(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.QueuesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryQueues().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Rbacs(ctx context.Context) (result []*Rbac, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedRbacs(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.RbacsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryRbacs().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Stages(ctx context.Context) (result []*Stage, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedStages(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.StagesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryStages().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Company) Texts(ctx context.Context) (result []*Text, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedTexts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.TextsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTexts().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Costumer) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *Costumer) Deals(ctx context.Context) (result []*Deal, err error) {
@@ -86,6 +282,22 @@ func (_m *CrmField) DealCrmField(ctx context.Context) (result []*DealCrmField, e
 		result, err = _m.QueryDealCrmField().All(ctx)
 	}
 	return result, err
+}
+
+func (_m *CrmField) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Deal) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *Deal) Costumer(ctx context.Context) (*Costumer, error) {
@@ -140,6 +352,22 @@ func (_m *DealCrmField) CrmField(ctx context.Context) (*CrmField, error) {
 	return result, err
 }
 
+func (_m *DealCrmField) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Department) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *Department) Employee(ctx context.Context) (result []*Employee, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = _m.NamedEmployee(graphql.GetFieldContext(ctx).Field.Alias)
@@ -188,6 +416,14 @@ func (_m *DropdownList) CrmField(ctx context.Context) (result []*CrmField, err e
 	return result, err
 }
 
+func (_m *DropdownList) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *Employee) EmployeeAuth(ctx context.Context) (*EmployeeAuth, error) {
 	result, err := _m.Edges.EmployeeAuthOrErr()
 	if IsNotLoaded(err) {
@@ -196,12 +432,12 @@ func (_m *Employee) EmployeeAuth(ctx context.Context) (*EmployeeAuth, error) {
 	return result, err
 }
 
-func (_m *Employee) Company(ctx context.Context) (*Company, error) {
-	result, err := _m.Edges.CompanyOrErr()
+func (_m *Employee) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
 	if IsNotLoaded(err) {
-		result, err = _m.QueryCompany().Only(ctx)
+		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (_m *Employee) Department(ctx context.Context) (*Department, error) {
@@ -256,12 +492,28 @@ func (_m *EmployeeAuth) Employee(ctx context.Context) (*Employee, error) {
 	return result, MaskNotFound(err)
 }
 
+func (_m *EmployeeAuth) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, err
+}
+
 func (_m *File) Message(ctx context.Context) (*Message, error) {
 	result, err := _m.Edges.MessageOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMessage().Only(ctx)
 	}
 	return result, err
+}
+
+func (_m *File) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *Message) Chat(ctx context.Context) (*Chat, error) {
@@ -296,6 +548,22 @@ func (_m *Message) File(ctx context.Context) (*File, error) {
 	result, err := _m.Edges.FileOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryFile().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Message) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Pipeline) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -348,12 +616,28 @@ func (_m *Queue) Department(ctx context.Context) (result []*Department, err erro
 	return result, err
 }
 
+func (_m *Queue) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *Rbac) Department(ctx context.Context) (*Department, error) {
 	result, err := _m.Edges.DepartmentOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryDepartment().Only(ctx)
 	}
 	return result, err
+}
+
+func (_m *Rbac) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *Stage) Pipeline(ctx context.Context) (*Pipeline, error) {
@@ -384,10 +668,26 @@ func (_m *Stage) Queue(ctx context.Context) (*Queue, error) {
 	return result, MaskNotFound(err)
 }
 
+func (_m *Stage) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *Text) Message(ctx context.Context) (*Message, error) {
 	result, err := _m.Edges.MessageOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMessage().Only(ctx)
 	}
 	return result, err
+}
+
+func (_m *Text) Tenant(ctx context.Context) (*Company, error) {
+	result, err := _m.Edges.TenantOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTenant().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }

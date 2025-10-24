@@ -2,8 +2,10 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
 	"github.com/google/uuid"
 )
 
@@ -31,14 +33,22 @@ func (s *QueueRepository) UpdateID(ctx context.Context, id string, input ent.Upd
 	}
 	return s.client.Queue.UpdateOneID(uuidId).SetInput(input).Save(ctx)
 }
-func (s *QueueRepository) DeleteID(ctx context.Context, id string) error {
-	uuidId, e := uuid.Parse(id)
-	if e != nil {
-		return e
-	}
-	err := s.client.Queue.DeleteOneID(uuidId).Exec(ctx)
+func (s *QueueRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("error: %w", err)
 	}
+
+	_, err = tx.Queue.Delete().Where(queue.IDIn(ids...)).Exec(ctx)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("error: %w", err)
+	}
+
 	return nil
 }

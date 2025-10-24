@@ -8,7 +8,6 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/schema/mixin"
 	"github.com/google/uuid"
 )
 
@@ -22,12 +21,13 @@ func (Pipeline) Fields() []ent.Field {
 		field.String("name").NotEmpty().Unique().Annotations(entgql.QueryField()).Annotations(entgql.OrderField("NAME")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
+		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (Pipeline) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("company", Company.Type).Ref("pipelines").Field("tenant_id").Required().Unique(),
+		edge.From("tenant", Company.Type).Ref("pipelines").Field("tenantId").Unique(),
 		edge.From("stages", Stage.Type).Ref("pipeline"),
 	}
 }
@@ -43,6 +43,6 @@ func (Pipeline) Annotations() []schema.Annotation {
 
 func (Pipeline) Mixins() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.TenantMixin{},
+		TenantMixin{},
 	}
 }

@@ -71,6 +71,11 @@ func UpdatedAt(v time.Time) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldEQ(FieldTenantId, v))
+}
+
 // ValueEQ applies the EQ predicate on the "value" field.
 func ValueEQ(v string) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldEQ(FieldValue, v))
@@ -216,6 +221,36 @@ func UpdatedAtLTE(v time.Time) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldNotIn(FieldTenantId, vs...))
+}
+
+// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
+func TenantIdIsNil() predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldIsNull(FieldTenantId))
+}
+
+// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
+func TenantIdNotNil() predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldNotNull(FieldTenantId))
+}
+
 // HasDeal applies the HasEdge predicate on the "deal" edge.
 func HasDeal() predicate.DealCrmField {
 	return predicate.DealCrmField(func(s *sql.Selector) {
@@ -254,6 +289,29 @@ func HasCrmField() predicate.DealCrmField {
 func HasCrmFieldWith(preds ...predicate.CrmField) predicate.DealCrmField {
 	return predicate.DealCrmField(func(s *sql.Selector) {
 		step := newCrmFieldStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTenant applies the HasEdge predicate on the "tenant" edge.
+func HasTenant() predicate.DealCrmField {
+	return predicate.DealCrmField(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTenantWith applies the HasEdge predicate on the "tenant" edge with a given conditions (other predicates).
+func HasTenantWith(preds ...predicate.Company) predicate.DealCrmField {
+	return predicate.DealCrmField(func(s *sql.Selector) {
+		step := newTenantStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
@@ -25,6 +26,7 @@ type PipelineQuery struct {
 	order           []pipeline.OrderOption
 	inters          []Interceptor
 	predicates      []predicate.Pipeline
+	withTenant      *CompanyQuery
 	withStages      *StageQuery
 	modifiers       []func(*sql.Selector)
 	loadTotal       []func(context.Context, []*Pipeline) error
@@ -63,6 +65,28 @@ func (_q *PipelineQuery) Unique(unique bool) *PipelineQuery {
 func (_q *PipelineQuery) Order(o ...pipeline.OrderOption) *PipelineQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryTenant chains the current query on the "tenant" edge.
+func (_q *PipelineQuery) QueryTenant() *CompanyQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(pipeline.Table, pipeline.FieldID, selector),
+			sqlgraph.To(company.Table, company.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, pipeline.TenantTable, pipeline.TenantColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryStages chains the current query on the "stages" edge.
@@ -279,11 +303,23 @@ func (_q *PipelineQuery) Clone() *PipelineQuery {
 		order:      append([]pipeline.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
 		predicates: append([]predicate.Pipeline{}, _q.predicates...),
+		withTenant: _q.withTenant.Clone(),
 		withStages: _q.withStages.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithTenant tells the query-builder to eager-load the nodes that are connected to
+// the "tenant" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *PipelineQuery) WithTenant(opts ...func(*CompanyQuery)) *PipelineQuery {
+	query := (&CompanyClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTenant = query
+	return _q
 }
 
 // WithStages tells the query-builder to eager-load the nodes that are connected to
@@ -375,7 +411,8 @@ func (_q *PipelineQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pip
 	var (
 		nodes       = []*Pipeline{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
+			_q.withTenant != nil,
 			_q.withStages != nil,
 		}
 	)
@@ -400,6 +437,12 @@ func (_q *PipelineQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pip
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withTenant; query != nil {
+		if err := _q.loadTenant(ctx, query, nodes, nil,
+			func(n *Pipeline, e *Company) { n.Edges.Tenant = e }); err != nil {
+			return nil, err
+		}
+	}
 	if query := _q.withStages; query != nil {
 		if err := _q.loadStages(ctx, query, nodes,
 			func(n *Pipeline) { n.Edges.Stages = []*Stage{} },
@@ -422,6 +465,35 @@ func (_q *PipelineQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pip
 	return nodes, nil
 }
 
+func (_q *PipelineQuery) loadTenant(ctx context.Context, query *CompanyQuery, nodes []*Pipeline, init func(*Pipeline), assign func(*Pipeline, *Company)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Pipeline)
+	for i := range nodes {
+		fk := nodes[i].TenantId
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(company.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenantId" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (_q *PipelineQuery) loadStages(ctx context.Context, query *StageQuery, nodes []*Pipeline, init func(*Pipeline), assign func(*Pipeline, *Stage)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[uuid.UUID]*Pipeline)
@@ -481,6 +553,9 @@ func (_q *PipelineQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != pipeline.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withTenant != nil {
+			_spec.Node.AddColumnOnce(pipeline.FieldTenantId)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

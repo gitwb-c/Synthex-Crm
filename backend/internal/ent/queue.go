@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
 	"github.com/google/uuid"
 )
@@ -26,6 +27,8 @@ type Queue struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the QueueQuery when eager-loading is set.
 	Edges        QueueEdges `json:"edges"`
@@ -40,11 +43,13 @@ type QueueEdges struct {
 	Employees []*Employee `json:"employees,omitempty"`
 	// Department holds the value of the department edge.
 	Department []*Department `json:"department,omitempty"`
+	// Tenant holds the value of the tenant edge.
+	Tenant *Company `json:"tenant,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
 
 	namedStages     map[string][]*Stage
 	namedEmployees  map[string][]*Employee
@@ -78,6 +83,17 @@ func (e QueueEdges) DepartmentOrErr() ([]*Department, error) {
 	return nil, &NotLoadedError{edge: "department"}
 }
 
+// TenantOrErr returns the Tenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e QueueEdges) TenantOrErr() (*Company, error) {
+	if e.Tenant != nil {
+		return e.Tenant, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: company.Label}
+	}
+	return nil, &NotLoadedError{edge: "tenant"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Queue) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -87,7 +103,7 @@ func (*Queue) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case queue.FieldCreatedAt, queue.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case queue.FieldID:
+		case queue.FieldID, queue.FieldTenantId:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -134,6 +150,12 @@ func (_m *Queue) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case queue.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -160,6 +182,11 @@ func (_m *Queue) QueryEmployees() *EmployeeQuery {
 // QueryDepartment queries the "department" edge of the Queue entity.
 func (_m *Queue) QueryDepartment() *DepartmentQuery {
 	return NewQueueClient(_m.config).QueryDepartment(_m)
+}
+
+// QueryTenant queries the "tenant" edge of the Queue entity.
+func (_m *Queue) QueryTenant() *CompanyQuery {
+	return NewQueueClient(_m.config).QueryTenant(_m)
 }
 
 // Update returns a builder for updating this Queue.
@@ -196,6 +223,9 @@ func (_m *Queue) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

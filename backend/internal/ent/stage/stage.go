@@ -25,12 +25,16 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// EdgePipeline holds the string denoting the pipeline edge name in mutations.
 	EdgePipeline = "pipeline"
 	// EdgeDeals holds the string denoting the deals edge name in mutations.
 	EdgeDeals = "deals"
 	// EdgeQueue holds the string denoting the queue edge name in mutations.
 	EdgeQueue = "queue"
+	// EdgeTenant holds the string denoting the tenant edge name in mutations.
+	EdgeTenant = "tenant"
 	// Table holds the table name of the stage in the database.
 	Table = "stages"
 	// PipelineTable is the table that holds the pipeline relation/edge.
@@ -54,6 +58,13 @@ const (
 	QueueInverseTable = "queues"
 	// QueueColumn is the table column denoting the queue relation/edge.
 	QueueColumn = "stage_queue"
+	// TenantTable is the table that holds the tenant relation/edge.
+	TenantTable = "stages"
+	// TenantInverseTable is the table name for the Company entity.
+	// It exists in this package in order to avoid circular dependency with the "company" package.
+	TenantInverseTable = "companies"
+	// TenantColumn is the table column denoting the tenant relation/edge.
+	TenantColumn = "tenant_id"
 )
 
 // Columns holds all SQL columns for stage fields.
@@ -64,6 +75,7 @@ var Columns = []string{
 	FieldLossOrGain,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "stages"
@@ -138,6 +150,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByPipelineField orders the results by pipeline field.
 func ByPipelineField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -165,6 +182,13 @@ func ByQueueField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newQueueStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByTenantField orders the results by tenant field.
+func ByTenantField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTenantStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newPipelineStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -184,5 +208,12 @@ func newQueueStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(QueueInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, QueueTable, QueueColumn),
+	)
+}
+func newTenantStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TenantInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
 	)
 }

@@ -11,7 +11,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		authStr, err := ctx.Cookie("auth")
+		authStr, err := ctx.Cookie("auth_jwt_token")
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "token not provided"})
 			ctx.Abort()
@@ -33,7 +33,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			ctx.Set("employeeId", claims["employeeId"])
-			ctx.Set("companyId", claims["companyId"])
+			ctx.Set("tenantId", claims["companyId"])
 			ctx.Set("departmentId", claims["departmentId"])
 		} else {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid claims"})

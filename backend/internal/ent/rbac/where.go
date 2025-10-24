@@ -66,6 +66,11 @@ func UpdatedAt(v time.Time) predicate.Rbac {
 	return predicate.Rbac(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Rbac {
+	return predicate.Rbac(sql.FieldEQ(FieldTenantId, v))
+}
+
 // AccessEQ applies the EQ predicate on the "access" field.
 func AccessEQ(v Access) predicate.Rbac {
 	return predicate.Rbac(sql.FieldEQ(FieldAccess, v))
@@ -166,6 +171,36 @@ func UpdatedAtLTE(v time.Time) predicate.Rbac {
 	return predicate.Rbac(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Rbac {
+	return predicate.Rbac(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Rbac {
+	return predicate.Rbac(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Rbac {
+	return predicate.Rbac(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Rbac {
+	return predicate.Rbac(sql.FieldNotIn(FieldTenantId, vs...))
+}
+
+// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
+func TenantIdIsNil() predicate.Rbac {
+	return predicate.Rbac(sql.FieldIsNull(FieldTenantId))
+}
+
+// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
+func TenantIdNotNil() predicate.Rbac {
+	return predicate.Rbac(sql.FieldNotNull(FieldTenantId))
+}
+
 // HasDepartment applies the HasEdge predicate on the "department" edge.
 func HasDepartment() predicate.Rbac {
 	return predicate.Rbac(func(s *sql.Selector) {
@@ -181,6 +216,29 @@ func HasDepartment() predicate.Rbac {
 func HasDepartmentWith(preds ...predicate.Department) predicate.Rbac {
 	return predicate.Rbac(func(s *sql.Selector) {
 		step := newDepartmentStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTenant applies the HasEdge predicate on the "tenant" edge.
+func HasTenant() predicate.Rbac {
+	return predicate.Rbac(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, TenantTable, TenantColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTenantWith applies the HasEdge predicate on the "tenant" edge with a given conditions (other predicates).
+func HasTenantWith(preds ...predicate.Company) predicate.Rbac {
+	return predicate.Rbac(func(s *sql.Selector) {
+		step := newTenantStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
