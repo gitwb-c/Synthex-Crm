@@ -1,84 +1,84 @@
 extend type Mutation {
   createDeal(input: CreateDealInput!): Deal!
-  deleteDealID(id: ID!): Boolean!
+  deleteDeal(ids: [ID!]!): Boolean!
   updateDealWhere(where: DealWhereInput!, input: UpdateDealInput!): [Deal!]!
 
   createPipeline(input: CreatePipelineInput!): Pipeline!
-  deletePipelinelID(id: ID!): Boolean!
+  deletePipeline(ids: [ID!]!): Boolean!
   updatePipelineWhere(
     where: PipelineWhereInput!
     input: UpdatePipelineInput!
   ): [Pipeline!]!
 
   createCostumer(input: CreateCostumerInput!): Costumer!
-  deleteCostumerID(id: ID!): Boolean!
+  deleteCostumer(ids: [ID!]!): Boolean!
   updateCostumerWhere(
     where: CostumerWhereInput!
     input: UpdateCostumerInput!
   ): [Costumer!]!
 
   createStage(input: CreateStageInput!): Stage!
-  deleteStageID(id: ID!): Boolean!
+  deleteStage(ids: [ID!]!): Boolean!
   updateStageWhere(where: StageWhereInput!, input: UpdateStageInput!): [Stage!]!
 
   createChat(input: CreateChatInput!): Chat!
-  deleteChatID(id: ID!): Boolean!
+  deleteChat(ids: [ID!]!): Boolean!
   updateChatWhere(where: ChatWhereInput!, input: UpdateChatInput!): [Chat!]!
 
   createEmployee(input: CreateEmployeeInput!): Employee!
-  deleteEmployeeID(id: ID!): Boolean!
+  deleteEmployee(ids: [ID!]!): Boolean!
   updateEmployeeWhere(
     where: EmployeeWhereInput!
     input: UpdateEmployeeInput!
   ): [Employee!]!
 
   createEmployeeAuth(input: CreateEmployeeAuthInput!): EmployeeAuth!
-  deleteEmployeeAuthID(id: ID!): Boolean!
+  deleteEmployeeAuth(ids: [ID!]!): Boolean!
   updateEmployeeAuthWhere(
     where: EmployeeAuthWhereInput!
     input: UpdateEmployeeAuthInput!
   ): [EmployeeAuth!]!
 
   createDepartment(input: CreateDepartmentInput!): Department!
-  deleteDepartmentID(id: ID!): Boolean!
+  deleteDepartment(ids: [ID!]!): Boolean!
   updateDepartmentWhere(
     where: DepartmentWhereInput!
     input: UpdateDepartmentInput!
   ): [Department!]!
 
   createMessage(input: CreateMessageInput!): Message!
-  deleteMessageID(id: ID!): Boolean!
+  deleteMessage(ids: [ID!]!): Boolean!
   updateMessageWhere(
     where: MessageWhereInput!
     input: UpdateMessageInput!
   ): [Message!]!
 
   createQueue(input: CreateQueueInput!): Queue!
-  deleteQueueID(id: ID!): Boolean!
+  deleteQueue(ids: [ID!]!): Boolean!
   updateQueueWhere(where: QueueWhereInput!, input: UpdateQueueInput!): [Queue!]!
 
   createCrmField(input: CreateCrmFieldInput!): CrmField!
-  deleteCrmFieldID(id: ID!): Boolean!
+  deleteCrmField(ids: [ID!]!): Boolean!
   updateCrmFieldWhere(
     where: CrmFieldWhereInput!
     input: UpdateCrmFieldInput!
   ): [CrmField!]!
 
   createDealCrmField(input: CreateDealCrmFieldInput!): DealCrmField!
-  deleteDealCrmFieldID(id: ID!): Boolean!
+  deleteDealCrmField(ids: [ID!]!): Boolean!
   updateDealCrmFieldWhere(
     where: DealCrmFieldWhereInput!
     input: UpdateDealCrmFieldInput!
   ): [DealCrmField!]!
 
   createCompany(input: CreateCompanyInput!): Company!
-  deleteCompanyID(id: ID!): Boolean!
+  deleteCompany(ids: [ID!]!): Boolean!
   updateCompanyWhere(
     where: CompanyWhereInput!
     input: UpdateCompanyInput!
   ): [Company!]!
 
   createRbac(input: CreateRbacInput!): Rbac!
-  deleteRbacID(id: ID!): Boolean!
+  deleteRbac(ids: [ID!]!): Boolean!
   updateRbacWhere(where: RbacWhereInput!, input: UpdateRbacInput!): [Rbac!]!
 }

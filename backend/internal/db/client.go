@@ -9,6 +9,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/migrate"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph"
+	"github.com/gitwb-c/crm.saas/backend/internal/rule"
 	_ "github.com/lib/pq"
 )
 
@@ -19,6 +20,9 @@ func NewClient() (*ent.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	client.Intercept(rule.FilterTenantQuery())
+	client.Use(rule.FilterTenantMutation())
+
 	return client, nil
 }
 
@@ -28,7 +32,7 @@ func Init(client *ent.Client) (*handler.Server, error) {
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),
 	); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
+		log.Fatalf("failed creating Entgo schema resources: %v", err)
 	}
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{Client: client}}))

@@ -9,6 +9,7 @@ import (
 	"fmt"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/helpers"
 	"github.com/gitwb-c/crm.saas/backend/internal/wire"
 )
 
@@ -22,10 +23,14 @@ func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealI
 	return deal, nil
 }
 
-// DeleteDealID is the resolver for the deleteDealID field.
-func (r *mutationResolver) DeleteDealID(ctx context.Context, id string) (bool, error) {
+// DeleteDeal is the resolver for the deleteDeal field.
+func (r *mutationResolver) DeleteDeal(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeDealService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -47,10 +52,14 @@ func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreateP
 	return pipeline, nil
 }
 
-// DeletePipelinelID is the resolver for the deletePipelinelID field.
-func (r *mutationResolver) DeletePipelinelID(ctx context.Context, id string) (bool, error) {
+// DeletePipeline is the resolver for the deletePipeline field.
+func (r *mutationResolver) DeletePipeline(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializePipelineService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -72,10 +81,14 @@ func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateC
 	return costumer, nil
 }
 
-// DeleteCostumerID is the resolver for the deleteCostumerID field.
-func (r *mutationResolver) DeleteCostumerID(ctx context.Context, id string) (bool, error) {
+// DeleteCostumer is the resolver for the deleteCostumer field.
+func (r *mutationResolver) DeleteCostumer(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeCostumerService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -97,10 +110,14 @@ func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStag
 	return stage, nil
 }
 
-// DeleteStageID is the resolver for the deleteStageID field.
-func (r *mutationResolver) DeleteStageID(ctx context.Context, id string) (bool, error) {
+// DeleteStage is the resolver for the deleteStage field.
+func (r *mutationResolver) DeleteStage(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeStageService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -122,10 +139,14 @@ func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatI
 	return chat, nil
 }
 
-// DeleteChatID is the resolver for the deleteChatID field.
-func (r *mutationResolver) DeleteChatID(ctx context.Context, id string) (bool, error) {
+// DeleteChat is the resolver for the deleteChat field.
+func (r *mutationResolver) DeleteChat(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeChatService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -147,10 +168,14 @@ func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateE
 	return employee, nil
 }
 
-// DeleteEmployeeID is the resolver for the deleteEmployeeID field.
-func (r *mutationResolver) DeleteEmployeeID(ctx context.Context, id string) (bool, error) {
+// DeleteEmployee is the resolver for the deleteEmployee field.
+func (r *mutationResolver) DeleteEmployee(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeEmployeeService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -172,10 +197,14 @@ func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.Cre
 	return employeeAuth, nil
 }
 
-// DeleteEmployeeAuthID is the resolver for the deleteEmployeeAuthID field.
-func (r *mutationResolver) DeleteEmployeeAuthID(ctx context.Context, id string) (bool, error) {
+// DeleteEmployeeAuth is the resolver for the deleteEmployeeAuth field.
+func (r *mutationResolver) DeleteEmployeeAuth(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeEmployeeAuthService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -197,10 +226,14 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.Creat
 	return department, nil
 }
 
-// DeleteDepartmentID is the resolver for the deleteDepartmentID field.
-func (r *mutationResolver) DeleteDepartmentID(ctx context.Context, id string) (bool, error) {
+// DeleteDepartment is the resolver for the deleteDepartment field.
+func (r *mutationResolver) DeleteDepartment(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeDepartmentService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -222,10 +255,14 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMe
 	return message, nil
 }
 
-// DeleteMessageID is the resolver for the deleteMessageID field.
-func (r *mutationResolver) DeleteMessageID(ctx context.Context, id string) (bool, error) {
+// DeleteMessage is the resolver for the deleteMessage field.
+func (r *mutationResolver) DeleteMessage(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeMessageService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -247,10 +284,14 @@ func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueu
 	return queue, nil
 }
 
-// DeleteQueueID is the resolver for the deleteQueueID field.
-func (r *mutationResolver) DeleteQueueID(ctx context.Context, id string) (bool, error) {
+// DeleteQueue is the resolver for the deleteQueue field.
+func (r *mutationResolver) DeleteQueue(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeQueueService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -272,10 +313,14 @@ func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateC
 	return crmField, nil
 }
 
-// DeleteCrmFieldID is the resolver for the deleteCrmFieldID field.
-func (r *mutationResolver) DeleteCrmFieldID(ctx context.Context, id string) (bool, error) {
+// DeleteCrmField is the resolver for the deleteCrmField field.
+func (r *mutationResolver) DeleteCrmField(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeCrmFieldService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -297,10 +342,14 @@ func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.Cre
 	return dealCrmField, nil
 }
 
-// DeleteDealCrmFieldID is the resolver for the deleteDealCrmFieldID field.
-func (r *mutationResolver) DeleteDealCrmFieldID(ctx context.Context, id string) (bool, error) {
-	service := wire.InitializeDealCrmFieldService(r.Client)
-	err := service.DeleteID(ctx, id)
+// DeleteDealCrmField is the resolver for the deleteDealCrmField field.
+func (r *mutationResolver) DeleteDealCrmField(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
+	service := wire.InitializeCrmFieldService(r.Client)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -322,10 +371,14 @@ func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCo
 	return company, nil
 }
 
-// DeleteCompanyID is the resolver for the deleteCompanyID field.
-func (r *mutationResolver) DeleteCompanyID(ctx context.Context, id string) (bool, error) {
+// DeleteCompany is the resolver for the deleteCompany field.
+func (r *mutationResolver) DeleteCompany(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeCompanyService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -347,10 +400,14 @@ func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacI
 	return rbac, nil
 }
 
-// DeleteRbacID is the resolver for the deleteRbacID field.
-func (r *mutationResolver) DeleteRbacID(ctx context.Context, id string) (bool, error) {
+// DeleteRbac is the resolver for the deleteRbac field.
+func (r *mutationResolver) DeleteRbac(ctx context.Context, ids []string) (bool, error) {
+	uuids, er := helpers.UuidParser(ids)
+	if er != nil {
+		return false, er
+	}
 	service := wire.InitializeRbacService(r.Client)
-	err := service.DeleteID(ctx, id)
+	err := service.Delete(ctx, uuids)
 	if err != nil {
 		return false, err
 	}

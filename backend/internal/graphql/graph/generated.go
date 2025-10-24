@@ -418,20 +418,20 @@ type ComplexityRoot struct {
 		CreateQueue             func(childComplexity int, input ent.CreateQueueInput) int
 		CreateRbac              func(childComplexity int, input ent.CreateRbacInput) int
 		CreateStage             func(childComplexity int, input ent.CreateStageInput) int
-		DeleteChatID            func(childComplexity int, id string) int
-		DeleteCompanyID         func(childComplexity int, id string) int
-		DeleteCostumerID        func(childComplexity int, id string) int
-		DeleteCrmFieldID        func(childComplexity int, id string) int
-		DeleteDealCrmFieldID    func(childComplexity int, id string) int
-		DeleteDealID            func(childComplexity int, id string) int
-		DeleteDepartmentID      func(childComplexity int, id string) int
-		DeleteEmployeeAuthID    func(childComplexity int, id string) int
-		DeleteEmployeeID        func(childComplexity int, id string) int
-		DeleteMessageID         func(childComplexity int, id string) int
-		DeletePipelinelID       func(childComplexity int, id string) int
-		DeleteQueueID           func(childComplexity int, id string) int
-		DeleteRbacID            func(childComplexity int, id string) int
-		DeleteStageID           func(childComplexity int, id string) int
+		DeleteChat              func(childComplexity int, ids []string) int
+		DeleteCompany           func(childComplexity int, ids []string) int
+		DeleteCostumer          func(childComplexity int, ids []string) int
+		DeleteCrmField          func(childComplexity int, ids []string) int
+		DeleteDeal              func(childComplexity int, ids []string) int
+		DeleteDealCrmField      func(childComplexity int, ids []string) int
+		DeleteDepartment        func(childComplexity int, ids []string) int
+		DeleteEmployee          func(childComplexity int, ids []string) int
+		DeleteEmployeeAuth      func(childComplexity int, ids []string) int
+		DeleteMessage           func(childComplexity int, ids []string) int
+		DeletePipeline          func(childComplexity int, ids []string) int
+		DeleteQueue             func(childComplexity int, ids []string) int
+		DeleteRbac              func(childComplexity int, ids []string) int
+		DeleteStage             func(childComplexity int, ids []string) int
 		UpdateChatWhere         func(childComplexity int, where ent.ChatWhereInput, input ent.UpdateChatInput) int
 		UpdateCompanyWhere      func(childComplexity int, where ent.CompanyWhereInput, input ent.UpdateCompanyInput) int
 		UpdateCostumerWhere     func(childComplexity int, where ent.CostumerWhereInput, input ent.UpdateCostumerInput) int
@@ -635,46 +635,46 @@ type MessageResolver interface {
 }
 type MutationResolver interface {
 	CreateDeal(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error)
-	DeleteDealID(ctx context.Context, id string) (bool, error)
+	DeleteDeal(ctx context.Context, ids []string) (bool, error)
 	UpdateDealWhere(ctx context.Context, where ent.DealWhereInput, input ent.UpdateDealInput) ([]*ent.Deal, error)
 	CreatePipeline(ctx context.Context, input ent.CreatePipelineInput) (*ent.Pipeline, error)
-	DeletePipelinelID(ctx context.Context, id string) (bool, error)
+	DeletePipeline(ctx context.Context, ids []string) (bool, error)
 	UpdatePipelineWhere(ctx context.Context, where ent.PipelineWhereInput, input ent.UpdatePipelineInput) ([]*ent.Pipeline, error)
 	CreateCostumer(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error)
-	DeleteCostumerID(ctx context.Context, id string) (bool, error)
+	DeleteCostumer(ctx context.Context, ids []string) (bool, error)
 	UpdateCostumerWhere(ctx context.Context, where ent.CostumerWhereInput, input ent.UpdateCostumerInput) ([]*ent.Costumer, error)
 	CreateStage(ctx context.Context, input ent.CreateStageInput) (*ent.Stage, error)
-	DeleteStageID(ctx context.Context, id string) (bool, error)
+	DeleteStage(ctx context.Context, ids []string) (bool, error)
 	UpdateStageWhere(ctx context.Context, where ent.StageWhereInput, input ent.UpdateStageInput) ([]*ent.Stage, error)
 	CreateChat(ctx context.Context, input ent.CreateChatInput) (*ent.Chat, error)
-	DeleteChatID(ctx context.Context, id string) (bool, error)
+	DeleteChat(ctx context.Context, ids []string) (bool, error)
 	UpdateChatWhere(ctx context.Context, where ent.ChatWhereInput, input ent.UpdateChatInput) ([]*ent.Chat, error)
 	CreateEmployee(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error)
-	DeleteEmployeeID(ctx context.Context, id string) (bool, error)
+	DeleteEmployee(ctx context.Context, ids []string) (bool, error)
 	UpdateEmployeeWhere(ctx context.Context, where ent.EmployeeWhereInput, input ent.UpdateEmployeeInput) ([]*ent.Employee, error)
 	CreateEmployeeAuth(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error)
-	DeleteEmployeeAuthID(ctx context.Context, id string) (bool, error)
+	DeleteEmployeeAuth(ctx context.Context, ids []string) (bool, error)
 	UpdateEmployeeAuthWhere(ctx context.Context, where ent.EmployeeAuthWhereInput, input ent.UpdateEmployeeAuthInput) ([]*ent.EmployeeAuth, error)
 	CreateDepartment(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error)
-	DeleteDepartmentID(ctx context.Context, id string) (bool, error)
+	DeleteDepartment(ctx context.Context, ids []string) (bool, error)
 	UpdateDepartmentWhere(ctx context.Context, where ent.DepartmentWhereInput, input ent.UpdateDepartmentInput) ([]*ent.Department, error)
 	CreateMessage(ctx context.Context, input ent.CreateMessageInput) (*ent.Message, error)
-	DeleteMessageID(ctx context.Context, id string) (bool, error)
+	DeleteMessage(ctx context.Context, ids []string) (bool, error)
 	UpdateMessageWhere(ctx context.Context, where ent.MessageWhereInput, input ent.UpdateMessageInput) ([]*ent.Message, error)
 	CreateQueue(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error)
-	DeleteQueueID(ctx context.Context, id string) (bool, error)
+	DeleteQueue(ctx context.Context, ids []string) (bool, error)
 	UpdateQueueWhere(ctx context.Context, where ent.QueueWhereInput, input ent.UpdateQueueInput) ([]*ent.Queue, error)
 	CreateCrmField(ctx context.Context, input ent.CreateCrmFieldInput) (*ent.CrmField, error)
-	DeleteCrmFieldID(ctx context.Context, id string) (bool, error)
+	DeleteCrmField(ctx context.Context, ids []string) (bool, error)
 	UpdateCrmFieldWhere(ctx context.Context, where ent.CrmFieldWhereInput, input ent.UpdateCrmFieldInput) ([]*ent.CrmField, error)
 	CreateDealCrmField(ctx context.Context, input ent.CreateDealCrmFieldInput) (*ent.DealCrmField, error)
-	DeleteDealCrmFieldID(ctx context.Context, id string) (bool, error)
+	DeleteDealCrmField(ctx context.Context, ids []string) (bool, error)
 	UpdateDealCrmFieldWhere(ctx context.Context, where ent.DealCrmFieldWhereInput, input ent.UpdateDealCrmFieldInput) ([]*ent.DealCrmField, error)
 	CreateCompany(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error)
-	DeleteCompanyID(ctx context.Context, id string) (bool, error)
+	DeleteCompany(ctx context.Context, ids []string) (bool, error)
 	UpdateCompanyWhere(ctx context.Context, where ent.CompanyWhereInput, input ent.UpdateCompanyInput) ([]*ent.Company, error)
 	CreateRbac(ctx context.Context, input ent.CreateRbacInput) (*ent.Rbac, error)
-	DeleteRbacID(ctx context.Context, id string) (bool, error)
+	DeleteRbac(ctx context.Context, ids []string) (bool, error)
 	UpdateRbacWhere(ctx context.Context, where ent.RbacWhereInput, input ent.UpdateRbacInput) ([]*ent.Rbac, error)
 }
 type PipelineResolver interface {
@@ -2533,160 +2533,160 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateStage(childComplexity, args["input"].(ent.CreateStageInput)), true
-	case "Mutation.deleteChatID":
-		if e.complexity.Mutation.DeleteChatID == nil {
+	case "Mutation.deleteChat":
+		if e.complexity.Mutation.DeleteChat == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteChatID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteChat_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteChatID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteCompanyID":
-		if e.complexity.Mutation.DeleteCompanyID == nil {
+		return e.complexity.Mutation.DeleteChat(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteCompany":
+		if e.complexity.Mutation.DeleteCompany == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteCompanyID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteCompany_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCompanyID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteCostumerID":
-		if e.complexity.Mutation.DeleteCostumerID == nil {
+		return e.complexity.Mutation.DeleteCompany(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteCostumer":
+		if e.complexity.Mutation.DeleteCostumer == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteCostumerID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteCostumer_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCostumerID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteCrmFieldID":
-		if e.complexity.Mutation.DeleteCrmFieldID == nil {
+		return e.complexity.Mutation.DeleteCostumer(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteCrmField":
+		if e.complexity.Mutation.DeleteCrmField == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteCrmFieldID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteCrmField_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCrmFieldID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteDealCrmFieldID":
-		if e.complexity.Mutation.DeleteDealCrmFieldID == nil {
+		return e.complexity.Mutation.DeleteCrmField(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteDeal":
+		if e.complexity.Mutation.DeleteDeal == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteDealCrmFieldID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteDeal_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteDealCrmFieldID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteDealID":
-		if e.complexity.Mutation.DeleteDealID == nil {
+		return e.complexity.Mutation.DeleteDeal(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteDealCrmField":
+		if e.complexity.Mutation.DeleteDealCrmField == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteDealID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteDealCrmField_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteDealID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteDepartmentID":
-		if e.complexity.Mutation.DeleteDepartmentID == nil {
+		return e.complexity.Mutation.DeleteDealCrmField(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteDepartment":
+		if e.complexity.Mutation.DeleteDepartment == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteDepartmentID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteDepartment_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteDepartmentID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteEmployeeAuthID":
-		if e.complexity.Mutation.DeleteEmployeeAuthID == nil {
+		return e.complexity.Mutation.DeleteDepartment(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteEmployee":
+		if e.complexity.Mutation.DeleteEmployee == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteEmployeeAuthID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteEmployee_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteEmployeeAuthID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteEmployeeID":
-		if e.complexity.Mutation.DeleteEmployeeID == nil {
+		return e.complexity.Mutation.DeleteEmployee(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteEmployeeAuth":
+		if e.complexity.Mutation.DeleteEmployeeAuth == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteEmployeeID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteEmployeeAuth_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteEmployeeID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteMessageID":
-		if e.complexity.Mutation.DeleteMessageID == nil {
+		return e.complexity.Mutation.DeleteEmployeeAuth(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteMessage":
+		if e.complexity.Mutation.DeleteMessage == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteMessageID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteMessage_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteMessageID(childComplexity, args["id"].(string)), true
-	case "Mutation.deletePipelinelID":
-		if e.complexity.Mutation.DeletePipelinelID == nil {
+		return e.complexity.Mutation.DeleteMessage(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deletePipeline":
+		if e.complexity.Mutation.DeletePipeline == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deletePipelinelID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deletePipeline_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeletePipelinelID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteQueueID":
-		if e.complexity.Mutation.DeleteQueueID == nil {
+		return e.complexity.Mutation.DeletePipeline(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteQueue":
+		if e.complexity.Mutation.DeleteQueue == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteQueueID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteQueue_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteQueueID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteRbacID":
-		if e.complexity.Mutation.DeleteRbacID == nil {
+		return e.complexity.Mutation.DeleteQueue(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteRbac":
+		if e.complexity.Mutation.DeleteRbac == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteRbacID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteRbac_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteRbacID(childComplexity, args["id"].(string)), true
-	case "Mutation.deleteStageID":
-		if e.complexity.Mutation.DeleteStageID == nil {
+		return e.complexity.Mutation.DeleteRbac(childComplexity, args["ids"].([]string)), true
+	case "Mutation.deleteStage":
+		if e.complexity.Mutation.DeleteStage == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteStageID_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteStage_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteStageID(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteStage(childComplexity, args["ids"].([]string)), true
 	case "Mutation.updateChatWhere":
 		if e.complexity.Mutation.UpdateChatWhere == nil {
 			break
@@ -3776,157 +3776,157 @@ func (ec *executionContext) field_Mutation_createStage_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteChatID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteChat_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteCompanyID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteCompany_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteCostumerID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteCostumer_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteCrmFieldID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteCrmField_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteDealCrmFieldID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteDealCrmField_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteDealID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteDeal_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteDepartmentID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteDepartment_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteEmployeeAuthID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteEmployeeAuth_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteEmployeeID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteEmployee_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteMessageID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteMessage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deletePipelinelID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deletePipeline_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteQueueID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteQueue_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteRbacID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteRbac_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteStageID_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteStage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
@@ -11839,15 +11839,15 @@ func (ec *executionContext) fieldContext_Mutation_createDeal(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteDealID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteDeal(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteDealID,
+		ec.fieldContext_Mutation_deleteDeal,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteDealID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteDeal(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -11856,7 +11856,7 @@ func (ec *executionContext) _Mutation_deleteDealID(ctx context.Context, field gr
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteDealID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteDeal(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -11873,7 +11873,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteDealID(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteDealID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteDeal_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12002,15 +12002,15 @@ func (ec *executionContext) fieldContext_Mutation_createPipeline(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deletePipelinelID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deletePipeline(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deletePipelinelID,
+		ec.fieldContext_Mutation_deletePipeline,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeletePipelinelID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeletePipeline(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -12019,7 +12019,7 @@ func (ec *executionContext) _Mutation_deletePipelinelID(ctx context.Context, fie
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deletePipelinelID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deletePipeline(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12036,7 +12036,7 @@ func (ec *executionContext) fieldContext_Mutation_deletePipelinelID(ctx context.
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deletePipelinelID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deletePipeline_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12161,15 +12161,15 @@ func (ec *executionContext) fieldContext_Mutation_createCostumer(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteCostumerID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteCostumer(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteCostumerID,
+		ec.fieldContext_Mutation_deleteCostumer,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteCostumerID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteCostumer(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -12178,7 +12178,7 @@ func (ec *executionContext) _Mutation_deleteCostumerID(ctx context.Context, fiel
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteCostumerID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteCostumer(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12195,7 +12195,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteCostumerID(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteCostumerID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteCostumer_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12328,15 +12328,15 @@ func (ec *executionContext) fieldContext_Mutation_createStage(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteStageID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteStage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteStageID,
+		ec.fieldContext_Mutation_deleteStage,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteStageID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteStage(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -12345,7 +12345,7 @@ func (ec *executionContext) _Mutation_deleteStageID(ctx context.Context, field g
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteStageID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteStage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12362,7 +12362,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteStageID(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteStageID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteStage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12499,15 +12499,15 @@ func (ec *executionContext) fieldContext_Mutation_createChat(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteChatID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteChat(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteChatID,
+		ec.fieldContext_Mutation_deleteChat,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteChatID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteChat(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -12516,7 +12516,7 @@ func (ec *executionContext) _Mutation_deleteChatID(ctx context.Context, field gr
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteChatID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteChat(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12533,7 +12533,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteChatID(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteChatID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteChat_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12672,15 +12672,15 @@ func (ec *executionContext) fieldContext_Mutation_createEmployee(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteEmployeeID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteEmployee(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteEmployeeID,
+		ec.fieldContext_Mutation_deleteEmployee,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteEmployeeID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteEmployee(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -12689,7 +12689,7 @@ func (ec *executionContext) _Mutation_deleteEmployeeID(ctx context.Context, fiel
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteEmployeeID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteEmployee(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12706,7 +12706,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteEmployeeID(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteEmployeeID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteEmployee_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12837,15 +12837,15 @@ func (ec *executionContext) fieldContext_Mutation_createEmployeeAuth(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteEmployeeAuthID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteEmployeeAuth(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteEmployeeAuthID,
+		ec.fieldContext_Mutation_deleteEmployeeAuth,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteEmployeeAuthID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteEmployeeAuth(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -12854,7 +12854,7 @@ func (ec *executionContext) _Mutation_deleteEmployeeAuthID(ctx context.Context, 
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteEmployeeAuthID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteEmployeeAuth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12871,7 +12871,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteEmployeeAuthID(ctx conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteEmployeeAuthID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteEmployeeAuth_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12996,15 +12996,15 @@ func (ec *executionContext) fieldContext_Mutation_createDepartment(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteDepartmentID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteDepartment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteDepartmentID,
+		ec.fieldContext_Mutation_deleteDepartment,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteDepartmentID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteDepartment(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -13013,7 +13013,7 @@ func (ec *executionContext) _Mutation_deleteDepartmentID(ctx context.Context, fi
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteDepartmentID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteDepartment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13030,7 +13030,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteDepartmentID(ctx context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteDepartmentID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteDepartment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13165,15 +13165,15 @@ func (ec *executionContext) fieldContext_Mutation_createMessage(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteMessageID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteMessage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteMessageID,
+		ec.fieldContext_Mutation_deleteMessage,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteMessageID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteMessage(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -13182,7 +13182,7 @@ func (ec *executionContext) _Mutation_deleteMessageID(ctx context.Context, field
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteMessageID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteMessage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13199,7 +13199,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteMessageID(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteMessageID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteMessage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13336,15 +13336,15 @@ func (ec *executionContext) fieldContext_Mutation_createQueue(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteQueueID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteQueue(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteQueueID,
+		ec.fieldContext_Mutation_deleteQueue,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteQueueID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteQueue(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -13353,7 +13353,7 @@ func (ec *executionContext) _Mutation_deleteQueueID(ctx context.Context, field g
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteQueueID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteQueue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13370,7 +13370,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteQueueID(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteQueueID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteQueue_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13503,15 +13503,15 @@ func (ec *executionContext) fieldContext_Mutation_createCrmField(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteCrmFieldID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteCrmField(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteCrmFieldID,
+		ec.fieldContext_Mutation_deleteCrmField,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteCrmFieldID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteCrmField(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -13520,7 +13520,7 @@ func (ec *executionContext) _Mutation_deleteCrmFieldID(ctx context.Context, fiel
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteCrmFieldID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteCrmField(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13537,7 +13537,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteCrmFieldID(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteCrmFieldID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteCrmField_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13666,15 +13666,15 @@ func (ec *executionContext) fieldContext_Mutation_createDealCrmField(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteDealCrmFieldID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteDealCrmField(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteDealCrmFieldID,
+		ec.fieldContext_Mutation_deleteDealCrmField,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteDealCrmFieldID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteDealCrmField(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -13683,7 +13683,7 @@ func (ec *executionContext) _Mutation_deleteDealCrmFieldID(ctx context.Context, 
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteDealCrmFieldID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteDealCrmField(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13700,7 +13700,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteDealCrmFieldID(ctx conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteDealCrmFieldID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteDealCrmField_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13849,15 +13849,15 @@ func (ec *executionContext) fieldContext_Mutation_createCompany(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteCompanyID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteCompanyID,
+		ec.fieldContext_Mutation_deleteCompany,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteCompanyID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteCompany(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -13866,7 +13866,7 @@ func (ec *executionContext) _Mutation_deleteCompanyID(ctx context.Context, field
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteCompanyID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteCompany(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13883,7 +13883,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteCompanyID(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteCompanyID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteCompany_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -14030,15 +14030,15 @@ func (ec *executionContext) fieldContext_Mutation_createRbac(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteRbacID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteRbac(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_deleteRbacID,
+		ec.fieldContext_Mutation_deleteRbac,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DeleteRbacID(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DeleteRbac(ctx, fc.Args["ids"].([]string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -14047,7 +14047,7 @@ func (ec *executionContext) _Mutation_deleteRbacID(ctx context.Context, field gr
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteRbacID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteRbac(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -14064,7 +14064,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteRbacID(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteRbacID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteRbac_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -34956,9 +34956,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteDealID":
+		case "deleteDeal":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteDealID(ctx, field)
+				return ec._Mutation_deleteDeal(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -34977,9 +34977,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deletePipelinelID":
+		case "deletePipeline":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deletePipelinelID(ctx, field)
+				return ec._Mutation_deletePipeline(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -34998,9 +34998,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteCostumerID":
+		case "deleteCostumer":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteCostumerID(ctx, field)
+				return ec._Mutation_deleteCostumer(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35019,9 +35019,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteStageID":
+		case "deleteStage":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteStageID(ctx, field)
+				return ec._Mutation_deleteStage(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35040,9 +35040,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteChatID":
+		case "deleteChat":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteChatID(ctx, field)
+				return ec._Mutation_deleteChat(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35061,9 +35061,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteEmployeeID":
+		case "deleteEmployee":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteEmployeeID(ctx, field)
+				return ec._Mutation_deleteEmployee(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35082,9 +35082,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteEmployeeAuthID":
+		case "deleteEmployeeAuth":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteEmployeeAuthID(ctx, field)
+				return ec._Mutation_deleteEmployeeAuth(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35103,9 +35103,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteDepartmentID":
+		case "deleteDepartment":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteDepartmentID(ctx, field)
+				return ec._Mutation_deleteDepartment(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35124,9 +35124,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteMessageID":
+		case "deleteMessage":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteMessageID(ctx, field)
+				return ec._Mutation_deleteMessage(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35145,9 +35145,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteQueueID":
+		case "deleteQueue":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteQueueID(ctx, field)
+				return ec._Mutation_deleteQueue(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35166,9 +35166,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteCrmFieldID":
+		case "deleteCrmField":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteCrmFieldID(ctx, field)
+				return ec._Mutation_deleteCrmField(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35187,9 +35187,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteDealCrmFieldID":
+		case "deleteDealCrmField":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteDealCrmFieldID(ctx, field)
+				return ec._Mutation_deleteDealCrmField(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35208,9 +35208,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteCompanyID":
+		case "deleteCompany":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteCompanyID(ctx, field)
+				return ec._Mutation_deleteCompany(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -35229,9 +35229,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteRbacID":
+		case "deleteRbac":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteRbacID(ctx, field)
+				return ec._Mutation_deleteRbac(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

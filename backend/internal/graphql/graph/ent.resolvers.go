@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/helpers"
 	"github.com/google/uuid"
 )
 
@@ -525,15 +526,9 @@ func (r *createChatInputResolver) DealID(ctx context.Context, obj *ent.CreateCha
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createChatInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.EmployeeIDs = uuids
@@ -543,15 +538,9 @@ func (r *createChatInputResolver) EmployeeIDs(ctx context.Context, obj *ent.Crea
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createChatInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.MessageIDs = uuids
@@ -574,15 +563,9 @@ func (r *createChatInputResolver) TenantID(ctx context.Context, obj *ent.CreateC
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.EmployeeIDs = uuids
@@ -592,15 +575,9 @@ func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.C
 
 // CostumerIDs is the resolver for the costumerIDs field.
 func (r *createCompanyInputResolver) CostumerIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.CostumerIDs = uuids
@@ -610,15 +587,9 @@ func (r *createCompanyInputResolver) CostumerIDs(ctx context.Context, obj *ent.C
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCompanyInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DealIDs = uuids
@@ -628,15 +599,9 @@ func (r *createCompanyInputResolver) DealIDs(ctx context.Context, obj *ent.Creat
 
 // ChatIDs is the resolver for the chatIDs field.
 func (r *createCompanyInputResolver) ChatIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.ChatIDs = uuids
@@ -646,15 +611,9 @@ func (r *createCompanyInputResolver) ChatIDs(ctx context.Context, obj *ent.Creat
 
 // DepartmentIDs is the resolver for the departmentIDs field.
 func (r *createCompanyInputResolver) DepartmentIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DepartmentIDs = uuids
@@ -664,15 +623,9 @@ func (r *createCompanyInputResolver) DepartmentIDs(ctx context.Context, obj *ent
 
 // PipelineIDs is the resolver for the pipelineIDs field.
 func (r *createCompanyInputResolver) PipelineIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.PipelineIDs = uuids
@@ -682,15 +635,9 @@ func (r *createCompanyInputResolver) PipelineIDs(ctx context.Context, obj *ent.C
 
 // CrmfieldIDs is the resolver for the crmfieldIDs field.
 func (r *createCompanyInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.CrmFieldIDs = uuids
@@ -700,15 +647,9 @@ func (r *createCompanyInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.C
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createCompanyInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DealCrmFieldIDs = uuids
@@ -718,15 +659,9 @@ func (r *createCompanyInputResolver) DealcrmfieldIDs(ctx context.Context, obj *e
 
 // DropdownlistIDs is the resolver for the dropdownlistIDs field.
 func (r *createCompanyInputResolver) DropdownlistIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DropdownListIDs = uuids
@@ -736,15 +671,9 @@ func (r *createCompanyInputResolver) DropdownlistIDs(ctx context.Context, obj *e
 
 // EmployeeauthIDs is the resolver for the employeeauthIDs field.
 func (r *createCompanyInputResolver) EmployeeauthIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.EmployeeAuthIDs = uuids
@@ -754,15 +683,9 @@ func (r *createCompanyInputResolver) EmployeeauthIDs(ctx context.Context, obj *e
 
 // FileIDs is the resolver for the fileIDs field.
 func (r *createCompanyInputResolver) FileIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.FileIDs = uuids
@@ -772,15 +695,9 @@ func (r *createCompanyInputResolver) FileIDs(ctx context.Context, obj *ent.Creat
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createCompanyInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.MessageIDs = uuids
@@ -790,15 +707,9 @@ func (r *createCompanyInputResolver) MessageIDs(ctx context.Context, obj *ent.Cr
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createCompanyInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.QueueIDs = uuids
@@ -808,15 +719,9 @@ func (r *createCompanyInputResolver) QueueIDs(ctx context.Context, obj *ent.Crea
 
 // RbacIDs is the resolver for the rbacIDs field.
 func (r *createCompanyInputResolver) RbacIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.RbacIDs = uuids
@@ -826,15 +731,9 @@ func (r *createCompanyInputResolver) RbacIDs(ctx context.Context, obj *ent.Creat
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createCompanyInputResolver) StageIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.StageIDs = uuids
@@ -844,15 +743,9 @@ func (r *createCompanyInputResolver) StageIDs(ctx context.Context, obj *ent.Crea
 
 // TextIDs is the resolver for the textIDs field.
 func (r *createCompanyInputResolver) TextIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.TextIDs = uuids
@@ -875,15 +768,9 @@ func (r *createCostumerInputResolver) TenantID(ctx context.Context, obj *ent.Cre
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DealIDs = uuids
@@ -893,15 +780,9 @@ func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.Crea
 
 // DropdownlistIDs is the resolver for the dropdownlistIDs field.
 func (r *createCrmFieldInputResolver) DropdownlistIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DropdownListIDs = uuids
@@ -911,15 +792,9 @@ func (r *createCrmFieldInputResolver) DropdownlistIDs(ctx context.Context, obj *
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createCrmFieldInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DealCrmFieldIDs = uuids
@@ -1030,15 +905,9 @@ func (r *createDealInputResolver) StageID(ctx context.Context, obj *ent.CreateDe
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createDealInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateDealInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.DealCrmFieldIDs = uuids
@@ -1061,15 +930,9 @@ func (r *createDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.C
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.EmployeeIDs = uuids
@@ -1079,15 +942,9 @@ func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *en
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.QueueIDs = uuids
@@ -1097,15 +954,9 @@ func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.C
 
 // RbacIDs is the resolver for the rbacIDs field.
 func (r *createDepartmentInputResolver) RbacIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.RbacIDs = uuids
@@ -1115,15 +966,9 @@ func (r *createDepartmentInputResolver) RbacIDs(ctx context.Context, obj *ent.Cr
 
 // CrmfieldIDs is the resolver for the crmfieldIDs field.
 func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 
 	obj.CrmFieldIDs = uuids
@@ -1207,15 +1052,9 @@ func (r *createEmployeeInputResolver) DepartmentID(ctx context.Context, obj *ent
 
 // ChatIDs is the resolver for the chatIDs field.
 func (r *createEmployeeInputResolver) ChatIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.ChatIDs = uuids
 
@@ -1224,15 +1063,9 @@ func (r *createEmployeeInputResolver) ChatIDs(ctx context.Context, obj *ent.Crea
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createEmployeeInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.QueueIDs = uuids
 
@@ -1241,15 +1074,9 @@ func (r *createEmployeeInputResolver) QueueIDs(ctx context.Context, obj *ent.Cre
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createEmployeeInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.MessageIDs = uuids
 
@@ -1295,15 +1122,9 @@ func (r *createMessageInputResolver) ChatID(ctx context.Context, obj *ent.Create
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createMessageInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateMessageInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.EmployeeIDs = uuids
 
@@ -1362,15 +1183,9 @@ func (r *createPipelineInputResolver) TenantID(ctx context.Context, obj *ent.Cre
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.StageIDs = uuids
 
@@ -1379,15 +1194,9 @@ func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.Cre
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createQueueInputResolver) StageIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.StageIDs = uuids
 
@@ -1396,15 +1205,9 @@ func (r *createQueueInputResolver) StageIDs(ctx context.Context, obj *ent.Create
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createQueueInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.EmployeeIDs = uuids
 
@@ -1413,15 +1216,9 @@ func (r *createQueueInputResolver) EmployeeIDs(ctx context.Context, obj *ent.Cre
 
 // DepartmentIDs is the resolver for the departmentIDs field.
 func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.DepartmentIDs = uuids
 
@@ -1480,15 +1277,9 @@ func (r *createStageInputResolver) PipelineID(ctx context.Context, obj *ent.Crea
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createStageInputResolver) DealIDs(ctx context.Context, obj *ent.CreateStageInput, data []string) error {
-	var uuids []uuid.UUID
-
-	for _, id := range data {
-		uid, err := uuid.Parse(id)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		uuids = append(uuids, uid)
+	uuids, er := helpers.UuidParser(data)
+	if er != nil {
+		return er
 	}
 	obj.DealIDs = uuids
 

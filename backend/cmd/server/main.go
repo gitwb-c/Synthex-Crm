@@ -6,7 +6,6 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/db"
 	_ "github.com/gitwb-c/crm.saas/backend/internal/ent/runtime"
 	"github.com/gitwb-c/crm.saas/backend/internal/http"
-	"github.com/gitwb-c/crm.saas/backend/internal/rule"
 	"github.com/gitwb-c/crm.saas/backend/pkg/env"
 )
 
@@ -19,8 +18,6 @@ func main() {
 	if er != nil {
 		log.Fatalf("failed to init Ent client: %v", er)
 	}
-	client.Intercept(rule.FilterTenantQuery())
-	client.Use(rule.FilterTenantMutation())
 	srv, err := db.Init(client)
 	if err != nil {
 		log.Fatalf("failed to init db: %v", err)
