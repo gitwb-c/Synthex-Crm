@@ -26,6 +26,14 @@ func (s *EmployeeService) Read(ctx context.Context) ([]*ent.Employee, error) {
 	return employee, nil
 }
 
+func (s *EmployeeService) ReadID(ctx context.Context, id uuid.UUID) (*ent.Employee, error) {
+	employee, err := s.repository.ReadID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return employee, nil
+}
+
 func (s *EmployeeService) Create(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
 	employee, err := s.repository.Create(ctx, input)
 	if err != nil {

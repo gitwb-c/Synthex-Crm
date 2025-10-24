@@ -23,8 +23,8 @@ type Employee struct {
 	ID uuid.UUID `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Active holds the value of the "active" field.
-	Active bool `json:"active,omitempty"`
+	// EmploymentStatus holds the value of the "employmentStatus" field.
+	EmploymentStatus employee.EmploymentStatus `json:"employmentStatus,omitempty"`
 	// CreatedAt holds the value of the "createdAt" field.
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
@@ -128,9 +128,7 @@ func (*Employee) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case employee.FieldActive:
-			values[i] = new(sql.NullBool)
-		case employee.FieldName:
+		case employee.FieldName, employee.FieldEmploymentStatus:
 			values[i] = new(sql.NullString)
 		case employee.FieldCreatedAt, employee.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -165,11 +163,11 @@ func (_m *Employee) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Name = value.String
 			}
-		case employee.FieldActive:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field active", values[i])
+		case employee.FieldEmploymentStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field employmentStatus", values[i])
 			} else if value.Valid {
-				_m.Active = value.Bool
+				_m.EmploymentStatus = employee.EmploymentStatus(value.String)
 			}
 		case employee.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -265,8 +263,8 @@ func (_m *Employee) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
-	builder.WriteString("active=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Active))
+	builder.WriteString("employmentStatus=")
+	builder.WriteString(fmt.Sprintf("%v", _m.EmploymentStatus))
 	builder.WriteString(", ")
 	builder.WriteString("createdAt=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))

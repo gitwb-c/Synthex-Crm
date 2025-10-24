@@ -3444,17 +3444,17 @@ var (
 			}
 		},
 	}
-	// EmployeeOrderFieldActive orders Employee by active.
-	EmployeeOrderFieldActive = &EmployeeOrderField{
+	// EmployeeOrderFieldEmploymentStatus orders Employee by employmentStatus.
+	EmployeeOrderFieldEmploymentStatus = &EmployeeOrderField{
 		Value: func(_m *Employee) (ent.Value, error) {
-			return _m.Active, nil
+			return _m.EmploymentStatus, nil
 		},
-		column: employee.FieldActive,
-		toTerm: employee.ByActive,
+		column: employee.FieldEmploymentStatus,
+		toTerm: employee.ByEmploymentStatus,
 		toCursor: func(_m *Employee) Cursor {
 			return Cursor{
 				ID:    _m.ID,
-				Value: _m.Active,
+				Value: _m.EmploymentStatus,
 			}
 		},
 	}
@@ -3494,8 +3494,8 @@ func (f EmployeeOrderField) String() string {
 	switch f.column {
 	case EmployeeOrderFieldName.column:
 		str = "NAME"
-	case EmployeeOrderFieldActive.column:
-		str = "ACTIVE"
+	case EmployeeOrderFieldEmploymentStatus.column:
+		str = "EMPLOYMENT_STATUS"
 	case EmployeeOrderFieldCreatedAt.column:
 		str = "CREATED_AT"
 	case EmployeeOrderFieldUpdatedAt.column:
@@ -3518,8 +3518,8 @@ func (f *EmployeeOrderField) UnmarshalGQL(v interface{}) error {
 	switch str {
 	case "NAME":
 		*f = *EmployeeOrderFieldName
-	case "ACTIVE":
-		*f = *EmployeeOrderFieldActive
+	case "EMPLOYMENT_STATUS":
+		*f = *EmployeeOrderFieldEmploymentStatus
 	case "CREATED_AT":
 		*f = *EmployeeOrderFieldCreatedAt
 	case "UPDATED_AT":

@@ -33,17 +33,9 @@ func (_c *EmployeeCreate) SetName(v string) *EmployeeCreate {
 	return _c
 }
 
-// SetActive sets the "active" field.
-func (_c *EmployeeCreate) SetActive(v bool) *EmployeeCreate {
-	_c.mutation.SetActive(v)
-	return _c
-}
-
-// SetNillableActive sets the "active" field if the given value is not nil.
-func (_c *EmployeeCreate) SetNillableActive(v *bool) *EmployeeCreate {
-	if v != nil {
-		_c.SetActive(*v)
-	}
+// SetEmploymentStatus sets the "employmentStatus" field.
+func (_c *EmployeeCreate) SetEmploymentStatus(v employee.EmploymentStatus) *EmployeeCreate {
+	_c.mutation.SetEmploymentStatus(v)
 	return _c
 }
 
@@ -224,10 +216,6 @@ func (_c *EmployeeCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *EmployeeCreate) defaults() {
-	if _, ok := _c.mutation.Active(); !ok {
-		v := employee.DefaultActive
-		_c.mutation.SetActive(v)
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := employee.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -252,8 +240,13 @@ func (_c *EmployeeCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Employee.name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Active(); !ok {
-		return &ValidationError{Name: "active", err: errors.New(`ent: missing required field "Employee.active"`)}
+	if _, ok := _c.mutation.EmploymentStatus(); !ok {
+		return &ValidationError{Name: "employmentStatus", err: errors.New(`ent: missing required field "Employee.employmentStatus"`)}
+	}
+	if v, ok := _c.mutation.EmploymentStatus(); ok {
+		if err := employee.EmploymentStatusValidator(v); err != nil {
+			return &ValidationError{Name: "employmentStatus", err: fmt.Errorf(`ent: validator failed for field "Employee.employmentStatus": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Employee.createdAt"`)}
@@ -306,9 +299,9 @@ func (_c *EmployeeCreate) createSpec() (*Employee, *sqlgraph.CreateSpec) {
 		_spec.SetField(employee.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := _c.mutation.Active(); ok {
-		_spec.SetField(employee.FieldActive, field.TypeBool, value)
-		_node.Active = value
+	if value, ok := _c.mutation.EmploymentStatus(); ok {
+		_spec.SetField(employee.FieldEmploymentStatus, field.TypeEnum, value)
+		_node.EmploymentStatus = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(employee.FieldCreatedAt, field.TypeTime, value)

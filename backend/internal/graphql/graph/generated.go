@@ -18,6 +18,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
@@ -320,18 +321,18 @@ type ComplexityRoot struct {
 	}
 
 	Employee struct {
-		Active       func(childComplexity int) int
-		Chat         func(childComplexity int) int
-		CreatedAt    func(childComplexity int) int
-		Department   func(childComplexity int) int
-		EmployeeAuth func(childComplexity int) int
-		ID           func(childComplexity int) int
-		Messages     func(childComplexity int) int
-		Name         func(childComplexity int) int
-		Queues       func(childComplexity int) int
-		Tenant       func(childComplexity int) int
-		TenantId     func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
+		Chat             func(childComplexity int) int
+		CreatedAt        func(childComplexity int) int
+		Department       func(childComplexity int) int
+		EmployeeAuth     func(childComplexity int) int
+		EmploymentStatus func(childComplexity int) int
+		ID               func(childComplexity int) int
+		Messages         func(childComplexity int) int
+		Name             func(childComplexity int) int
+		Queues           func(childComplexity int) int
+		Tenant           func(childComplexity int) int
+		TenantId         func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
 	}
 
 	EmployeeAuth struct {
@@ -2045,12 +2046,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.DropdownListEdge.Node(childComplexity), true
 
-	case "Employee.active":
-		if e.complexity.Employee.Active == nil {
-			break
-		}
-
-		return e.complexity.Employee.Active(childComplexity), true
 	case "Employee.chat":
 		if e.complexity.Employee.Chat == nil {
 			break
@@ -2075,6 +2070,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Employee.EmployeeAuth(childComplexity), true
+	case "Employee.employmentstatus":
+		if e.complexity.Employee.EmploymentStatus == nil {
+			break
+		}
+
+		return e.complexity.Employee.EmploymentStatus(childComplexity), true
 	case "Employee.id":
 		if e.complexity.Employee.ID == nil {
 			break
@@ -5063,8 +5064,8 @@ func (ec *executionContext) fieldContext_Chat_employees(_ context.Context, field
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -5545,8 +5546,8 @@ func (ec *executionContext) fieldContext_Company_employees(_ context.Context, fi
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -8936,8 +8937,8 @@ func (ec *executionContext) fieldContext_Department_employee(_ context.Context, 
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -9742,30 +9743,30 @@ func (ec *executionContext) fieldContext_Employee_name(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Employee_active(ctx context.Context, field graphql.CollectedField, obj *ent.Employee) (ret graphql.Marshaler) {
+func (ec *executionContext) _Employee_employmentstatus(ctx context.Context, field graphql.CollectedField, obj *ent.Employee) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Employee_active,
+		ec.fieldContext_Employee_employmentstatus,
 		func(ctx context.Context) (any, error) {
-			return obj.Active, nil
+			return obj.EmploymentStatus, nil
 		},
 		nil,
-		ec.marshalNBoolean2bool,
+		ec.marshalNEmployeeEmploymentStatus2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus,
 		true,
 		true,
 	)
 }
 
-func (ec *executionContext) fieldContext_Employee_active(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Employee_employmentstatus(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Employee",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			return nil, errors.New("field of type EmployeeEmploymentStatus does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10355,8 +10356,8 @@ func (ec *executionContext) fieldContext_EmployeeAuth_employee(_ context.Context
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -10761,8 +10762,8 @@ func (ec *executionContext) fieldContext_EmployeeEdge_node(_ context.Context, fi
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -11401,8 +11402,8 @@ func (ec *executionContext) fieldContext_Message_employee(_ context.Context, fie
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -12634,8 +12635,8 @@ func (ec *executionContext) fieldContext_Mutation_createEmployee(ctx context.Con
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -12742,8 +12743,8 @@ func (ec *executionContext) fieldContext_Mutation_updateEmployeeWhere(ctx contex
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -15870,8 +15871,8 @@ func (ec *executionContext) fieldContext_Queue_employees(_ context.Context, fiel
 				return ec.fieldContext_Employee_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Employee_name(ctx, field)
-			case "active":
-				return ec.fieldContext_Employee_active(ctx, field)
+			case "employmentstatus":
+				return ec.fieldContext_Employee_employmentstatus(ctx, field)
 			case "createdat":
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
@@ -21397,7 +21398,7 @@ func (ec *executionContext) unmarshalInputCreateEmployeeInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "active", "createdat", "updatedat", "employeeauthID", "tenantID", "departmentID", "chatIDs", "queueIDs", "messageIDs"}
+	fieldsInOrder := [...]string{"name", "employmentstatus", "createdat", "updatedat", "employeeauthID", "tenantID", "departmentID", "chatIDs", "queueIDs", "messageIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21411,13 +21412,13 @@ func (ec *executionContext) unmarshalInputCreateEmployeeInput(ctx context.Contex
 				return it, err
 			}
 			it.Name = data
-		case "active":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("active"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+		case "employmentstatus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentstatus"))
+			data, err := ec.unmarshalNEmployeeEmploymentStatus2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Active = data
+			it.EmploymentStatus = data
 		case "createdat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdat"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -24927,7 +24928,7 @@ func (ec *executionContext) unmarshalInputEmployeeWhereInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "active", "activeNEQ", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasEmployeeAuth", "hasEmployeeAuthWith", "hasTenant", "hasTenantWith", "hasDepartment", "hasDepartmentWith", "hasChat", "hasChatWith", "hasQueues", "hasQueuesWith", "hasMessages", "hasMessagesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "employmentstatus", "employmentstatusNEQ", "employmentstatusIn", "employmentstatusNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasEmployeeAuth", "hasEmployeeAuthWith", "hasTenant", "hasTenantWith", "hasDepartment", "hasDepartmentWith", "hasChat", "hasChatWith", "hasQueues", "hasQueuesWith", "hasMessages", "hasMessagesWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -25118,20 +25119,34 @@ func (ec *executionContext) unmarshalInputEmployeeWhereInput(ctx context.Context
 				return it, err
 			}
 			it.NameContainsFold = data
-		case "active":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("active"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+		case "employmentstatus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentstatus"))
+			data, err := ec.unmarshalOEmployeeEmploymentStatus2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Active = data
-		case "activeNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("activeNEQ"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			it.EmploymentStatus = data
+		case "employmentstatusNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentstatusNEQ"))
+			data, err := ec.unmarshalOEmployeeEmploymentStatus2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ActiveNEQ = data
+			it.EmploymentStatusNEQ = data
+		case "employmentstatusIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentstatusIn"))
+			data, err := ec.unmarshalOEmployeeEmploymentStatus2ᚕgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EmploymentStatusIn = data
+		case "employmentstatusNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentstatusNotIn"))
+			data, err := ec.unmarshalOEmployeeEmploymentStatus2ᚕgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EmploymentStatusNotIn = data
 		case "createdat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdat"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -29842,7 +29857,7 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "active", "updatedat", "employeeauthID", "tenantID", "clearTenant", "departmentID", "addChatIDs", "removeChatIDs", "clearChat", "addQueueIDs", "removeQueueIDs", "clearQueues", "addMessageIDs", "removeMessageIDs", "clearMessages"}
+	fieldsInOrder := [...]string{"name", "employmentstatus", "updatedat", "employeeauthID", "tenantID", "clearTenant", "departmentID", "addChatIDs", "removeChatIDs", "clearChat", "addQueueIDs", "removeQueueIDs", "clearQueues", "addMessageIDs", "removeMessageIDs", "clearMessages"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29856,13 +29871,13 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeInput(ctx context.Contex
 				return it, err
 			}
 			it.Name = data
-		case "active":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("active"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+		case "employmentstatus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentstatus"))
+			data, err := ec.unmarshalOEmployeeEmploymentStatus2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Active = data
+			it.EmploymentStatus = data
 		case "updatedat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedat"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -33722,8 +33737,8 @@ func (ec *executionContext) _Employee(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "active":
-			out.Values[i] = ec._Employee_active(ctx, field, obj)
+		case "employmentstatus":
+			out.Values[i] = ec._Employee_employmentstatus(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -38539,6 +38554,16 @@ func (ec *executionContext) marshalNEmployeeConnection2ᚖgithubᚗcomᚋgitwb�
 	return ec._EmployeeConnection(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNEmployeeEmploymentStatus2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx context.Context, v any) (employee.EmploymentStatus, error) {
+	var res employee.EmploymentStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNEmployeeEmploymentStatus2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx context.Context, sel ast.SelectionSet, v employee.EmploymentStatus) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNEmployeeOrder2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐEmployeeOrder(ctx context.Context, v any) (*ent.EmployeeOrder, error) {
 	res, err := ec.unmarshalInputEmployeeOrder(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -41150,6 +41175,87 @@ func (ec *executionContext) marshalOEmployeeEdge2ᚖgithubᚗcomᚋgitwbᚑcᚋc
 		return graphql.Null
 	}
 	return ec._EmployeeEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOEmployeeEmploymentStatus2ᚕgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatusᚄ(ctx context.Context, v any) ([]employee.EmploymentStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]employee.EmploymentStatus, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNEmployeeEmploymentStatus2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOEmployeeEmploymentStatus2ᚕgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatusᚄ(ctx context.Context, sel ast.SelectionSet, v []employee.EmploymentStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNEmployeeEmploymentStatus2githubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOEmployeeEmploymentStatus2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx context.Context, v any) (*employee.EmploymentStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(employee.EmploymentStatus)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEmployeeEmploymentStatus2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚋemployeeᚐEmploymentStatus(ctx context.Context, sel ast.SelectionSet, v *employee.EmploymentStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOEmployeeOrder2ᚕᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐEmployeeOrderᚄ(ctx context.Context, v any) ([]*ent.EmployeeOrder, error) {

@@ -184,11 +184,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Employee",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			employee.FieldName:      {Type: field.TypeString, Column: employee.FieldName},
-			employee.FieldActive:    {Type: field.TypeBool, Column: employee.FieldActive},
-			employee.FieldCreatedAt: {Type: field.TypeTime, Column: employee.FieldCreatedAt},
-			employee.FieldUpdatedAt: {Type: field.TypeTime, Column: employee.FieldUpdatedAt},
-			employee.FieldTenantId:  {Type: field.TypeUUID, Column: employee.FieldTenantId},
+			employee.FieldName:             {Type: field.TypeString, Column: employee.FieldName},
+			employee.FieldEmploymentStatus: {Type: field.TypeEnum, Column: employee.FieldEmploymentStatus},
+			employee.FieldCreatedAt:        {Type: field.TypeTime, Column: employee.FieldCreatedAt},
+			employee.FieldUpdatedAt:        {Type: field.TypeTime, Column: employee.FieldUpdatedAt},
+			employee.FieldTenantId:         {Type: field.TypeUUID, Column: employee.FieldTenantId},
 		},
 	}
 	graph.Nodes[9] = &sqlgraph.Node{
@@ -2259,9 +2259,9 @@ func (f *EmployeeFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(employee.FieldName))
 }
 
-// WhereActive applies the entql bool predicate on the active field.
-func (f *EmployeeFilter) WhereActive(p entql.BoolP) {
-	f.Where(p.Field(employee.FieldActive))
+// WhereEmploymentStatus applies the entql string predicate on the employmentStatus field.
+func (f *EmployeeFilter) WhereEmploymentStatus(p entql.StringP) {
+	f.Where(p.Field(employee.FieldEmploymentStatus))
 }
 
 // WhereCreatedAt applies the entql time.Time predicate on the createdAt field.

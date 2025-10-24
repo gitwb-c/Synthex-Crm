@@ -1547,10 +1547,10 @@ func (_q *EmployeeQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 				selectedFields = append(selectedFields, employee.FieldName)
 				fieldSeen[employee.FieldName] = struct{}{}
 			}
-		case "active":
-			if _, ok := fieldSeen[employee.FieldActive]; !ok {
-				selectedFields = append(selectedFields, employee.FieldActive)
-				fieldSeen[employee.FieldActive] = struct{}{}
+		case "employmentstatus":
+			if _, ok := fieldSeen[employee.FieldEmploymentStatus]; !ok {
+				selectedFields = append(selectedFields, employee.FieldEmploymentStatus)
+				fieldSeen[employee.FieldEmploymentStatus] = struct{}{}
 			}
 		case "createdat":
 			if _, ok := fieldSeen[employee.FieldCreatedAt]; !ok {

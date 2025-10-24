@@ -61,11 +61,6 @@ func Name(v string) predicate.Employee {
 	return predicate.Employee(sql.FieldEQ(FieldName, v))
 }
 
-// Active applies equality check predicate on the "active" field. It's identical to ActiveEQ.
-func Active(v bool) predicate.Employee {
-	return predicate.Employee(sql.FieldEQ(FieldActive, v))
-}
-
 // CreatedAt applies equality check predicate on the "createdAt" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Employee {
 	return predicate.Employee(sql.FieldEQ(FieldCreatedAt, v))
@@ -146,14 +141,24 @@ func NameContainsFold(v string) predicate.Employee {
 	return predicate.Employee(sql.FieldContainsFold(FieldName, v))
 }
 
-// ActiveEQ applies the EQ predicate on the "active" field.
-func ActiveEQ(v bool) predicate.Employee {
-	return predicate.Employee(sql.FieldEQ(FieldActive, v))
+// EmploymentStatusEQ applies the EQ predicate on the "employmentStatus" field.
+func EmploymentStatusEQ(v EmploymentStatus) predicate.Employee {
+	return predicate.Employee(sql.FieldEQ(FieldEmploymentStatus, v))
 }
 
-// ActiveNEQ applies the NEQ predicate on the "active" field.
-func ActiveNEQ(v bool) predicate.Employee {
-	return predicate.Employee(sql.FieldNEQ(FieldActive, v))
+// EmploymentStatusNEQ applies the NEQ predicate on the "employmentStatus" field.
+func EmploymentStatusNEQ(v EmploymentStatus) predicate.Employee {
+	return predicate.Employee(sql.FieldNEQ(FieldEmploymentStatus, v))
+}
+
+// EmploymentStatusIn applies the In predicate on the "employmentStatus" field.
+func EmploymentStatusIn(vs ...EmploymentStatus) predicate.Employee {
+	return predicate.Employee(sql.FieldIn(FieldEmploymentStatus, vs...))
+}
+
+// EmploymentStatusNotIn applies the NotIn predicate on the "employmentStatus" field.
+func EmploymentStatusNotIn(vs ...EmploymentStatus) predicate.Employee {
+	return predicate.Employee(sql.FieldNotIn(FieldEmploymentStatus, vs...))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "createdAt" field.

@@ -204,10 +204,6 @@ func init() {
 	employeeDescName := employeeFields[1].Descriptor()
 	// employee.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	employee.NameValidator = employeeDescName.Validators[0].(func(string) error)
-	// employeeDescActive is the schema descriptor for active field.
-	employeeDescActive := employeeFields[2].Descriptor()
-	// employee.DefaultActive holds the default value on creation for the active field.
-	employee.DefaultActive = employeeDescActive.Default.(bool)
 	// employeeDescCreatedAt is the schema descriptor for createdAt field.
 	employeeDescCreatedAt := employeeFields[3].Descriptor()
 	// employee.DefaultCreatedAt holds the default value on creation for the createdAt field.

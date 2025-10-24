@@ -221,7 +221,7 @@ var (
 	EmployeesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "active", Type: field.TypeBool, Default: true},
+		{Name: "employment_status", Type: field.TypeEnum, Enums: []string{"active", "terminated", "onLeave"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},

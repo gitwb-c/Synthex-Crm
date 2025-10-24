@@ -49,16 +49,16 @@ func (_u *EmployeeUpdate) SetNillableName(v *string) *EmployeeUpdate {
 	return _u
 }
 
-// SetActive sets the "active" field.
-func (_u *EmployeeUpdate) SetActive(v bool) *EmployeeUpdate {
-	_u.mutation.SetActive(v)
+// SetEmploymentStatus sets the "employmentStatus" field.
+func (_u *EmployeeUpdate) SetEmploymentStatus(v employee.EmploymentStatus) *EmployeeUpdate {
+	_u.mutation.SetEmploymentStatus(v)
 	return _u
 }
 
-// SetNillableActive sets the "active" field if the given value is not nil.
-func (_u *EmployeeUpdate) SetNillableActive(v *bool) *EmployeeUpdate {
+// SetNillableEmploymentStatus sets the "employmentStatus" field if the given value is not nil.
+func (_u *EmployeeUpdate) SetNillableEmploymentStatus(v *employee.EmploymentStatus) *EmployeeUpdate {
 	if v != nil {
-		_u.SetActive(*v)
+		_u.SetEmploymentStatus(*v)
 	}
 	return _u
 }
@@ -304,6 +304,11 @@ func (_u *EmployeeUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Employee.name": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.EmploymentStatus(); ok {
+		if err := employee.EmploymentStatusValidator(v); err != nil {
+			return &ValidationError{Name: "employmentStatus", err: fmt.Errorf(`ent: validator failed for field "Employee.employmentStatus": %w`, err)}
+		}
+	}
 	if _u.mutation.EmployeeAuthCleared() && len(_u.mutation.EmployeeAuthIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Employee.employeeAuth"`)
 	}
@@ -328,8 +333,8 @@ func (_u *EmployeeUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(employee.FieldName, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Active(); ok {
-		_spec.SetField(employee.FieldActive, field.TypeBool, value)
+	if value, ok := _u.mutation.EmploymentStatus(); ok {
+		_spec.SetField(employee.FieldEmploymentStatus, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(employee.FieldUpdatedAt, field.TypeTime, value)
@@ -590,16 +595,16 @@ func (_u *EmployeeUpdateOne) SetNillableName(v *string) *EmployeeUpdateOne {
 	return _u
 }
 
-// SetActive sets the "active" field.
-func (_u *EmployeeUpdateOne) SetActive(v bool) *EmployeeUpdateOne {
-	_u.mutation.SetActive(v)
+// SetEmploymentStatus sets the "employmentStatus" field.
+func (_u *EmployeeUpdateOne) SetEmploymentStatus(v employee.EmploymentStatus) *EmployeeUpdateOne {
+	_u.mutation.SetEmploymentStatus(v)
 	return _u
 }
 
-// SetNillableActive sets the "active" field if the given value is not nil.
-func (_u *EmployeeUpdateOne) SetNillableActive(v *bool) *EmployeeUpdateOne {
+// SetNillableEmploymentStatus sets the "employmentStatus" field if the given value is not nil.
+func (_u *EmployeeUpdateOne) SetNillableEmploymentStatus(v *employee.EmploymentStatus) *EmployeeUpdateOne {
 	if v != nil {
-		_u.SetActive(*v)
+		_u.SetEmploymentStatus(*v)
 	}
 	return _u
 }
@@ -858,6 +863,11 @@ func (_u *EmployeeUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Employee.name": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.EmploymentStatus(); ok {
+		if err := employee.EmploymentStatusValidator(v); err != nil {
+			return &ValidationError{Name: "employmentStatus", err: fmt.Errorf(`ent: validator failed for field "Employee.employmentStatus": %w`, err)}
+		}
+	}
 	if _u.mutation.EmployeeAuthCleared() && len(_u.mutation.EmployeeAuthIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Employee.employeeAuth"`)
 	}
@@ -899,8 +909,8 @@ func (_u *EmployeeUpdateOne) sqlSave(ctx context.Context) (_node *Employee, err 
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(employee.FieldName, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Active(); ok {
-		_spec.SetField(employee.FieldActive, field.TypeBool, value)
+	if value, ok := _u.mutation.EmploymentStatus(); ok {
+		_spec.SetField(employee.FieldEmploymentStatus, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(employee.FieldUpdatedAt, field.TypeTime, value)

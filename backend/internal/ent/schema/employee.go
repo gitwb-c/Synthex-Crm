@@ -19,7 +19,7 @@ func (Employee) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID"), entgql.QueryField()),
 		field.String("name").NotEmpty().Unique().Annotations(entgql.QueryField(), entgql.OrderField("NAME")),
-		field.Bool("active").Default(true).Annotations(entgql.QueryField()).Annotations(entgql.OrderField("ACTIVE")),
+		field.Enum("employmentStatus").Values("active", "terminated", "onLeave").Annotations(entgql.QueryField()).Annotations(entgql.OrderField("EMPLOYMENT_STATUS")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),

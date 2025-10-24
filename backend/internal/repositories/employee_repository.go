@@ -22,6 +22,9 @@ func NewEmployeeRepository(client *ent.Client) *EmployeeRepository {
 func (s *EmployeeRepository) Read(ctx context.Context) ([]*ent.Employee, error) {
 	return s.client.Employee.Query().All(ctx)
 }
+func (s *EmployeeRepository) ReadID(ctx context.Context, id uuid.UUID) (*ent.Employee, error) {
+	return s.client.Employee.Query().Where(employee.IDEQ(id)).Only(ctx)
+}
 
 func (s *EmployeeRepository) Create(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
 	return s.client.Employee.Create().SetInput(input).Save(ctx)

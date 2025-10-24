@@ -22,6 +22,9 @@ func NewDepartmentRepository(client *ent.Client) *DepartmentRepository {
 func (s *DepartmentRepository) Read(ctx context.Context) ([]*ent.Department, error) {
 	return s.client.Department.Query().All(ctx)
 }
+func (s *DepartmentRepository) ReadRbacs(ctx context.Context, id uuid.UUID) (*ent.Department, error) {
+	return s.client.Department.Query().Where(department.IDEQ(id)).WithRbacs().Only(ctx)
+}
 
 func (s *DepartmentRepository) Create(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
 	return s.client.Department.Create().SetInput(input).Save(ctx)

@@ -3,6 +3,9 @@
 package employee
 
 import (
+	"fmt"
+	"io"
+	"strconv"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -17,8 +20,8 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldActive holds the string denoting the active field in the database.
-	FieldActive = "active"
+	// FieldEmploymentStatus holds the string denoting the employmentstatus field in the database.
+	FieldEmploymentStatus = "employment_status"
 	// FieldCreatedAt holds the string denoting the createdat field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
@@ -81,7 +84,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
-	FieldActive,
+	FieldEmploymentStatus,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldTenantId,
@@ -123,8 +126,6 @@ func ValidColumn(column string) bool {
 var (
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// DefaultActive holds the default value on creation for the "active" field.
-	DefaultActive bool
 	// DefaultCreatedAt holds the default value on creation for the "createdAt" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updatedAt" field.
@@ -134,6 +135,30 @@ var (
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
+
+// EmploymentStatus defines the type for the "employmentStatus" enum field.
+type EmploymentStatus string
+
+// EmploymentStatus values.
+const (
+	EmploymentStatusActive     EmploymentStatus = "active"
+	EmploymentStatusTerminated EmploymentStatus = "terminated"
+	EmploymentStatusOnLeave    EmploymentStatus = "onLeave"
+)
+
+func (es EmploymentStatus) String() string {
+	return string(es)
+}
+
+// EmploymentStatusValidator is a validator for the "employmentStatus" field enum values. It is called by the builders before save.
+func EmploymentStatusValidator(es EmploymentStatus) error {
+	switch es {
+	case EmploymentStatusActive, EmploymentStatusTerminated, EmploymentStatusOnLeave:
+		return nil
+	default:
+		return fmt.Errorf("employee: invalid enum value for employmentStatus field: %q", es)
+	}
+}
 
 // OrderOption defines the ordering options for the Employee queries.
 type OrderOption func(*sql.Selector)
@@ -148,9 +173,9 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
-// ByActive orders the results by the active field.
-func ByActive(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldActive, opts...).ToFunc()
+// ByEmploymentStatus orders the results by the employmentStatus field.
+func ByEmploymentStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEmploymentStatus, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the createdAt field.
@@ -271,4 +296,22 @@ func newMessagesStep() *sqlgraph.Step {
 		sqlgraph.To(MessagesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, MessagesTable, MessagesPrimaryKey...),
 	)
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (e EmploymentStatus) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(e.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (e *EmploymentStatus) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*e = EmploymentStatus(str)
+	if err := EmploymentStatusValidator(*e); err != nil {
+		return fmt.Errorf("%s is not a valid EmploymentStatus", str)
+	}
+	return nil
 }

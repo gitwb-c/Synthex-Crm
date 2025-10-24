@@ -25,6 +25,13 @@ func (s *DepartmentService) Read(ctx context.Context) ([]*ent.Department, error)
 	}
 	return department, nil
 }
+func (s *DepartmentService) ReadRbacs(ctx context.Context, uuid uuid.UUID) (*ent.Department, error) {
+	department, err := s.repository.ReadRbacs(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	return department, nil
+}
 
 func (s *DepartmentService) Create(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
 	department, err := s.repository.Create(ctx, input)

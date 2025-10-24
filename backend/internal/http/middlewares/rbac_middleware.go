@@ -1,10 +1,30 @@
 package middlewares
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
 
-func RbacMiddleware(requiredPermissions []string) gin.HandlerFunc {
+	"github.com/gin-gonic/gin"
+	"github.com/gitwb-c/crm.saas/backend/internal/domain/services"
+	"github.com/gitwb-c/crm.saas/backend/internal/http/middlewares/helpers"
+)
+
+func RbacMiddleware(employeeservice *services.EmployeeService, departmentservice *services.DepartmentService) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		employeestatus, er := helpers.EmployeeParse(ctx, employeeservice)
+		if employeestatus != http.StatusOK {
+			ctx.JSON(employeestatus, er)
+			ctx.Abort()
+			return
+		}
 
+		departmentstatus, department, err := helpers.DepartmentParse(ctx, departmentservice)
+		if departmentstatus != http.StatusOK {
+			ctx.JSON(departmentstatus, err)
+			ctx.Abort()
+			return
+		}
+
+		ctx.Set("permissions", department.Edges.Rbacs)
 		ctx.Next()
 	}
 }

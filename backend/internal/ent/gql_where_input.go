@@ -3322,9 +3322,11 @@ type EmployeeWhereInput struct {
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
 
-	// "active" field predicates.
-	Active    *bool `json:"active,omitempty"`
-	ActiveNEQ *bool `json:"activeNEQ,omitempty"`
+	// "employmentStatus" field predicates.
+	EmploymentStatus      *employee.EmploymentStatus  `json:"employmentstatus,omitempty"`
+	EmploymentStatusNEQ   *employee.EmploymentStatus  `json:"employmentstatusNEQ,omitempty"`
+	EmploymentStatusIn    []employee.EmploymentStatus `json:"employmentstatusIn,omitempty"`
+	EmploymentStatusNotIn []employee.EmploymentStatus `json:"employmentstatusNotIn,omitempty"`
 
 	// "createdAt" field predicates.
 	CreatedAt      *time.Time  `json:"createdat,omitempty"`
@@ -3513,11 +3515,17 @@ func (i *EmployeeWhereInput) P() (predicate.Employee, error) {
 	if i.NameContainsFold != nil {
 		predicates = append(predicates, employee.NameContainsFold(*i.NameContainsFold))
 	}
-	if i.Active != nil {
-		predicates = append(predicates, employee.ActiveEQ(*i.Active))
+	if i.EmploymentStatus != nil {
+		predicates = append(predicates, employee.EmploymentStatusEQ(*i.EmploymentStatus))
 	}
-	if i.ActiveNEQ != nil {
-		predicates = append(predicates, employee.ActiveNEQ(*i.ActiveNEQ))
+	if i.EmploymentStatusNEQ != nil {
+		predicates = append(predicates, employee.EmploymentStatusNEQ(*i.EmploymentStatusNEQ))
+	}
+	if len(i.EmploymentStatusIn) > 0 {
+		predicates = append(predicates, employee.EmploymentStatusIn(i.EmploymentStatusIn...))
+	}
+	if len(i.EmploymentStatusNotIn) > 0 {
+		predicates = append(predicates, employee.EmploymentStatusNotIn(i.EmploymentStatusNotIn...))
 	}
 	if i.CreatedAt != nil {
 		predicates = append(predicates, employee.CreatedAtEQ(*i.CreatedAt))

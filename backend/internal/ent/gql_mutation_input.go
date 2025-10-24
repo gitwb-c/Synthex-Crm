@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
@@ -1018,24 +1019,22 @@ func (c *DropdownListUpdateOne) SetInput(i UpdateDropdownListInput) *DropdownLis
 
 // CreateEmployeeInput represents a mutation input for creating employees.
 type CreateEmployeeInput struct {
-	Name           string
-	Active         *bool
-	CreatedAt      *time.Time
-	UpdatedAt      *time.Time
-	EmployeeAuthID uuid.UUID
-	TenantID       *uuid.UUID
-	DepartmentID   uuid.UUID
-	ChatIDs        []uuid.UUID
-	QueueIDs       []uuid.UUID
-	MessageIDs     []uuid.UUID
+	Name             string
+	EmploymentStatus employee.EmploymentStatus
+	CreatedAt        *time.Time
+	UpdatedAt        *time.Time
+	EmployeeAuthID   uuid.UUID
+	TenantID         *uuid.UUID
+	DepartmentID     uuid.UUID
+	ChatIDs          []uuid.UUID
+	QueueIDs         []uuid.UUID
+	MessageIDs       []uuid.UUID
 }
 
 // Mutate applies the CreateEmployeeInput on the EmployeeMutation builder.
 func (i *CreateEmployeeInput) Mutate(m *EmployeeMutation) {
 	m.SetName(i.Name)
-	if v := i.Active; v != nil {
-		m.SetActive(*v)
-	}
+	m.SetEmploymentStatus(i.EmploymentStatus)
 	if v := i.CreatedAt; v != nil {
 		m.SetCreatedAt(*v)
 	}
@@ -1067,7 +1066,7 @@ func (c *EmployeeCreate) SetInput(i CreateEmployeeInput) *EmployeeCreate {
 // UpdateEmployeeInput represents a mutation input for updating employees.
 type UpdateEmployeeInput struct {
 	Name             *string
-	Active           *bool
+	EmploymentStatus *employee.EmploymentStatus
 	UpdatedAt        *time.Time
 	EmployeeAuthID   *uuid.UUID
 	ClearTenant      bool
@@ -1089,8 +1088,8 @@ func (i *UpdateEmployeeInput) Mutate(m *EmployeeMutation) {
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}
-	if v := i.Active; v != nil {
-		m.SetActive(*v)
+	if v := i.EmploymentStatus; v != nil {
+		m.SetEmploymentStatus(*v)
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
