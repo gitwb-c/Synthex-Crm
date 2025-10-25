@@ -1,4 +1,4 @@
-package helpers
+package graph_helpers
 
 import "github.com/google/uuid"
 

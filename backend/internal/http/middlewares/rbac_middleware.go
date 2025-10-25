@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gitwb-c/crm.saas/backend/internal/domain/services"
+	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/graph_helpers"
 	"github.com/gitwb-c/crm.saas/backend/internal/http/middlewares/helpers"
 	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 )
@@ -25,7 +26,14 @@ func RbacMiddleware(employeeservice *services.EmployeeService, departmentservice
 			return
 		}
 
-		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{Permissions: department.Edges.Rbacs, TenantID: employee.TenantId})
+		querytypestatus, querytype, err := graph_helpers.GetQueryTypeCtx(ctx)
+		if querytypestatus != http.StatusOK {
+			ctx.JSON(querytypestatus, err)
+			ctx.Abort()
+			return
+		}
+
+		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{TenantID: employee.TenantId, Permissions: department.Edges.Rbacs, QueryType: viewer.QueryType(querytype)})
 		ctx.Request = ctx.Request.WithContext(reqCtx)
 
 		ctx.Next()

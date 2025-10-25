@@ -8,16 +8,16 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
-	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/helpers"
+	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/graph_helpers"
 	"github.com/gitwb-c/crm.saas/backend/internal/wire"
 )
 
 // CreateDeal is the resolver for the createDeal field.
 func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeDealService(r.Client)
-	deal, err := service.Create(ctx, input)
+	deal, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -26,15 +26,13 @@ func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealI
 
 // DeleteDeal is the resolver for the deleteDeal field.
 func (r *mutationResolver) DeleteDeal(ctx context.Context, ids []string) (bool, error) {
-	var ctw gin.Context
-
-	ctw.Set("", "as")
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeDealService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -48,8 +46,9 @@ func (r *mutationResolver) UpdateDealWhere(ctx context.Context, where ent.DealWh
 
 // CreatePipeline is the resolver for the createPipeline field.
 func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreatePipelineInput) (*ent.Pipeline, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializePipelineService(r.Client)
-	pipeline, err := service.Create(ctx, input)
+	pipeline, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -58,12 +57,13 @@ func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreateP
 
 // DeletePipeline is the resolver for the deletePipeline field.
 func (r *mutationResolver) DeletePipeline(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializePipelineService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -77,8 +77,9 @@ func (r *mutationResolver) UpdatePipelineWhere(ctx context.Context, where ent.Pi
 
 // CreateCostumer is the resolver for the createCostumer field.
 func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeCostumerService(r.Client)
-	costumer, err := service.Create(ctx, input)
+	costumer, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -87,12 +88,13 @@ func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateC
 
 // DeleteCostumer is the resolver for the deleteCostumer field.
 func (r *mutationResolver) DeleteCostumer(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeCostumerService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -106,8 +108,9 @@ func (r *mutationResolver) UpdateCostumerWhere(ctx context.Context, where ent.Co
 
 // CreateStage is the resolver for the createStage field.
 func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStageInput) (*ent.Stage, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeStageService(r.Client)
-	stage, err := service.Create(ctx, input)
+	stage, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -116,12 +119,13 @@ func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStag
 
 // DeleteStage is the resolver for the deleteStage field.
 func (r *mutationResolver) DeleteStage(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeStageService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -135,8 +139,9 @@ func (r *mutationResolver) UpdateStageWhere(ctx context.Context, where ent.Stage
 
 // CreateChat is the resolver for the createChat field.
 func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatInput) (*ent.Chat, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeChatService(r.Client)
-	chat, err := service.Create(ctx, input)
+	chat, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -145,12 +150,13 @@ func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatI
 
 // DeleteChat is the resolver for the deleteChat field.
 func (r *mutationResolver) DeleteChat(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeChatService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -164,8 +170,9 @@ func (r *mutationResolver) UpdateChatWhere(ctx context.Context, where ent.ChatWh
 
 // CreateEmployee is the resolver for the createEmployee field.
 func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeEmployeeService(r.Client)
-	employee, err := service.Create(ctx, input)
+	employee, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -174,12 +181,13 @@ func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateE
 
 // DeleteEmployee is the resolver for the deleteEmployee field.
 func (r *mutationResolver) DeleteEmployee(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeEmployeeService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -193,8 +201,9 @@ func (r *mutationResolver) UpdateEmployeeWhere(ctx context.Context, where ent.Em
 
 // CreateEmployeeAuth is the resolver for the createEmployeeAuth field.
 func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeEmployeeAuthService(r.Client)
-	employeeAuth, err := service.Create(ctx, input)
+	employeeAuth, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -203,12 +212,13 @@ func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.Cre
 
 // DeleteEmployeeAuth is the resolver for the deleteEmployeeAuth field.
 func (r *mutationResolver) DeleteEmployeeAuth(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeEmployeeAuthService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -222,8 +232,9 @@ func (r *mutationResolver) UpdateEmployeeAuthWhere(ctx context.Context, where en
 
 // CreateDepartment is the resolver for the createDepartment field.
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeDepartmentService(r.Client)
-	department, err := service.Create(ctx, input)
+	department, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -232,12 +243,13 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.Creat
 
 // DeleteDepartment is the resolver for the deleteDepartment field.
 func (r *mutationResolver) DeleteDepartment(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeDepartmentService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -251,8 +263,9 @@ func (r *mutationResolver) UpdateDepartmentWhere(ctx context.Context, where ent.
 
 // CreateMessage is the resolver for the createMessage field.
 func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMessageInput) (*ent.Message, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeMessageService(r.Client)
-	message, err := service.Create(ctx, input)
+	message, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -261,12 +274,13 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMe
 
 // DeleteMessage is the resolver for the deleteMessage field.
 func (r *mutationResolver) DeleteMessage(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeMessageService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -280,8 +294,9 @@ func (r *mutationResolver) UpdateMessageWhere(ctx context.Context, where ent.Mes
 
 // CreateQueue is the resolver for the createQueue field.
 func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeQueueService(r.Client)
-	queue, err := service.Create(ctx, input)
+	queue, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -290,12 +305,13 @@ func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueu
 
 // DeleteQueue is the resolver for the deleteQueue field.
 func (r *mutationResolver) DeleteQueue(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeQueueService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -309,8 +325,9 @@ func (r *mutationResolver) UpdateQueueWhere(ctx context.Context, where ent.Queue
 
 // CreateCrmField is the resolver for the createCrmField field.
 func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateCrmFieldInput) (*ent.CrmField, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeCrmFieldService(r.Client)
-	crmField, err := service.Create(ctx, input)
+	crmField, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -319,12 +336,13 @@ func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateC
 
 // DeleteCrmField is the resolver for the deleteCrmField field.
 func (r *mutationResolver) DeleteCrmField(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeCrmFieldService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -338,8 +356,9 @@ func (r *mutationResolver) UpdateCrmFieldWhere(ctx context.Context, where ent.Cr
 
 // CreateDealCrmField is the resolver for the createDealCrmField field.
 func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.CreateDealCrmFieldInput) (*ent.DealCrmField, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeDealCrmFieldService(r.Client)
-	dealCrmField, err := service.Create(ctx, input)
+	dealCrmField, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -348,12 +367,13 @@ func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.Cre
 
 // DeleteDealCrmField is the resolver for the deleteDealCrmField field.
 func (r *mutationResolver) DeleteDealCrmField(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeCrmFieldService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -367,8 +387,9 @@ func (r *mutationResolver) UpdateDealCrmFieldWhere(ctx context.Context, where en
 
 // CreateCompany is the resolver for the createCompany field.
 func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeCompanyService(r.Client)
-	company, err := service.Create(ctx, input)
+	company, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -377,12 +398,13 @@ func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCo
 
 // DeleteCompany is the resolver for the deleteCompany field.
 func (r *mutationResolver) DeleteCompany(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeCompanyService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}
@@ -396,8 +418,9 @@ func (r *mutationResolver) UpdateCompanyWhere(ctx context.Context, where ent.Com
 
 // CreateRbac is the resolver for the createRbac field.
 func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacInput) (*ent.Rbac, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
 	service := wire.InitializeRbacService(r.Client)
-	rbac, err := service.Create(ctx, input)
+	rbac, err := service.Create(queryCtx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -406,12 +429,13 @@ func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacI
 
 // DeleteRbac is the resolver for the deleteRbac field.
 func (r *mutationResolver) DeleteRbac(ctx context.Context, ids []string) (bool, error) {
-	uuids, er := helpers.UuidParser(ids)
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
 	service := wire.InitializeRbacService(r.Client)
-	err := service.Delete(ctx, uuids)
+	err := service.Delete(queryCtx, uuids)
 	if err != nil {
 		return false, err
 	}

@@ -7,19 +7,19 @@ import (
 	"github.com/google/uuid"
 )
 
-type QueryTypeT string
+type QueryType string
 
 const (
-	Read   QueryTypeT = "Read"
-	Create QueryTypeT = "Create"
-	Update QueryTypeT = "Update"
-	Delete QueryTypeT = "Delete"
+	Read   QueryType = "Read"
+	Create QueryType = "Create"
+	Update QueryType = "Update"
+	Delete QueryType = "Delete"
 )
 
 type UserViewer struct {
 	TenantID    uuid.UUID
 	Permissions []*ent.Rbac
-	QueryType   QueryTypeT
+	QueryType   QueryType
 }
 
 type key int

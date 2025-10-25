@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
-	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/helpers"
+	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/graph_helpers"
 	"github.com/google/uuid"
 )
 
@@ -152,15 +152,17 @@ func (r *pipelineResolver) TenantId(ctx context.Context, obj *ent.Pipeline) (*st
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, err
 	}
-	return r.Client.Noder(ctx, uid)
+	return r.Client.Noder(queryCtx, uid)
 }
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	var uuids []uuid.UUID
 	for _, id := range ids {
 		uid, err := uuid.Parse(id)
@@ -169,13 +171,14 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 		}
 		uuids = append(uuids, uid)
 	}
-	return r.Client.Noders(ctx, uuids)
+	return r.Client.Noders(queryCtx, uuids)
 }
 
 // Chats is the resolver for the chats field.
 func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.ChatOrder, where *ent.ChatWhereInput) (*ent.ChatConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Chat.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithChatOrder(orderBy),
 			ent.WithChatFilter(where.Filter),
 		)
@@ -183,8 +186,9 @@ func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[uuid.UUI
 
 // Companies is the resolver for the companies field.
 func (r *queryResolver) Companies(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CompanyOrder, where *ent.CompanyWhereInput) (*ent.CompanyConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Company.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithCompanyOrder(orderBy),
 			ent.WithCompanyFilter(where.Filter),
 		)
@@ -192,8 +196,9 @@ func (r *queryResolver) Companies(ctx context.Context, after *entgql.Cursor[uuid
 
 // Costumers is the resolver for the costumers field.
 func (r *queryResolver) Costumers(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CostumerOrder, where *ent.CostumerWhereInput) (*ent.CostumerConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Costumer.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithCostumerOrder(orderBy),
 			ent.WithCostumerFilter(where.Filter),
 		)
@@ -201,8 +206,9 @@ func (r *queryResolver) Costumers(ctx context.Context, after *entgql.Cursor[uuid
 
 // CrmFields is the resolver for the crmFields field.
 func (r *queryResolver) CrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CrmFieldOrder, where *ent.CrmFieldWhereInput) (*ent.CrmFieldConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.CrmField.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithCrmFieldOrder(orderBy),
 			ent.WithCrmFieldFilter(where.Filter),
 		)
@@ -210,8 +216,9 @@ func (r *queryResolver) CrmFields(ctx context.Context, after *entgql.Cursor[uuid
 
 // Deals is the resolver for the deals field.
 func (r *queryResolver) Deals(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealOrder, where *ent.DealWhereInput) (*ent.DealConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Deal.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithDealOrder(orderBy),
 			ent.WithDealFilter(where.Filter),
 		)
@@ -219,8 +226,9 @@ func (r *queryResolver) Deals(ctx context.Context, after *entgql.Cursor[uuid.UUI
 
 // DealCrmFields is the resolver for the dealCrmFields field.
 func (r *queryResolver) DealCrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealCrmFieldOrder, where *ent.DealCrmFieldWhereInput) (*ent.DealCrmFieldConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.DealCrmField.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithDealCrmFieldOrder(orderBy),
 			ent.WithDealCrmFieldFilter(where.Filter),
 		)
@@ -228,8 +236,9 @@ func (r *queryResolver) DealCrmFields(ctx context.Context, after *entgql.Cursor[
 
 // Departments is the resolver for the departments field.
 func (r *queryResolver) Departments(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DepartmentOrder, where *ent.DepartmentWhereInput) (*ent.DepartmentConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Department.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithDepartmentOrder(orderBy),
 			ent.WithDepartmentFilter(where.Filter),
 		)
@@ -237,8 +246,9 @@ func (r *queryResolver) Departments(ctx context.Context, after *entgql.Cursor[uu
 
 // DropdownLists is the resolver for the dropdownLists field.
 func (r *queryResolver) DropdownLists(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DropdownListOrder, where *ent.DropdownListWhereInput) (*ent.DropdownListConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.DropdownList.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithDropdownListOrder(orderBy),
 			ent.WithDropdownListFilter(where.Filter),
 		)
@@ -246,8 +256,9 @@ func (r *queryResolver) DropdownLists(ctx context.Context, after *entgql.Cursor[
 
 // Employees is the resolver for the employees field.
 func (r *queryResolver) Employees(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeOrder, where *ent.EmployeeWhereInput) (*ent.EmployeeConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Employee.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithEmployeeOrder(orderBy),
 			ent.WithEmployeeFilter(where.Filter),
 		)
@@ -255,8 +266,9 @@ func (r *queryResolver) Employees(ctx context.Context, after *entgql.Cursor[uuid
 
 // EmployeeAuths is the resolver for the employeeAuths field.
 func (r *queryResolver) EmployeeAuths(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeAuthOrder, where *ent.EmployeeAuthWhereInput) (*ent.EmployeeAuthConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.EmployeeAuth.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithEmployeeAuthOrder(orderBy),
 			ent.WithEmployeeAuthFilter(where.Filter),
 		)
@@ -264,8 +276,9 @@ func (r *queryResolver) EmployeeAuths(ctx context.Context, after *entgql.Cursor[
 
 // Messages is the resolver for the messages field.
 func (r *queryResolver) Messages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.MessageOrder, where *ent.MessageWhereInput) (*ent.MessageConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Message.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithMessageOrder(orderBy),
 			ent.WithMessageFilter(where.Filter),
 		)
@@ -273,8 +286,9 @@ func (r *queryResolver) Messages(ctx context.Context, after *entgql.Cursor[uuid.
 
 // Pipelines is the resolver for the pipelines field.
 func (r *queryResolver) Pipelines(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.PipelineOrder, where *ent.PipelineWhereInput) (*ent.PipelineConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Pipeline.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithPipelineOrder(orderBy),
 			ent.WithPipelineFilter(where.Filter),
 		)
@@ -282,8 +296,9 @@ func (r *queryResolver) Pipelines(ctx context.Context, after *entgql.Cursor[uuid
 
 // Queues is the resolver for the queues field.
 func (r *queryResolver) Queues(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.QueueOrder, where *ent.QueueWhereInput) (*ent.QueueConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Queue.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithQueueOrder(orderBy),
 			ent.WithQueueFilter(where.Filter),
 		)
@@ -291,8 +306,9 @@ func (r *queryResolver) Queues(ctx context.Context, after *entgql.Cursor[uuid.UU
 
 // Rbacs is the resolver for the rbacs field.
 func (r *queryResolver) Rbacs(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.RbacOrder, where *ent.RbacWhereInput) (*ent.RbacConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Rbac.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithRbacOrder(orderBy),
 			ent.WithRbacFilter(where.Filter),
 		)
@@ -300,8 +316,9 @@ func (r *queryResolver) Rbacs(ctx context.Context, after *entgql.Cursor[uuid.UUI
 
 // Stages is the resolver for the stages field.
 func (r *queryResolver) Stages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.StageOrder, where *ent.StageWhereInput) (*ent.StageConnection, error) {
+	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
 	return r.Client.Stage.Query().
-		Paginate(ctx, after, first, before, last,
+		Paginate(queryCtx, after, first, before, last,
 			ent.WithStageOrder(orderBy),
 			ent.WithStageFilter(where.Filter),
 		)
@@ -526,7 +543,7 @@ func (r *createChatInputResolver) DealID(ctx context.Context, obj *ent.CreateCha
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createChatInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -538,7 +555,7 @@ func (r *createChatInputResolver) EmployeeIDs(ctx context.Context, obj *ent.Crea
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createChatInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -563,7 +580,7 @@ func (r *createChatInputResolver) TenantID(ctx context.Context, obj *ent.CreateC
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -575,7 +592,7 @@ func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.C
 
 // CostumerIDs is the resolver for the costumerIDs field.
 func (r *createCompanyInputResolver) CostumerIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -587,7 +604,7 @@ func (r *createCompanyInputResolver) CostumerIDs(ctx context.Context, obj *ent.C
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCompanyInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -599,7 +616,7 @@ func (r *createCompanyInputResolver) DealIDs(ctx context.Context, obj *ent.Creat
 
 // ChatIDs is the resolver for the chatIDs field.
 func (r *createCompanyInputResolver) ChatIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -611,7 +628,7 @@ func (r *createCompanyInputResolver) ChatIDs(ctx context.Context, obj *ent.Creat
 
 // DepartmentIDs is the resolver for the departmentIDs field.
 func (r *createCompanyInputResolver) DepartmentIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -623,7 +640,7 @@ func (r *createCompanyInputResolver) DepartmentIDs(ctx context.Context, obj *ent
 
 // PipelineIDs is the resolver for the pipelineIDs field.
 func (r *createCompanyInputResolver) PipelineIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -635,7 +652,7 @@ func (r *createCompanyInputResolver) PipelineIDs(ctx context.Context, obj *ent.C
 
 // CrmfieldIDs is the resolver for the crmfieldIDs field.
 func (r *createCompanyInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -647,7 +664,7 @@ func (r *createCompanyInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.C
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createCompanyInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -659,7 +676,7 @@ func (r *createCompanyInputResolver) DealcrmfieldIDs(ctx context.Context, obj *e
 
 // DropdownlistIDs is the resolver for the dropdownlistIDs field.
 func (r *createCompanyInputResolver) DropdownlistIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -671,7 +688,7 @@ func (r *createCompanyInputResolver) DropdownlistIDs(ctx context.Context, obj *e
 
 // EmployeeauthIDs is the resolver for the employeeauthIDs field.
 func (r *createCompanyInputResolver) EmployeeauthIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -683,7 +700,7 @@ func (r *createCompanyInputResolver) EmployeeauthIDs(ctx context.Context, obj *e
 
 // FileIDs is the resolver for the fileIDs field.
 func (r *createCompanyInputResolver) FileIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -695,7 +712,7 @@ func (r *createCompanyInputResolver) FileIDs(ctx context.Context, obj *ent.Creat
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createCompanyInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -707,7 +724,7 @@ func (r *createCompanyInputResolver) MessageIDs(ctx context.Context, obj *ent.Cr
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createCompanyInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -719,7 +736,7 @@ func (r *createCompanyInputResolver) QueueIDs(ctx context.Context, obj *ent.Crea
 
 // RbacIDs is the resolver for the rbacIDs field.
 func (r *createCompanyInputResolver) RbacIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -731,7 +748,7 @@ func (r *createCompanyInputResolver) RbacIDs(ctx context.Context, obj *ent.Creat
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createCompanyInputResolver) StageIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -743,7 +760,7 @@ func (r *createCompanyInputResolver) StageIDs(ctx context.Context, obj *ent.Crea
 
 // TextIDs is the resolver for the textIDs field.
 func (r *createCompanyInputResolver) TextIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -768,7 +785,7 @@ func (r *createCostumerInputResolver) TenantID(ctx context.Context, obj *ent.Cre
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -780,7 +797,7 @@ func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.Crea
 
 // DropdownlistIDs is the resolver for the dropdownlistIDs field.
 func (r *createCrmFieldInputResolver) DropdownlistIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -792,7 +809,7 @@ func (r *createCrmFieldInputResolver) DropdownlistIDs(ctx context.Context, obj *
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createCrmFieldInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -905,7 +922,7 @@ func (r *createDealInputResolver) StageID(ctx context.Context, obj *ent.CreateDe
 
 // DealcrmfieldIDs is the resolver for the dealcrmfieldIDs field.
 func (r *createDealInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.CreateDealInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -930,7 +947,7 @@ func (r *createDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.C
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -942,7 +959,7 @@ func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *en
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -954,7 +971,7 @@ func (r *createDepartmentInputResolver) QueueIDs(ctx context.Context, obj *ent.C
 
 // RbacIDs is the resolver for the rbacIDs field.
 func (r *createDepartmentInputResolver) RbacIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -966,7 +983,7 @@ func (r *createDepartmentInputResolver) RbacIDs(ctx context.Context, obj *ent.Cr
 
 // CrmfieldIDs is the resolver for the crmfieldIDs field.
 func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1052,7 +1069,7 @@ func (r *createEmployeeInputResolver) DepartmentID(ctx context.Context, obj *ent
 
 // ChatIDs is the resolver for the chatIDs field.
 func (r *createEmployeeInputResolver) ChatIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1063,7 +1080,7 @@ func (r *createEmployeeInputResolver) ChatIDs(ctx context.Context, obj *ent.Crea
 
 // QueueIDs is the resolver for the queueIDs field.
 func (r *createEmployeeInputResolver) QueueIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1074,7 +1091,7 @@ func (r *createEmployeeInputResolver) QueueIDs(ctx context.Context, obj *ent.Cre
 
 // MessageIDs is the resolver for the messageIDs field.
 func (r *createEmployeeInputResolver) MessageIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1122,7 +1139,7 @@ func (r *createMessageInputResolver) ChatID(ctx context.Context, obj *ent.Create
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createMessageInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateMessageInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1183,7 +1200,7 @@ func (r *createPipelineInputResolver) TenantID(ctx context.Context, obj *ent.Cre
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1194,7 +1211,7 @@ func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.Cre
 
 // StageIDs is the resolver for the stageIDs field.
 func (r *createQueueInputResolver) StageIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1205,7 +1222,7 @@ func (r *createQueueInputResolver) StageIDs(ctx context.Context, obj *ent.Create
 
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createQueueInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1216,7 +1233,7 @@ func (r *createQueueInputResolver) EmployeeIDs(ctx context.Context, obj *ent.Cre
 
 // DepartmentIDs is the resolver for the departmentIDs field.
 func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
@@ -1277,7 +1294,7 @@ func (r *createStageInputResolver) PipelineID(ctx context.Context, obj *ent.Crea
 
 // DealIDs is the resolver for the dealIDs field.
 func (r *createStageInputResolver) DealIDs(ctx context.Context, obj *ent.CreateStageInput, data []string) error {
-	uuids, er := helpers.UuidParser(data)
+	uuids, er := graph_helpers.UuidParser(data)
 	if er != nil {
 		return er
 	}
