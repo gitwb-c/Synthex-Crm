@@ -29,7 +29,6 @@ func TenantMiddleware() gin.HandlerFunc {
 		}
 		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{TenantID: tenantID})
 		ctx.Request = ctx.Request.WithContext(reqCtx)
-
 		ctx.Next()
 	}
 }

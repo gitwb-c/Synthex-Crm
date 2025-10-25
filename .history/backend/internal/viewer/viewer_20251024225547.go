@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 	"github.com/google/uuid"
 )
 
@@ -19,8 +20,10 @@ const (
 type UserViewer struct {
 	TenantID    uuid.UUID
 	Permissions []*ent.Rbac
-	QueryType   QueryTypeT
+	QueryType QueryType
 }
+
+
 
 type key int
 
@@ -31,6 +34,7 @@ func NewContext(ctx context.Context, v UserViewer) context.Context {
 }
 
 func FromContext(ctx context.Context) UserViewer {
+	viewer.UserViewer(QueryType: Delete)
 	v, _ := ctx.Value(viewerKey).(UserViewer)
 	return v
 }

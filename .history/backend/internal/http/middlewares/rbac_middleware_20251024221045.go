@@ -11,7 +11,7 @@ import (
 
 func RbacMiddleware(employeeservice *services.EmployeeService, departmentservice *services.DepartmentService) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		employeestatus, employee, er := helpers.EmployeeParse(ctx, employeeservice)
+		employeestatus, er := helpers.EmployeeParse(ctx, employeeservice)
 		if employeestatus != http.StatusOK {
 			ctx.JSON(employeestatus, er)
 			ctx.Abort()
@@ -25,7 +25,7 @@ func RbacMiddleware(employeeservice *services.EmployeeService, departmentservice
 			return
 		}
 
-		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{Permissions: department.Edges.Rbacs, TenantID: employee.TenantId})
+		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{Permissions: department.Edges.Rbacs})
 		ctx.Request = ctx.Request.WithContext(reqCtx)
 
 		ctx.Next()

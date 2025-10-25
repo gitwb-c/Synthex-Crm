@@ -75,16 +75,9 @@ func FilterTenantMutation() ent.Hook {
 
 func MutationRules(permissions []string) privacy.QueryMutationRule {
 	return privacy.ContextQueryMutationRule(func(ctx context.Context) error {
+		permissions := ctx.Value("permissions")
 
 		view := viewer.FromContext(ctx)
-
-		if view == nil {
-			return privacy.Denyf("Missing viewer context")
-		}
-
-		for i := 0; i < len(view.Permissions); i++ {
-
-		}
 
 	})
 }

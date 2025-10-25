@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/helpers"
 	"github.com/gitwb-c/crm.saas/backend/internal/wire"
@@ -26,9 +25,6 @@ func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealI
 
 // DeleteDeal is the resolver for the deleteDeal field.
 func (r *mutationResolver) DeleteDeal(ctx context.Context, ids []string) (bool, error) {
-	var ctw gin.Context
-
-	ctw.Set("", "as")
 	uuids, er := helpers.UuidParser(ids)
 	if er != nil {
 		return false, er

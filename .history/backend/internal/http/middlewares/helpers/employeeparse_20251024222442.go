@@ -12,21 +12,21 @@ import (
 func EmployeeParse(ctx *gin.Context, employeeservice *services.EmployeeService) (int, *ent.Employee, map[string]any) {
 	employeeIdStr, exists := ctx.Get("employeeId")
 	if !exists {
-		return http.StatusUnauthorized, nil, gin.H{"error": "employeeId not found"}
+		return http.StatusUnauthorized, gin.H{"error": "employeeId not found"}
 	}
 	employeeId, err := uuid.Parse(employeeIdStr.(string))
 	if err != nil {
-		return http.StatusBadRequest, nil, gin.H{"error": "invalid employeeId"}
+		return http.StatusBadRequest, gin.H{"error": "invalid employeeId"}
 	}
 	employee, err := employeeservice.ReadID(ctx, employeeId)
 	if err != nil {
-		return http.StatusBadRequest, nil, gin.H{"error": err.Error()}
+		return http.StatusBadRequest, gin.H{"error": err.Error()}
 	}
 	if employee == nil {
-		return http.StatusBadRequest, nil, gin.H{"error": "employee not found"}
+		return http.StatusBadRequest, gin.H{"error": "employee not found"}
 	}
 	if employee.EmploymentStatus.String() != "active" {
-		return http.StatusBadRequest, nil, gin.H{"error": "employee is not active"}
+		return http.StatusBadRequest, gin.H{"error": "employee is not active"}
 	}
 	return http.StatusOK, employee, nil
 }

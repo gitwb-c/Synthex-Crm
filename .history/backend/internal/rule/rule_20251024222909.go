@@ -82,7 +82,7 @@ func MutationRules(permissions []string) privacy.QueryMutationRule {
 			return privacy.Denyf("Missing viewer context")
 		}
 
-		for i := 0; i < len(view.Permissions); i++ {
+		for (var i int = 0; i < len(view.Permissions); i++) {
 
 		}
 

@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gin-gonic/gin"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/privacy"
 	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 	"github.com/google/uuid"
@@ -75,15 +76,19 @@ func FilterTenantMutation() ent.Hook {
 
 func MutationRules(permissions []string) privacy.QueryMutationRule {
 	return privacy.ContextQueryMutationRule(func(ctx context.Context) error {
-
+		gin.Context ginCtx;
+		
+		json:=ginCtx.json()
 		view := viewer.FromContext(ctx)
 
 		if view == nil {
 			return privacy.Denyf("Missing viewer context")
 		}
 
-		for i := 0; i < len(view.Permissions); i++ {
 
+
+		for i := 0; i < len(view.Permissions); i++ {
+			
 		}
 
 	})

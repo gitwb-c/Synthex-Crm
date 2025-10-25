@@ -51,11 +51,4 @@ func (Deal) Mixins() []ent.Mixin {
 	}
 }
 
-func  (Deal) Policy () ent.Policy {
-	return privacy.Policy {
-		Mutation: privacy.MutationPolicy {
-			
-		}
-	}
-
-}
+func  (Deal) Policya

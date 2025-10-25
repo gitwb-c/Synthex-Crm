@@ -19,7 +19,7 @@ const (
 type UserViewer struct {
 	TenantID    uuid.UUID
 	Permissions []*ent.Rbac
-	QueryType   QueryTypeT
+	QueryType   QueryType
 }
 
 type key int

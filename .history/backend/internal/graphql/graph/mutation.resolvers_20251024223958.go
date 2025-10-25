@@ -26,9 +26,9 @@ func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealI
 
 // DeleteDeal is the resolver for the deleteDeal field.
 func (r *mutationResolver) DeleteDeal(ctx context.Context, ids []string) (bool, error) {
-	var ctw gin.Context
+	ctw gin.Context;
 
-	ctw.Set("", "as")
+	ctw.Set()
 	uuids, er := helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
