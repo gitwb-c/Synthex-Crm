@@ -9,7 +9,6 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/migrate"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph"
-	"github.com/gitwb-c/crm.saas/backend/internal/rule"
 	_ "github.com/lib/pq"
 )
 
@@ -20,8 +19,8 @@ func NewClient() (*ent.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	client.Intercept(rule.FilterTenantQuery())
-	client.Use(rule.FilterTenantMutation())
+	// client.Intercept(rule.FilterTenantQuery())
+	// client.Use(rule.FilterTenantMutation())
 
 	return client, nil
 }

@@ -3,7 +3,6 @@ package rule
 import (
 	"context"
 	"errors"
-	"log"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -42,7 +41,6 @@ func FilterTenantMutation() ent.Hook {
 			if view.TenantID == uuid.Nil {
 				return nil, errors.New("missing tenant")
 			}
-			log.Print(view)
 
 			switch op {
 			case ent.OpCreate:

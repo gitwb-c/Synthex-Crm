@@ -126,7 +126,9 @@ func (_c *PipelineCreate) Mutation() *PipelineMutation {
 
 // Save creates the Pipeline in the database.
 func (_c *PipelineCreate) Save(ctx context.Context) (*Pipeline, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -153,19 +155,29 @@ func (_c *PipelineCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *PipelineCreate) defaults() {
+func (_c *PipelineCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if pipeline.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized pipeline.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := pipeline.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if pipeline.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized pipeline.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := pipeline.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := _c.mutation.ID(); !ok {
+		if pipeline.DefaultID == nil {
+			return fmt.Errorf("ent: uninitialized pipeline.DefaultID (forgotten import ent/runtime?)")
+		}
 		v := pipeline.DefaultID()
 		_c.mutation.SetID(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

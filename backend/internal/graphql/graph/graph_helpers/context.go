@@ -2,9 +2,6 @@ package graph_helpers
 
 import (
 	"context"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 type key int
@@ -15,15 +12,15 @@ func AddQueryTypeCtx(ctx context.Context, querytype string) context.Context {
 	return context.WithValue(ctx, graphkey, querytype)
 }
 
-func GetQueryTypeCtx(ctx context.Context) (int, string, map[string]any) {
+func GetQueryTypeCtx(ctx context.Context) (bool, string) {
 	query := ctx.Value(graphkey)
 	if query == nil {
-		return http.StatusInternalServerError, "", gin.H{"error": "query type not found"}
+		return false, ""
 
 	}
 	querytypeStr, ok := query.(string)
 	if !ok {
-		return http.StatusInternalServerError, "", gin.H{"error": "invalid query type"}
+		return false, ""
 	}
-	return http.StatusOK, querytypeStr, nil
+	return true, querytypeStr
 }

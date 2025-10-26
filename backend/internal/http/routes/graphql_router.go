@@ -13,11 +13,11 @@ func graphqlRouter(r *gin.Engine, srv *handler.Server, employeeservice *services
 		srv.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
-	r.POST("/query", middlewares.AuthMiddleware(), middlewares.TenantMiddleware(), func(ctx *gin.Context) {
+	r.POST("/query", middlewares.AuthMiddleware(), middlewares.TenantMiddleware(), middlewares.RbacMiddleware(employeeservice, departmentservice), func(ctx *gin.Context) {
 		srv.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
 	r.GET("/playground", func(ctx *gin.Context) {
-		playground.Handler("Playground", "/query/f194757e-1b67-4877-985e-f4a4e3311eec").ServeHTTP(ctx.Writer, ctx.Request)
+		playground.Handler("Playground", "/query/bced4f5a-bc1a-4e65-bf91-0558c739ca34").ServeHTTP(ctx.Writer, ctx.Request)
 	})
 }
