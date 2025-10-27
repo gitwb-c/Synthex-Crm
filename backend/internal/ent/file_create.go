@@ -22,6 +22,12 @@ type FileCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *FileCreate) SetTenantId(v uuid.UUID) *FileCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetURL sets the "url" field.
 func (_c *FileCreate) SetURL(v string) *FileCreate {
 	_c.mutation.SetURL(v)
@@ -54,20 +60,6 @@ func (_c *FileCreate) SetFileName(v string) *FileCreate {
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *FileCreate) SetTenantId(v uuid.UUID) *FileCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *FileCreate) SetNillableTenantId(v *uuid.UUID) *FileCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *FileCreate) SetID(v uuid.UUID) *FileCreate {
 	_c.mutation.SetID(v)
@@ -96,14 +88,6 @@ func (_c *FileCreate) SetMessage(v *Message) *FileCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *FileCreate) SetTenantID(id uuid.UUID) *FileCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *FileCreate) SetNillableTenantID(id *uuid.UUID) *FileCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -155,6 +139,9 @@ func (_c *FileCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *FileCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "File.tenantId"`)}
+	}
 	if _, ok := _c.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "File.url"`)}
 	}
@@ -171,6 +158,9 @@ func (_c *FileCreate) check() error {
 	}
 	if len(_c.mutation.MessageIDs()) == 0 {
 		return &ValidationError{Name: "message", err: errors.New(`ent: missing required edge "File.message"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "File.tenant"`)}
 	}
 	return nil
 }

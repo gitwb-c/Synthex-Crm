@@ -23,7 +23,6 @@ func (Stage) Fields() []ent.Field {
 		field.Bool("lossOrGain").Annotations(entgql.QueryField(), entgql.OrderField("LOSS_OR_GAIN")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
@@ -32,7 +31,7 @@ func (Stage) Edges() []ent.Edge {
 		edge.To("pipeline", Pipeline.Type).Required().Unique(),
 		edge.From("deals", Deal.Type).Ref("stage"),
 		edge.To("queue", Queue.Type).Unique(),
-		edge.From("tenant", Company.Type).Ref("stages").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("stages").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -45,7 +44,7 @@ func (Stage) Annotations() []schema.Annotation {
 	}
 }
 
-func (Stage) Mixins() []ent.Mixin {
+func (Stage) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

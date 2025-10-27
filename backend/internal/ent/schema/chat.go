@@ -23,7 +23,6 @@ func (Chat) Fields() []ent.Field {
 		field.Bool("locked").Annotations(entgql.OrderField("LOCKED")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
@@ -32,7 +31,7 @@ func (Chat) Edges() []ent.Edge {
 		edge.To("deal", Deal.Type).Unique(),
 		edge.To("employees", Employee.Type),
 		edge.From("messages", Message.Type).Ref("chat"),
-		edge.From("tenant", Company.Type).Ref("chats").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("chats").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -45,7 +44,7 @@ func (Chat) Annotations() []schema.Annotation {
 	}
 }
 
-func (Chat) Mixins() []ent.Mixin {
+func (Chat) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

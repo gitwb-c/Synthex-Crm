@@ -45,6 +45,12 @@ type ChatWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "title" field predicates.
 	Title             *string  `json:"title,omitempty"`
 	TitleNEQ          *string  `json:"titleNEQ,omitempty"`
@@ -87,14 +93,6 @@ type ChatWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "deal" edge predicates.
 	HasDeal     *bool             `json:"hasDeal,omitempty"`
@@ -208,6 +206,18 @@ func (i *ChatWhereInput) P() (predicate.Chat, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, chat.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, chat.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, chat.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, chat.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, chat.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Title != nil {
 		predicates = append(predicates, chat.TitleEQ(*i.Title))
 	}
@@ -306,24 +316,6 @@ func (i *ChatWhereInput) P() (predicate.Chat, error) {
 	}
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, chat.UpdatedAtLTE(*i.UpdatedAtLTE))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, chat.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, chat.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, chat.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, chat.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, chat.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, chat.TenantIdNotNil())
 	}
 
 	if i.HasDeal != nil {
@@ -1023,6 +1015,12 @@ type CostumerWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -1087,14 +1085,6 @@ type CostumerWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "tenant" edge predicates.
 	HasTenant     *bool                `json:"hasTenant,omitempty"`
@@ -1199,6 +1189,18 @@ func (i *CostumerWhereInput) P() (predicate.Costumer, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, costumer.IDLTE(*i.IDLTE))
+	}
+	if i.TenantId != nil {
+		predicates = append(predicates, costumer.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, costumer.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, costumer.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, costumer.TenantIdNotIn(i.TenantIdNotIn...))
 	}
 	if i.Name != nil {
 		predicates = append(predicates, costumer.NameEQ(*i.Name))
@@ -1365,24 +1367,6 @@ func (i *CostumerWhereInput) P() (predicate.Costumer, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, costumer.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, costumer.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, costumer.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, costumer.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, costumer.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, costumer.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, costumer.TenantIdNotNil())
-	}
 
 	if i.HasTenant != nil {
 		p := costumer.HasTenant()
@@ -1447,6 +1431,12 @@ type CrmFieldWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -1502,14 +1492,6 @@ type CrmFieldWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "dropdownList" edge predicates.
 	HasDropdownList     *bool                     `json:"hasDropdownList,omitempty"`
@@ -1618,6 +1600,18 @@ func (i *CrmFieldWhereInput) P() (predicate.CrmField, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, crmfield.IDLTE(*i.IDLTE))
+	}
+	if i.TenantId != nil {
+		predicates = append(predicates, crmfield.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, crmfield.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, crmfield.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, crmfield.TenantIdNotIn(i.TenantIdNotIn...))
 	}
 	if i.Name != nil {
 		predicates = append(predicates, crmfield.NameEQ(*i.Name))
@@ -1757,24 +1751,6 @@ func (i *CrmFieldWhereInput) P() (predicate.CrmField, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, crmfield.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, crmfield.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, crmfield.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, crmfield.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, crmfield.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, crmfield.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, crmfield.TenantIdNotNil())
-	}
 
 	if i.HasDropdownList != nil {
 		p := crmfield.HasDropdownList()
@@ -1857,6 +1833,12 @@ type DealWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "title" field predicates.
 	Title             *string  `json:"title,omitempty"`
 	TitleNEQ          *string  `json:"titleNEQ,omitempty"`
@@ -1906,14 +1888,6 @@ type DealWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "tenant" edge predicates.
 	HasTenant     *bool                `json:"hasTenant,omitempty"`
@@ -2030,6 +2004,18 @@ func (i *DealWhereInput) P() (predicate.Deal, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, deal.IDLTE(*i.IDLTE))
+	}
+	if i.TenantId != nil {
+		predicates = append(predicates, deal.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, deal.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, deal.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, deal.TenantIdNotIn(i.TenantIdNotIn...))
 	}
 	if i.Title != nil {
 		predicates = append(predicates, deal.TitleEQ(*i.Title))
@@ -2157,24 +2143,6 @@ func (i *DealWhereInput) P() (predicate.Deal, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, deal.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, deal.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, deal.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, deal.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, deal.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, deal.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, deal.TenantIdNotNil())
-	}
 
 	if i.HasTenant != nil {
 		p := deal.HasTenant()
@@ -2293,6 +2261,12 @@ type DealCrmFieldWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "value" field predicates.
 	Value             *string  `json:"value,omitempty"`
 	ValueNEQ          *string  `json:"valueNEQ,omitempty"`
@@ -2327,14 +2301,6 @@ type DealCrmFieldWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "deal" edge predicates.
 	HasDeal     *bool             `json:"hasDeal,omitempty"`
@@ -2444,6 +2410,18 @@ func (i *DealCrmFieldWhereInput) P() (predicate.DealCrmField, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, dealcrmfield.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, dealcrmfield.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, dealcrmfield.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, dealcrmfield.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, dealcrmfield.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Value != nil {
 		predicates = append(predicates, dealcrmfield.ValueEQ(*i.Value))
 	}
@@ -2531,24 +2509,6 @@ func (i *DealCrmFieldWhereInput) P() (predicate.DealCrmField, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, dealcrmfield.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, dealcrmfield.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, dealcrmfield.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, dealcrmfield.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, dealcrmfield.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, dealcrmfield.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, dealcrmfield.TenantIdNotNil())
-	}
 
 	if i.HasDeal != nil {
 		p := dealcrmfield.HasDeal()
@@ -2631,6 +2591,12 @@ type DepartmentWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -2665,14 +2631,6 @@ type DepartmentWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "tenant" edge predicates.
 	HasTenant     *bool                `json:"hasTenant,omitempty"`
@@ -2786,6 +2744,18 @@ func (i *DepartmentWhereInput) P() (predicate.Department, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, department.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, department.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, department.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, department.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, department.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Name != nil {
 		predicates = append(predicates, department.NameEQ(*i.Name))
 	}
@@ -2872,24 +2842,6 @@ func (i *DepartmentWhereInput) P() (predicate.Department, error) {
 	}
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, department.UpdatedAtLTE(*i.UpdatedAtLTE))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, department.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, department.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, department.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, department.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, department.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, department.TenantIdNotNil())
 	}
 
 	if i.HasTenant != nil {
@@ -2991,6 +2943,12 @@ type DropdownListWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "value" field predicates.
 	Value             *string  `json:"value,omitempty"`
 	ValueNEQ          *string  `json:"valueNEQ,omitempty"`
@@ -3025,14 +2983,6 @@ type DropdownListWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "crmField" edge predicates.
 	HasCrmField     *bool                 `json:"hasCrmField,omitempty"`
@@ -3138,6 +3088,18 @@ func (i *DropdownListWhereInput) P() (predicate.DropdownList, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, dropdownlist.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, dropdownlist.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, dropdownlist.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, dropdownlist.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, dropdownlist.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Value != nil {
 		predicates = append(predicates, dropdownlist.ValueEQ(*i.Value))
 	}
@@ -3225,24 +3187,6 @@ func (i *DropdownListWhereInput) P() (predicate.DropdownList, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, dropdownlist.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, dropdownlist.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, dropdownlist.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, dropdownlist.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, dropdownlist.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, dropdownlist.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, dropdownlist.TenantIdNotNil())
-	}
 
 	if i.HasCrmField != nil {
 		p := dropdownlist.HasCrmField()
@@ -3307,6 +3251,12 @@ type EmployeeWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -3347,14 +3297,6 @@ type EmployeeWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "employeeAuth" edge predicates.
 	HasEmployeeAuth     *bool                     `json:"hasEmployeeAuth,omitempty"`
@@ -3476,6 +3418,18 @@ func (i *EmployeeWhereInput) P() (predicate.Employee, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, employee.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, employee.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, employee.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, employee.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, employee.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Name != nil {
 		predicates = append(predicates, employee.NameEQ(*i.Name))
 	}
@@ -3574,24 +3528,6 @@ func (i *EmployeeWhereInput) P() (predicate.Employee, error) {
 	}
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, employee.UpdatedAtLTE(*i.UpdatedAtLTE))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, employee.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, employee.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, employee.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, employee.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, employee.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, employee.TenantIdNotNil())
 	}
 
 	if i.HasEmployeeAuth != nil {
@@ -3729,6 +3665,12 @@ type EmployeeAuthWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -3793,12 +3735,6 @@ type EmployeeAuthWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
 
 	// "employee" edge predicates.
 	HasEmployee     *bool                 `json:"hasEmployee,omitempty"`
@@ -3903,6 +3839,18 @@ func (i *EmployeeAuthWhereInput) P() (predicate.EmployeeAuth, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, employeeauth.IDLTE(*i.IDLTE))
+	}
+	if i.TenantId != nil {
+		predicates = append(predicates, employeeauth.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, employeeauth.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, employeeauth.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, employeeauth.TenantIdNotIn(i.TenantIdNotIn...))
 	}
 	if i.Name != nil {
 		predicates = append(predicates, employeeauth.NameEQ(*i.Name))
@@ -4069,18 +4017,6 @@ func (i *EmployeeAuthWhereInput) P() (predicate.EmployeeAuth, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, employeeauth.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, employeeauth.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, employeeauth.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, employeeauth.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, employeeauth.TenantIdNotIn(i.TenantIdNotIn...))
-	}
 
 	if i.HasEmployee != nil {
 		p := employeeauth.HasEmployee()
@@ -4145,6 +4081,12 @@ type FileWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "url" field predicates.
 	URL             *string  `json:"url,omitempty"`
 	URLNEQ          *string  `json:"urlNEQ,omitempty"`
@@ -4206,14 +4148,6 @@ type FileWhereInput struct {
 	FileNameHasSuffix    *string  `json:"filenameHasSuffix,omitempty"`
 	FileNameEqualFold    *string  `json:"filenameEqualFold,omitempty"`
 	FileNameContainsFold *string  `json:"filenameContainsFold,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "message" edge predicates.
 	HasMessage     *bool                `json:"hasMessage,omitempty"`
@@ -4318,6 +4252,18 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, file.IDLTE(*i.IDLTE))
+	}
+	if i.TenantId != nil {
+		predicates = append(predicates, file.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, file.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, file.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, file.TenantIdNotIn(i.TenantIdNotIn...))
 	}
 	if i.URL != nil {
 		predicates = append(predicates, file.URLEQ(*i.URL))
@@ -4481,24 +4427,6 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 	if i.FileNameContainsFold != nil {
 		predicates = append(predicates, file.FileNameContainsFold(*i.FileNameContainsFold))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, file.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, file.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, file.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, file.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, file.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, file.TenantIdNotNil())
-	}
 
 	if i.HasMessage != nil {
 		p := file.HasMessage()
@@ -4563,6 +4491,12 @@ type MessageWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "sentBy" field predicates.
 	SentBy      *message.SentBy  `json:"sentby,omitempty"`
 	SentByNEQ   *message.SentBy  `json:"sentbyNEQ,omitempty"`
@@ -4598,14 +4532,6 @@ type MessageWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "chat" edge predicates.
 	HasChat     *bool             `json:"hasChat,omitempty"`
@@ -4723,6 +4649,18 @@ func (i *MessageWhereInput) P() (predicate.Message, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, message.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, message.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, message.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, message.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, message.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.SentBy != nil {
 		predicates = append(predicates, message.SentByEQ(*i.SentBy))
 	}
@@ -4800,24 +4738,6 @@ func (i *MessageWhereInput) P() (predicate.Message, error) {
 	}
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, message.UpdatedAtLTE(*i.UpdatedAtLTE))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, message.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, message.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, message.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, message.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, message.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, message.TenantIdNotNil())
 	}
 
 	if i.HasChat != nil {
@@ -4937,6 +4857,12 @@ type PipelineWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -4971,14 +4897,6 @@ type PipelineWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "tenant" edge predicates.
 	HasTenant     *bool                `json:"hasTenant,omitempty"`
@@ -5084,6 +5002,18 @@ func (i *PipelineWhereInput) P() (predicate.Pipeline, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, pipeline.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, pipeline.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, pipeline.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, pipeline.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, pipeline.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Name != nil {
 		predicates = append(predicates, pipeline.NameEQ(*i.Name))
 	}
@@ -5171,24 +5101,6 @@ func (i *PipelineWhereInput) P() (predicate.Pipeline, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, pipeline.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, pipeline.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, pipeline.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, pipeline.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, pipeline.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, pipeline.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, pipeline.TenantIdNotNil())
-	}
 
 	if i.HasTenant != nil {
 		p := pipeline.HasTenant()
@@ -5253,6 +5165,12 @@ type QueueWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -5293,14 +5211,6 @@ type QueueWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "stages" edge predicates.
 	HasStages     *bool              `json:"hasStages,omitempty"`
@@ -5414,6 +5324,18 @@ func (i *QueueWhereInput) P() (predicate.Queue, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, queue.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, queue.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, queue.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, queue.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, queue.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Name != nil {
 		predicates = append(predicates, queue.NameEQ(*i.Name))
 	}
@@ -5512,24 +5434,6 @@ func (i *QueueWhereInput) P() (predicate.Queue, error) {
 	}
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, queue.UpdatedAtLTE(*i.UpdatedAtLTE))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, queue.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, queue.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, queue.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, queue.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, queue.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, queue.TenantIdNotNil())
 	}
 
 	if i.HasStages != nil {
@@ -5631,6 +5535,12 @@ type RbacWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "access" field predicates.
 	Access      *rbac.Access  `json:"access,omitempty"`
 	AccessNEQ   *rbac.Access  `json:"accessNEQ,omitempty"`
@@ -5656,14 +5566,6 @@ type RbacWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "department" edge predicates.
 	HasDepartment     *bool                   `json:"hasDepartment,omitempty"`
@@ -5769,6 +5671,18 @@ func (i *RbacWhereInput) P() (predicate.Rbac, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, rbac.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, rbac.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, rbac.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, rbac.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, rbac.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Access != nil {
 		predicates = append(predicates, rbac.AccessEQ(*i.Access))
 	}
@@ -5828,24 +5742,6 @@ func (i *RbacWhereInput) P() (predicate.Rbac, error) {
 	}
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, rbac.UpdatedAtLTE(*i.UpdatedAtLTE))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, rbac.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, rbac.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, rbac.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, rbac.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, rbac.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, rbac.TenantIdNotNil())
 	}
 
 	if i.HasDepartment != nil {
@@ -5911,6 +5807,12 @@ type StageWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -5964,14 +5866,6 @@ type StageWhereInput struct {
 	UpdatedAtGTE   *time.Time  `json:"updatedatGTE,omitempty"`
 	UpdatedAtLT    *time.Time  `json:"updatedatLT,omitempty"`
 	UpdatedAtLTE   *time.Time  `json:"updatedatLTE,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "pipeline" edge predicates.
 	HasPipeline     *bool                 `json:"hasPipeline,omitempty"`
@@ -6084,6 +5978,18 @@ func (i *StageWhereInput) P() (predicate.Stage, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, stage.IDLTE(*i.IDLTE))
+	}
+	if i.TenantId != nil {
+		predicates = append(predicates, stage.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, stage.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, stage.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, stage.TenantIdNotIn(i.TenantIdNotIn...))
 	}
 	if i.Name != nil {
 		predicates = append(predicates, stage.NameEQ(*i.Name))
@@ -6217,24 +6123,6 @@ func (i *StageWhereInput) P() (predicate.Stage, error) {
 	if i.UpdatedAtLTE != nil {
 		predicates = append(predicates, stage.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
-	if i.TenantId != nil {
-		predicates = append(predicates, stage.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, stage.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, stage.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, stage.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, stage.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, stage.TenantIdNotNil())
-	}
 
 	if i.HasPipeline != nil {
 		p := stage.HasPipeline()
@@ -6335,6 +6223,12 @@ type TextWhereInput struct {
 	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
 	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
 
+	// "tenantId" field predicates.
+	TenantId      *uuid.UUID  `json:"tenantid,omitempty"`
+	TenantIdNEQ   *uuid.UUID  `json:"tenantidNEQ,omitempty"`
+	TenantIdIn    []uuid.UUID `json:"tenantidIn,omitempty"`
+	TenantIdNotIn []uuid.UUID `json:"tenantidNotIn,omitempty"`
+
 	// "text" field predicates.
 	Text             *string  `json:"text,omitempty"`
 	TextNEQ          *string  `json:"textNEQ,omitempty"`
@@ -6349,14 +6243,6 @@ type TextWhereInput struct {
 	TextHasSuffix    *string  `json:"textHasSuffix,omitempty"`
 	TextEqualFold    *string  `json:"textEqualFold,omitempty"`
 	TextContainsFold *string  `json:"textContainsFold,omitempty"`
-
-	// "tenantId" field predicates.
-	TenantId       *uuid.UUID  `json:"tenantid,omitempty"`
-	TenantIdNEQ    *uuid.UUID  `json:"tenantidNEQ,omitempty"`
-	TenantIdIn     []uuid.UUID `json:"tenantidIn,omitempty"`
-	TenantIdNotIn  []uuid.UUID `json:"tenantidNotIn,omitempty"`
-	TenantIdIsNil  bool        `json:"tenantidIsNil,omitempty"`
-	TenantIdNotNil bool        `json:"tenantidNotNil,omitempty"`
 
 	// "message" edge predicates.
 	HasMessage     *bool                `json:"hasMessage,omitempty"`
@@ -6462,6 +6348,18 @@ func (i *TextWhereInput) P() (predicate.Text, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, text.IDLTE(*i.IDLTE))
 	}
+	if i.TenantId != nil {
+		predicates = append(predicates, text.TenantIdEQ(*i.TenantId))
+	}
+	if i.TenantIdNEQ != nil {
+		predicates = append(predicates, text.TenantIdNEQ(*i.TenantIdNEQ))
+	}
+	if len(i.TenantIdIn) > 0 {
+		predicates = append(predicates, text.TenantIdIn(i.TenantIdIn...))
+	}
+	if len(i.TenantIdNotIn) > 0 {
+		predicates = append(predicates, text.TenantIdNotIn(i.TenantIdNotIn...))
+	}
 	if i.Text != nil {
 		predicates = append(predicates, text.TextEQ(*i.Text))
 	}
@@ -6500,24 +6398,6 @@ func (i *TextWhereInput) P() (predicate.Text, error) {
 	}
 	if i.TextContainsFold != nil {
 		predicates = append(predicates, text.TextContainsFold(*i.TextContainsFold))
-	}
-	if i.TenantId != nil {
-		predicates = append(predicates, text.TenantIdEQ(*i.TenantId))
-	}
-	if i.TenantIdNEQ != nil {
-		predicates = append(predicates, text.TenantIdNEQ(*i.TenantIdNEQ))
-	}
-	if len(i.TenantIdIn) > 0 {
-		predicates = append(predicates, text.TenantIdIn(i.TenantIdIn...))
-	}
-	if len(i.TenantIdNotIn) > 0 {
-		predicates = append(predicates, text.TenantIdNotIn(i.TenantIdNotIn...))
-	}
-	if i.TenantIdIsNil {
-		predicates = append(predicates, text.TenantIdIsNil())
-	}
-	if i.TenantIdNotNil {
-		predicates = append(predicates, text.TenantIdNotNil())
 	}
 
 	if i.HasMessage != nil {

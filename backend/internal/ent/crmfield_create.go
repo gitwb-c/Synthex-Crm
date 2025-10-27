@@ -24,6 +24,12 @@ type CrmFieldCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *CrmFieldCreate) SetTenantId(v uuid.UUID) *CrmFieldCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *CrmFieldCreate) SetName(v string) *CrmFieldCreate {
 	_c.mutation.SetName(v)
@@ -66,20 +72,6 @@ func (_c *CrmFieldCreate) SetUpdatedAt(v time.Time) *CrmFieldCreate {
 func (_c *CrmFieldCreate) SetNillableUpdatedAt(v *time.Time) *CrmFieldCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *CrmFieldCreate) SetTenantId(v uuid.UUID) *CrmFieldCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *CrmFieldCreate) SetNillableTenantId(v *uuid.UUID) *CrmFieldCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
 	}
 	return _c
 }
@@ -131,14 +123,6 @@ func (_c *CrmFieldCreate) AddDealCrmField(v ...*DealCrmField) *CrmFieldCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *CrmFieldCreate) SetTenantID(id uuid.UUID) *CrmFieldCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *CrmFieldCreate) SetNillableTenantID(id *uuid.UUID) *CrmFieldCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -198,6 +182,9 @@ func (_c *CrmFieldCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CrmFieldCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "CrmField.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "CrmField.name"`)}
 	}
@@ -222,6 +209,9 @@ func (_c *CrmFieldCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "CrmField.updatedAt"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "CrmField.tenant"`)}
 	}
 	return nil
 }

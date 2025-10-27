@@ -54,14 +54,34 @@ func IDLTE(id uuid.UUID) predicate.Text {
 	return predicate.Text(sql.FieldLTE(FieldID, id))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldEQ(FieldTenantId, v))
+}
+
 // Text applies equality check predicate on the "text" field. It's identical to TextEQ.
 func Text(v string) predicate.Text {
 	return predicate.Text(sql.FieldEQ(FieldText, v))
 }
 
-// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
-func TenantId(v uuid.UUID) predicate.Text {
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Text {
 	return predicate.Text(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Text {
+	return predicate.Text(sql.FieldNotIn(FieldTenantId, vs...))
 }
 
 // TextEQ applies the EQ predicate on the "text" field.
@@ -127,36 +147,6 @@ func TextEqualFold(v string) predicate.Text {
 // TextContainsFold applies the ContainsFold predicate on the "text" field.
 func TextContainsFold(v string) predicate.Text {
 	return predicate.Text(sql.FieldContainsFold(FieldText, v))
-}
-
-// TenantIdEQ applies the EQ predicate on the "tenantId" field.
-func TenantIdEQ(v uuid.UUID) predicate.Text {
-	return predicate.Text(sql.FieldEQ(FieldTenantId, v))
-}
-
-// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
-func TenantIdNEQ(v uuid.UUID) predicate.Text {
-	return predicate.Text(sql.FieldNEQ(FieldTenantId, v))
-}
-
-// TenantIdIn applies the In predicate on the "tenantId" field.
-func TenantIdIn(vs ...uuid.UUID) predicate.Text {
-	return predicate.Text(sql.FieldIn(FieldTenantId, vs...))
-}
-
-// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
-func TenantIdNotIn(vs ...uuid.UUID) predicate.Text {
-	return predicate.Text(sql.FieldNotIn(FieldTenantId, vs...))
-}
-
-// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
-func TenantIdIsNil() predicate.Text {
-	return predicate.Text(sql.FieldIsNull(FieldTenantId))
-}
-
-// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
-func TenantIdNotNil() predicate.Text {
-	return predicate.Text(sql.FieldNotNull(FieldTenantId))
 }
 
 // HasMessage applies the HasEdge predicate on the "message" edge.

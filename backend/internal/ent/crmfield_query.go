@@ -376,12 +376,12 @@ func (_q *CrmFieldQuery) WithTenant(opts ...func(*CompanyQuery)) *CrmFieldQuery 
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.CrmField.Query().
-//		GroupBy(crmfield.FieldName).
+//		GroupBy(crmfield.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CrmFieldQuery) GroupBy(field string, fields ...string) *CrmFieldGroupBy {
@@ -399,11 +399,11 @@ func (_q *CrmFieldQuery) GroupBy(field string, fields ...string) *CrmFieldGroupB
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.CrmField.Query().
-//		Select(crmfield.FieldName).
+//		Select(crmfield.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *CrmFieldQuery) Select(fields ...string) *CrmFieldSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

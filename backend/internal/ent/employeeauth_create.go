@@ -23,6 +23,12 @@ type EmployeeAuthCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *EmployeeAuthCreate) SetTenantId(v uuid.UUID) *EmployeeAuthCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *EmployeeAuthCreate) SetName(v string) *EmployeeAuthCreate {
 	_c.mutation.SetName(v)
@@ -66,12 +72,6 @@ func (_c *EmployeeAuthCreate) SetNillableUpdatedAt(v *time.Time) *EmployeeAuthCr
 	if v != nil {
 		_c.SetUpdatedAt(*v)
 	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *EmployeeAuthCreate) SetTenantId(v uuid.UUID) *EmployeeAuthCreate {
-	_c.mutation.SetTenantId(v)
 	return _c
 }
 
@@ -170,6 +170,9 @@ func (_c *EmployeeAuthCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *EmployeeAuthCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "EmployeeAuth.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "EmployeeAuth.name"`)}
 	}
@@ -199,9 +202,6 @@ func (_c *EmployeeAuthCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "EmployeeAuth.updatedAt"`)}
-	}
-	if _, ok := _c.mutation.TenantId(); !ok {
-		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "EmployeeAuth.tenantId"`)}
 	}
 	if len(_c.mutation.TenantIDs()) == 0 {
 		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "EmployeeAuth.tenant"`)}

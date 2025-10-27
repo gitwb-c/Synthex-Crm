@@ -15,6 +15,8 @@ const (
 	Label = "deal"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldSource holds the string denoting the source field in the database.
@@ -23,8 +25,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgeTenant holds the string denoting the tenant edge name in mutations.
 	EdgeTenant = "tenant"
 	// EdgeCostumer holds the string denoting the costumer edge name in mutations.
@@ -77,11 +77,11 @@ const (
 // Columns holds all SQL columns for deal fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldTitle,
 	FieldSource,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "deals"
@@ -128,6 +128,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByTitle orders the results by the title field.
 func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
@@ -146,11 +151,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updatedAt field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByTenantField orders the results by tenant field.

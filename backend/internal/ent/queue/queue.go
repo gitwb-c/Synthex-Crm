@@ -18,6 +18,8 @@ const (
 	Label = "queue"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldType holds the string denoting the type field in the database.
@@ -26,8 +28,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgeStages holds the string denoting the stages edge name in mutations.
 	EdgeStages = "stages"
 	// EdgeEmployees holds the string denoting the employees edge name in mutations.
@@ -67,11 +67,11 @@ const (
 // Columns holds all SQL columns for queue fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldName,
 	FieldType,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTenantId,
 }
 
 var (
@@ -139,6 +139,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
@@ -157,11 +162,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updatedAt field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByStagesCount orders the results by stages count.

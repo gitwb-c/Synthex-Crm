@@ -132,7 +132,6 @@ type ComplexityRoot struct {
 		Locked    func(childComplexity int) int
 		Messages  func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		Title     func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
@@ -190,7 +189,6 @@ type ComplexityRoot struct {
 		Name      func(childComplexity int) int
 		Phone     func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
@@ -213,7 +211,6 @@ type ComplexityRoot struct {
 		Name         func(childComplexity int) int
 		Section      func(childComplexity int) int
 		Tenant       func(childComplexity int) int
-		TenantId     func(childComplexity int) int
 		Type         func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
 	}
@@ -238,7 +235,6 @@ type ComplexityRoot struct {
 		Source        func(childComplexity int) int
 		Stage         func(childComplexity int) int
 		Tenant        func(childComplexity int) int
-		TenantId      func(childComplexity int) int
 		Title         func(childComplexity int) int
 		UpdatedAt     func(childComplexity int) int
 	}
@@ -255,7 +251,6 @@ type ComplexityRoot struct {
 		Deal      func(childComplexity int) int
 		ID        func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		Value     func(childComplexity int) int
 	}
@@ -284,7 +279,6 @@ type ComplexityRoot struct {
 		Queues    func(childComplexity int) int
 		Rbacs     func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
@@ -304,7 +298,6 @@ type ComplexityRoot struct {
 		CrmField  func(childComplexity int) int
 		ID        func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		Value     func(childComplexity int) int
 	}
@@ -331,7 +324,6 @@ type ComplexityRoot struct {
 		Name             func(childComplexity int) int
 		Queues           func(childComplexity int) int
 		Tenant           func(childComplexity int) int
-		TenantId         func(childComplexity int) int
 		UpdatedAt        func(childComplexity int) int
 	}
 
@@ -341,7 +333,6 @@ type ComplexityRoot struct {
 		ID        func(childComplexity int) int
 		Name      func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
@@ -374,7 +365,6 @@ type ComplexityRoot struct {
 		Message  func(childComplexity int) int
 		MimeType func(childComplexity int) int
 		Tenant   func(childComplexity int) int
-		TenantId func(childComplexity int) int
 		URL      func(childComplexity int) int
 	}
 
@@ -387,7 +377,6 @@ type ComplexityRoot struct {
 		Private   func(childComplexity int) int
 		SentBy    func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		Text      func(childComplexity int) int
 		Type      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
@@ -462,7 +451,6 @@ type ComplexityRoot struct {
 		Name      func(childComplexity int) int
 		Stages    func(childComplexity int) int
 		Tenant    func(childComplexity int) int
-		TenantId  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
@@ -505,7 +493,6 @@ type ComplexityRoot struct {
 		Name       func(childComplexity int) int
 		Stages     func(childComplexity int) int
 		Tenant     func(childComplexity int) int
-		TenantId   func(childComplexity int) int
 		Type       func(childComplexity int) int
 		UpdatedAt  func(childComplexity int) int
 	}
@@ -527,7 +514,6 @@ type ComplexityRoot struct {
 		Department func(childComplexity int) int
 		ID         func(childComplexity int) int
 		Tenant     func(childComplexity int) int
-		TenantId   func(childComplexity int) int
 		UpdatedAt  func(childComplexity int) int
 	}
 
@@ -552,7 +538,6 @@ type ComplexityRoot struct {
 		Pipeline   func(childComplexity int) int
 		Queue      func(childComplexity int) int
 		Tenant     func(childComplexity int) int
-		TenantId   func(childComplexity int) int
 		UpdatedAt  func(childComplexity int) int
 	}
 
@@ -568,71 +553,48 @@ type ComplexityRoot struct {
 	}
 
 	Text struct {
-		ID       func(childComplexity int) int
-		Message  func(childComplexity int) int
-		Tenant   func(childComplexity int) int
-		TenantId func(childComplexity int) int
-		Text     func(childComplexity int) int
+		ID      func(childComplexity int) int
+		Message func(childComplexity int) int
+		Tenant  func(childComplexity int) int
+		Text    func(childComplexity int) int
 	}
 }
 
 type ChatResolver interface {
 	ID(ctx context.Context, obj *ent.Chat) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Chat) (*string, error)
 }
 type CompanyResolver interface {
 	ID(ctx context.Context, obj *ent.Company) (string, error)
 }
 type CostumerResolver interface {
 	ID(ctx context.Context, obj *ent.Costumer) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Costumer) (*string, error)
 }
 type CrmFieldResolver interface {
 	ID(ctx context.Context, obj *ent.CrmField) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.CrmField) (*string, error)
 }
 type DealResolver interface {
 	ID(ctx context.Context, obj *ent.Deal) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Deal) (*string, error)
 }
 type DealCrmFieldResolver interface {
 	ID(ctx context.Context, obj *ent.DealCrmField) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.DealCrmField) (*string, error)
 }
 type DepartmentResolver interface {
 	ID(ctx context.Context, obj *ent.Department) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Department) (*string, error)
 }
 type DropdownListResolver interface {
 	ID(ctx context.Context, obj *ent.DropdownList) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.DropdownList) (*string, error)
 }
 type EmployeeResolver interface {
 	ID(ctx context.Context, obj *ent.Employee) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Employee) (*string, error)
 }
 type EmployeeAuthResolver interface {
 	ID(ctx context.Context, obj *ent.EmployeeAuth) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.EmployeeAuth) (string, error)
 }
 type FileResolver interface {
 	ID(ctx context.Context, obj *ent.File) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.File) (*string, error)
 }
 type MessageResolver interface {
 	ID(ctx context.Context, obj *ent.Message) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Message) (*string, error)
 }
 type MutationResolver interface {
 	CreateDeal(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error)
@@ -680,8 +642,6 @@ type MutationResolver interface {
 }
 type PipelineResolver interface {
 	ID(ctx context.Context, obj *ent.Pipeline) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Pipeline) (*string, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -704,23 +664,15 @@ type QueryResolver interface {
 }
 type QueueResolver interface {
 	ID(ctx context.Context, obj *ent.Queue) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Queue) (*string, error)
 }
 type RbacResolver interface {
 	ID(ctx context.Context, obj *ent.Rbac) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Rbac) (*string, error)
 }
 type StageResolver interface {
 	ID(ctx context.Context, obj *ent.Stage) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Stage) (*string, error)
 }
 type TextResolver interface {
 	ID(ctx context.Context, obj *ent.Text) (string, error)
-
-	TenantId(ctx context.Context, obj *ent.Text) (*string, error)
 }
 
 type ChatWhereInputResolver interface {
@@ -732,7 +684,6 @@ type ChatWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.ChatWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.ChatWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.ChatWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.ChatWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.ChatWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.ChatWhereInput, data []string) error
@@ -757,7 +708,6 @@ type CostumerWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.CostumerWhereInput, data []string) error
@@ -767,7 +717,6 @@ type CreateChatInputResolver interface {
 	DealID(ctx context.Context, obj *ent.CreateChatInput, data *string) error
 	EmployeeIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error
 	MessageIDs(ctx context.Context, obj *ent.CreateChatInput, data []string) error
-	TenantID(ctx context.Context, obj *ent.CreateChatInput, data *string) error
 }
 type CreateCompanyInputResolver interface {
 	EmployeeIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error
@@ -788,43 +737,35 @@ type CreateCompanyInputResolver interface {
 	TextIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error
 }
 type CreateCostumerInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.CreateCostumerInput, data *string) error
 	DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error
 }
 type CreateCrmFieldInputResolver interface {
 	DropdownlistIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error
 	DealcrmfieldIDs(ctx context.Context, obj *ent.CreateCrmFieldInput, data []string) error
-	TenantID(ctx context.Context, obj *ent.CreateCrmFieldInput, data *string) error
 }
 type CreateDealCrmFieldInputResolver interface {
 	DealID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error
 	CrmfieldID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error
-	TenantID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data *string) error
 }
 type CreateDealInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.CreateDealInput, data *string) error
 	CostumerID(ctx context.Context, obj *ent.CreateDealInput, data *string) error
 	ChatID(ctx context.Context, obj *ent.CreateDealInput, data *string) error
 	StageID(ctx context.Context, obj *ent.CreateDealInput, data string) error
 	DealcrmfieldIDs(ctx context.Context, obj *ent.CreateDealInput, data []string) error
 }
 type CreateDepartmentInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.CreateDepartmentInput, data *string) error
 	EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error
 	QueueIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error
 	RbacIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error
 }
 type CreateDropdownListInputResolver interface {
 	CrmfieldIDs(ctx context.Context, obj *ent.CreateDropdownListInput, data []string) error
-	TenantID(ctx context.Context, obj *ent.CreateDropdownListInput, data *string) error
 }
 type CreateEmployeeAuthInputResolver interface {
 	EmployeeID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data string) error
 }
 type CreateEmployeeInputResolver interface {
 	EmployeeauthID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error
-	TenantID(ctx context.Context, obj *ent.CreateEmployeeInput, data *string) error
 	DepartmentID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error
 	ChatIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error
 	QueueIDs(ctx context.Context, obj *ent.CreateEmployeeInput, data []string) error
@@ -832,38 +773,31 @@ type CreateEmployeeInputResolver interface {
 }
 type CreateFileInputResolver interface {
 	MessageID(ctx context.Context, obj *ent.CreateFileInput, data string) error
-	TenantID(ctx context.Context, obj *ent.CreateFileInput, data *string) error
 }
 type CreateMessageInputResolver interface {
 	ChatID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error
 	EmployeeIDs(ctx context.Context, obj *ent.CreateMessageInput, data []string) error
 	TextID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error
 	FileID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error
 }
 type CreatePipelineInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.CreatePipelineInput, data *string) error
 	StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error
 }
 type CreateQueueInputResolver interface {
 	StageIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error
 	EmployeeIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error
 	DepartmentIDs(ctx context.Context, obj *ent.CreateQueueInput, data []string) error
-	TenantID(ctx context.Context, obj *ent.CreateQueueInput, data *string) error
 }
 type CreateRbacInputResolver interface {
 	DepartmentID(ctx context.Context, obj *ent.CreateRbacInput, data string) error
-	TenantID(ctx context.Context, obj *ent.CreateRbacInput, data *string) error
 }
 type CreateStageInputResolver interface {
 	PipelineID(ctx context.Context, obj *ent.CreateStageInput, data string) error
 	DealIDs(ctx context.Context, obj *ent.CreateStageInput, data []string) error
 	QueueID(ctx context.Context, obj *ent.CreateStageInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.CreateStageInput, data *string) error
 }
 type CreateTextInputResolver interface {
 	MessageID(ctx context.Context, obj *ent.CreateTextInput, data string) error
-	TenantID(ctx context.Context, obj *ent.CreateTextInput, data *string) error
 }
 type CrmFieldWhereInputResolver interface {
 	ID(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error
@@ -874,7 +808,6 @@ type CrmFieldWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.CrmFieldWhereInput, data []string) error
@@ -889,7 +822,6 @@ type DealCrmFieldWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data []string) error
@@ -904,7 +836,6 @@ type DealWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.DealWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.DealWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.DealWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.DealWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.DealWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.DealWhereInput, data []string) error
@@ -919,7 +850,6 @@ type DepartmentWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.DepartmentWhereInput, data []string) error
@@ -934,7 +864,6 @@ type DropdownListWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.DropdownListWhereInput, data []string) error
@@ -949,7 +878,6 @@ type EmployeeAuthWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data []string) error
@@ -964,7 +892,6 @@ type EmployeeWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.EmployeeWhereInput, data []string) error
@@ -979,7 +906,6 @@ type FileWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.FileWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.FileWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.FileWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.FileWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.FileWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error
@@ -994,7 +920,6 @@ type MessageWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.MessageWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.MessageWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.MessageWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.MessageWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.MessageWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.MessageWhereInput, data []string) error
@@ -1009,7 +934,6 @@ type PipelineWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.PipelineWhereInput, data []string) error
@@ -1024,7 +948,6 @@ type QueueWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.QueueWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.QueueWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.QueueWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.QueueWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.QueueWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.QueueWhereInput, data []string) error
@@ -1039,7 +962,6 @@ type RbacWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.RbacWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.RbacWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.RbacWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.RbacWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.RbacWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.RbacWhereInput, data []string) error
@@ -1054,7 +976,6 @@ type StageWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.StageWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.StageWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.StageWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.StageWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.StageWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.StageWhereInput, data []string) error
@@ -1069,7 +990,6 @@ type TextWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.TextWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.TextWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.TextWhereInput, data *string) error
-
 	Tenantid(ctx context.Context, obj *ent.TextWhereInput, data *string) error
 	TenantidNeq(ctx context.Context, obj *ent.TextWhereInput, data *string) error
 	TenantidIn(ctx context.Context, obj *ent.TextWhereInput, data []string) error
@@ -1083,8 +1003,6 @@ type UpdateChatInputResolver interface {
 
 	AddMessageIDs(ctx context.Context, obj *ent.UpdateChatInput, data []string) error
 	RemoveMessageIDs(ctx context.Context, obj *ent.UpdateChatInput, data []string) error
-
-	TenantID(ctx context.Context, obj *ent.UpdateChatInput, data *string) error
 }
 type UpdateCompanyInputResolver interface {
 	AddEmployeeIDs(ctx context.Context, obj *ent.UpdateCompanyInput, data []string) error
@@ -1136,8 +1054,6 @@ type UpdateCompanyInputResolver interface {
 	RemoveTextIDs(ctx context.Context, obj *ent.UpdateCompanyInput, data []string) error
 }
 type UpdateCostumerInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.UpdateCostumerInput, data *string) error
-
 	AddDealIDs(ctx context.Context, obj *ent.UpdateCostumerInput, data []string) error
 	RemoveDealIDs(ctx context.Context, obj *ent.UpdateCostumerInput, data []string) error
 }
@@ -1147,17 +1063,12 @@ type UpdateCrmFieldInputResolver interface {
 
 	AddDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateCrmFieldInput, data []string) error
 	RemoveDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateCrmFieldInput, data []string) error
-
-	TenantID(ctx context.Context, obj *ent.UpdateCrmFieldInput, data *string) error
 }
 type UpdateDealCrmFieldInputResolver interface {
 	DealID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error
 	CrmfieldID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error
 }
 type UpdateDealInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error
-
 	CostumerID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error
 
 	ChatID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error
@@ -1167,8 +1078,6 @@ type UpdateDealInputResolver interface {
 	RemoveDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateDealInput, data []string) error
 }
 type UpdateDepartmentInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.UpdateDepartmentInput, data *string) error
-
 	AddEmployeeIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error
 	RemoveEmployeeIDs(ctx context.Context, obj *ent.UpdateDepartmentInput, data []string) error
 
@@ -1181,17 +1090,12 @@ type UpdateDepartmentInputResolver interface {
 type UpdateDropdownListInputResolver interface {
 	AddCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error
 	RemoveCrmFieldIDs(ctx context.Context, obj *ent.UpdateDropdownListInput, data []string) error
-	TenantID(ctx context.Context, obj *ent.UpdateDropdownListInput, data *string) error
 }
 type UpdateEmployeeAuthInputResolver interface {
 	EmployeeID(ctx context.Context, obj *ent.UpdateEmployeeAuthInput, data *string) error
-
-	TenantID(ctx context.Context, obj *ent.UpdateEmployeeAuthInput, data *string) error
 }
 type UpdateEmployeeInputResolver interface {
 	EmployeeauthID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error
-
 	DepartmentID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error
 	AddChatIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error
 	RemoveChatIDs(ctx context.Context, obj *ent.UpdateEmployeeInput, data []string) error
@@ -1204,7 +1108,6 @@ type UpdateEmployeeInputResolver interface {
 }
 type UpdateFileInputResolver interface {
 	MessageID(ctx context.Context, obj *ent.UpdateFileInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.UpdateFileInput, data *string) error
 }
 type UpdateMessageInputResolver interface {
 	ChatID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error
@@ -1215,12 +1118,8 @@ type UpdateMessageInputResolver interface {
 	TextID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error
 
 	FileID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error
-
-	TenantID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error
 }
 type UpdatePipelineInputResolver interface {
-	TenantID(ctx context.Context, obj *ent.UpdatePipelineInput, data *string) error
-
 	AddStageIDs(ctx context.Context, obj *ent.UpdatePipelineInput, data []string) error
 	RemoveStageIDs(ctx context.Context, obj *ent.UpdatePipelineInput, data []string) error
 }
@@ -1233,11 +1132,9 @@ type UpdateQueueInputResolver interface {
 
 	AddDepartmentIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error
 	RemoveDepartmentIDs(ctx context.Context, obj *ent.UpdateQueueInput, data []string) error
-	TenantID(ctx context.Context, obj *ent.UpdateQueueInput, data *string) error
 }
 type UpdateRbacInputResolver interface {
 	DepartmentID(ctx context.Context, obj *ent.UpdateRbacInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.UpdateRbacInput, data *string) error
 }
 type UpdateStageInputResolver interface {
 	PipelineID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error
@@ -1245,12 +1142,9 @@ type UpdateStageInputResolver interface {
 	RemoveDealIDs(ctx context.Context, obj *ent.UpdateStageInput, data []string) error
 
 	QueueID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error
-
-	TenantID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error
 }
 type UpdateTextInputResolver interface {
 	MessageID(ctx context.Context, obj *ent.UpdateTextInput, data *string) error
-	TenantID(ctx context.Context, obj *ent.UpdateTextInput, data *string) error
 }
 
 type executableSchema struct {
@@ -1320,12 +1214,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Chat.Tenant(childComplexity), true
-	case "Chat.tenantid":
-		if e.complexity.Chat.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Chat.TenantId(childComplexity), true
 	case "Chat.title":
 		if e.complexity.Chat.Title == nil {
 			break
@@ -1566,12 +1454,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Costumer.Tenant(childComplexity), true
-	case "Costumer.tenantid":
-		if e.complexity.Costumer.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Costumer.TenantId(childComplexity), true
 	case "Costumer.updatedat":
 		if e.complexity.Costumer.UpdatedAt == nil {
 			break
@@ -1653,12 +1535,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.CrmField.Tenant(childComplexity), true
-	case "CrmField.tenantid":
-		if e.complexity.CrmField.TenantId == nil {
-			break
-		}
-
-		return e.complexity.CrmField.TenantId(childComplexity), true
 	case "CrmField.type":
 		if e.complexity.CrmField.Type == nil {
 			break
@@ -1752,12 +1628,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Deal.Tenant(childComplexity), true
-	case "Deal.tenantid":
-		if e.complexity.Deal.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Deal.TenantId(childComplexity), true
 	case "Deal.title":
 		if e.complexity.Deal.Title == nil {
 			break
@@ -1820,12 +1690,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.DealCrmField.Tenant(childComplexity), true
-	case "DealCrmField.tenantid":
-		if e.complexity.DealCrmField.TenantId == nil {
-			break
-		}
-
-		return e.complexity.DealCrmField.TenantId(childComplexity), true
 	case "DealCrmField.updatedat":
 		if e.complexity.DealCrmField.UpdatedAt == nil {
 			break
@@ -1926,12 +1790,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Department.Tenant(childComplexity), true
-	case "Department.tenantid":
-		if e.complexity.Department.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Department.TenantId(childComplexity), true
 	case "Department.updatedat":
 		if e.complexity.Department.UpdatedAt == nil {
 			break
@@ -1995,12 +1853,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.DropdownList.Tenant(childComplexity), true
-	case "DropdownList.tenantid":
-		if e.complexity.DropdownList.TenantId == nil {
-			break
-		}
-
-		return e.complexity.DropdownList.TenantId(childComplexity), true
 	case "DropdownList.updatedat":
 		if e.complexity.DropdownList.UpdatedAt == nil {
 			break
@@ -2106,12 +1958,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Employee.Tenant(childComplexity), true
-	case "Employee.tenantid":
-		if e.complexity.Employee.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Employee.TenantId(childComplexity), true
 	case "Employee.updatedat":
 		if e.complexity.Employee.UpdatedAt == nil {
 			break
@@ -2149,12 +1995,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.EmployeeAuth.Tenant(childComplexity), true
-	case "EmployeeAuth.tenantid":
-		if e.complexity.EmployeeAuth.TenantId == nil {
-			break
-		}
-
-		return e.complexity.EmployeeAuth.TenantId(childComplexity), true
 	case "EmployeeAuth.updatedat":
 		if e.complexity.EmployeeAuth.UpdatedAt == nil {
 			break
@@ -2262,12 +2102,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.File.Tenant(childComplexity), true
-	case "File.tenantid":
-		if e.complexity.File.TenantId == nil {
-			break
-		}
-
-		return e.complexity.File.TenantId(childComplexity), true
 	case "File.url":
 		if e.complexity.File.URL == nil {
 			break
@@ -2323,12 +2157,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Message.Tenant(childComplexity), true
-	case "Message.tenantid":
-		if e.complexity.Message.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Message.TenantId(childComplexity), true
 	case "Message.text":
 		if e.complexity.Message.Text == nil {
 			break
@@ -2898,12 +2726,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Pipeline.Tenant(childComplexity), true
-	case "Pipeline.tenantid":
-		if e.complexity.Pipeline.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Pipeline.TenantId(childComplexity), true
 	case "Pipeline.updatedat":
 		if e.complexity.Pipeline.UpdatedAt == nil {
 			break
@@ -3173,12 +2995,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Queue.Tenant(childComplexity), true
-	case "Queue.tenantid":
-		if e.complexity.Queue.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Queue.TenantId(childComplexity), true
 	case "Queue.type":
 		if e.complexity.Queue.Type == nil {
 			break
@@ -3254,12 +3070,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Rbac.Tenant(childComplexity), true
-	case "Rbac.tenantid":
-		if e.complexity.Rbac.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Rbac.TenantId(childComplexity), true
 	case "Rbac.updatedat":
 		if e.complexity.Rbac.UpdatedAt == nil {
 			break
@@ -3353,12 +3163,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Stage.Tenant(childComplexity), true
-	case "Stage.tenantid":
-		if e.complexity.Stage.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Stage.TenantId(childComplexity), true
 	case "Stage.updatedat":
 		if e.complexity.Stage.UpdatedAt == nil {
 			break
@@ -3416,12 +3220,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Text.Tenant(childComplexity), true
-	case "Text.tenantid":
-		if e.complexity.Text.TenantId == nil {
-			break
-		}
-
-		return e.complexity.Text.TenantId(childComplexity), true
 	case "Text.text":
 		if e.complexity.Text.Text == nil {
 			break
@@ -4954,35 +4752,6 @@ func (ec *executionContext) fieldContext_Chat_updatedat(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Chat_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Chat) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Chat_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Chat().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Chat_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Chat",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Chat_deal(ctx context.Context, field graphql.CollectedField, obj *ent.Chat) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -5017,8 +4786,6 @@ func (ec *executionContext) fieldContext_Chat_deal(_ context.Context, field grap
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -5070,8 +4837,6 @@ func (ec *executionContext) fieldContext_Chat_employees(_ context.Context, field
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -5127,8 +4892,6 @@ func (ec *executionContext) fieldContext_Chat_messages(_ context.Context, field 
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -5156,9 +4919,9 @@ func (ec *executionContext) _Chat_tenant(ctx context.Context, field graphql.Coll
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -5356,8 +5119,6 @@ func (ec *executionContext) fieldContext_ChatEdge_node(_ context.Context, field 
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -5552,8 +5313,6 @@ func (ec *executionContext) fieldContext_Company_employees(_ context.Context, fi
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -5609,8 +5368,6 @@ func (ec *executionContext) fieldContext_Company_costumers(_ context.Context, fi
 				return ec.fieldContext_Costumer_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Costumer_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Costumer_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Costumer_tenant(ctx, field)
 			case "deals":
@@ -5656,8 +5413,6 @@ func (ec *executionContext) fieldContext_Company_deals(_ context.Context, field 
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -5711,8 +5466,6 @@ func (ec *executionContext) fieldContext_Company_chats(_ context.Context, field 
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -5760,8 +5513,6 @@ func (ec *executionContext) fieldContext_Company_departments(_ context.Context, 
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -5809,8 +5560,6 @@ func (ec *executionContext) fieldContext_Company_pipelines(_ context.Context, fi
 				return ec.fieldContext_Pipeline_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Pipeline_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Pipeline_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Pipeline_tenant(ctx, field)
 			case "stages":
@@ -5858,8 +5607,6 @@ func (ec *executionContext) fieldContext_Company_crmfields(_ context.Context, fi
 				return ec.fieldContext_CrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_CrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_CrmField_tenantid(ctx, field)
 			case "dropdownlist":
 				return ec.fieldContext_CrmField_dropdownlist(ctx, field)
 			case "dealcrmfield":
@@ -5905,8 +5652,6 @@ func (ec *executionContext) fieldContext_Company_dealcrmfields(_ context.Context
 				return ec.fieldContext_DealCrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DealCrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DealCrmField_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_DealCrmField_deal(ctx, field)
 			case "crmfield":
@@ -5952,8 +5697,6 @@ func (ec *executionContext) fieldContext_Company_dropdownlists(_ context.Context
 				return ec.fieldContext_DropdownList_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DropdownList_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DropdownList_tenantid(ctx, field)
 			case "crmfield":
 				return ec.fieldContext_DropdownList_crmfield(ctx, field)
 			case "tenant":
@@ -5997,8 +5740,6 @@ func (ec *executionContext) fieldContext_Company_employeeauths(_ context.Context
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_EmployeeAuth_tenantid(ctx, field)
 			case "employee":
 				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			case "tenant":
@@ -6044,8 +5785,6 @@ func (ec *executionContext) fieldContext_Company_files(_ context.Context, field 
 				return ec.fieldContext_File_mimetype(ctx, field)
 			case "filename":
 				return ec.fieldContext_File_filename(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_File_tenantid(ctx, field)
 			case "message":
 				return ec.fieldContext_File_message(ctx, field)
 			case "tenant":
@@ -6093,8 +5832,6 @@ func (ec *executionContext) fieldContext_Company_messages(_ context.Context, fie
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -6146,8 +5883,6 @@ func (ec *executionContext) fieldContext_Company_queues(_ context.Context, field
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -6195,8 +5930,6 @@ func (ec *executionContext) fieldContext_Company_rbacs(_ context.Context, field 
 				return ec.fieldContext_Rbac_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Rbac_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Rbac_tenantid(ctx, field)
 			case "department":
 				return ec.fieldContext_Rbac_department(ctx, field)
 			case "tenant":
@@ -6244,8 +5977,6 @@ func (ec *executionContext) fieldContext_Company_stages(_ context.Context, field
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -6289,8 +6020,6 @@ func (ec *executionContext) fieldContext_Company_texts(_ context.Context, field 
 				return ec.fieldContext_Text_id(ctx, field)
 			case "text":
 				return ec.fieldContext_Text_text(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Text_tenantid(ctx, field)
 			case "message":
 				return ec.fieldContext_Text_message(ctx, field)
 			case "tenant":
@@ -6679,35 +6408,6 @@ func (ec *executionContext) fieldContext_Costumer_updatedat(_ context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Costumer_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Costumer) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Costumer_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Costumer().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Costumer_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Costumer",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Costumer_tenant(ctx context.Context, field graphql.CollectedField, obj *ent.Costumer) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -6718,9 +6418,9 @@ func (ec *executionContext) _Costumer_tenant(ctx context.Context, field graphql.
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -6813,8 +6513,6 @@ func (ec *executionContext) fieldContext_Costumer_deals(_ context.Context, field
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -6971,8 +6669,6 @@ func (ec *executionContext) fieldContext_CostumerEdge_node(_ context.Context, fi
 				return ec.fieldContext_Costumer_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Costumer_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Costumer_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Costumer_tenant(ctx, field)
 			case "deals":
@@ -7187,35 +6883,6 @@ func (ec *executionContext) fieldContext_CrmField_updatedat(_ context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _CrmField_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.CrmField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_CrmField_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.CrmField().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_CrmField_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "CrmField",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _CrmField_dropdownlist(ctx context.Context, field graphql.CollectedField, obj *ent.CrmField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7248,8 +6915,6 @@ func (ec *executionContext) fieldContext_CrmField_dropdownlist(_ context.Context
 				return ec.fieldContext_DropdownList_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DropdownList_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DropdownList_tenantid(ctx, field)
 			case "crmfield":
 				return ec.fieldContext_DropdownList_crmfield(ctx, field)
 			case "tenant":
@@ -7293,8 +6958,6 @@ func (ec *executionContext) fieldContext_CrmField_dealcrmfield(_ context.Context
 				return ec.fieldContext_DealCrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DealCrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DealCrmField_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_DealCrmField_deal(ctx, field)
 			case "crmfield":
@@ -7318,9 +6981,9 @@ func (ec *executionContext) _CrmField_tenant(ctx context.Context, field graphql.
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -7518,8 +7181,6 @@ func (ec *executionContext) fieldContext_CrmFieldEdge_node(_ context.Context, fi
 				return ec.fieldContext_CrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_CrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_CrmField_tenantid(ctx, field)
 			case "dropdownlist":
 				return ec.fieldContext_CrmField_dropdownlist(ctx, field)
 			case "dealcrmfield":
@@ -7707,35 +7368,6 @@ func (ec *executionContext) fieldContext_Deal_updatedat(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Deal_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Deal) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Deal_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Deal().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Deal_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Deal",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Deal_tenant(ctx context.Context, field graphql.CollectedField, obj *ent.Deal) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7746,9 +7378,9 @@ func (ec *executionContext) _Deal_tenant(ctx context.Context, field graphql.Coll
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -7843,8 +7475,6 @@ func (ec *executionContext) fieldContext_Deal_costumer(_ context.Context, field 
 				return ec.fieldContext_Costumer_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Costumer_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Costumer_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Costumer_tenant(ctx, field)
 			case "deals":
@@ -7892,8 +7522,6 @@ func (ec *executionContext) fieldContext_Deal_chat(_ context.Context, field grap
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -7945,8 +7573,6 @@ func (ec *executionContext) fieldContext_Deal_stage(_ context.Context, field gra
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -7994,8 +7620,6 @@ func (ec *executionContext) fieldContext_Deal_dealcrmfields(_ context.Context, f
 				return ec.fieldContext_DealCrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DealCrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DealCrmField_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_DealCrmField_deal(ctx, field)
 			case "crmfield":
@@ -8228,35 +7852,6 @@ func (ec *executionContext) fieldContext_DealCrmField_updatedat(_ context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _DealCrmField_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.DealCrmField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_DealCrmField_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.DealCrmField().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_DealCrmField_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "DealCrmField",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _DealCrmField_deal(ctx context.Context, field graphql.CollectedField, obj *ent.DealCrmField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -8291,8 +7886,6 @@ func (ec *executionContext) fieldContext_DealCrmField_deal(_ context.Context, fi
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -8346,8 +7939,6 @@ func (ec *executionContext) fieldContext_DealCrmField_crmfield(_ context.Context
 				return ec.fieldContext_CrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_CrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_CrmField_tenantid(ctx, field)
 			case "dropdownlist":
 				return ec.fieldContext_CrmField_dropdownlist(ctx, field)
 			case "dealcrmfield":
@@ -8371,9 +7962,9 @@ func (ec *executionContext) _DealCrmField_tenant(ctx context.Context, field grap
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -8567,8 +8158,6 @@ func (ec *executionContext) fieldContext_DealCrmFieldEdge_node(_ context.Context
 				return ec.fieldContext_DealCrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DealCrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DealCrmField_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_DealCrmField_deal(ctx, field)
 			case "crmfield":
@@ -8645,8 +8234,6 @@ func (ec *executionContext) fieldContext_DealEdge_node(_ context.Context, field 
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -8809,35 +8396,6 @@ func (ec *executionContext) fieldContext_Department_updatedat(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Department_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Department) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Department_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Department().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Department_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Department",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Department_tenant(ctx context.Context, field graphql.CollectedField, obj *ent.Department) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -8848,9 +8406,9 @@ func (ec *executionContext) _Department_tenant(ctx context.Context, field graphq
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -8943,8 +8501,6 @@ func (ec *executionContext) fieldContext_Department_employee(_ context.Context, 
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -8998,8 +8554,6 @@ func (ec *executionContext) fieldContext_Department_queues(_ context.Context, fi
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -9047,8 +8601,6 @@ func (ec *executionContext) fieldContext_Department_rbacs(_ context.Context, fie
 				return ec.fieldContext_Rbac_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Rbac_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Rbac_tenantid(ctx, field)
 			case "department":
 				return ec.fieldContext_Rbac_department(ctx, field)
 			case "tenant":
@@ -9195,8 +8747,6 @@ func (ec *executionContext) fieldContext_DepartmentEdge_node(_ context.Context, 
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -9357,35 +8907,6 @@ func (ec *executionContext) fieldContext_DropdownList_updatedat(_ context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _DropdownList_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.DropdownList) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_DropdownList_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.DropdownList().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_DropdownList_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "DropdownList",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _DropdownList_crmfield(ctx context.Context, field graphql.CollectedField, obj *ent.DropdownList) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -9422,8 +8943,6 @@ func (ec *executionContext) fieldContext_DropdownList_crmfield(_ context.Context
 				return ec.fieldContext_CrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_CrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_CrmField_tenantid(ctx, field)
 			case "dropdownlist":
 				return ec.fieldContext_CrmField_dropdownlist(ctx, field)
 			case "dealcrmfield":
@@ -9447,9 +8966,9 @@ func (ec *executionContext) _DropdownList_tenant(ctx context.Context, field grap
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -9643,8 +9162,6 @@ func (ec *executionContext) fieldContext_DropdownListEdge_node(_ context.Context
 				return ec.fieldContext_DropdownList_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DropdownList_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DropdownList_tenantid(ctx, field)
 			case "crmfield":
 				return ec.fieldContext_DropdownList_crmfield(ctx, field)
 			case "tenant":
@@ -9830,35 +9347,6 @@ func (ec *executionContext) fieldContext_Employee_updatedat(_ context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Employee_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Employee) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Employee_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Employee().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Employee_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Employee",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Employee_employeeauth(ctx context.Context, field graphql.CollectedField, obj *ent.Employee) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -9891,8 +9379,6 @@ func (ec *executionContext) fieldContext_Employee_employeeauth(_ context.Context
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_EmployeeAuth_tenantid(ctx, field)
 			case "employee":
 				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			case "tenant":
@@ -9914,9 +9400,9 @@ func (ec *executionContext) _Employee_tenant(ctx context.Context, field graphql.
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -10007,8 +9493,6 @@ func (ec *executionContext) fieldContext_Employee_department(_ context.Context, 
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -10060,8 +9544,6 @@ func (ec *executionContext) fieldContext_Employee_chat(_ context.Context, field 
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -10111,8 +9593,6 @@ func (ec *executionContext) fieldContext_Employee_queues(_ context.Context, fiel
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -10164,8 +9644,6 @@ func (ec *executionContext) fieldContext_Employee_messages(_ context.Context, fi
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -10299,35 +9777,6 @@ func (ec *executionContext) fieldContext_EmployeeAuth_updatedat(_ context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _EmployeeAuth_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.EmployeeAuth) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_EmployeeAuth_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.EmployeeAuth().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalNID2string,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_EmployeeAuth_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "EmployeeAuth",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _EmployeeAuth_employee(ctx context.Context, field graphql.CollectedField, obj *ent.EmployeeAuth) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -10362,8 +9811,6 @@ func (ec *executionContext) fieldContext_EmployeeAuth_employee(_ context.Context
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -10589,8 +10036,6 @@ func (ec *executionContext) fieldContext_EmployeeAuthEdge_node(_ context.Context
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_EmployeeAuth_tenantid(ctx, field)
 			case "employee":
 				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			case "tenant":
@@ -10768,8 +10213,6 @@ func (ec *executionContext) fieldContext_EmployeeEdge_node(_ context.Context, fi
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -10963,35 +10406,6 @@ func (ec *executionContext) fieldContext_File_filename(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _File_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_File_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.File().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_File_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "File",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _File_message(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -11028,8 +10442,6 @@ func (ec *executionContext) fieldContext_File_message(_ context.Context, field g
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -11057,9 +10469,9 @@ func (ec *executionContext) _File_tenant(ctx context.Context, field graphql.Coll
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -11292,35 +10704,6 @@ func (ec *executionContext) fieldContext_Message_updatedat(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Message_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Message) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Message_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Message().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Message_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Message",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Message_chat(ctx context.Context, field graphql.CollectedField, obj *ent.Message) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -11357,8 +10740,6 @@ func (ec *executionContext) fieldContext_Message_chat(_ context.Context, field g
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -11408,8 +10789,6 @@ func (ec *executionContext) fieldContext_Message_employee(_ context.Context, fie
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -11457,8 +10836,6 @@ func (ec *executionContext) fieldContext_Message_text(_ context.Context, field g
 				return ec.fieldContext_Text_id(ctx, field)
 			case "text":
 				return ec.fieldContext_Text_text(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Text_tenantid(ctx, field)
 			case "message":
 				return ec.fieldContext_Text_message(ctx, field)
 			case "tenant":
@@ -11504,8 +10881,6 @@ func (ec *executionContext) fieldContext_Message_file(_ context.Context, field g
 				return ec.fieldContext_File_mimetype(ctx, field)
 			case "filename":
 				return ec.fieldContext_File_filename(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_File_tenantid(ctx, field)
 			case "message":
 				return ec.fieldContext_File_message(ctx, field)
 			case "tenant":
@@ -11527,9 +10902,9 @@ func (ec *executionContext) _Message_tenant(ctx context.Context, field graphql.C
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -11727,8 +11102,6 @@ func (ec *executionContext) fieldContext_MessageEdge_node(_ context.Context, fie
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -11810,8 +11183,6 @@ func (ec *executionContext) fieldContext_Mutation_createDeal(ctx context.Context
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -11916,8 +11287,6 @@ func (ec *executionContext) fieldContext_Mutation_updateDealWhere(ctx context.Co
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -11979,8 +11348,6 @@ func (ec *executionContext) fieldContext_Mutation_createPipeline(ctx context.Con
 				return ec.fieldContext_Pipeline_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Pipeline_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Pipeline_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Pipeline_tenant(ctx, field)
 			case "stages":
@@ -12077,8 +11444,6 @@ func (ec *executionContext) fieldContext_Mutation_updatePipelineWhere(ctx contex
 				return ec.fieldContext_Pipeline_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Pipeline_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Pipeline_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Pipeline_tenant(ctx, field)
 			case "stages":
@@ -12138,8 +11503,6 @@ func (ec *executionContext) fieldContext_Mutation_createCostumer(ctx context.Con
 				return ec.fieldContext_Costumer_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Costumer_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Costumer_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Costumer_tenant(ctx, field)
 			case "deals":
@@ -12240,8 +11603,6 @@ func (ec *executionContext) fieldContext_Mutation_updateCostumerWhere(ctx contex
 				return ec.fieldContext_Costumer_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Costumer_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Costumer_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Costumer_tenant(ctx, field)
 			case "deals":
@@ -12301,8 +11662,6 @@ func (ec *executionContext) fieldContext_Mutation_createStage(ctx context.Contex
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -12407,8 +11766,6 @@ func (ec *executionContext) fieldContext_Mutation_updateStageWhere(ctx context.C
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -12472,8 +11829,6 @@ func (ec *executionContext) fieldContext_Mutation_createChat(ctx context.Context
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -12578,8 +11933,6 @@ func (ec *executionContext) fieldContext_Mutation_updateChatWhere(ctx context.Co
 				return ec.fieldContext_Chat_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Chat_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Chat_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_Chat_deal(ctx, field)
 			case "employees":
@@ -12641,8 +11994,6 @@ func (ec *executionContext) fieldContext_Mutation_createEmployee(ctx context.Con
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -12749,8 +12100,6 @@ func (ec *executionContext) fieldContext_Mutation_updateEmployeeWhere(ctx contex
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -12814,8 +12163,6 @@ func (ec *executionContext) fieldContext_Mutation_createEmployeeAuth(ctx context
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_EmployeeAuth_tenantid(ctx, field)
 			case "employee":
 				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			case "tenant":
@@ -12912,8 +12259,6 @@ func (ec *executionContext) fieldContext_Mutation_updateEmployeeAuthWhere(ctx co
 				return ec.fieldContext_EmployeeAuth_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_EmployeeAuth_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_EmployeeAuth_tenantid(ctx, field)
 			case "employee":
 				return ec.fieldContext_EmployeeAuth_employee(ctx, field)
 			case "tenant":
@@ -12969,8 +12314,6 @@ func (ec *executionContext) fieldContext_Mutation_createDepartment(ctx context.C
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -13071,8 +12414,6 @@ func (ec *executionContext) fieldContext_Mutation_updateDepartmentWhere(ctx cont
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -13136,8 +12477,6 @@ func (ec *executionContext) fieldContext_Mutation_createMessage(ctx context.Cont
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -13244,8 +12583,6 @@ func (ec *executionContext) fieldContext_Mutation_updateMessageWhere(ctx context
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -13309,8 +12646,6 @@ func (ec *executionContext) fieldContext_Mutation_createQueue(ctx context.Contex
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -13413,8 +12748,6 @@ func (ec *executionContext) fieldContext_Mutation_updateQueueWhere(ctx context.C
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -13478,8 +12811,6 @@ func (ec *executionContext) fieldContext_Mutation_createCrmField(ctx context.Con
 				return ec.fieldContext_CrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_CrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_CrmField_tenantid(ctx, field)
 			case "dropdownlist":
 				return ec.fieldContext_CrmField_dropdownlist(ctx, field)
 			case "dealcrmfield":
@@ -13582,8 +12913,6 @@ func (ec *executionContext) fieldContext_Mutation_updateCrmFieldWhere(ctx contex
 				return ec.fieldContext_CrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_CrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_CrmField_tenantid(ctx, field)
 			case "dropdownlist":
 				return ec.fieldContext_CrmField_dropdownlist(ctx, field)
 			case "dealcrmfield":
@@ -13641,8 +12970,6 @@ func (ec *executionContext) fieldContext_Mutation_createDealCrmField(ctx context
 				return ec.fieldContext_DealCrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DealCrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DealCrmField_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_DealCrmField_deal(ctx, field)
 			case "crmfield":
@@ -13741,8 +13068,6 @@ func (ec *executionContext) fieldContext_Mutation_updateDealCrmFieldWhere(ctx co
 				return ec.fieldContext_DealCrmField_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_DealCrmField_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_DealCrmField_tenantid(ctx, field)
 			case "deal":
 				return ec.fieldContext_DealCrmField_deal(ctx, field)
 			case "crmfield":
@@ -14007,8 +13332,6 @@ func (ec *executionContext) fieldContext_Mutation_createRbac(ctx context.Context
 				return ec.fieldContext_Rbac_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Rbac_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Rbac_tenantid(ctx, field)
 			case "department":
 				return ec.fieldContext_Rbac_department(ctx, field)
 			case "tenant":
@@ -14105,8 +13428,6 @@ func (ec *executionContext) fieldContext_Mutation_updateRbacWhere(ctx context.Co
 				return ec.fieldContext_Rbac_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Rbac_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Rbac_tenantid(ctx, field)
 			case "department":
 				return ec.fieldContext_Rbac_department(ctx, field)
 			case "tenant":
@@ -14361,35 +13682,6 @@ func (ec *executionContext) fieldContext_Pipeline_updatedat(_ context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Pipeline_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Pipeline) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Pipeline_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Pipeline().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Pipeline_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Pipeline",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Pipeline_tenant(ctx context.Context, field graphql.CollectedField, obj *ent.Pipeline) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -14400,9 +13692,9 @@ func (ec *executionContext) _Pipeline_tenant(ctx context.Context, field graphql.
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -14497,8 +13789,6 @@ func (ec *executionContext) fieldContext_Pipeline_stages(_ context.Context, fiel
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -14649,8 +13939,6 @@ func (ec *executionContext) fieldContext_PipelineEdge_node(_ context.Context, fi
 				return ec.fieldContext_Pipeline_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Pipeline_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Pipeline_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Pipeline_tenant(ctx, field)
 			case "stages":
@@ -15761,35 +15049,6 @@ func (ec *executionContext) fieldContext_Queue_updatedat(_ context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Queue_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Queue) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Queue_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Queue().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Queue_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Queue",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Queue_stages(ctx context.Context, field graphql.CollectedField, obj *ent.Queue) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -15826,8 +15085,6 @@ func (ec *executionContext) fieldContext_Queue_stages(_ context.Context, field g
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -15877,8 +15134,6 @@ func (ec *executionContext) fieldContext_Queue_employees(_ context.Context, fiel
 				return ec.fieldContext_Employee_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Employee_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Employee_tenantid(ctx, field)
 			case "employeeauth":
 				return ec.fieldContext_Employee_employeeauth(ctx, field)
 			case "tenant":
@@ -15930,8 +15185,6 @@ func (ec *executionContext) fieldContext_Queue_department(_ context.Context, fie
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -15957,9 +15210,9 @@ func (ec *executionContext) _Queue_tenant(ctx context.Context, field graphql.Col
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -16155,8 +15408,6 @@ func (ec *executionContext) fieldContext_QueueEdge_node(_ context.Context, field
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -16317,35 +15568,6 @@ func (ec *executionContext) fieldContext_Rbac_updatedat(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Rbac_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Rbac) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Rbac_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Rbac().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Rbac_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Rbac",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Rbac_department(ctx context.Context, field graphql.CollectedField, obj *ent.Rbac) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -16378,8 +15600,6 @@ func (ec *executionContext) fieldContext_Rbac_department(_ context.Context, fiel
 				return ec.fieldContext_Department_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Department_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Department_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Department_tenant(ctx, field)
 			case "employee":
@@ -16405,9 +15625,9 @@ func (ec *executionContext) _Rbac_tenant(ctx context.Context, field graphql.Coll
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -16601,8 +15821,6 @@ func (ec *executionContext) fieldContext_RbacEdge_node(_ context.Context, field 
 				return ec.fieldContext_Rbac_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Rbac_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Rbac_tenantid(ctx, field)
 			case "department":
 				return ec.fieldContext_Rbac_department(ctx, field)
 			case "tenant":
@@ -16817,35 +16035,6 @@ func (ec *executionContext) fieldContext_Stage_updatedat(_ context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Stage_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Stage) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Stage_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Stage().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Stage_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Stage",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Stage_pipeline(ctx context.Context, field graphql.CollectedField, obj *ent.Stage) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -16878,8 +16067,6 @@ func (ec *executionContext) fieldContext_Stage_pipeline(_ context.Context, field
 				return ec.fieldContext_Pipeline_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Pipeline_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Pipeline_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Pipeline_tenant(ctx, field)
 			case "stages":
@@ -16925,8 +16112,6 @@ func (ec *executionContext) fieldContext_Stage_deals(_ context.Context, field gr
 				return ec.fieldContext_Deal_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Deal_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Deal_tenantid(ctx, field)
 			case "tenant":
 				return ec.fieldContext_Deal_tenant(ctx, field)
 			case "costumer":
@@ -16978,8 +16163,6 @@ func (ec *executionContext) fieldContext_Stage_queue(_ context.Context, field gr
 				return ec.fieldContext_Queue_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Queue_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Queue_tenantid(ctx, field)
 			case "stages":
 				return ec.fieldContext_Queue_stages(ctx, field)
 			case "employees":
@@ -17005,9 +16188,9 @@ func (ec *executionContext) _Stage_tenant(ctx context.Context, field graphql.Col
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -17205,8 +16388,6 @@ func (ec *executionContext) fieldContext_StageEdge_node(_ context.Context, field
 				return ec.fieldContext_Stage_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Stage_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Stage_tenantid(ctx, field)
 			case "pipeline":
 				return ec.fieldContext_Stage_pipeline(ctx, field)
 			case "deals":
@@ -17309,35 +16490,6 @@ func (ec *executionContext) fieldContext_Text_text(_ context.Context, field grap
 	return fc, nil
 }
 
-func (ec *executionContext) _Text_tenantid(ctx context.Context, field graphql.CollectedField, obj *ent.Text) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Text_tenantid,
-		func(ctx context.Context) (any, error) {
-			return ec.resolvers.Text().TenantId(ctx, obj)
-		},
-		nil,
-		ec.marshalOID2ᚖstring,
-		true,
-		false,
-	)
-}
-
-func (ec *executionContext) fieldContext_Text_tenantid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Text",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Text_message(ctx context.Context, field graphql.CollectedField, obj *ent.Text) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -17374,8 +16526,6 @@ func (ec *executionContext) fieldContext_Text_message(_ context.Context, field g
 				return ec.fieldContext_Message_createdat(ctx, field)
 			case "updatedat":
 				return ec.fieldContext_Message_updatedat(ctx, field)
-			case "tenantid":
-				return ec.fieldContext_Message_tenantid(ctx, field)
 			case "chat":
 				return ec.fieldContext_Message_chat(ctx, field)
 			case "employee":
@@ -17403,9 +16553,9 @@ func (ec *executionContext) _Text_tenant(ctx context.Context, field graphql.Coll
 			return obj.Tenant(ctx)
 		},
 		nil,
-		ec.marshalOCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
+		ec.marshalNCompany2ᚖgithubᚗcomᚋgitwbᚑcᚋcrmᚗsaasᚋbackendᚋinternalᚋentᚐCompany,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -18955,7 +18105,7 @@ func (ec *executionContext) unmarshalInputChatWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "title", "titleNEQ", "titleIn", "titleNotIn", "titleGT", "titleGTE", "titleLT", "titleLTE", "titleContains", "titleHasPrefix", "titleHasSuffix", "titleEqualFold", "titleContainsFold", "accepted", "acceptedNEQ", "locked", "lockedNEQ", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasDeal", "hasDealWith", "hasEmployees", "hasEmployeesWith", "hasMessages", "hasMessagesWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "title", "titleNEQ", "titleIn", "titleNotIn", "titleGT", "titleGTE", "titleLT", "titleLTE", "titleContains", "titleHasPrefix", "titleHasSuffix", "titleEqualFold", "titleContainsFold", "accepted", "acceptedNEQ", "locked", "lockedNEQ", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasDeal", "hasDealWith", "hasEmployees", "hasEmployeesWith", "hasMessages", "hasMessagesWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -19053,6 +18203,42 @@ func (ec *executionContext) unmarshalInputChatWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			if err = ec.resolvers.ChatWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ChatWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ChatWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ChatWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ChatWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "title":
@@ -19286,56 +18472,6 @@ func (ec *executionContext) unmarshalInputChatWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.ChatWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.ChatWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.ChatWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.ChatWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasDeal":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasDeal"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -20021,7 +19157,7 @@ func (ec *executionContext) unmarshalInputCostumerWhereInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "phone", "phoneNEQ", "phoneIn", "phoneNotIn", "phoneGT", "phoneGTE", "phoneLT", "phoneLTE", "phoneContains", "phoneHasPrefix", "phoneHasSuffix", "phoneEqualFold", "phoneContainsFold", "email", "emailNEQ", "emailIn", "emailNotIn", "emailGT", "emailGTE", "emailLT", "emailLTE", "emailContains", "emailHasPrefix", "emailHasSuffix", "emailEqualFold", "emailContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasTenant", "hasTenantWith", "hasDeals", "hasDealsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "phone", "phoneNEQ", "phoneIn", "phoneNotIn", "phoneGT", "phoneGTE", "phoneLT", "phoneLTE", "phoneContains", "phoneHasPrefix", "phoneHasSuffix", "phoneEqualFold", "phoneContainsFold", "email", "emailNEQ", "emailIn", "emailNotIn", "emailGT", "emailGTE", "emailLT", "emailLTE", "emailContains", "emailHasPrefix", "emailHasSuffix", "emailEqualFold", "emailContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasTenant", "hasTenantWith", "hasDeals", "hasDealsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20119,6 +19255,42 @@ func (ec *executionContext) unmarshalInputCostumerWhereInput(ctx context.Context
 				return it, err
 			}
 			if err = ec.resolvers.CostumerWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CostumerWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CostumerWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CostumerWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CostumerWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -20506,56 +19678,6 @@ func (ec *executionContext) unmarshalInputCostumerWhereInput(ctx context.Context
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CostumerWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CostumerWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CostumerWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CostumerWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasTenant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTenant"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -20597,7 +19719,7 @@ func (ec *executionContext) unmarshalInputCreateChatInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "accepted", "locked", "createdat", "updatedat", "dealID", "employeeIDs", "messageIDs", "tenantID"}
+	fieldsInOrder := [...]string{"title", "accepted", "locked", "createdat", "updatedat", "dealID", "employeeIDs", "messageIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20664,15 +19786,6 @@ func (ec *executionContext) unmarshalInputCreateChatInput(ctx context.Context, o
 				return it, err
 			}
 			if err = ec.resolvers.CreateChatInput().MessageIDs(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateChatInput().TenantID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -20873,7 +19986,7 @@ func (ec *executionContext) unmarshalInputCreateCostumerInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "phone", "email", "createdat", "updatedat", "tenantID", "dealIDs"}
+	fieldsInOrder := [...]string{"name", "phone", "email", "createdat", "updatedat", "dealIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20915,15 +20028,6 @@ func (ec *executionContext) unmarshalInputCreateCostumerInput(ctx context.Contex
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateCostumerInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		case "dealIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dealIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -20946,7 +20050,7 @@ func (ec *executionContext) unmarshalInputCreateCrmFieldInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "section", "type", "createdat", "updatedat", "dropdownlistIDs", "dealcrmfieldIDs", "tenantID"}
+	fieldsInOrder := [...]string{"name", "section", "type", "createdat", "updatedat", "dropdownlistIDs", "dealcrmfieldIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21006,15 +20110,6 @@ func (ec *executionContext) unmarshalInputCreateCrmFieldInput(ctx context.Contex
 			if err = ec.resolvers.CreateCrmFieldInput().DealcrmfieldIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateCrmFieldInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21028,7 +20123,7 @@ func (ec *executionContext) unmarshalInputCreateDealCrmFieldInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"value", "createdat", "updatedat", "dealID", "crmfieldID", "tenantID"}
+	fieldsInOrder := [...]string{"value", "createdat", "updatedat", "dealID", "crmfieldID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21074,15 +20169,6 @@ func (ec *executionContext) unmarshalInputCreateDealCrmFieldInput(ctx context.Co
 			if err = ec.resolvers.CreateDealCrmFieldInput().CrmfieldID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateDealCrmFieldInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21096,7 +20182,7 @@ func (ec *executionContext) unmarshalInputCreateDealInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "source", "createdat", "updatedat", "tenantID", "costumerID", "chatID", "stageID", "dealcrmfieldIDs"}
+	fieldsInOrder := [...]string{"title", "source", "createdat", "updatedat", "costumerID", "chatID", "stageID", "dealcrmfieldIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21131,15 +20217,6 @@ func (ec *executionContext) unmarshalInputCreateDealInput(ctx context.Context, o
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateDealInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		case "costumerID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("costumerID"))
 			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
@@ -21189,7 +20266,7 @@ func (ec *executionContext) unmarshalInputCreateDepartmentInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "createdat", "updatedat", "tenantID", "employeeIDs", "queueIDs", "rbacIDs"}
+	fieldsInOrder := [...]string{"name", "createdat", "updatedat", "employeeIDs", "queueIDs", "rbacIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21217,15 +20294,6 @@ func (ec *executionContext) unmarshalInputCreateDepartmentInput(ctx context.Cont
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateDepartmentInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		case "employeeIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -21266,7 +20334,7 @@ func (ec *executionContext) unmarshalInputCreateDropdownListInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"value", "createdat", "updatedat", "crmfieldIDs", "tenantID"}
+	fieldsInOrder := [...]string{"value", "createdat", "updatedat", "crmfieldIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21303,15 +20371,6 @@ func (ec *executionContext) unmarshalInputCreateDropdownListInput(ctx context.Co
 			if err = ec.resolvers.CreateDropdownListInput().CrmfieldIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateDropdownListInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21325,7 +20384,7 @@ func (ec *executionContext) unmarshalInputCreateEmployeeAuthInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "email", "password", "createdat", "updatedat", "employeeID", "tenantID"}
+	fieldsInOrder := [...]string{"name", "email", "password", "createdat", "updatedat", "employeeID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21376,15 +20435,6 @@ func (ec *executionContext) unmarshalInputCreateEmployeeAuthInput(ctx context.Co
 			if err = ec.resolvers.CreateEmployeeAuthInput().EmployeeID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateEmployeeAuthInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21398,7 +20448,7 @@ func (ec *executionContext) unmarshalInputCreateEmployeeInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "employmentstatus", "createdat", "updatedat", "employeeauthID", "tenantID", "departmentID", "chatIDs", "queueIDs", "messageIDs"}
+	fieldsInOrder := [...]string{"name", "employmentstatus", "createdat", "updatedat", "employeeauthID", "departmentID", "chatIDs", "queueIDs", "messageIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21440,15 +20490,6 @@ func (ec *executionContext) unmarshalInputCreateEmployeeInput(ctx context.Contex
 				return it, err
 			}
 			if err = ec.resolvers.CreateEmployeeInput().EmployeeauthID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateEmployeeInput().TenantID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "departmentID":
@@ -21500,7 +20541,7 @@ func (ec *executionContext) unmarshalInputCreateFileInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"url", "caption", "mimetype", "filename", "messageID", "tenantID"}
+	fieldsInOrder := [...]string{"url", "caption", "mimetype", "filename", "messageID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21544,15 +20585,6 @@ func (ec *executionContext) unmarshalInputCreateFileInput(ctx context.Context, o
 			if err = ec.resolvers.CreateFileInput().MessageID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateFileInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21566,7 +20598,7 @@ func (ec *executionContext) unmarshalInputCreateMessageInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"sentby", "private", "type", "createdat", "updatedat", "chatID", "employeeIDs", "textID", "fileID", "tenantID"}
+	fieldsInOrder := [...]string{"sentby", "private", "type", "createdat", "updatedat", "chatID", "employeeIDs", "textID", "fileID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21644,15 +20676,6 @@ func (ec *executionContext) unmarshalInputCreateMessageInput(ctx context.Context
 			if err = ec.resolvers.CreateMessageInput().FileID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateMessageInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21666,7 +20689,7 @@ func (ec *executionContext) unmarshalInputCreatePipelineInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "createdat", "updatedat", "tenantID", "stageIDs"}
+	fieldsInOrder := [...]string{"name", "createdat", "updatedat", "stageIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21694,15 +20717,6 @@ func (ec *executionContext) unmarshalInputCreatePipelineInput(ctx context.Contex
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreatePipelineInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		case "stageIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stageIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -21725,7 +20739,7 @@ func (ec *executionContext) unmarshalInputCreateQueueInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "type", "createdat", "updatedat", "stageIDs", "employeeIDs", "departmentIDs", "tenantID"}
+	fieldsInOrder := [...]string{"name", "type", "createdat", "updatedat", "stageIDs", "employeeIDs", "departmentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21787,15 +20801,6 @@ func (ec *executionContext) unmarshalInputCreateQueueInput(ctx context.Context, 
 			if err = ec.resolvers.CreateQueueInput().DepartmentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateQueueInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21809,7 +20814,7 @@ func (ec *executionContext) unmarshalInputCreateRbacInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"access", "createdat", "updatedat", "departmentID", "tenantID"}
+	fieldsInOrder := [...]string{"access", "createdat", "updatedat", "departmentID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21846,15 +20851,6 @@ func (ec *executionContext) unmarshalInputCreateRbacInput(ctx context.Context, o
 			if err = ec.resolvers.CreateRbacInput().DepartmentID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateRbacInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21868,7 +20864,7 @@ func (ec *executionContext) unmarshalInputCreateStageInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "color", "lossorgain", "createdat", "updatedat", "pipelineID", "dealIDs", "queueID", "tenantID"}
+	fieldsInOrder := [...]string{"name", "color", "lossorgain", "createdat", "updatedat", "pipelineID", "dealIDs", "queueID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21937,15 +20933,6 @@ func (ec *executionContext) unmarshalInputCreateStageInput(ctx context.Context, 
 			if err = ec.resolvers.CreateStageInput().QueueID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateStageInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -21959,7 +20946,7 @@ func (ec *executionContext) unmarshalInputCreateTextInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"text", "messageID", "tenantID"}
+	fieldsInOrder := [...]string{"text", "messageID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21980,15 +20967,6 @@ func (ec *executionContext) unmarshalInputCreateTextInput(ctx context.Context, o
 				return it, err
 			}
 			if err = ec.resolvers.CreateTextInput().MessageID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateTextInput().TenantID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -22042,7 +21020,7 @@ func (ec *executionContext) unmarshalInputCrmFieldWhereInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "section", "sectionNEQ", "sectionIn", "sectionNotIn", "sectionGT", "sectionGTE", "sectionLT", "sectionLTE", "sectionContains", "sectionHasPrefix", "sectionHasSuffix", "sectionEqualFold", "sectionContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasDropdownList", "hasDropdownListWith", "hasDealCrmField", "hasDealCrmFieldWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "section", "sectionNEQ", "sectionIn", "sectionNotIn", "sectionGT", "sectionGTE", "sectionLT", "sectionLTE", "sectionContains", "sectionHasPrefix", "sectionHasSuffix", "sectionEqualFold", "sectionContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasDropdownList", "hasDropdownListWith", "hasDealCrmField", "hasDealCrmFieldWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -22140,6 +21118,42 @@ func (ec *executionContext) unmarshalInputCrmFieldWhereInput(ctx context.Context
 				return it, err
 			}
 			if err = ec.resolvers.CrmFieldWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CrmFieldWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CrmFieldWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CrmFieldWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.CrmFieldWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -22464,56 +21478,6 @@ func (ec *executionContext) unmarshalInputCrmFieldWhereInput(ctx context.Context
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CrmFieldWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CrmFieldWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CrmFieldWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CrmFieldWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasDropdownList":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasDropdownList"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -22607,7 +21571,7 @@ func (ec *executionContext) unmarshalInputDealCrmFieldWhereInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "value", "valueNEQ", "valueIn", "valueNotIn", "valueGT", "valueGTE", "valueLT", "valueLTE", "valueContains", "valueHasPrefix", "valueHasSuffix", "valueEqualFold", "valueContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasDeal", "hasDealWith", "hasCrmField", "hasCrmFieldWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "value", "valueNEQ", "valueIn", "valueNotIn", "valueGT", "valueGTE", "valueLT", "valueLTE", "valueContains", "valueHasPrefix", "valueHasSuffix", "valueEqualFold", "valueContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasDeal", "hasDealWith", "hasCrmField", "hasCrmFieldWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -22705,6 +21669,42 @@ func (ec *executionContext) unmarshalInputDealCrmFieldWhereInput(ctx context.Con
 				return it, err
 			}
 			if err = ec.resolvers.DealCrmFieldWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealCrmFieldWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealCrmFieldWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealCrmFieldWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealCrmFieldWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "value":
@@ -22910,56 +21910,6 @@ func (ec *executionContext) unmarshalInputDealCrmFieldWhereInput(ctx context.Con
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealCrmFieldWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealCrmFieldWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealCrmFieldWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealCrmFieldWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasDeal":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasDeal"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -23053,7 +22003,7 @@ func (ec *executionContext) unmarshalInputDealWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "title", "titleNEQ", "titleIn", "titleNotIn", "titleGT", "titleGTE", "titleLT", "titleLTE", "titleContains", "titleHasPrefix", "titleHasSuffix", "titleEqualFold", "titleContainsFold", "source", "sourceNEQ", "sourceIn", "sourceNotIn", "sourceGT", "sourceGTE", "sourceLT", "sourceLTE", "sourceContains", "sourceHasPrefix", "sourceHasSuffix", "sourceEqualFold", "sourceContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasTenant", "hasTenantWith", "hasCostumer", "hasCostumerWith", "hasChat", "hasChatWith", "hasStage", "hasStageWith", "hasDealCrmFields", "hasDealCrmFieldsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "title", "titleNEQ", "titleIn", "titleNotIn", "titleGT", "titleGTE", "titleLT", "titleLTE", "titleContains", "titleHasPrefix", "titleHasSuffix", "titleEqualFold", "titleContainsFold", "source", "sourceNEQ", "sourceIn", "sourceNotIn", "sourceGT", "sourceGTE", "sourceLT", "sourceLTE", "sourceContains", "sourceHasPrefix", "sourceHasSuffix", "sourceEqualFold", "sourceContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasTenant", "hasTenantWith", "hasCostumer", "hasCostumerWith", "hasChat", "hasChatWith", "hasStage", "hasStageWith", "hasDealCrmFields", "hasDealCrmFieldsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -23151,6 +22101,42 @@ func (ec *executionContext) unmarshalInputDealWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			if err = ec.resolvers.DealWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DealWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "title":
@@ -23447,56 +22433,6 @@ func (ec *executionContext) unmarshalInputDealWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DealWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasTenant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTenant"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -23618,7 +22554,7 @@ func (ec *executionContext) unmarshalInputDepartmentWhereInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasTenant", "hasTenantWith", "hasEmployee", "hasEmployeeWith", "hasQueues", "hasQueuesWith", "hasRbacs", "hasRbacsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasTenant", "hasTenantWith", "hasEmployee", "hasEmployeeWith", "hasQueues", "hasQueuesWith", "hasRbacs", "hasRbacsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -23716,6 +22652,42 @@ func (ec *executionContext) unmarshalInputDepartmentWhereInput(ctx context.Conte
 				return it, err
 			}
 			if err = ec.resolvers.DepartmentWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DepartmentWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DepartmentWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DepartmentWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DepartmentWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -23921,56 +22893,6 @@ func (ec *executionContext) unmarshalInputDepartmentWhereInput(ctx context.Conte
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DepartmentWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DepartmentWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DepartmentWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DepartmentWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasTenant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTenant"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -24078,7 +23000,7 @@ func (ec *executionContext) unmarshalInputDropdownListWhereInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "value", "valueNEQ", "valueIn", "valueNotIn", "valueGT", "valueGTE", "valueLT", "valueLTE", "valueContains", "valueHasPrefix", "valueHasSuffix", "valueEqualFold", "valueContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasCrmField", "hasCrmFieldWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "value", "valueNEQ", "valueIn", "valueNotIn", "valueGT", "valueGTE", "valueLT", "valueLTE", "valueContains", "valueHasPrefix", "valueHasSuffix", "valueEqualFold", "valueContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasCrmField", "hasCrmFieldWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -24176,6 +23098,42 @@ func (ec *executionContext) unmarshalInputDropdownListWhereInput(ctx context.Con
 				return it, err
 			}
 			if err = ec.resolvers.DropdownListWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DropdownListWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DropdownListWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DropdownListWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.DropdownListWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "value":
@@ -24381,56 +23339,6 @@ func (ec *executionContext) unmarshalInputDropdownListWhereInput(ctx context.Con
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DropdownListWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DropdownListWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DropdownListWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.DropdownListWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasCrmField":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasCrmField"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -24510,7 +23418,7 @@ func (ec *executionContext) unmarshalInputEmployeeAuthWhereInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "hasEmployee", "hasEmployeeWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasEmployee", "hasEmployeeWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -24608,6 +23516,42 @@ func (ec *executionContext) unmarshalInputEmployeeAuthWhereInput(ctx context.Con
 				return it, err
 			}
 			if err = ec.resolvers.EmployeeAuthWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeAuthWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeAuthWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeAuthWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeAuthWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -24813,42 +23757,6 @@ func (ec *executionContext) unmarshalInputEmployeeAuthWhereInput(ctx context.Con
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeAuthWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeAuthWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeAuthWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeAuthWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
 		case "hasEmployee":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasEmployee"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -24928,7 +23836,7 @@ func (ec *executionContext) unmarshalInputEmployeeWhereInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "employmentstatus", "employmentstatusNEQ", "employmentstatusIn", "employmentstatusNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasEmployeeAuth", "hasEmployeeAuthWith", "hasTenant", "hasTenantWith", "hasDepartment", "hasDepartmentWith", "hasChat", "hasChatWith", "hasQueues", "hasQueuesWith", "hasMessages", "hasMessagesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "employmentstatus", "employmentstatusNEQ", "employmentstatusIn", "employmentstatusNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasEmployeeAuth", "hasEmployeeAuthWith", "hasTenant", "hasTenantWith", "hasDepartment", "hasDepartmentWith", "hasChat", "hasChatWith", "hasQueues", "hasQueuesWith", "hasMessages", "hasMessagesWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -25026,6 +23934,42 @@ func (ec *executionContext) unmarshalInputEmployeeWhereInput(ctx context.Context
 				return it, err
 			}
 			if err = ec.resolvers.EmployeeWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.EmployeeWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -25259,56 +24203,6 @@ func (ec *executionContext) unmarshalInputEmployeeWhereInput(ctx context.Context
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.EmployeeWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasEmployeeAuth":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasEmployeeAuth"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -25444,7 +24338,7 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "url", "urlNEQ", "urlIn", "urlNotIn", "urlGT", "urlGTE", "urlLT", "urlLTE", "urlContains", "urlHasPrefix", "urlHasSuffix", "urlEqualFold", "urlContainsFold", "caption", "captionNEQ", "captionIn", "captionNotIn", "captionGT", "captionGTE", "captionLT", "captionLTE", "captionContains", "captionHasPrefix", "captionHasSuffix", "captionIsNil", "captionNotNil", "captionEqualFold", "captionContainsFold", "mimetype", "mimetypeNEQ", "mimetypeIn", "mimetypeNotIn", "mimetypeGT", "mimetypeGTE", "mimetypeLT", "mimetypeLTE", "mimetypeContains", "mimetypeHasPrefix", "mimetypeHasSuffix", "mimetypeEqualFold", "mimetypeContainsFold", "filename", "filenameNEQ", "filenameIn", "filenameNotIn", "filenameGT", "filenameGTE", "filenameLT", "filenameLTE", "filenameContains", "filenameHasPrefix", "filenameHasSuffix", "filenameEqualFold", "filenameContainsFold", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasMessage", "hasMessageWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "url", "urlNEQ", "urlIn", "urlNotIn", "urlGT", "urlGTE", "urlLT", "urlLTE", "urlContains", "urlHasPrefix", "urlHasSuffix", "urlEqualFold", "urlContainsFold", "caption", "captionNEQ", "captionIn", "captionNotIn", "captionGT", "captionGTE", "captionLT", "captionLTE", "captionContains", "captionHasPrefix", "captionHasSuffix", "captionIsNil", "captionNotNil", "captionEqualFold", "captionContainsFold", "mimetype", "mimetypeNEQ", "mimetypeIn", "mimetypeNotIn", "mimetypeGT", "mimetypeGTE", "mimetypeLT", "mimetypeLTE", "mimetypeContains", "mimetypeHasPrefix", "mimetypeHasSuffix", "mimetypeEqualFold", "mimetypeContainsFold", "filename", "filenameNEQ", "filenameIn", "filenameNotIn", "filenameGT", "filenameGTE", "filenameLT", "filenameLTE", "filenameContains", "filenameHasPrefix", "filenameHasSuffix", "filenameEqualFold", "filenameContainsFold", "hasMessage", "hasMessageWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -25542,6 +24436,42 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			if err = ec.resolvers.FileWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.FileWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.FileWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.FileWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.FileWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "url":
@@ -25922,56 +24852,6 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.FileNameContainsFold = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FileWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FileWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FileWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FileWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasMessage":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMessage"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -26051,7 +24931,7 @@ func (ec *executionContext) unmarshalInputMessageWhereInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "sentby", "sentbyNEQ", "sentbyIn", "sentbyNotIn", "private", "privateNEQ", "type", "typeNEQ", "typeIn", "typeNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasChat", "hasChatWith", "hasEmployee", "hasEmployeeWith", "hasText", "hasTextWith", "hasFile", "hasFileWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "sentby", "sentbyNEQ", "sentbyIn", "sentbyNotIn", "private", "privateNEQ", "type", "typeNEQ", "typeIn", "typeNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasChat", "hasChatWith", "hasEmployee", "hasEmployeeWith", "hasText", "hasTextWith", "hasFile", "hasFileWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -26149,6 +25029,42 @@ func (ec *executionContext) unmarshalInputMessageWhereInput(ctx context.Context,
 				return it, err
 			}
 			if err = ec.resolvers.MessageWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.MessageWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.MessageWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.MessageWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.MessageWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "sentby":
@@ -26333,56 +25249,6 @@ func (ec *executionContext) unmarshalInputMessageWhereInput(ctx context.Context,
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MessageWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MessageWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MessageWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MessageWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasChat":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChat"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -26504,7 +25370,7 @@ func (ec *executionContext) unmarshalInputPipelineWhereInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasTenant", "hasTenantWith", "hasStages", "hasStagesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasTenant", "hasTenantWith", "hasStages", "hasStagesWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -26602,6 +25468,42 @@ func (ec *executionContext) unmarshalInputPipelineWhereInput(ctx context.Context
 				return it, err
 			}
 			if err = ec.resolvers.PipelineWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.PipelineWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.PipelineWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.PipelineWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.PipelineWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -26807,56 +25709,6 @@ func (ec *executionContext) unmarshalInputPipelineWhereInput(ctx context.Context
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PipelineWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PipelineWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PipelineWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PipelineWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasTenant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTenant"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -26936,7 +25788,7 @@ func (ec *executionContext) unmarshalInputQueueWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasStages", "hasStagesWith", "hasEmployees", "hasEmployeesWith", "hasDepartment", "hasDepartmentWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasStages", "hasStagesWith", "hasEmployees", "hasEmployeesWith", "hasDepartment", "hasDepartmentWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27034,6 +25886,42 @@ func (ec *executionContext) unmarshalInputQueueWhereInput(ctx context.Context, o
 				return it, err
 			}
 			if err = ec.resolvers.QueueWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QueueWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QueueWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QueueWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QueueWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -27267,56 +26155,6 @@ func (ec *executionContext) unmarshalInputQueueWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.QueueWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.QueueWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.QueueWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.QueueWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasStages":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasStages"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -27424,7 +26262,7 @@ func (ec *executionContext) unmarshalInputRbacWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "access", "accessNEQ", "accessIn", "accessNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasDepartment", "hasDepartmentWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "access", "accessNEQ", "accessIn", "accessNotIn", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasDepartment", "hasDepartmentWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27522,6 +26360,42 @@ func (ec *executionContext) unmarshalInputRbacWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			if err = ec.resolvers.RbacWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.RbacWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.RbacWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.RbacWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.RbacWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "access":
@@ -27664,56 +26538,6 @@ func (ec *executionContext) unmarshalInputRbacWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RbacWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RbacWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RbacWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RbacWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasDepartment":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasDepartment"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -27793,7 +26617,7 @@ func (ec *executionContext) unmarshalInputStageWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "color", "colorNEQ", "colorIn", "colorNotIn", "colorGT", "colorGTE", "colorLT", "colorLTE", "colorContains", "colorHasPrefix", "colorHasSuffix", "colorEqualFold", "colorContainsFold", "lossorgain", "lossorgainNEQ", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasPipeline", "hasPipelineWith", "hasDeals", "hasDealsWith", "hasQueue", "hasQueueWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "color", "colorNEQ", "colorIn", "colorNotIn", "colorGT", "colorGTE", "colorLT", "colorLTE", "colorContains", "colorHasPrefix", "colorHasSuffix", "colorEqualFold", "colorContainsFold", "lossorgain", "lossorgainNEQ", "createdat", "createdatNEQ", "createdatIn", "createdatNotIn", "createdatGT", "createdatGTE", "createdatLT", "createdatLTE", "updatedat", "updatedatNEQ", "updatedatIn", "updatedatNotIn", "updatedatGT", "updatedatGTE", "updatedatLT", "updatedatLTE", "hasPipeline", "hasPipelineWith", "hasDeals", "hasDealsWith", "hasQueue", "hasQueueWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27891,6 +26715,42 @@ func (ec *executionContext) unmarshalInputStageWhereInput(ctx context.Context, o
 				return it, err
 			}
 			if err = ec.resolvers.StageWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.StageWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.StageWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.StageWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.StageWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "name":
@@ -28201,56 +27061,6 @@ func (ec *executionContext) unmarshalInputStageWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.UpdatedAtLTE = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.StageWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.StageWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.StageWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.StageWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasPipeline":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasPipeline"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -28358,7 +27168,7 @@ func (ec *executionContext) unmarshalInputTextWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "text", "textNEQ", "textIn", "textNotIn", "textGT", "textGTE", "textLT", "textLTE", "textContains", "textHasPrefix", "textHasSuffix", "textEqualFold", "textContainsFold", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "tenantidIsNil", "tenantidNotNil", "hasMessage", "hasMessageWith", "hasTenant", "hasTenantWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "tenantid", "tenantidNEQ", "tenantidIn", "tenantidNotIn", "text", "textNEQ", "textIn", "textNotIn", "textGT", "textGTE", "textLT", "textLTE", "textContains", "textHasPrefix", "textHasSuffix", "textEqualFold", "textContainsFold", "hasMessage", "hasMessageWith", "hasTenant", "hasTenantWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -28458,6 +27268,42 @@ func (ec *executionContext) unmarshalInputTextWhereInput(ctx context.Context, ob
 			if err = ec.resolvers.TextWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
+		case "tenantid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TextWhereInput().Tenantid(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TextWhereInput().TenantidNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TextWhereInput().TenantidIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "tenantidNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TextWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
+				return it, err
+			}
 		case "text":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -28549,56 +27395,6 @@ func (ec *executionContext) unmarshalInputTextWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.TextContainsFold = data
-		case "tenantid":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantid"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.TextWhereInput().Tenantid(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.TextWhereInput().TenantidNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.TextWhereInput().TenantidIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.TextWhereInput().TenantidNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "tenantidIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdIsNil = data
-		case "tenantidNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantidNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIdNotNil = data
 		case "hasMessage":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMessage"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -28640,7 +27436,7 @@ func (ec *executionContext) unmarshalInputUpdateChatInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "accepted", "locked", "updatedat", "dealID", "clearDeal", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployees", "addMessageIDs", "removeMessageIDs", "clearMessages", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"title", "accepted", "locked", "updatedat", "dealID", "clearDeal", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployees", "addMessageIDs", "removeMessageIDs", "clearMessages"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -28741,22 +27537,6 @@ func (ec *executionContext) unmarshalInputUpdateChatInput(ctx context.Context, o
 				return it, err
 			}
 			it.ClearMessages = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateChatInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -29204,7 +27984,7 @@ func (ec *executionContext) unmarshalInputUpdateCostumerInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "phone", "email", "updatedat", "tenantID", "clearTenant", "addDealIDs", "removeDealIDs", "clearDeals"}
+	fieldsInOrder := [...]string{"name", "phone", "email", "updatedat", "addDealIDs", "removeDealIDs", "clearDeals"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29239,22 +28019,6 @@ func (ec *executionContext) unmarshalInputUpdateCostumerInput(ctx context.Contex
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateCostumerInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		case "addDealIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addDealIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -29293,7 +28057,7 @@ func (ec *executionContext) unmarshalInputUpdateCrmFieldInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "section", "updatedat", "addDropdownListIDs", "removeDropdownListIDs", "clearDropdownList", "addDealCrmFieldIDs", "removeDealCrmFieldIDs", "clearDealCrmField", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"name", "section", "updatedat", "addDropdownListIDs", "removeDropdownListIDs", "clearDropdownList", "addDealCrmFieldIDs", "removeDealCrmFieldIDs", "clearDealCrmField"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29371,22 +28135,6 @@ func (ec *executionContext) unmarshalInputUpdateCrmFieldInput(ctx context.Contex
 				return it, err
 			}
 			it.ClearDealCrmField = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateCrmFieldInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -29400,7 +28148,7 @@ func (ec *executionContext) unmarshalInputUpdateDealCrmFieldInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"value", "updatedat", "dealID", "crmfieldID", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"value", "updatedat", "dealID", "crmfieldID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29439,22 +28187,6 @@ func (ec *executionContext) unmarshalInputUpdateDealCrmFieldInput(ctx context.Co
 			if err = ec.resolvers.UpdateDealCrmFieldInput().CrmfieldID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateDealCrmFieldInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -29468,7 +28200,7 @@ func (ec *executionContext) unmarshalInputUpdateDealInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "source", "updatedat", "tenantID", "clearTenant", "costumerID", "clearCostumer", "chatID", "clearChat", "stageID", "addDealCrmFieldIDs", "removeDealCrmFieldIDs", "clearDealCrmFields"}
+	fieldsInOrder := [...]string{"title", "source", "updatedat", "costumerID", "clearCostumer", "chatID", "clearChat", "stageID", "addDealCrmFieldIDs", "removeDealCrmFieldIDs", "clearDealCrmFields"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29496,22 +28228,6 @@ func (ec *executionContext) unmarshalInputUpdateDealInput(ctx context.Context, o
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateDealInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		case "costumerID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("costumerID"))
 			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
@@ -29591,7 +28307,7 @@ func (ec *executionContext) unmarshalInputUpdateDepartmentInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "updatedat", "tenantID", "clearTenant", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployee", "addQueueIDs", "removeQueueIDs", "clearQueues", "addRbacIDs", "removeRbacIDs", "clearRbacs"}
+	fieldsInOrder := [...]string{"name", "updatedat", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployee", "addQueueIDs", "removeQueueIDs", "clearQueues", "addRbacIDs", "removeRbacIDs", "clearRbacs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29612,22 +28328,6 @@ func (ec *executionContext) unmarshalInputUpdateDepartmentInput(ctx context.Cont
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateDepartmentInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		case "addEmployeeIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addEmployeeIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -29716,7 +28416,7 @@ func (ec *executionContext) unmarshalInputUpdateDropdownListInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"value", "updatedat", "addCrmFieldIDs", "removeCrmFieldIDs", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"value", "updatedat", "addCrmFieldIDs", "removeCrmFieldIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29755,22 +28455,6 @@ func (ec *executionContext) unmarshalInputUpdateDropdownListInput(ctx context.Co
 			if err = ec.resolvers.UpdateDropdownListInput().RemoveCrmFieldIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateDropdownListInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -29784,7 +28468,7 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeAuthInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "email", "password", "updatedat", "employeeID", "clearEmployee", "tenantID"}
+	fieldsInOrder := [...]string{"name", "email", "password", "updatedat", "employeeID", "clearEmployee"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29835,15 +28519,6 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeAuthInput(ctx context.Co
 				return it, err
 			}
 			it.ClearEmployee = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateEmployeeAuthInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -29857,7 +28532,7 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "employmentstatus", "updatedat", "employeeauthID", "tenantID", "clearTenant", "departmentID", "addChatIDs", "removeChatIDs", "clearChat", "addQueueIDs", "removeQueueIDs", "clearQueues", "addMessageIDs", "removeMessageIDs", "clearMessages"}
+	fieldsInOrder := [...]string{"name", "employmentstatus", "updatedat", "employeeauthID", "departmentID", "addChatIDs", "removeChatIDs", "clearChat", "addQueueIDs", "removeQueueIDs", "clearQueues", "addMessageIDs", "removeMessageIDs", "clearMessages"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29894,22 +28569,6 @@ func (ec *executionContext) unmarshalInputUpdateEmployeeInput(ctx context.Contex
 			if err = ec.resolvers.UpdateEmployeeInput().EmployeeauthID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateEmployeeInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		case "departmentID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("departmentID"))
 			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
@@ -30007,7 +28666,7 @@ func (ec *executionContext) unmarshalInputUpdateFileInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"url", "caption", "clearCaption", "mimetype", "filename", "messageID", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"url", "caption", "clearCaption", "mimetype", "filename", "messageID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30058,22 +28717,6 @@ func (ec *executionContext) unmarshalInputUpdateFileInput(ctx context.Context, o
 			if err = ec.resolvers.UpdateFileInput().MessageID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateFileInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -30087,7 +28730,7 @@ func (ec *executionContext) unmarshalInputUpdateMessageInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"sentby", "private", "type", "updatedat", "chatID", "clearChat", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployee", "textID", "clearText", "fileID", "clearFile", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"sentby", "private", "type", "updatedat", "chatID", "clearChat", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployee", "textID", "clearText", "fileID", "clearFile"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30195,22 +28838,6 @@ func (ec *executionContext) unmarshalInputUpdateMessageInput(ctx context.Context
 				return it, err
 			}
 			it.ClearFile = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateMessageInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -30224,7 +28851,7 @@ func (ec *executionContext) unmarshalInputUpdatePipelineInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "updatedat", "tenantID", "clearTenant", "addStageIDs", "removeStageIDs", "clearStages"}
+	fieldsInOrder := [...]string{"name", "updatedat", "addStageIDs", "removeStageIDs", "clearStages"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30245,22 +28872,6 @@ func (ec *executionContext) unmarshalInputUpdatePipelineInput(ctx context.Contex
 				return it, err
 			}
 			it.UpdatedAt = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdatePipelineInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		case "addStageIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addStageIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -30299,7 +28910,7 @@ func (ec *executionContext) unmarshalInputUpdateQueueInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "type", "updatedat", "addStageIDs", "removeStageIDs", "clearStages", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployees", "addDepartmentIDs", "removeDepartmentIDs", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"name", "type", "updatedat", "addStageIDs", "removeStageIDs", "clearStages", "addEmployeeIDs", "removeEmployeeIDs", "clearEmployees", "addDepartmentIDs", "removeDepartmentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30395,22 +29006,6 @@ func (ec *executionContext) unmarshalInputUpdateQueueInput(ctx context.Context, 
 			if err = ec.resolvers.UpdateQueueInput().RemoveDepartmentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateQueueInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -30424,7 +29019,7 @@ func (ec *executionContext) unmarshalInputUpdateRbacInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"access", "updatedat", "departmentID", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"access", "updatedat", "departmentID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30454,22 +29049,6 @@ func (ec *executionContext) unmarshalInputUpdateRbacInput(ctx context.Context, o
 			if err = ec.resolvers.UpdateRbacInput().DepartmentID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateRbacInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -30483,7 +29062,7 @@ func (ec *executionContext) unmarshalInputUpdateStageInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "color", "lossorgain", "updatedat", "pipelineID", "addDealIDs", "removeDealIDs", "clearDeals", "queueID", "clearQueue", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"name", "color", "lossorgain", "updatedat", "pipelineID", "addDealIDs", "removeDealIDs", "clearDeals", "queueID", "clearQueue"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30568,22 +29147,6 @@ func (ec *executionContext) unmarshalInputUpdateStageInput(ctx context.Context, 
 				return it, err
 			}
 			it.ClearQueue = data
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateStageInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -30597,7 +29160,7 @@ func (ec *executionContext) unmarshalInputUpdateTextInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"text", "messageID", "tenantID", "clearTenant"}
+	fieldsInOrder := [...]string{"text", "messageID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30620,22 +29183,6 @@ func (ec *executionContext) unmarshalInputUpdateTextInput(ctx context.Context, o
 			if err = ec.resolvers.UpdateTextInput().MessageID(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateTextInput().TenantID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "clearTenant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearTenant"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearTenant = data
 		}
 	}
 
@@ -30816,39 +29363,6 @@ func (ec *executionContext) _Chat(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Chat_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "deal":
 			field := field
 
@@ -30951,13 +29465,16 @@ func (ec *executionContext) _Chat(ctx context.Context, sel ast.SelectionSet, obj
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Chat_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -31863,49 +30380,19 @@ func (ec *executionContext) _Costumer(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Costumer_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Costumer_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -32144,39 +30631,6 @@ func (ec *executionContext) _CrmField(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._CrmField_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "dropdownlist":
 			field := field
 
@@ -32246,13 +30700,16 @@ func (ec *executionContext) _CrmField(ctx context.Context, sel ast.SelectionSet,
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._CrmField_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -32453,49 +30910,19 @@ func (ec *executionContext) _Deal(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Deal_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Deal_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -32785,39 +31212,6 @@ func (ec *executionContext) _DealCrmField(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._DealCrmField_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "deal":
 			field := field
 
@@ -32893,13 +31287,16 @@ func (ec *executionContext) _DealCrmField(ctx context.Context, sel ast.Selection
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._DealCrmField_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -33136,49 +31533,19 @@ func (ec *executionContext) _Department(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Department_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Department_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -33473,39 +31840,6 @@ func (ec *executionContext) _DropdownList(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._DropdownList_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "crmfield":
 			field := field
 
@@ -33545,13 +31879,16 @@ func (ec *executionContext) _DropdownList(ctx context.Context, sel ast.Selection
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._DropdownList_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -33752,39 +32089,6 @@ func (ec *executionContext) _Employee(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Employee_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "employeeauth":
 			field := field
 
@@ -33824,13 +32128,16 @@ func (ec *executionContext) _Employee(ctx context.Context, sel ast.SelectionSet,
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Employee_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -34074,42 +32381,6 @@ func (ec *executionContext) _EmployeeAuth(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._EmployeeAuth_tenantid(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "employee":
 			field := field
 
@@ -34440,39 +32711,6 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._File_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "message":
 			field := field
 
@@ -34512,13 +32750,16 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._File_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -34637,39 +32878,6 @@ func (ec *executionContext) _Message(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Message_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "chat":
 			field := field
 
@@ -34805,13 +33013,16 @@ func (ec *executionContext) _Message(ctx context.Context, sel ast.SelectionSet, 
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Message_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -35391,49 +33602,19 @@ func (ec *executionContext) _Pipeline(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Pipeline_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Pipeline_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -36088,39 +34269,6 @@ func (ec *executionContext) _Queue(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Queue_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "stages":
 			field := field
 
@@ -36226,13 +34374,16 @@ func (ec *executionContext) _Queue(ctx context.Context, sel ast.SelectionSet, ob
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Queue_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -36428,39 +34579,6 @@ func (ec *executionContext) _Rbac(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Rbac_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "department":
 			field := field
 
@@ -36500,13 +34618,16 @@ func (ec *executionContext) _Rbac(ctx context.Context, sel ast.SelectionSet, obj
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Rbac_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -36712,39 +34833,6 @@ func (ec *executionContext) _Stage(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Stage_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "pipeline":
 			field := field
 
@@ -36850,13 +34938,16 @@ func (ec *executionContext) _Stage(ctx context.Context, sel ast.SelectionSet, ob
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Stage_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -37042,39 +35133,6 @@ func (ec *executionContext) _Text(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "tenantid":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Text_tenantid(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "message":
 			field := field
 
@@ -37114,13 +35172,16 @@ func (ec *executionContext) _Text(ctx context.Context, sel ast.SelectionSet, obj
 		case "tenant":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Text_tenant(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

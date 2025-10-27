@@ -27,6 +27,7 @@ func NewClient() (*ent.Client, error) {
 }
 
 func Init(client *ent.Client) (*handler.Server, error) {
+
 	if err := client.Schema.Create(
 		context.Background(),
 		migrate.WithDropIndex(true),

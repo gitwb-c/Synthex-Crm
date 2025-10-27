@@ -23,7 +23,6 @@ type CreateChatInput struct {
 	DealID      *uuid.UUID
 	EmployeeIDs []uuid.UUID
 	MessageIDs  []uuid.UUID
-	TenantID    *uuid.UUID
 }
 
 // Mutate applies the CreateChatInput on the ChatMutation builder.
@@ -45,9 +44,6 @@ func (i *CreateChatInput) Mutate(m *ChatMutation) {
 	}
 	if v := i.MessageIDs; len(v) > 0 {
 		m.AddMessageIDs(v...)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -71,8 +67,6 @@ type UpdateChatInput struct {
 	ClearMessages     bool
 	AddMessageIDs     []uuid.UUID
 	RemoveMessageIDs  []uuid.UUID
-	ClearTenant       bool
-	TenantID          *uuid.UUID
 }
 
 // Mutate applies the UpdateChatInput on the ChatMutation builder.
@@ -112,12 +106,6 @@ func (i *UpdateChatInput) Mutate(m *ChatMutation) {
 	}
 	if v := i.RemoveMessageIDs; len(v) > 0 {
 		m.RemoveMessageIDs(v...)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -448,7 +436,6 @@ type CreateCostumerInput struct {
 	Email     string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
-	TenantID  *uuid.UUID
 	DealIDs   []uuid.UUID
 }
 
@@ -462,9 +449,6 @@ func (i *CreateCostumerInput) Mutate(m *CostumerMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if v := i.DealIDs; len(v) > 0 {
 		m.AddDealIDs(v...)
@@ -483,8 +467,6 @@ type UpdateCostumerInput struct {
 	Phone         *string
 	Email         *string
 	UpdatedAt     *time.Time
-	ClearTenant   bool
-	TenantID      *uuid.UUID
 	ClearDeals    bool
 	AddDealIDs    []uuid.UUID
 	RemoveDealIDs []uuid.UUID
@@ -503,12 +485,6 @@ func (i *UpdateCostumerInput) Mutate(m *CostumerMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if i.ClearDeals {
 		m.ClearDeals()
@@ -542,7 +518,6 @@ type CreateCrmFieldInput struct {
 	UpdatedAt       *time.Time
 	DropdownListIDs []uuid.UUID
 	DealCrmFieldIDs []uuid.UUID
-	TenantID        *uuid.UUID
 }
 
 // Mutate applies the CreateCrmFieldInput on the CrmFieldMutation builder.
@@ -561,9 +536,6 @@ func (i *CreateCrmFieldInput) Mutate(m *CrmFieldMutation) {
 	}
 	if v := i.DealCrmFieldIDs; len(v) > 0 {
 		m.AddDealCrmFieldIDs(v...)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -584,8 +556,6 @@ type UpdateCrmFieldInput struct {
 	ClearDealCrmField     bool
 	AddDealCrmFieldIDs    []uuid.UUID
 	RemoveDealCrmFieldIDs []uuid.UUID
-	ClearTenant           bool
-	TenantID              *uuid.UUID
 }
 
 // Mutate applies the UpdateCrmFieldInput on the CrmFieldMutation builder.
@@ -617,12 +587,6 @@ func (i *UpdateCrmFieldInput) Mutate(m *CrmFieldMutation) {
 	if v := i.RemoveDealCrmFieldIDs; len(v) > 0 {
 		m.RemoveDealCrmFieldIDs(v...)
 	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the UpdateCrmFieldInput on the CrmFieldUpdate builder.
@@ -643,7 +607,6 @@ type CreateDealInput struct {
 	Source          string
 	CreatedAt       *time.Time
 	UpdatedAt       *time.Time
-	TenantID        *uuid.UUID
 	CostumerID      *uuid.UUID
 	ChatID          *uuid.UUID
 	StageID         uuid.UUID
@@ -659,9 +622,6 @@ func (i *CreateDealInput) Mutate(m *DealMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if v := i.CostumerID; v != nil {
 		m.SetCostumerID(*v)
@@ -686,8 +646,6 @@ type UpdateDealInput struct {
 	Title                 *string
 	Source                *string
 	UpdatedAt             *time.Time
-	ClearTenant           bool
-	TenantID              *uuid.UUID
 	ClearCostumer         bool
 	CostumerID            *uuid.UUID
 	ClearChat             bool
@@ -708,12 +666,6 @@ func (i *UpdateDealInput) Mutate(m *DealMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if i.ClearCostumer {
 		m.ClearCostumer()
@@ -760,7 +712,6 @@ type CreateDealCrmFieldInput struct {
 	UpdatedAt  *time.Time
 	DealID     uuid.UUID
 	CrmFieldID uuid.UUID
-	TenantID   *uuid.UUID
 }
 
 // Mutate applies the CreateDealCrmFieldInput on the DealCrmFieldMutation builder.
@@ -774,9 +725,6 @@ func (i *CreateDealCrmFieldInput) Mutate(m *DealCrmFieldMutation) {
 	}
 	m.SetDealID(i.DealID)
 	m.SetCrmFieldID(i.CrmFieldID)
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateDealCrmFieldInput on the DealCrmFieldCreate builder.
@@ -787,12 +735,10 @@ func (c *DealCrmFieldCreate) SetInput(i CreateDealCrmFieldInput) *DealCrmFieldCr
 
 // UpdateDealCrmFieldInput represents a mutation input for updating dealcrmfields.
 type UpdateDealCrmFieldInput struct {
-	Value       *string
-	UpdatedAt   *time.Time
-	DealID      *uuid.UUID
-	CrmFieldID  *uuid.UUID
-	ClearTenant bool
-	TenantID    *uuid.UUID
+	Value      *string
+	UpdatedAt  *time.Time
+	DealID     *uuid.UUID
+	CrmFieldID *uuid.UUID
 }
 
 // Mutate applies the UpdateDealCrmFieldInput on the DealCrmFieldMutation builder.
@@ -808,12 +754,6 @@ func (i *UpdateDealCrmFieldInput) Mutate(m *DealCrmFieldMutation) {
 	}
 	if v := i.CrmFieldID; v != nil {
 		m.SetCrmFieldID(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -834,7 +774,6 @@ type CreateDepartmentInput struct {
 	Name        string
 	CreatedAt   *time.Time
 	UpdatedAt   *time.Time
-	TenantID    *uuid.UUID
 	EmployeeIDs []uuid.UUID
 	QueueIDs    []uuid.UUID
 	RbacIDs     []uuid.UUID
@@ -848,9 +787,6 @@ func (i *CreateDepartmentInput) Mutate(m *DepartmentMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if v := i.EmployeeIDs; len(v) > 0 {
 		m.AddEmployeeIDs(v...)
@@ -873,8 +809,6 @@ func (c *DepartmentCreate) SetInput(i CreateDepartmentInput) *DepartmentCreate {
 type UpdateDepartmentInput struct {
 	Name              *string
 	UpdatedAt         *time.Time
-	ClearTenant       bool
-	TenantID          *uuid.UUID
 	ClearEmployee     bool
 	AddEmployeeIDs    []uuid.UUID
 	RemoveEmployeeIDs []uuid.UUID
@@ -893,12 +827,6 @@ func (i *UpdateDepartmentInput) Mutate(m *DepartmentMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if i.ClearEmployee {
 		m.ClearEmployee()
@@ -947,7 +875,6 @@ type CreateDropdownListInput struct {
 	CreatedAt   *time.Time
 	UpdatedAt   *time.Time
 	CrmFieldIDs []uuid.UUID
-	TenantID    *uuid.UUID
 }
 
 // Mutate applies the CreateDropdownListInput on the DropdownListMutation builder.
@@ -961,9 +888,6 @@ func (i *CreateDropdownListInput) Mutate(m *DropdownListMutation) {
 	}
 	if v := i.CrmFieldIDs; len(v) > 0 {
 		m.AddCrmFieldIDs(v...)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -979,8 +903,6 @@ type UpdateDropdownListInput struct {
 	UpdatedAt         *time.Time
 	AddCrmFieldIDs    []uuid.UUID
 	RemoveCrmFieldIDs []uuid.UUID
-	ClearTenant       bool
-	TenantID          *uuid.UUID
 }
 
 // Mutate applies the UpdateDropdownListInput on the DropdownListMutation builder.
@@ -996,12 +918,6 @@ func (i *UpdateDropdownListInput) Mutate(m *DropdownListMutation) {
 	}
 	if v := i.RemoveCrmFieldIDs; len(v) > 0 {
 		m.RemoveCrmFieldIDs(v...)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -1024,7 +940,6 @@ type CreateEmployeeInput struct {
 	CreatedAt        *time.Time
 	UpdatedAt        *time.Time
 	EmployeeAuthID   uuid.UUID
-	TenantID         *uuid.UUID
 	DepartmentID     uuid.UUID
 	ChatIDs          []uuid.UUID
 	QueueIDs         []uuid.UUID
@@ -1042,9 +957,6 @@ func (i *CreateEmployeeInput) Mutate(m *EmployeeMutation) {
 		m.SetUpdatedAt(*v)
 	}
 	m.SetEmployeeAuthID(i.EmployeeAuthID)
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 	m.SetDepartmentID(i.DepartmentID)
 	if v := i.ChatIDs; len(v) > 0 {
 		m.AddChatIDs(v...)
@@ -1069,8 +981,6 @@ type UpdateEmployeeInput struct {
 	EmploymentStatus *employee.EmploymentStatus
 	UpdatedAt        *time.Time
 	EmployeeAuthID   *uuid.UUID
-	ClearTenant      bool
-	TenantID         *uuid.UUID
 	DepartmentID     *uuid.UUID
 	ClearChat        bool
 	AddChatIDs       []uuid.UUID
@@ -1096,12 +1006,6 @@ func (i *UpdateEmployeeInput) Mutate(m *EmployeeMutation) {
 	}
 	if v := i.EmployeeAuthID; v != nil {
 		m.SetEmployeeAuthID(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if v := i.DepartmentID; v != nil {
 		m.SetDepartmentID(*v)
@@ -1155,7 +1059,6 @@ type CreateEmployeeAuthInput struct {
 	CreatedAt  *time.Time
 	UpdatedAt  *time.Time
 	EmployeeID *uuid.UUID
-	TenantID   uuid.UUID
 }
 
 // Mutate applies the CreateEmployeeAuthInput on the EmployeeAuthMutation builder.
@@ -1172,7 +1075,6 @@ func (i *CreateEmployeeAuthInput) Mutate(m *EmployeeAuthMutation) {
 	if v := i.EmployeeID; v != nil {
 		m.SetEmployeeID(*v)
 	}
-	m.SetTenantID(i.TenantID)
 }
 
 // SetInput applies the change-set in the CreateEmployeeAuthInput on the EmployeeAuthCreate builder.
@@ -1189,7 +1091,6 @@ type UpdateEmployeeAuthInput struct {
 	UpdatedAt     *time.Time
 	ClearEmployee bool
 	EmployeeID    *uuid.UUID
-	TenantID      *uuid.UUID
 }
 
 // Mutate applies the UpdateEmployeeAuthInput on the EmployeeAuthMutation builder.
@@ -1212,9 +1113,6 @@ func (i *UpdateEmployeeAuthInput) Mutate(m *EmployeeAuthMutation) {
 	if v := i.EmployeeID; v != nil {
 		m.SetEmployeeID(*v)
 	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the UpdateEmployeeAuthInput on the EmployeeAuthUpdate builder.
@@ -1236,7 +1134,6 @@ type CreateFileInput struct {
 	MimeType  string
 	FileName  string
 	MessageID uuid.UUID
-	TenantID  *uuid.UUID
 }
 
 // Mutate applies the CreateFileInput on the FileMutation builder.
@@ -1248,9 +1145,6 @@ func (i *CreateFileInput) Mutate(m *FileMutation) {
 	m.SetMimeType(i.MimeType)
 	m.SetFileName(i.FileName)
 	m.SetMessageID(i.MessageID)
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateFileInput on the FileCreate builder.
@@ -1267,8 +1161,6 @@ type UpdateFileInput struct {
 	MimeType     *string
 	FileName     *string
 	MessageID    *uuid.UUID
-	ClearTenant  bool
-	TenantID     *uuid.UUID
 }
 
 // Mutate applies the UpdateFileInput on the FileMutation builder.
@@ -1290,12 +1182,6 @@ func (i *UpdateFileInput) Mutate(m *FileMutation) {
 	}
 	if v := i.MessageID; v != nil {
 		m.SetMessageID(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -1322,7 +1208,6 @@ type CreateMessageInput struct {
 	EmployeeIDs []uuid.UUID
 	TextID      *uuid.UUID
 	FileID      *uuid.UUID
-	TenantID    *uuid.UUID
 }
 
 // Mutate applies the CreateMessageInput on the MessageMutation builder.
@@ -1348,9 +1233,6 @@ func (i *CreateMessageInput) Mutate(m *MessageMutation) {
 	if v := i.FileID; v != nil {
 		m.SetFileID(*v)
 	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateMessageInput on the MessageCreate builder.
@@ -1374,8 +1256,6 @@ type UpdateMessageInput struct {
 	TextID            *uuid.UUID
 	ClearFile         bool
 	FileID            *uuid.UUID
-	ClearTenant       bool
-	TenantID          *uuid.UUID
 }
 
 // Mutate applies the UpdateMessageInput on the MessageMutation builder.
@@ -1419,12 +1299,6 @@ func (i *UpdateMessageInput) Mutate(m *MessageMutation) {
 	if v := i.FileID; v != nil {
 		m.SetFileID(*v)
 	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the UpdateMessageInput on the MessageUpdate builder.
@@ -1444,7 +1318,6 @@ type CreatePipelineInput struct {
 	Name      string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
-	TenantID  *uuid.UUID
 	StageIDs  []uuid.UUID
 }
 
@@ -1456,9 +1329,6 @@ func (i *CreatePipelineInput) Mutate(m *PipelineMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if v := i.StageIDs; len(v) > 0 {
 		m.AddStageIDs(v...)
@@ -1475,8 +1345,6 @@ func (c *PipelineCreate) SetInput(i CreatePipelineInput) *PipelineCreate {
 type UpdatePipelineInput struct {
 	Name           *string
 	UpdatedAt      *time.Time
-	ClearTenant    bool
-	TenantID       *uuid.UUID
 	ClearStages    bool
 	AddStageIDs    []uuid.UUID
 	RemoveStageIDs []uuid.UUID
@@ -1489,12 +1357,6 @@ func (i *UpdatePipelineInput) Mutate(m *PipelineMutation) {
 	}
 	if v := i.UpdatedAt; v != nil {
 		m.SetUpdatedAt(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 	if i.ClearStages {
 		m.ClearStages()
@@ -1528,7 +1390,6 @@ type CreateQueueInput struct {
 	StageIDs      []uuid.UUID
 	EmployeeIDs   []uuid.UUID
 	DepartmentIDs []uuid.UUID
-	TenantID      *uuid.UUID
 }
 
 // Mutate applies the CreateQueueInput on the QueueMutation builder.
@@ -1552,9 +1413,6 @@ func (i *CreateQueueInput) Mutate(m *QueueMutation) {
 	if v := i.DepartmentIDs; len(v) > 0 {
 		m.AddDepartmentIDs(v...)
 	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateQueueInput on the QueueCreate builder.
@@ -1576,8 +1434,6 @@ type UpdateQueueInput struct {
 	RemoveEmployeeIDs   []uuid.UUID
 	AddDepartmentIDs    []uuid.UUID
 	RemoveDepartmentIDs []uuid.UUID
-	ClearTenant         bool
-	TenantID            *uuid.UUID
 }
 
 // Mutate applies the UpdateQueueInput on the QueueMutation builder.
@@ -1615,12 +1471,6 @@ func (i *UpdateQueueInput) Mutate(m *QueueMutation) {
 	if v := i.RemoveDepartmentIDs; len(v) > 0 {
 		m.RemoveDepartmentIDs(v...)
 	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the UpdateQueueInput on the QueueUpdate builder.
@@ -1641,7 +1491,6 @@ type CreateRbacInput struct {
 	CreatedAt    *time.Time
 	UpdatedAt    *time.Time
 	DepartmentID uuid.UUID
-	TenantID     *uuid.UUID
 }
 
 // Mutate applies the CreateRbacInput on the RbacMutation builder.
@@ -1654,9 +1503,6 @@ func (i *CreateRbacInput) Mutate(m *RbacMutation) {
 		m.SetUpdatedAt(*v)
 	}
 	m.SetDepartmentID(i.DepartmentID)
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateRbacInput on the RbacCreate builder.
@@ -1670,8 +1516,6 @@ type UpdateRbacInput struct {
 	Access       *rbac.Access
 	UpdatedAt    *time.Time
 	DepartmentID *uuid.UUID
-	ClearTenant  bool
-	TenantID     *uuid.UUID
 }
 
 // Mutate applies the UpdateRbacInput on the RbacMutation builder.
@@ -1684,12 +1528,6 @@ func (i *UpdateRbacInput) Mutate(m *RbacMutation) {
 	}
 	if v := i.DepartmentID; v != nil {
 		m.SetDepartmentID(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 
@@ -1715,7 +1553,6 @@ type CreateStageInput struct {
 	PipelineID uuid.UUID
 	DealIDs    []uuid.UUID
 	QueueID    *uuid.UUID
-	TenantID   *uuid.UUID
 }
 
 // Mutate applies the CreateStageInput on the StageMutation builder.
@@ -1738,9 +1575,6 @@ func (i *CreateStageInput) Mutate(m *StageMutation) {
 	if v := i.QueueID; v != nil {
 		m.SetQueueID(*v)
 	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateStageInput on the StageCreate builder.
@@ -1761,8 +1595,6 @@ type UpdateStageInput struct {
 	RemoveDealIDs []uuid.UUID
 	ClearQueue    bool
 	QueueID       *uuid.UUID
-	ClearTenant   bool
-	TenantID      *uuid.UUID
 }
 
 // Mutate applies the UpdateStageInput on the StageMutation builder.
@@ -1797,12 +1629,6 @@ func (i *UpdateStageInput) Mutate(m *StageMutation) {
 	if v := i.QueueID; v != nil {
 		m.SetQueueID(*v)
 	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the UpdateStageInput on the StageUpdate builder.
@@ -1821,16 +1647,12 @@ func (c *StageUpdateOne) SetInput(i UpdateStageInput) *StageUpdateOne {
 type CreateTextInput struct {
 	Text      string
 	MessageID uuid.UUID
-	TenantID  *uuid.UUID
 }
 
 // Mutate applies the CreateTextInput on the TextMutation builder.
 func (i *CreateTextInput) Mutate(m *TextMutation) {
 	m.SetText(i.Text)
 	m.SetMessageID(i.MessageID)
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 }
 
 // SetInput applies the change-set in the CreateTextInput on the TextCreate builder.
@@ -1841,10 +1663,8 @@ func (c *TextCreate) SetInput(i CreateTextInput) *TextCreate {
 
 // UpdateTextInput represents a mutation input for updating texts.
 type UpdateTextInput struct {
-	Text        *string
-	MessageID   *uuid.UUID
-	ClearTenant bool
-	TenantID    *uuid.UUID
+	Text      *string
+	MessageID *uuid.UUID
 }
 
 // Mutate applies the UpdateTextInput on the TextMutation builder.
@@ -1854,12 +1674,6 @@ func (i *UpdateTextInput) Mutate(m *TextMutation) {
 	}
 	if v := i.MessageID; v != nil {
 		m.SetMessageID(*v)
-	}
-	if i.ClearTenant {
-		m.ClearTenant()
-	}
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
 	}
 }
 

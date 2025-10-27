@@ -25,6 +25,12 @@ type StageCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *StageCreate) SetTenantId(v uuid.UUID) *StageCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *StageCreate) SetName(v string) *StageCreate {
 	_c.mutation.SetName(v)
@@ -75,20 +81,6 @@ func (_c *StageCreate) SetUpdatedAt(v time.Time) *StageCreate {
 func (_c *StageCreate) SetNillableUpdatedAt(v *time.Time) *StageCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *StageCreate) SetTenantId(v uuid.UUID) *StageCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *StageCreate) SetNillableTenantId(v *uuid.UUID) *StageCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
 	}
 	return _c
 }
@@ -158,14 +150,6 @@ func (_c *StageCreate) SetTenantID(id uuid.UUID) *StageCreate {
 	return _c
 }
 
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *StageCreate) SetNillableTenantID(id *uuid.UUID) *StageCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
-	return _c
-}
-
 // SetTenant sets the "tenant" edge to the Company entity.
 func (_c *StageCreate) SetTenant(v *Company) *StageCreate {
 	return _c.SetTenantID(v.ID)
@@ -226,6 +210,9 @@ func (_c *StageCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *StageCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Stage.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Stage.name"`)}
 	}
@@ -253,6 +240,9 @@ func (_c *StageCreate) check() error {
 	}
 	if len(_c.mutation.PipelineIDs()) == 0 {
 		return &ValidationError{Name: "pipeline", err: errors.New(`ent: missing required edge "Stage.pipeline"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Stage.tenant"`)}
 	}
 	return nil
 }

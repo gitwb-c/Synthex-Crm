@@ -22,13 +22,12 @@ func (Deal) Fields() []ent.Field {
 		field.String("source").Annotations(entgql.QueryField()).Annotations(entgql.QueryField(), entgql.OrderField("SOURCE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.QueryField(), entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.QueryField(), entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (Deal) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("tenant", Company.Type).Ref("deals").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("deals").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 		edge.To("costumer", Costumer.Type).Unique(),
 		edge.From("chat", Chat.Type).Ref("deal").Unique(),
 		edge.To("stage", Stage.Type).Required().Unique().Required(),
@@ -45,17 +44,8 @@ func (Deal) Annotations() []schema.Annotation {
 	}
 }
 
-func (Deal) Mixins() []ent.Mixin {
+func (Deal) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}
-}
-
-func  (Deal) Policy () ent.Policy {
-	return privacy.Policy {
-		Mutation: privacy.MutationPolicy {
-			
-		}
-	}
-
 }

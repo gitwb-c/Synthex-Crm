@@ -21,7 +21,6 @@ func (DealCrmField) Fields() []ent.Field {
 		field.String("value").NotEmpty().Annotations(entgql.QueryField()).Annotations(entgql.OrderField("VALUE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
@@ -29,7 +28,7 @@ func (DealCrmField) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("deal", Deal.Type).Unique().Required(),
 		edge.To("crmField", CrmField.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("dealCrmFields").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("dealCrmFields").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -42,7 +41,7 @@ func (DealCrmField) Annotations() []schema.Annotation {
 	}
 }
 
-func (DealCrmField) Mixins() []ent.Mixin {
+func (DealCrmField) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

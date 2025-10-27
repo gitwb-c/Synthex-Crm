@@ -18,9 +18,11 @@ import (
 
 // Stage is the model entity for the Stage schema.
 type Stage struct {
-	config `json:"-"`
+	config `json:"-" sql:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"-" sql:"not null"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Color holds the value of the "color" field.
@@ -31,8 +33,6 @@ type Stage struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-	// TenantId holds the value of the "tenantId" field.
-	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the StageQuery when eager-loading is set.
 	Edges          StageEdges `json:"edges"`
@@ -140,6 +140,12 @@ func (_m *Stage) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				_m.ID = *value
 			}
+		case stage.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case stage.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -169,12 +175,6 @@ func (_m *Stage) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updatedAt", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
-			}
-		case stage.FieldTenantId:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
-			} else if value != nil {
-				_m.TenantId = *value
 			}
 		case stage.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
@@ -246,6 +246,9 @@ func (_m *Stage) String() string {
 	var builder strings.Builder
 	builder.WriteString("Stage(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
@@ -260,9 +263,6 @@ func (_m *Stage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("tenantId=")
-	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

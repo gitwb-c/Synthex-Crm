@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
@@ -67,26 +66,6 @@ func (_u *QueueUpdate) SetUpdatedAt(v time.Time) *QueueUpdate {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *QueueUpdate) SetTenantId(v uuid.UUID) *QueueUpdate {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *QueueUpdate) SetNillableTenantId(v *uuid.UUID) *QueueUpdate {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *QueueUpdate) ClearTenantId() *QueueUpdate {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
 // AddStageIDs adds the "stages" edge to the Stage entity by IDs.
 func (_u *QueueUpdate) AddStageIDs(ids ...uuid.UUID) *QueueUpdate {
 	_u.mutation.AddStageIDs(ids...)
@@ -130,25 +109,6 @@ func (_u *QueueUpdate) AddDepartment(v ...*Department) *QueueUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.AddDepartmentIDs(ids...)
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *QueueUpdate) SetTenantID(id uuid.UUID) *QueueUpdate {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *QueueUpdate) SetNillableTenantID(id *uuid.UUID) *QueueUpdate {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *QueueUpdate) SetTenant(v *Company) *QueueUpdate {
-	return _u.SetTenantID(v.ID)
 }
 
 // Mutation returns the QueueMutation object of the builder.
@@ -219,12 +179,6 @@ func (_u *QueueUpdate) RemoveDepartment(v ...*Department) *QueueUpdate {
 	return _u.RemoveDepartmentIDs(ids...)
 }
 
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *QueueUpdate) ClearTenant() *QueueUpdate {
-	_u.mutation.ClearTenant()
-	return _u
-}
-
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *QueueUpdate) Save(ctx context.Context) (int, error) {
 	_u.defaults()
@@ -272,6 +226,9 @@ func (_u *QueueUpdate) check() error {
 		if err := queue.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Queue.type": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Queue.tenant"`)
 	}
 	return nil
 }
@@ -432,35 +389,6 @@ func (_u *QueueUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   queue.TenantTable,
-			Columns: []string{queue.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   queue.TenantTable,
-			Columns: []string{queue.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{queue.Label}
@@ -515,26 +443,6 @@ func (_u *QueueUpdateOne) SetUpdatedAt(v time.Time) *QueueUpdateOne {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *QueueUpdateOne) SetTenantId(v uuid.UUID) *QueueUpdateOne {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *QueueUpdateOne) SetNillableTenantId(v *uuid.UUID) *QueueUpdateOne {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *QueueUpdateOne) ClearTenantId() *QueueUpdateOne {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
 // AddStageIDs adds the "stages" edge to the Stage entity by IDs.
 func (_u *QueueUpdateOne) AddStageIDs(ids ...uuid.UUID) *QueueUpdateOne {
 	_u.mutation.AddStageIDs(ids...)
@@ -578,25 +486,6 @@ func (_u *QueueUpdateOne) AddDepartment(v ...*Department) *QueueUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.AddDepartmentIDs(ids...)
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *QueueUpdateOne) SetTenantID(id uuid.UUID) *QueueUpdateOne {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *QueueUpdateOne) SetNillableTenantID(id *uuid.UUID) *QueueUpdateOne {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *QueueUpdateOne) SetTenant(v *Company) *QueueUpdateOne {
-	return _u.SetTenantID(v.ID)
 }
 
 // Mutation returns the QueueMutation object of the builder.
@@ -667,12 +556,6 @@ func (_u *QueueUpdateOne) RemoveDepartment(v ...*Department) *QueueUpdateOne {
 	return _u.RemoveDepartmentIDs(ids...)
 }
 
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *QueueUpdateOne) ClearTenant() *QueueUpdateOne {
-	_u.mutation.ClearTenant()
-	return _u
-}
-
 // Where appends a list predicates to the QueueUpdate builder.
 func (_u *QueueUpdateOne) Where(ps ...predicate.Queue) *QueueUpdateOne {
 	_u.mutation.Where(ps...)
@@ -733,6 +616,9 @@ func (_u *QueueUpdateOne) check() error {
 		if err := queue.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Queue.type": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Queue.tenant"`)
 	}
 	return nil
 }
@@ -903,35 +789,6 @@ func (_u *QueueUpdateOne) sqlSave(ctx context.Context) (_node *Queue, err error)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   queue.TenantTable,
-			Columns: []string{queue.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   queue.TenantTable,
-			Columns: []string{queue.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/file"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
@@ -79,26 +78,6 @@ func (_u *MessageUpdate) SetNillableType(v *message.Type) *MessageUpdate {
 // SetUpdatedAt sets the "updatedAt" field.
 func (_u *MessageUpdate) SetUpdatedAt(v time.Time) *MessageUpdate {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_u *MessageUpdate) SetTenantId(v uuid.UUID) *MessageUpdate {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *MessageUpdate) SetNillableTenantId(v *uuid.UUID) *MessageUpdate {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *MessageUpdate) ClearTenantId() *MessageUpdate {
-	_u.mutation.ClearTenantId()
 	return _u
 }
 
@@ -174,25 +153,6 @@ func (_u *MessageUpdate) SetFile(v *File) *MessageUpdate {
 	return _u.SetFileID(v.ID)
 }
 
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *MessageUpdate) SetTenantID(id uuid.UUID) *MessageUpdate {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *MessageUpdate) SetNillableTenantID(id *uuid.UUID) *MessageUpdate {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *MessageUpdate) SetTenant(v *Company) *MessageUpdate {
-	return _u.SetTenantID(v.ID)
-}
-
 // Mutation returns the MessageMutation object of the builder.
 func (_u *MessageUpdate) Mutation() *MessageMutation {
 	return _u.mutation
@@ -234,12 +194,6 @@ func (_u *MessageUpdate) ClearText() *MessageUpdate {
 // ClearFile clears the "file" edge to the File entity.
 func (_u *MessageUpdate) ClearFile() *MessageUpdate {
 	_u.mutation.ClearFile()
-	return _u
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *MessageUpdate) ClearTenant() *MessageUpdate {
-	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -290,6 +244,9 @@ func (_u *MessageUpdate) check() error {
 		if err := message.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Message.type": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Message.tenant"`)
 	}
 	return nil
 }
@@ -450,35 +407,6 @@ func (_u *MessageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   message.TenantTable,
-			Columns: []string{message.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   message.TenantTable,
-			Columns: []string{message.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{message.Label}
@@ -544,26 +472,6 @@ func (_u *MessageUpdateOne) SetNillableType(v *message.Type) *MessageUpdateOne {
 // SetUpdatedAt sets the "updatedAt" field.
 func (_u *MessageUpdateOne) SetUpdatedAt(v time.Time) *MessageUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_u *MessageUpdateOne) SetTenantId(v uuid.UUID) *MessageUpdateOne {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *MessageUpdateOne) SetNillableTenantId(v *uuid.UUID) *MessageUpdateOne {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *MessageUpdateOne) ClearTenantId() *MessageUpdateOne {
-	_u.mutation.ClearTenantId()
 	return _u
 }
 
@@ -639,25 +547,6 @@ func (_u *MessageUpdateOne) SetFile(v *File) *MessageUpdateOne {
 	return _u.SetFileID(v.ID)
 }
 
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *MessageUpdateOne) SetTenantID(id uuid.UUID) *MessageUpdateOne {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *MessageUpdateOne) SetNillableTenantID(id *uuid.UUID) *MessageUpdateOne {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *MessageUpdateOne) SetTenant(v *Company) *MessageUpdateOne {
-	return _u.SetTenantID(v.ID)
-}
-
 // Mutation returns the MessageMutation object of the builder.
 func (_u *MessageUpdateOne) Mutation() *MessageMutation {
 	return _u.mutation
@@ -699,12 +588,6 @@ func (_u *MessageUpdateOne) ClearText() *MessageUpdateOne {
 // ClearFile clears the "file" edge to the File entity.
 func (_u *MessageUpdateOne) ClearFile() *MessageUpdateOne {
 	_u.mutation.ClearFile()
-	return _u
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *MessageUpdateOne) ClearTenant() *MessageUpdateOne {
-	_u.mutation.ClearTenant()
 	return _u
 }
 
@@ -768,6 +651,9 @@ func (_u *MessageUpdateOne) check() error {
 		if err := message.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Message.type": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Message.tenant"`)
 	}
 	return nil
 }
@@ -938,35 +824,6 @@ func (_u *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   message.TenantTable,
-			Columns: []string{message.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   message.TenantTable,
-			Columns: []string{message.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

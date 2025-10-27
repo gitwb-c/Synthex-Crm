@@ -42,12 +42,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Chat",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			chat.FieldTenantId:  {Type: field.TypeUUID, Column: chat.FieldTenantId},
 			chat.FieldTitle:     {Type: field.TypeString, Column: chat.FieldTitle},
 			chat.FieldAccepted:  {Type: field.TypeBool, Column: chat.FieldAccepted},
 			chat.FieldLocked:    {Type: field.TypeBool, Column: chat.FieldLocked},
 			chat.FieldCreatedAt: {Type: field.TypeTime, Column: chat.FieldCreatedAt},
 			chat.FieldUpdatedAt: {Type: field.TypeTime, Column: chat.FieldUpdatedAt},
-			chat.FieldTenantId:  {Type: field.TypeUUID, Column: chat.FieldTenantId},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -77,12 +77,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Costumer",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			costumer.FieldTenantId:  {Type: field.TypeUUID, Column: costumer.FieldTenantId},
 			costumer.FieldName:      {Type: field.TypeString, Column: costumer.FieldName},
 			costumer.FieldPhone:     {Type: field.TypeString, Column: costumer.FieldPhone},
 			costumer.FieldEmail:     {Type: field.TypeString, Column: costumer.FieldEmail},
 			costumer.FieldCreatedAt: {Type: field.TypeTime, Column: costumer.FieldCreatedAt},
 			costumer.FieldUpdatedAt: {Type: field.TypeTime, Column: costumer.FieldUpdatedAt},
-			costumer.FieldTenantId:  {Type: field.TypeUUID, Column: costumer.FieldTenantId},
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
@@ -96,12 +96,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "CrmField",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			crmfield.FieldTenantId:  {Type: field.TypeUUID, Column: crmfield.FieldTenantId},
 			crmfield.FieldName:      {Type: field.TypeString, Column: crmfield.FieldName},
 			crmfield.FieldSection:   {Type: field.TypeString, Column: crmfield.FieldSection},
 			crmfield.FieldType:      {Type: field.TypeEnum, Column: crmfield.FieldType},
 			crmfield.FieldCreatedAt: {Type: field.TypeTime, Column: crmfield.FieldCreatedAt},
 			crmfield.FieldUpdatedAt: {Type: field.TypeTime, Column: crmfield.FieldUpdatedAt},
-			crmfield.FieldTenantId:  {Type: field.TypeUUID, Column: crmfield.FieldTenantId},
 		},
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
@@ -115,11 +115,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Deal",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			deal.FieldTenantId:  {Type: field.TypeUUID, Column: deal.FieldTenantId},
 			deal.FieldTitle:     {Type: field.TypeString, Column: deal.FieldTitle},
 			deal.FieldSource:    {Type: field.TypeString, Column: deal.FieldSource},
 			deal.FieldCreatedAt: {Type: field.TypeTime, Column: deal.FieldCreatedAt},
 			deal.FieldUpdatedAt: {Type: field.TypeTime, Column: deal.FieldUpdatedAt},
-			deal.FieldTenantId:  {Type: field.TypeUUID, Column: deal.FieldTenantId},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -133,10 +133,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "DealCrmField",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			dealcrmfield.FieldTenantId:  {Type: field.TypeUUID, Column: dealcrmfield.FieldTenantId},
 			dealcrmfield.FieldValue:     {Type: field.TypeString, Column: dealcrmfield.FieldValue},
 			dealcrmfield.FieldCreatedAt: {Type: field.TypeTime, Column: dealcrmfield.FieldCreatedAt},
 			dealcrmfield.FieldUpdatedAt: {Type: field.TypeTime, Column: dealcrmfield.FieldUpdatedAt},
-			dealcrmfield.FieldTenantId:  {Type: field.TypeUUID, Column: dealcrmfield.FieldTenantId},
 		},
 	}
 	graph.Nodes[6] = &sqlgraph.Node{
@@ -150,10 +150,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Department",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			department.FieldTenantId:  {Type: field.TypeUUID, Column: department.FieldTenantId},
 			department.FieldName:      {Type: field.TypeString, Column: department.FieldName},
 			department.FieldCreatedAt: {Type: field.TypeTime, Column: department.FieldCreatedAt},
 			department.FieldUpdatedAt: {Type: field.TypeTime, Column: department.FieldUpdatedAt},
-			department.FieldTenantId:  {Type: field.TypeUUID, Column: department.FieldTenantId},
 		},
 	}
 	graph.Nodes[7] = &sqlgraph.Node{
@@ -167,10 +167,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "DropdownList",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			dropdownlist.FieldTenantId:  {Type: field.TypeUUID, Column: dropdownlist.FieldTenantId},
 			dropdownlist.FieldValue:     {Type: field.TypeString, Column: dropdownlist.FieldValue},
 			dropdownlist.FieldCreatedAt: {Type: field.TypeTime, Column: dropdownlist.FieldCreatedAt},
 			dropdownlist.FieldUpdatedAt: {Type: field.TypeTime, Column: dropdownlist.FieldUpdatedAt},
-			dropdownlist.FieldTenantId:  {Type: field.TypeUUID, Column: dropdownlist.FieldTenantId},
 		},
 	}
 	graph.Nodes[8] = &sqlgraph.Node{
@@ -184,11 +184,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Employee",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			employee.FieldTenantId:         {Type: field.TypeUUID, Column: employee.FieldTenantId},
 			employee.FieldName:             {Type: field.TypeString, Column: employee.FieldName},
 			employee.FieldEmploymentStatus: {Type: field.TypeEnum, Column: employee.FieldEmploymentStatus},
 			employee.FieldCreatedAt:        {Type: field.TypeTime, Column: employee.FieldCreatedAt},
 			employee.FieldUpdatedAt:        {Type: field.TypeTime, Column: employee.FieldUpdatedAt},
-			employee.FieldTenantId:         {Type: field.TypeUUID, Column: employee.FieldTenantId},
 		},
 	}
 	graph.Nodes[9] = &sqlgraph.Node{
@@ -202,12 +202,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "EmployeeAuth",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			employeeauth.FieldTenantId:  {Type: field.TypeUUID, Column: employeeauth.FieldTenantId},
 			employeeauth.FieldName:      {Type: field.TypeString, Column: employeeauth.FieldName},
 			employeeauth.FieldEmail:     {Type: field.TypeString, Column: employeeauth.FieldEmail},
 			employeeauth.FieldPassword:  {Type: field.TypeString, Column: employeeauth.FieldPassword},
 			employeeauth.FieldCreatedAt: {Type: field.TypeTime, Column: employeeauth.FieldCreatedAt},
 			employeeauth.FieldUpdatedAt: {Type: field.TypeTime, Column: employeeauth.FieldUpdatedAt},
-			employeeauth.FieldTenantId:  {Type: field.TypeUUID, Column: employeeauth.FieldTenantId},
 		},
 	}
 	graph.Nodes[10] = &sqlgraph.Node{
@@ -221,11 +221,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "File",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			file.FieldTenantId: {Type: field.TypeUUID, Column: file.FieldTenantId},
 			file.FieldURL:      {Type: field.TypeString, Column: file.FieldURL},
 			file.FieldCaption:  {Type: field.TypeString, Column: file.FieldCaption},
 			file.FieldMimeType: {Type: field.TypeString, Column: file.FieldMimeType},
 			file.FieldFileName: {Type: field.TypeString, Column: file.FieldFileName},
-			file.FieldTenantId: {Type: field.TypeUUID, Column: file.FieldTenantId},
 		},
 	}
 	graph.Nodes[11] = &sqlgraph.Node{
@@ -239,12 +239,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Message",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			message.FieldTenantId:  {Type: field.TypeUUID, Column: message.FieldTenantId},
 			message.FieldSentBy:    {Type: field.TypeEnum, Column: message.FieldSentBy},
 			message.FieldPrivate:   {Type: field.TypeBool, Column: message.FieldPrivate},
 			message.FieldType:      {Type: field.TypeEnum, Column: message.FieldType},
 			message.FieldCreatedAt: {Type: field.TypeTime, Column: message.FieldCreatedAt},
 			message.FieldUpdatedAt: {Type: field.TypeTime, Column: message.FieldUpdatedAt},
-			message.FieldTenantId:  {Type: field.TypeUUID, Column: message.FieldTenantId},
 		},
 	}
 	graph.Nodes[12] = &sqlgraph.Node{
@@ -258,10 +258,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Pipeline",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			pipeline.FieldTenantId:  {Type: field.TypeUUID, Column: pipeline.FieldTenantId},
 			pipeline.FieldName:      {Type: field.TypeString, Column: pipeline.FieldName},
 			pipeline.FieldCreatedAt: {Type: field.TypeTime, Column: pipeline.FieldCreatedAt},
 			pipeline.FieldUpdatedAt: {Type: field.TypeTime, Column: pipeline.FieldUpdatedAt},
-			pipeline.FieldTenantId:  {Type: field.TypeUUID, Column: pipeline.FieldTenantId},
 		},
 	}
 	graph.Nodes[13] = &sqlgraph.Node{
@@ -275,11 +275,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Queue",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			queue.FieldTenantId:  {Type: field.TypeUUID, Column: queue.FieldTenantId},
 			queue.FieldName:      {Type: field.TypeString, Column: queue.FieldName},
 			queue.FieldType:      {Type: field.TypeEnum, Column: queue.FieldType},
 			queue.FieldCreatedAt: {Type: field.TypeTime, Column: queue.FieldCreatedAt},
 			queue.FieldUpdatedAt: {Type: field.TypeTime, Column: queue.FieldUpdatedAt},
-			queue.FieldTenantId:  {Type: field.TypeUUID, Column: queue.FieldTenantId},
 		},
 	}
 	graph.Nodes[14] = &sqlgraph.Node{
@@ -293,10 +293,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Rbac",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			rbac.FieldTenantId:  {Type: field.TypeUUID, Column: rbac.FieldTenantId},
 			rbac.FieldAccess:    {Type: field.TypeEnum, Column: rbac.FieldAccess},
 			rbac.FieldCreatedAt: {Type: field.TypeTime, Column: rbac.FieldCreatedAt},
 			rbac.FieldUpdatedAt: {Type: field.TypeTime, Column: rbac.FieldUpdatedAt},
-			rbac.FieldTenantId:  {Type: field.TypeUUID, Column: rbac.FieldTenantId},
 		},
 	}
 	graph.Nodes[15] = &sqlgraph.Node{
@@ -310,12 +310,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Stage",
 		Fields: map[string]*sqlgraph.FieldSpec{
+			stage.FieldTenantId:   {Type: field.TypeUUID, Column: stage.FieldTenantId},
 			stage.FieldName:       {Type: field.TypeString, Column: stage.FieldName},
 			stage.FieldColor:      {Type: field.TypeString, Column: stage.FieldColor},
 			stage.FieldLossOrGain: {Type: field.TypeBool, Column: stage.FieldLossOrGain},
 			stage.FieldCreatedAt:  {Type: field.TypeTime, Column: stage.FieldCreatedAt},
 			stage.FieldUpdatedAt:  {Type: field.TypeTime, Column: stage.FieldUpdatedAt},
-			stage.FieldTenantId:   {Type: field.TypeUUID, Column: stage.FieldTenantId},
 		},
 	}
 	graph.Nodes[16] = &sqlgraph.Node{
@@ -329,8 +329,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Text",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			text.FieldText:     {Type: field.TypeString, Column: text.FieldText},
 			text.FieldTenantId: {Type: field.TypeUUID, Column: text.FieldTenantId},
+			text.FieldText:     {Type: field.TypeString, Column: text.FieldText},
 		},
 	}
 	graph.MustAddE(
@@ -1198,6 +1198,11 @@ func (f *ChatFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(chat.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *ChatFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(chat.FieldTenantId))
+}
+
 // WhereTitle applies the entql string predicate on the title field.
 func (f *ChatFilter) WhereTitle(p entql.StringP) {
 	f.Where(p.Field(chat.FieldTitle))
@@ -1221,11 +1226,6 @@ func (f *ChatFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *ChatFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(chat.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *ChatFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(chat.FieldTenantId))
 }
 
 // WhereHasDeal applies a predicate to check if query has an edge deal.
@@ -1603,6 +1603,11 @@ func (f *CostumerFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(costumer.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *CostumerFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(costumer.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *CostumerFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(costumer.FieldName))
@@ -1626,11 +1631,6 @@ func (f *CostumerFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *CostumerFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(costumer.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *CostumerFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(costumer.FieldTenantId))
 }
 
 // WhereHasTenant applies a predicate to check if query has an edge tenant.
@@ -1701,6 +1701,11 @@ func (f *CrmFieldFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(crmfield.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *CrmFieldFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(crmfield.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *CrmFieldFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(crmfield.FieldName))
@@ -1724,11 +1729,6 @@ func (f *CrmFieldFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *CrmFieldFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(crmfield.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *CrmFieldFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(crmfield.FieldTenantId))
 }
 
 // WhereHasDropdownList applies a predicate to check if query has an edge dropdownList.
@@ -1813,6 +1813,11 @@ func (f *DealFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(deal.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *DealFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(deal.FieldTenantId))
+}
+
 // WhereTitle applies the entql string predicate on the title field.
 func (f *DealFilter) WhereTitle(p entql.StringP) {
 	f.Where(p.Field(deal.FieldTitle))
@@ -1831,11 +1836,6 @@ func (f *DealFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *DealFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(deal.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *DealFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(deal.FieldTenantId))
 }
 
 // WhereHasTenant applies a predicate to check if query has an edge tenant.
@@ -1948,6 +1948,11 @@ func (f *DealCrmFieldFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(dealcrmfield.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *DealCrmFieldFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(dealcrmfield.FieldTenantId))
+}
+
 // WhereValue applies the entql string predicate on the value field.
 func (f *DealCrmFieldFilter) WhereValue(p entql.StringP) {
 	f.Where(p.Field(dealcrmfield.FieldValue))
@@ -1961,11 +1966,6 @@ func (f *DealCrmFieldFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *DealCrmFieldFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(dealcrmfield.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *DealCrmFieldFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(dealcrmfield.FieldTenantId))
 }
 
 // WhereHasDeal applies a predicate to check if query has an edge deal.
@@ -2050,6 +2050,11 @@ func (f *DepartmentFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(department.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *DepartmentFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(department.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *DepartmentFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(department.FieldName))
@@ -2063,11 +2068,6 @@ func (f *DepartmentFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *DepartmentFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(department.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *DepartmentFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(department.FieldTenantId))
 }
 
 // WhereHasTenant applies a predicate to check if query has an edge tenant.
@@ -2166,6 +2166,11 @@ func (f *DropdownListFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(dropdownlist.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *DropdownListFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(dropdownlist.FieldTenantId))
+}
+
 // WhereValue applies the entql string predicate on the value field.
 func (f *DropdownListFilter) WhereValue(p entql.StringP) {
 	f.Where(p.Field(dropdownlist.FieldValue))
@@ -2179,11 +2184,6 @@ func (f *DropdownListFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *DropdownListFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(dropdownlist.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *DropdownListFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(dropdownlist.FieldTenantId))
 }
 
 // WhereHasCrmField applies a predicate to check if query has an edge crmField.
@@ -2254,6 +2254,11 @@ func (f *EmployeeFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(employee.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *EmployeeFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(employee.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *EmployeeFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(employee.FieldName))
@@ -2272,11 +2277,6 @@ func (f *EmployeeFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *EmployeeFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(employee.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *EmployeeFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(employee.FieldTenantId))
 }
 
 // WhereHasEmployeeAuth applies a predicate to check if query has an edge employeeAuth.
@@ -2403,6 +2403,11 @@ func (f *EmployeeAuthFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(employeeauth.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *EmployeeAuthFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(employeeauth.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *EmployeeAuthFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(employeeauth.FieldName))
@@ -2426,11 +2431,6 @@ func (f *EmployeeAuthFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *EmployeeAuthFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(employeeauth.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *EmployeeAuthFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(employeeauth.FieldTenantId))
 }
 
 // WhereHasEmployee applies a predicate to check if query has an edge employee.
@@ -2501,6 +2501,11 @@ func (f *FileFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(file.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *FileFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(file.FieldTenantId))
+}
+
 // WhereURL applies the entql string predicate on the url field.
 func (f *FileFilter) WhereURL(p entql.StringP) {
 	f.Where(p.Field(file.FieldURL))
@@ -2519,11 +2524,6 @@ func (f *FileFilter) WhereMimeType(p entql.StringP) {
 // WhereFileName applies the entql string predicate on the fileName field.
 func (f *FileFilter) WhereFileName(p entql.StringP) {
 	f.Where(p.Field(file.FieldFileName))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *FileFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(file.FieldTenantId))
 }
 
 // WhereHasMessage applies a predicate to check if query has an edge message.
@@ -2594,6 +2594,11 @@ func (f *MessageFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(message.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *MessageFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(message.FieldTenantId))
+}
+
 // WhereSentBy applies the entql string predicate on the sentBy field.
 func (f *MessageFilter) WhereSentBy(p entql.StringP) {
 	f.Where(p.Field(message.FieldSentBy))
@@ -2617,11 +2622,6 @@ func (f *MessageFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *MessageFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(message.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *MessageFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(message.FieldTenantId))
 }
 
 // WhereHasChat applies a predicate to check if query has an edge chat.
@@ -2734,6 +2734,11 @@ func (f *PipelineFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(pipeline.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *PipelineFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(pipeline.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *PipelineFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(pipeline.FieldName))
@@ -2747,11 +2752,6 @@ func (f *PipelineFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *PipelineFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(pipeline.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *PipelineFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(pipeline.FieldTenantId))
 }
 
 // WhereHasTenant applies a predicate to check if query has an edge tenant.
@@ -2822,6 +2822,11 @@ func (f *QueueFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(queue.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *QueueFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(queue.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *QueueFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(queue.FieldName))
@@ -2840,11 +2845,6 @@ func (f *QueueFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *QueueFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(queue.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *QueueFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(queue.FieldTenantId))
 }
 
 // WhereHasStages applies a predicate to check if query has an edge stages.
@@ -2943,6 +2943,11 @@ func (f *RbacFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(rbac.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *RbacFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(rbac.FieldTenantId))
+}
+
 // WhereAccess applies the entql string predicate on the access field.
 func (f *RbacFilter) WhereAccess(p entql.StringP) {
 	f.Where(p.Field(rbac.FieldAccess))
@@ -2956,11 +2961,6 @@ func (f *RbacFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *RbacFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(rbac.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *RbacFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(rbac.FieldTenantId))
 }
 
 // WhereHasDepartment applies a predicate to check if query has an edge department.
@@ -3031,6 +3031,11 @@ func (f *StageFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(stage.FieldID))
 }
 
+// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
+func (f *StageFilter) WhereTenantId(p entql.ValueP) {
+	f.Where(p.Field(stage.FieldTenantId))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *StageFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(stage.FieldName))
@@ -3054,11 +3059,6 @@ func (f *StageFilter) WhereCreatedAt(p entql.TimeP) {
 // WhereUpdatedAt applies the entql time.Time predicate on the updatedAt field.
 func (f *StageFilter) WhereUpdatedAt(p entql.TimeP) {
 	f.Where(p.Field(stage.FieldUpdatedAt))
-}
-
-// WhereTenantId applies the entql [16]byte predicate on the tenantId field.
-func (f *StageFilter) WhereTenantId(p entql.ValueP) {
-	f.Where(p.Field(stage.FieldTenantId))
 }
 
 // WhereHasPipeline applies a predicate to check if query has an edge pipeline.
@@ -3157,14 +3157,14 @@ func (f *TextFilter) WhereID(p entql.ValueP) {
 	f.Where(p.Field(text.FieldID))
 }
 
-// WhereText applies the entql string predicate on the text field.
-func (f *TextFilter) WhereText(p entql.StringP) {
-	f.Where(p.Field(text.FieldText))
-}
-
 // WhereTenantId applies the entql [16]byte predicate on the tenantId field.
 func (f *TextFilter) WhereTenantId(p entql.ValueP) {
 	f.Where(p.Field(text.FieldTenantId))
+}
+
+// WhereText applies the entql string predicate on the text field.
+func (f *TextFilter) WhereText(p entql.StringP) {
+	f.Where(p.Field(text.FieldText))
 }
 
 // WhereHasMessage applies a predicate to check if query has an edge message.

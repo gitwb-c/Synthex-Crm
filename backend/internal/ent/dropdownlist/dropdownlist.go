@@ -15,14 +15,14 @@ const (
 	Label = "dropdown_list"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldValue holds the string denoting the value field in the database.
 	FieldValue = "value"
 	// FieldCreatedAt holds the string denoting the createdat field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgeCrmField holds the string denoting the crmfield edge name in mutations.
 	EdgeCrmField = "crmField"
 	// EdgeTenant holds the string denoting the tenant edge name in mutations.
@@ -46,10 +46,10 @@ const (
 // Columns holds all SQL columns for dropdownlist fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldValue,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTenantId,
 }
 
 var (
@@ -89,6 +89,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByValue orders the results by the value field.
 func ByValue(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldValue, opts...).ToFunc()
@@ -102,11 +107,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updatedAt field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByCrmFieldCount orders the results by crmField count.

@@ -486,12 +486,12 @@ func (_q *EmployeeQuery) WithMessages(opts ...func(*MessageQuery)) *EmployeeQuer
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Employee.Query().
-//		GroupBy(employee.FieldName).
+//		GroupBy(employee.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *EmployeeQuery) GroupBy(field string, fields ...string) *EmployeeGroupBy {
@@ -509,11 +509,11 @@ func (_q *EmployeeQuery) GroupBy(field string, fields ...string) *EmployeeGroupB
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Employee.Query().
-//		Select(employee.FieldName).
+//		Select(employee.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *EmployeeQuery) Select(fields ...string) *EmployeeSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -7,11 +7,11 @@ import (
 )
 
 func ValidateNameLenght(name string) (bool, error) {
-	nameMaxLenStr := os.Getenv("EMPLOYEEAUTH_PASSWORD_MAXLEN")
-	nameMinLenStr := os.Getenv("EMPLOYEEAUTH_PASSWORD_MINLEN")
+	nameMaxLenStr := os.Getenv("EMPLOYEEAUTH_NAME_MAXLEN")
+	nameMinLenStr := os.Getenv("EMPLOYEEAUTH_NAME_MINLEN")
 
 	if len(nameMinLenStr) == 0 || len(nameMaxLenStr) == 0 {
-		return false, fmt.Errorf("EMPLOYEEAUTH_PASSWORD_MAXLEN or EMPLOYEEAUTH_PASSWORD_MINLEN not set")
+		return false, fmt.Errorf("EMPLOYEEAUTH_NAME_MAXLEN or EMPLOYEEAUTH_NAME_MINLEN not set")
 	}
 
 	nameMaxLen, errMax := strconv.Atoi(nameMaxLenStr)

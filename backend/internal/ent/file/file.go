@@ -13,6 +13,8 @@ const (
 	Label = "file"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldURL holds the string denoting the url field in the database.
 	FieldURL = "url"
 	// FieldCaption holds the string denoting the caption field in the database.
@@ -21,8 +23,6 @@ const (
 	FieldMimeType = "mime_type"
 	// FieldFileName holds the string denoting the filename field in the database.
 	FieldFileName = "file_name"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgeMessage holds the string denoting the message edge name in mutations.
 	EdgeMessage = "message"
 	// EdgeTenant holds the string denoting the tenant edge name in mutations.
@@ -48,11 +48,11 @@ const (
 // Columns holds all SQL columns for file fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldURL,
 	FieldCaption,
 	FieldMimeType,
 	FieldFileName,
-	FieldTenantId,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -80,6 +80,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByURL orders the results by the url field.
 func ByURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldURL, opts...).ToFunc()
@@ -98,11 +103,6 @@ func ByMimeType(opts ...sql.OrderTermOption) OrderOption {
 // ByFileName orders the results by the fileName field.
 func ByFileName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFileName, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByMessageField orders the results by message field.

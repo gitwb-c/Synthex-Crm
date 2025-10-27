@@ -23,6 +23,12 @@ type RbacCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *RbacCreate) SetTenantId(v uuid.UUID) *RbacCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetAccess sets the "access" field.
 func (_c *RbacCreate) SetAccess(v rbac.Access) *RbacCreate {
 	_c.mutation.SetAccess(v)
@@ -57,20 +63,6 @@ func (_c *RbacCreate) SetNillableUpdatedAt(v *time.Time) *RbacCreate {
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *RbacCreate) SetTenantId(v uuid.UUID) *RbacCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *RbacCreate) SetNillableTenantId(v *uuid.UUID) *RbacCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *RbacCreate) SetID(v uuid.UUID) *RbacCreate {
 	_c.mutation.SetID(v)
@@ -99,14 +91,6 @@ func (_c *RbacCreate) SetDepartment(v *Department) *RbacCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *RbacCreate) SetTenantID(id uuid.UUID) *RbacCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *RbacCreate) SetNillableTenantID(id *uuid.UUID) *RbacCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -166,6 +150,9 @@ func (_c *RbacCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *RbacCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Rbac.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Access(); !ok {
 		return &ValidationError{Name: "access", err: errors.New(`ent: missing required field "Rbac.access"`)}
 	}
@@ -182,6 +169,9 @@ func (_c *RbacCreate) check() error {
 	}
 	if len(_c.mutation.DepartmentIDs()) == 0 {
 		return &ValidationError{Name: "department", err: errors.New(`ent: missing required edge "Rbac.department"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Rbac.tenant"`)}
 	}
 	return nil
 }

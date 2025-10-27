@@ -53,3 +53,20 @@ func (Company) Annotations() []schema.Annotation {
 		entgql.QueryField(),
 	}
 }
+
+// func (Company) Policy() ent.Policy {
+// 	permissions := map[viewer.QueryType][]string{
+// 		viewer.Read:   {"manage_system_settings"},
+// 		viewer.Create: {"manage_system_settings"},
+// 		viewer.Update: {"manage_system_settings"},
+// 		viewer.Delete: {"manage_system_settings"},
+// 	}
+// 	return privacy.Policy{
+// 		Mutation: privacy.MutationPolicy{
+// 			rule.MutationRules(permissions),
+// 		},
+// 		Query: privacy.QueryPolicy{
+// 			rule.QueryRules(permissions),
+// 		},
+// 	}
+// }

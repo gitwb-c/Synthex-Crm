@@ -22,14 +22,14 @@ func (Employee) Fields() []ent.Field {
 		field.Enum("employmentStatus").Values("active", "terminated", "onLeave").Annotations(entgql.QueryField()).Annotations(entgql.OrderField("EMPLOYMENT_STATUS")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (Employee) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("employeeAuth", EmployeeAuth.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("employees").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("employees").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+
 		edge.To("department", Department.Type).Required().Unique(),
 		edge.From("chat", Chat.Type).Ref("employees"),
 		edge.To("queues", Queue.Type),
@@ -46,7 +46,7 @@ func (Employee) Annotations() []schema.Annotation {
 	}
 }
 
-func (Employee) Mixins() []ent.Mixin {
+func (Employee) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

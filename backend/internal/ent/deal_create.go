@@ -26,6 +26,12 @@ type DealCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *DealCreate) SetTenantId(v uuid.UUID) *DealCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetTitle sets the "title" field.
 func (_c *DealCreate) SetTitle(v string) *DealCreate {
 	_c.mutation.SetTitle(v)
@@ -66,20 +72,6 @@ func (_c *DealCreate) SetNillableUpdatedAt(v *time.Time) *DealCreate {
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *DealCreate) SetTenantId(v uuid.UUID) *DealCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *DealCreate) SetNillableTenantId(v *uuid.UUID) *DealCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *DealCreate) SetID(v uuid.UUID) *DealCreate {
 	_c.mutation.SetID(v)
@@ -97,14 +89,6 @@ func (_c *DealCreate) SetNillableID(v *uuid.UUID) *DealCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *DealCreate) SetTenantID(id uuid.UUID) *DealCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *DealCreate) SetNillableTenantID(id *uuid.UUID) *DealCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -228,6 +212,9 @@ func (_c *DealCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *DealCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Deal.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Deal.title"`)}
 	}
@@ -244,6 +231,9 @@ func (_c *DealCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Deal.updatedAt"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Deal.tenant"`)}
 	}
 	if len(_c.mutation.StageIDs()) == 0 {
 		return &ValidationError{Name: "stage", err: errors.New(`ent: missing required edge "Deal.stage"`)}

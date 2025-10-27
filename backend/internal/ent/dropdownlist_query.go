@@ -339,12 +339,12 @@ func (_q *DropdownListQuery) WithTenant(opts ...func(*CompanyQuery)) *DropdownLi
 // Example:
 //
 //	var v []struct {
-//		Value string `json:"value,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.DropdownList.Query().
-//		GroupBy(dropdownlist.FieldValue).
+//		GroupBy(dropdownlist.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *DropdownListQuery) GroupBy(field string, fields ...string) *DropdownListGroupBy {
@@ -362,11 +362,11 @@ func (_q *DropdownListQuery) GroupBy(field string, fields ...string) *DropdownLi
 // Example:
 //
 //	var v []struct {
-//		Value string `json:"value,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.DropdownList.Query().
-//		Select(dropdownlist.FieldValue).
+//		Select(dropdownlist.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *DropdownListQuery) Select(fields ...string) *DropdownListSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

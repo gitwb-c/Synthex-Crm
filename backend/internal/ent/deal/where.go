@@ -56,6 +56,11 @@ func IDLTE(id uuid.UUID) predicate.Deal {
 	return predicate.Deal(sql.FieldLTE(FieldID, id))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Deal {
+	return predicate.Deal(sql.FieldEQ(FieldTenantId, v))
+}
+
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
 func Title(v string) predicate.Deal {
 	return predicate.Deal(sql.FieldEQ(FieldTitle, v))
@@ -76,9 +81,24 @@ func UpdatedAt(v time.Time) predicate.Deal {
 	return predicate.Deal(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
-func TenantId(v uuid.UUID) predicate.Deal {
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Deal {
 	return predicate.Deal(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Deal {
+	return predicate.Deal(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Deal {
+	return predicate.Deal(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Deal {
+	return predicate.Deal(sql.FieldNotIn(FieldTenantId, vs...))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
@@ -289,36 +309,6 @@ func UpdatedAtLT(v time.Time) predicate.Deal {
 // UpdatedAtLTE applies the LTE predicate on the "updatedAt" field.
 func UpdatedAtLTE(v time.Time) predicate.Deal {
 	return predicate.Deal(sql.FieldLTE(FieldUpdatedAt, v))
-}
-
-// TenantIdEQ applies the EQ predicate on the "tenantId" field.
-func TenantIdEQ(v uuid.UUID) predicate.Deal {
-	return predicate.Deal(sql.FieldEQ(FieldTenantId, v))
-}
-
-// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
-func TenantIdNEQ(v uuid.UUID) predicate.Deal {
-	return predicate.Deal(sql.FieldNEQ(FieldTenantId, v))
-}
-
-// TenantIdIn applies the In predicate on the "tenantId" field.
-func TenantIdIn(vs ...uuid.UUID) predicate.Deal {
-	return predicate.Deal(sql.FieldIn(FieldTenantId, vs...))
-}
-
-// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
-func TenantIdNotIn(vs ...uuid.UUID) predicate.Deal {
-	return predicate.Deal(sql.FieldNotIn(FieldTenantId, vs...))
-}
-
-// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
-func TenantIdIsNil() predicate.Deal {
-	return predicate.Deal(sql.FieldIsNull(FieldTenantId))
-}
-
-// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
-func TenantIdNotNil() predicate.Deal {
-	return predicate.Deal(sql.FieldNotNull(FieldTenantId))
 }
 
 // HasTenant applies the HasEdge predicate on the "tenant" edge.

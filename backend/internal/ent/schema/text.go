@@ -17,14 +17,13 @@ func (Text) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID")),
 		field.String("text").NotEmpty().Annotations(entgql.QueryField(), entgql.OrderField("TEXT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (Text) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("message", Message.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("texts").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("texts").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -34,7 +33,7 @@ func (Text) Annotations() []schema.Annotation {
 	}
 }
 
-func (Text) Mixins() []ent.Mixin {
+func (Text) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

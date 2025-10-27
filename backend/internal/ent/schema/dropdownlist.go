@@ -21,14 +21,13 @@ func (DropdownList) Fields() []ent.Field {
 		field.String("value").NotEmpty().Annotations(entgql.QueryField()).Annotations(entgql.OrderField("VALUE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (DropdownList) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("crmField", CrmField.Type).Required(),
-		edge.From("tenant", Company.Type).Ref("dropdownLists").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("dropdownLists").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -41,7 +40,7 @@ func (DropdownList) Annotations() []schema.Annotation {
 	}
 }
 
-func (DropdownList) Mixins() []ent.Mixin {
+func (DropdownList) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

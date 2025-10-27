@@ -18,7 +18,7 @@ func EmployeeParse(ctx *gin.Context, employeeservice *services.EmployeeService) 
 	if err != nil {
 		return http.StatusBadRequest, nil, gin.H{"error": "invalid employeeId"}
 	}
-	employee, err := employeeservice.ReadID(ctx, employeeId)
+	employee, err := employeeservice.ReadID(ctx.Request.Context(), employeeId)
 	if err != nil {
 		return http.StatusBadRequest, nil, gin.H{"error": err.Error()}
 	}

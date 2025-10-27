@@ -7,7 +7,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/privacy"
 	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 	"github.com/google/uuid"
 )
@@ -19,7 +18,6 @@ func FilterTenantQuery() ent.Interceptor {
 			if view.TenantID == uuid.Nil {
 				return nil, errors.New("missing tenant")
 			}
-
 			qp, ok := query.(interface {
 				WhereP(...func(*sql.Selector))
 			})
@@ -43,7 +41,7 @@ func FilterTenantMutation() ent.Hook {
 			if view.TenantID == uuid.Nil {
 				return nil, errors.New("missing tenant")
 			}
-			log.Print(view)
+			log.Print(view.TenantID)
 
 			switch op {
 			case ent.OpCreate:
@@ -57,7 +55,7 @@ func FilterTenantMutation() ent.Hook {
 						return nil, err
 					}
 				}
-			case ent.OpUpdate, ent.OpUpdateOne, ent.OpDelete, ent.OpDeleteOne:
+			case ent.OpUpdate, ent.OpUpdateOne, ent.OpDelete:
 				mp, ok := mutation.(interface {
 					WhereP(...func(*sql.Selector))
 				})
@@ -71,20 +69,4 @@ func FilterTenantMutation() ent.Hook {
 			return next.Mutate(ctx, mutation)
 		})
 	}
-}
-
-func MutationRules(permissions []string) privacy.QueryMutationRule {
-	return privacy.ContextQueryMutationRule(func(ctx context.Context) error {
-
-		view := viewer.FromContext(ctx)
-
-		if view == nil {
-			return privacy.Denyf("Missing viewer context")
-		}
-
-		for (var i int = 0; i < len(view.Permissions); i++) {
-
-		}
-
-	})
 }

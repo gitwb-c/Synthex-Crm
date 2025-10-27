@@ -338,12 +338,12 @@ func (_q *EmployeeAuthQuery) WithTenant(opts ...func(*CompanyQuery)) *EmployeeAu
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.EmployeeAuth.Query().
-//		GroupBy(employeeauth.FieldName).
+//		GroupBy(employeeauth.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *EmployeeAuthQuery) GroupBy(field string, fields ...string) *EmployeeAuthGroupBy {
@@ -361,11 +361,11 @@ func (_q *EmployeeAuthQuery) GroupBy(field string, fields ...string) *EmployeeAu
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.EmployeeAuth.Query().
-//		Select(employeeauth.FieldName).
+//		Select(employeeauth.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *EmployeeAuthQuery) Select(fields ...string) *EmployeeAuthSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

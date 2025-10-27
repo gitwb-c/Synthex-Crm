@@ -448,12 +448,12 @@ func (_q *DealQuery) WithDealCrmFields(opts ...func(*DealCrmFieldQuery)) *DealQu
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Deal.Query().
-//		GroupBy(deal.FieldTitle).
+//		GroupBy(deal.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *DealQuery) GroupBy(field string, fields ...string) *DealGroupBy {
@@ -471,11 +471,11 @@ func (_q *DealQuery) GroupBy(field string, fields ...string) *DealGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Deal.Query().
-//		Select(deal.FieldTitle).
+//		Select(deal.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *DealQuery) Select(fields ...string) *DealSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

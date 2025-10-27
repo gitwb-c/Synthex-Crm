@@ -339,12 +339,12 @@ func (_q *PipelineQuery) WithStages(opts ...func(*StageQuery)) *PipelineQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Pipeline.Query().
-//		GroupBy(pipeline.FieldName).
+//		GroupBy(pipeline.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *PipelineQuery) GroupBy(field string, fields ...string) *PipelineGroupBy {
@@ -362,11 +362,11 @@ func (_q *PipelineQuery) GroupBy(field string, fields ...string) *PipelineGroupB
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Pipeline.Query().
-//		Select(pipeline.FieldName).
+//		Select(pipeline.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *PipelineQuery) Select(fields ...string) *PipelineSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

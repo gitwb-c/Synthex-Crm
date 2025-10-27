@@ -91,14 +91,13 @@ func (Rbac) Fields() []ent.Field {
 			),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (Rbac) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("department", Department.Type).Required().Unique(),
-		edge.From("tenant", Company.Type).Ref("rbacs").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("rbacs").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -111,7 +110,7 @@ func (Rbac) Annotations() []schema.Annotation {
 	}
 }
 
-func (Rbac) Mixins() []ent.Mixin {
+func (Rbac) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

@@ -24,10 +24,8 @@ func RbacMiddleware(employeeservice *services.EmployeeService, departmentservice
 			ctx.Abort()
 			return
 		}
-
-		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{Permissions: department.Edges.Rbacs, TenantID: employee.TenantId})
+		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{TenantID: employee.TenantId, Permissions: department.Edges.Rbacs})
 		ctx.Request = ctx.Request.WithContext(reqCtx)
-
 		ctx.Next()
 	}
 }

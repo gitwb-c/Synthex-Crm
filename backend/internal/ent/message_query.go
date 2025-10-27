@@ -448,12 +448,12 @@ func (_q *MessageQuery) WithTenant(opts ...func(*CompanyQuery)) *MessageQuery {
 // Example:
 //
 //	var v []struct {
-//		SentBy message.SentBy `json:"sentBy,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Message.Query().
-//		GroupBy(message.FieldSentBy).
+//		GroupBy(message.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *MessageQuery) GroupBy(field string, fields ...string) *MessageGroupBy {
@@ -471,11 +471,11 @@ func (_q *MessageQuery) GroupBy(field string, fields ...string) *MessageGroupBy 
 // Example:
 //
 //	var v []struct {
-//		SentBy message.SentBy `json:"sentBy,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Message.Query().
-//		Select(message.FieldSentBy).
+//		Select(message.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *MessageQuery) Select(fields ...string) *MessageSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

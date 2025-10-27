@@ -22,7 +22,6 @@ func (Queue) Fields() []ent.Field {
 		field.Enum("type").Values("ring").Default("ring").Annotations(entgql.OrderField("TYPE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
@@ -31,7 +30,7 @@ func (Queue) Edges() []ent.Edge {
 		edge.From("stages", Stage.Type).Ref("queue"),
 		edge.From("employees", Employee.Type).Ref("queues"),
 		edge.To("department", Department.Type).Required(),
-		edge.From("tenant", Company.Type).Ref("queues").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("queues").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -44,7 +43,7 @@ func (Queue) Annotations() []schema.Annotation {
 	}
 }
 
-func (Queue) Mixins() []ent.Mixin {
+func (Queue) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

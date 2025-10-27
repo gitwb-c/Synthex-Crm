@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
@@ -66,45 +65,6 @@ func (_u *DealUpdate) SetNillableSource(v *string) *DealUpdate {
 func (_u *DealUpdate) SetUpdatedAt(v time.Time) *DealUpdate {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_u *DealUpdate) SetTenantId(v uuid.UUID) *DealUpdate {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *DealUpdate) SetNillableTenantId(v *uuid.UUID) *DealUpdate {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *DealUpdate) ClearTenantId() *DealUpdate {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *DealUpdate) SetTenantID(id uuid.UUID) *DealUpdate {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *DealUpdate) SetNillableTenantID(id *uuid.UUID) *DealUpdate {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *DealUpdate) SetTenant(v *Company) *DealUpdate {
-	return _u.SetTenantID(v.ID)
 }
 
 // SetCostumerID sets the "costumer" edge to the Costumer entity by ID.
@@ -174,12 +134,6 @@ func (_u *DealUpdate) AddDealCrmFields(v ...*DealCrmField) *DealUpdate {
 // Mutation returns the DealMutation object of the builder.
 func (_u *DealUpdate) Mutation() *DealMutation {
 	return _u.mutation
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *DealUpdate) ClearTenant() *DealUpdate {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // ClearCostumer clears the "costumer" edge to the Costumer entity.
@@ -264,6 +218,9 @@ func (_u *DealUpdate) check() error {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
 	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Deal.tenant"`)
+	}
 	if _u.mutation.StageCleared() && len(_u.mutation.StageIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Deal.stage"`)
 	}
@@ -290,35 +247,6 @@ func (_u *DealUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(deal.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   deal.TenantTable,
-			Columns: []string{deal.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   deal.TenantTable,
-			Columns: []string{deal.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.CostumerCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -506,45 +434,6 @@ func (_u *DealUpdateOne) SetUpdatedAt(v time.Time) *DealUpdateOne {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *DealUpdateOne) SetTenantId(v uuid.UUID) *DealUpdateOne {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *DealUpdateOne) SetNillableTenantId(v *uuid.UUID) *DealUpdateOne {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *DealUpdateOne) ClearTenantId() *DealUpdateOne {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *DealUpdateOne) SetTenantID(id uuid.UUID) *DealUpdateOne {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *DealUpdateOne) SetNillableTenantID(id *uuid.UUID) *DealUpdateOne {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *DealUpdateOne) SetTenant(v *Company) *DealUpdateOne {
-	return _u.SetTenantID(v.ID)
-}
-
 // SetCostumerID sets the "costumer" edge to the Costumer entity by ID.
 func (_u *DealUpdateOne) SetCostumerID(id uuid.UUID) *DealUpdateOne {
 	_u.mutation.SetCostumerID(id)
@@ -612,12 +501,6 @@ func (_u *DealUpdateOne) AddDealCrmFields(v ...*DealCrmField) *DealUpdateOne {
 // Mutation returns the DealMutation object of the builder.
 func (_u *DealUpdateOne) Mutation() *DealMutation {
 	return _u.mutation
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *DealUpdateOne) ClearTenant() *DealUpdateOne {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // ClearCostumer clears the "costumer" edge to the Costumer entity.
@@ -715,6 +598,9 @@ func (_u *DealUpdateOne) check() error {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Deal.title": %w`, err)}
 		}
 	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Deal.tenant"`)
+	}
 	if _u.mutation.StageCleared() && len(_u.mutation.StageIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Deal.stage"`)
 	}
@@ -758,35 +644,6 @@ func (_u *DealUpdateOne) sqlSave(ctx context.Context) (_node *Deal, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(deal.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   deal.TenantTable,
-			Columns: []string{deal.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   deal.TenantTable,
-			Columns: []string{deal.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.CostumerCleared() {
 		edge := &sqlgraph.EdgeSpec{

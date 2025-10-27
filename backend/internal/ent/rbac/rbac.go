@@ -18,14 +18,14 @@ const (
 	Label = "rbac"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldAccess holds the string denoting the access field in the database.
 	FieldAccess = "access"
 	// FieldCreatedAt holds the string denoting the createdat field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgeDepartment holds the string denoting the department edge name in mutations.
 	EdgeDepartment = "department"
 	// EdgeTenant holds the string denoting the tenant edge name in mutations.
@@ -51,10 +51,10 @@ const (
 // Columns holds all SQL columns for rbac fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldAccess,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "rbacs"
@@ -141,6 +141,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByAccess orders the results by the access field.
 func ByAccess(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAccess, opts...).ToFunc()
@@ -154,11 +159,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updatedAt field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByDepartmentField orders the results by department field.

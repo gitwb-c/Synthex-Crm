@@ -23,14 +23,13 @@ func (EmployeeAuth) Fields() []ent.Field {
 		field.String("password").NotEmpty().Sensitive(),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")),
 	}
 }
 
 func (EmployeeAuth) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("employee", Employee.Type).Ref("employeeAuth").Unique(),
-		edge.From("tenant", Company.Type).Ref("employeeAuths").Field("tenantId").Unique().Required(),
+		edge.From("tenant", Company.Type).Ref("employeeAuths").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)).Required(),
 	}
 }
 
@@ -43,7 +42,7 @@ func (EmployeeAuth) Annotations() []schema.Annotation {
 	}
 }
 
-func (EmployeeAuth) Mixins() []ent.Mixin {
+func (EmployeeAuth) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}
