@@ -339,12 +339,12 @@ func (_q *CostumerQuery) WithDeals(opts ...func(*DealQuery)) *CostumerQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Costumer.Query().
-//		GroupBy(costumer.FieldName).
+//		GroupBy(costumer.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CostumerQuery) GroupBy(field string, fields ...string) *CostumerGroupBy {
@@ -362,11 +362,11 @@ func (_q *CostumerQuery) GroupBy(field string, fields ...string) *CostumerGroupB
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Costumer.Query().
-//		Select(costumer.FieldName).
+//		Select(costumer.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *CostumerQuery) Select(fields ...string) *CostumerSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

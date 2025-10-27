@@ -23,6 +23,12 @@ type CostumerCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *CostumerCreate) SetTenantId(v uuid.UUID) *CostumerCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *CostumerCreate) SetName(v string) *CostumerCreate {
 	_c.mutation.SetName(v)
@@ -69,20 +75,6 @@ func (_c *CostumerCreate) SetNillableUpdatedAt(v *time.Time) *CostumerCreate {
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *CostumerCreate) SetTenantId(v uuid.UUID) *CostumerCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *CostumerCreate) SetNillableTenantId(v *uuid.UUID) *CostumerCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *CostumerCreate) SetID(v uuid.UUID) *CostumerCreate {
 	_c.mutation.SetID(v)
@@ -100,14 +92,6 @@ func (_c *CostumerCreate) SetNillableID(v *uuid.UUID) *CostumerCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *CostumerCreate) SetTenantID(id uuid.UUID) *CostumerCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *CostumerCreate) SetNillableTenantID(id *uuid.UUID) *CostumerCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -182,6 +166,9 @@ func (_c *CostumerCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CostumerCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Costumer.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Costumer.name"`)}
 	}
@@ -211,6 +198,9 @@ func (_c *CostumerCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Costumer.updatedAt"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Costumer.tenant"`)}
 	}
 	return nil
 }

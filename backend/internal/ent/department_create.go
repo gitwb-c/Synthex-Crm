@@ -25,6 +25,12 @@ type DepartmentCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *DepartmentCreate) SetTenantId(v uuid.UUID) *DepartmentCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *DepartmentCreate) SetName(v string) *DepartmentCreate {
 	_c.mutation.SetName(v)
@@ -59,20 +65,6 @@ func (_c *DepartmentCreate) SetNillableUpdatedAt(v *time.Time) *DepartmentCreate
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *DepartmentCreate) SetTenantId(v uuid.UUID) *DepartmentCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *DepartmentCreate) SetNillableTenantId(v *uuid.UUID) *DepartmentCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *DepartmentCreate) SetID(v uuid.UUID) *DepartmentCreate {
 	_c.mutation.SetID(v)
@@ -90,14 +82,6 @@ func (_c *DepartmentCreate) SetNillableID(v *uuid.UUID) *DepartmentCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *DepartmentCreate) SetTenantID(id uuid.UUID) *DepartmentCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *DepartmentCreate) SetNillableTenantID(id *uuid.UUID) *DepartmentCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -202,6 +186,9 @@ func (_c *DepartmentCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *DepartmentCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Department.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Department.name"`)}
 	}
@@ -215,6 +202,9 @@ func (_c *DepartmentCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Department.updatedAt"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Department.tenant"`)}
 	}
 	return nil
 }

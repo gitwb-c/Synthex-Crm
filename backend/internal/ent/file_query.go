@@ -338,12 +338,12 @@ func (_q *FileQuery) WithTenant(opts ...func(*CompanyQuery)) *FileQuery {
 // Example:
 //
 //	var v []struct {
-//		URL string `json:"url,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.File.Query().
-//		GroupBy(file.FieldURL).
+//		GroupBy(file.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *FileQuery) GroupBy(field string, fields ...string) *FileGroupBy {
@@ -361,11 +361,11 @@ func (_q *FileQuery) GroupBy(field string, fields ...string) *FileGroupBy {
 // Example:
 //
 //	var v []struct {
-//		URL string `json:"url,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.File.Query().
-//		Select(file.FieldURL).
+//		Select(file.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *FileQuery) Select(fields ...string) *FileSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -17,21 +17,21 @@ import (
 
 // EmployeeAuth is the model entity for the EmployeeAuth schema.
 type EmployeeAuth struct {
-	config `json:"-"`
+	config `json:"-" sql:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"-" sql:"not null"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Email holds the value of the "email" field.
-	Email string `json:"-"`
+	Email string `json:"-" sql:"-"`
 	// Password holds the value of the "password" field.
-	Password string `json:"-"`
+	Password string `json:"-" sql:"-"`
 	// CreatedAt holds the value of the "createdAt" field.
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-	// TenantId holds the value of the "tenantId" field.
-	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EmployeeAuthQuery when eager-loading is set.
 	Edges                  EmployeeAuthEdges `json:"edges"`
@@ -108,6 +108,12 @@ func (_m *EmployeeAuth) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				_m.ID = *value
 			}
+		case employeeauth.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case employeeauth.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -137,12 +143,6 @@ func (_m *EmployeeAuth) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updatedAt", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
-			}
-		case employeeauth.FieldTenantId:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
-			} else if value != nil {
-				_m.TenantId = *value
 			}
 		case employeeauth.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
@@ -197,6 +197,9 @@ func (_m *EmployeeAuth) String() string {
 	var builder strings.Builder
 	builder.WriteString("EmployeeAuth(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
@@ -209,9 +212,6 @@ func (_m *EmployeeAuth) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("tenantId=")
-	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -412,12 +412,12 @@ func (_q *StageQuery) WithTenant(opts ...func(*CompanyQuery)) *StageQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Stage.Query().
-//		GroupBy(stage.FieldName).
+//		GroupBy(stage.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *StageQuery) GroupBy(field string, fields ...string) *StageGroupBy {
@@ -435,11 +435,11 @@ func (_q *StageQuery) GroupBy(field string, fields ...string) *StageGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Stage.Query().
-//		Select(stage.FieldName).
+//		Select(stage.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *StageQuery) Select(fields ...string) *StageSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

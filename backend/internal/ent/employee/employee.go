@@ -18,6 +18,8 @@ const (
 	Label = "employee"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldEmploymentStatus holds the string denoting the employmentstatus field in the database.
@@ -26,8 +28,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgeEmployeeAuth holds the string denoting the employeeauth edge name in mutations.
 	EdgeEmployeeAuth = "employeeAuth"
 	// EdgeTenant holds the string denoting the tenant edge name in mutations.
@@ -83,11 +83,11 @@ const (
 // Columns holds all SQL columns for employee fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldName,
 	FieldEmploymentStatus,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "employees"
@@ -168,6 +168,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
@@ -186,11 +191,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updatedAt field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByEmployeeAuthField orders the results by employeeAuth field.

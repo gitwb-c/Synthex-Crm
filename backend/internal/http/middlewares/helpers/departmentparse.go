@@ -18,7 +18,7 @@ func DepartmentParse(ctx *gin.Context, departmentservice *services.DepartmentSer
 	if err != nil {
 		return http.StatusBadRequest, nil, gin.H{"error": "invalid departmentId"}
 	}
-	department, err := departmentservice.ReadRbacs(ctx, departmentId)
+	department, err := departmentservice.ReadRbacs(ctx.Request.Context(), departmentId)
 	if err != nil {
 		return http.StatusBadRequest, nil, gin.H{"error": err.Error()}
 	}

@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
@@ -51,26 +50,6 @@ func (_u *DropdownListUpdate) SetUpdatedAt(v time.Time) *DropdownListUpdate {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *DropdownListUpdate) SetTenantId(v uuid.UUID) *DropdownListUpdate {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *DropdownListUpdate) SetNillableTenantId(v *uuid.UUID) *DropdownListUpdate {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *DropdownListUpdate) ClearTenantId() *DropdownListUpdate {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
 // AddCrmFieldIDs adds the "crmField" edge to the CrmField entity by IDs.
 func (_u *DropdownListUpdate) AddCrmFieldIDs(ids ...uuid.UUID) *DropdownListUpdate {
 	_u.mutation.AddCrmFieldIDs(ids...)
@@ -84,25 +63,6 @@ func (_u *DropdownListUpdate) AddCrmField(v ...*CrmField) *DropdownListUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.AddCrmFieldIDs(ids...)
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *DropdownListUpdate) SetTenantID(id uuid.UUID) *DropdownListUpdate {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *DropdownListUpdate) SetNillableTenantID(id *uuid.UUID) *DropdownListUpdate {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *DropdownListUpdate) SetTenant(v *Company) *DropdownListUpdate {
-	return _u.SetTenantID(v.ID)
 }
 
 // Mutation returns the DropdownListMutation object of the builder.
@@ -129,12 +89,6 @@ func (_u *DropdownListUpdate) RemoveCrmField(v ...*CrmField) *DropdownListUpdate
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveCrmFieldIDs(ids...)
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *DropdownListUpdate) ClearTenant() *DropdownListUpdate {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -179,6 +133,9 @@ func (_u *DropdownListUpdate) check() error {
 		if err := dropdownlist.ValueValidator(v); err != nil {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "DropdownList.value": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DropdownList.tenant"`)
 	}
 	return nil
 }
@@ -246,35 +203,6 @@ func (_u *DropdownListUpdate) sqlSave(ctx context.Context) (_node int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   dropdownlist.TenantTable,
-			Columns: []string{dropdownlist.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   dropdownlist.TenantTable,
-			Columns: []string{dropdownlist.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{dropdownlist.Label}
@@ -315,26 +243,6 @@ func (_u *DropdownListUpdateOne) SetUpdatedAt(v time.Time) *DropdownListUpdateOn
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *DropdownListUpdateOne) SetTenantId(v uuid.UUID) *DropdownListUpdateOne {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *DropdownListUpdateOne) SetNillableTenantId(v *uuid.UUID) *DropdownListUpdateOne {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *DropdownListUpdateOne) ClearTenantId() *DropdownListUpdateOne {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
 // AddCrmFieldIDs adds the "crmField" edge to the CrmField entity by IDs.
 func (_u *DropdownListUpdateOne) AddCrmFieldIDs(ids ...uuid.UUID) *DropdownListUpdateOne {
 	_u.mutation.AddCrmFieldIDs(ids...)
@@ -348,25 +256,6 @@ func (_u *DropdownListUpdateOne) AddCrmField(v ...*CrmField) *DropdownListUpdate
 		ids[i] = v[i].ID
 	}
 	return _u.AddCrmFieldIDs(ids...)
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *DropdownListUpdateOne) SetTenantID(id uuid.UUID) *DropdownListUpdateOne {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *DropdownListUpdateOne) SetNillableTenantID(id *uuid.UUID) *DropdownListUpdateOne {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *DropdownListUpdateOne) SetTenant(v *Company) *DropdownListUpdateOne {
-	return _u.SetTenantID(v.ID)
 }
 
 // Mutation returns the DropdownListMutation object of the builder.
@@ -393,12 +282,6 @@ func (_u *DropdownListUpdateOne) RemoveCrmField(v ...*CrmField) *DropdownListUpd
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveCrmFieldIDs(ids...)
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *DropdownListUpdateOne) ClearTenant() *DropdownListUpdateOne {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // Where appends a list predicates to the DropdownListUpdate builder.
@@ -456,6 +339,9 @@ func (_u *DropdownListUpdateOne) check() error {
 		if err := dropdownlist.ValueValidator(v); err != nil {
 			return &ValidationError{Name: "value", err: fmt.Errorf(`ent: validator failed for field "DropdownList.value": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DropdownList.tenant"`)
 	}
 	return nil
 }
@@ -533,35 +419,6 @@ func (_u *DropdownListUpdateOne) sqlSave(ctx context.Context) (_node *DropdownLi
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(crmfield.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   dropdownlist.TenantTable,
-			Columns: []string{dropdownlist.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   dropdownlist.TenantTable,
-			Columns: []string{dropdownlist.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

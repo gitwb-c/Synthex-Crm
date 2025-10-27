@@ -15,6 +15,8 @@ const (
 	Label = "stage"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantId holds the string denoting the tenantid field in the database.
+	FieldTenantId = "tenant_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldColor holds the string denoting the color field in the database.
@@ -25,8 +27,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantId holds the string denoting the tenantid field in the database.
-	FieldTenantId = "tenant_id"
 	// EdgePipeline holds the string denoting the pipeline edge name in mutations.
 	EdgePipeline = "pipeline"
 	// EdgeDeals holds the string denoting the deals edge name in mutations.
@@ -70,12 +70,12 @@ const (
 // Columns holds all SQL columns for stage fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantId,
 	FieldName,
 	FieldColor,
 	FieldLossOrGain,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTenantId,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "stages"
@@ -125,6 +125,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByTenantId orders the results by the tenantId field.
+func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
@@ -148,11 +153,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updatedAt field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByTenantId orders the results by the tenantId field.
-func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
 }
 
 // ByPipelineField orders the results by pipeline field.

@@ -412,12 +412,12 @@ func (_q *ChatQuery) WithTenant(opts ...func(*CompanyQuery)) *ChatQuery {
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Chat.Query().
-//		GroupBy(chat.FieldTitle).
+//		GroupBy(chat.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *ChatQuery) GroupBy(field string, fields ...string) *ChatGroupBy {
@@ -435,11 +435,11 @@ func (_q *ChatQuery) GroupBy(field string, fields ...string) *ChatGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Chat.Query().
-//		Select(chat.FieldTitle).
+//		Select(chat.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *ChatQuery) Select(fields ...string) *ChatSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

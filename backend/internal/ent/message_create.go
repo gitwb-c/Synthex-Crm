@@ -26,6 +26,12 @@ type MessageCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *MessageCreate) SetTenantId(v uuid.UUID) *MessageCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetSentBy sets the "sentBy" field.
 func (_c *MessageCreate) SetSentBy(v message.SentBy) *MessageCreate {
 	_c.mutation.SetSentBy(v)
@@ -68,20 +74,6 @@ func (_c *MessageCreate) SetUpdatedAt(v time.Time) *MessageCreate {
 func (_c *MessageCreate) SetNillableUpdatedAt(v *time.Time) *MessageCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *MessageCreate) SetTenantId(v uuid.UUID) *MessageCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *MessageCreate) SetNillableTenantId(v *uuid.UUID) *MessageCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
 	}
 	return _c
 }
@@ -178,14 +170,6 @@ func (_c *MessageCreate) SetTenantID(id uuid.UUID) *MessageCreate {
 	return _c
 }
 
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *MessageCreate) SetNillableTenantID(id *uuid.UUID) *MessageCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
-	return _c
-}
-
 // SetTenant sets the "tenant" edge to the Company entity.
 func (_c *MessageCreate) SetTenant(v *Company) *MessageCreate {
 	return _c.SetTenantID(v.ID)
@@ -242,6 +226,9 @@ func (_c *MessageCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *MessageCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Message.tenantId"`)}
+	}
 	if _, ok := _c.mutation.SentBy(); !ok {
 		return &ValidationError{Name: "sentBy", err: errors.New(`ent: missing required field "Message.sentBy"`)}
 	}
@@ -266,6 +253,9 @@ func (_c *MessageCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Message.updatedAt"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Message.tenant"`)}
 	}
 	return nil
 }

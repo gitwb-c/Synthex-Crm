@@ -27,6 +27,12 @@ type EmployeeCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *EmployeeCreate) SetTenantId(v uuid.UUID) *EmployeeCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *EmployeeCreate) SetName(v string) *EmployeeCreate {
 	_c.mutation.SetName(v)
@@ -67,20 +73,6 @@ func (_c *EmployeeCreate) SetNillableUpdatedAt(v *time.Time) *EmployeeCreate {
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *EmployeeCreate) SetTenantId(v uuid.UUID) *EmployeeCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *EmployeeCreate) SetNillableTenantId(v *uuid.UUID) *EmployeeCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *EmployeeCreate) SetID(v uuid.UUID) *EmployeeCreate {
 	_c.mutation.SetID(v)
@@ -109,14 +101,6 @@ func (_c *EmployeeCreate) SetEmployeeAuth(v *EmployeeAuth) *EmployeeCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *EmployeeCreate) SetTenantID(id uuid.UUID) *EmployeeCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *EmployeeCreate) SetNillableTenantID(id *uuid.UUID) *EmployeeCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -232,6 +216,9 @@ func (_c *EmployeeCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *EmployeeCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Employee.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Employee.name"`)}
 	}
@@ -256,6 +243,9 @@ func (_c *EmployeeCreate) check() error {
 	}
 	if len(_c.mutation.EmployeeAuthIDs()) == 0 {
 		return &ValidationError{Name: "employeeAuth", err: errors.New(`ent: missing required edge "Employee.employeeAuth"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Employee.tenant"`)}
 	}
 	if len(_c.mutation.DepartmentIDs()) == 0 {
 		return &ValidationError{Name: "department", err: errors.New(`ent: missing required edge "Employee.department"`)}

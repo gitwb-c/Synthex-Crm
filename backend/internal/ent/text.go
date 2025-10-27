@@ -16,13 +16,13 @@ import (
 
 // Text is the model entity for the Text schema.
 type Text struct {
-	config `json:"-"`
+	config `json:"-" sql:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"-" sql:"not null"`
 	// Text holds the value of the "text" field.
 	Text string `json:"text,omitempty"`
-	// TenantId holds the value of the "tenantId" field.
-	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TextQuery when eager-loading is set.
 	Edges        TextEdges `json:"edges"`
@@ -94,17 +94,17 @@ func (_m *Text) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				_m.ID = *value
 			}
-		case text.FieldText:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field text", values[i])
-			} else if value.Valid {
-				_m.Text = value.String
-			}
 		case text.FieldTenantId:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
 			} else if value != nil {
 				_m.TenantId = *value
+			}
+		case text.FieldText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field text", values[i])
+			} else if value.Valid {
+				_m.Text = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -152,11 +152,11 @@ func (_m *Text) String() string {
 	var builder strings.Builder
 	builder.WriteString("Text(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("text=")
-	builder.WriteString(_m.Text)
-	builder.WriteString(", ")
 	builder.WriteString("tenantId=")
 	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
+	builder.WriteString(", ")
+	builder.WriteString("text=")
+	builder.WriteString(_m.Text)
 	builder.WriteByte(')')
 	return builder.String()
 }

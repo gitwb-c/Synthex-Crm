@@ -338,12 +338,12 @@ func (_q *RbacQuery) WithTenant(opts ...func(*CompanyQuery)) *RbacQuery {
 // Example:
 //
 //	var v []struct {
-//		Access rbac.Access `json:"access,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Rbac.Query().
-//		GroupBy(rbac.FieldAccess).
+//		GroupBy(rbac.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *RbacQuery) GroupBy(field string, fields ...string) *RbacGroupBy {
@@ -361,11 +361,11 @@ func (_q *RbacQuery) GroupBy(field string, fields ...string) *RbacGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Access rbac.Access `json:"access,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Rbac.Query().
-//		Select(rbac.FieldAccess).
+//		Select(rbac.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *RbacQuery) Select(fields ...string) *RbacSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

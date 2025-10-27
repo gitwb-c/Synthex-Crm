@@ -13,10 +13,10 @@ const (
 	Label = "text"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldText holds the string denoting the text field in the database.
-	FieldText = "text"
 	// FieldTenantId holds the string denoting the tenantid field in the database.
 	FieldTenantId = "tenant_id"
+	// FieldText holds the string denoting the text field in the database.
+	FieldText = "text"
 	// EdgeMessage holds the string denoting the message edge name in mutations.
 	EdgeMessage = "message"
 	// EdgeTenant holds the string denoting the tenant edge name in mutations.
@@ -42,8 +42,8 @@ const (
 // Columns holds all SQL columns for text fields.
 var Columns = []string{
 	FieldID,
-	FieldText,
 	FieldTenantId,
+	FieldText,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -71,14 +71,14 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByText orders the results by the text field.
-func ByText(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldText, opts...).ToFunc()
-}
-
 // ByTenantId orders the results by the tenantId field.
 func ByTenantId(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTenantId, opts...).ToFunc()
+}
+
+// ByText orders the results by the text field.
+func ByText(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldText, opts...).ToFunc()
 }
 
 // ByMessageField orders the results by message field.

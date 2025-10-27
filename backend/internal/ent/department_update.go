@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
@@ -51,45 +50,6 @@ func (_u *DepartmentUpdate) SetNillableName(v *string) *DepartmentUpdate {
 func (_u *DepartmentUpdate) SetUpdatedAt(v time.Time) *DepartmentUpdate {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_u *DepartmentUpdate) SetTenantId(v uuid.UUID) *DepartmentUpdate {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *DepartmentUpdate) SetNillableTenantId(v *uuid.UUID) *DepartmentUpdate {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *DepartmentUpdate) ClearTenantId() *DepartmentUpdate {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *DepartmentUpdate) SetTenantID(id uuid.UUID) *DepartmentUpdate {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *DepartmentUpdate) SetNillableTenantID(id *uuid.UUID) *DepartmentUpdate {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *DepartmentUpdate) SetTenant(v *Company) *DepartmentUpdate {
-	return _u.SetTenantID(v.ID)
 }
 
 // AddEmployeeIDs adds the "employee" edge to the Employee entity by IDs.
@@ -140,12 +100,6 @@ func (_u *DepartmentUpdate) AddRbacs(v ...*Rbac) *DepartmentUpdate {
 // Mutation returns the DepartmentMutation object of the builder.
 func (_u *DepartmentUpdate) Mutation() *DepartmentMutation {
 	return _u.mutation
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *DepartmentUpdate) ClearTenant() *DepartmentUpdate {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // ClearEmployee clears all "employee" edges to the Employee entity.
@@ -254,6 +208,9 @@ func (_u *DepartmentUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Department.name": %w`, err)}
 		}
 	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Department.tenant"`)
+	}
 	return nil
 }
 
@@ -274,35 +231,6 @@ func (_u *DepartmentUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(department.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   department.TenantTable,
-			Columns: []string{department.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   department.TenantTable,
-			Columns: []string{department.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.EmployeeCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -479,45 +407,6 @@ func (_u *DepartmentUpdateOne) SetUpdatedAt(v time.Time) *DepartmentUpdateOne {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *DepartmentUpdateOne) SetTenantId(v uuid.UUID) *DepartmentUpdateOne {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *DepartmentUpdateOne) SetNillableTenantId(v *uuid.UUID) *DepartmentUpdateOne {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *DepartmentUpdateOne) ClearTenantId() *DepartmentUpdateOne {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *DepartmentUpdateOne) SetTenantID(id uuid.UUID) *DepartmentUpdateOne {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *DepartmentUpdateOne) SetNillableTenantID(id *uuid.UUID) *DepartmentUpdateOne {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *DepartmentUpdateOne) SetTenant(v *Company) *DepartmentUpdateOne {
-	return _u.SetTenantID(v.ID)
-}
-
 // AddEmployeeIDs adds the "employee" edge to the Employee entity by IDs.
 func (_u *DepartmentUpdateOne) AddEmployeeIDs(ids ...uuid.UUID) *DepartmentUpdateOne {
 	_u.mutation.AddEmployeeIDs(ids...)
@@ -566,12 +455,6 @@ func (_u *DepartmentUpdateOne) AddRbacs(v ...*Rbac) *DepartmentUpdateOne {
 // Mutation returns the DepartmentMutation object of the builder.
 func (_u *DepartmentUpdateOne) Mutation() *DepartmentMutation {
 	return _u.mutation
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *DepartmentUpdateOne) ClearTenant() *DepartmentUpdateOne {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // ClearEmployee clears all "employee" edges to the Employee entity.
@@ -693,6 +576,9 @@ func (_u *DepartmentUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Department.name": %w`, err)}
 		}
 	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Department.tenant"`)
+	}
 	return nil
 }
 
@@ -730,35 +616,6 @@ func (_u *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department, 
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(department.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   department.TenantTable,
-			Columns: []string{department.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   department.TenantTable,
-			Columns: []string{department.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.EmployeeCleared() {
 		edge := &sqlgraph.EdgeSpec{

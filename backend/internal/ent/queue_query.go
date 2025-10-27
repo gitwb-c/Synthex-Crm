@@ -413,12 +413,12 @@ func (_q *QueueQuery) WithTenant(opts ...func(*CompanyQuery)) *QueueQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Queue.Query().
-//		GroupBy(queue.FieldName).
+//		GroupBy(queue.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *QueueQuery) GroupBy(field string, fields ...string) *QueueGroupBy {
@@ -436,11 +436,11 @@ func (_q *QueueQuery) GroupBy(field string, fields ...string) *QueueGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Queue.Query().
-//		Select(queue.FieldName).
+//		Select(queue.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *QueueQuery) Select(fields ...string) *QueueSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

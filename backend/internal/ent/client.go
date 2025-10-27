@@ -2940,8 +2940,7 @@ func (c *PipelineClient) QueryStages(_m *Pipeline) *StageQuery {
 
 // Hooks returns the client hooks.
 func (c *PipelineClient) Hooks() []Hook {
-	hooks := c.hooks.Pipeline
-	return append(hooks[:len(hooks):len(hooks)], pipeline.Hooks[:]...)
+	return c.hooks.Pipeline
 }
 
 // Interceptors returns the client interceptors.

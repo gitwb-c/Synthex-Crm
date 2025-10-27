@@ -23,6 +23,12 @@ type PipelineCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *PipelineCreate) SetTenantId(v uuid.UUID) *PipelineCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *PipelineCreate) SetName(v string) *PipelineCreate {
 	_c.mutation.SetName(v)
@@ -57,20 +63,6 @@ func (_c *PipelineCreate) SetNillableUpdatedAt(v *time.Time) *PipelineCreate {
 	return _c
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_c *PipelineCreate) SetTenantId(v uuid.UUID) *PipelineCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *PipelineCreate) SetNillableTenantId(v *uuid.UUID) *PipelineCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *PipelineCreate) SetID(v uuid.UUID) *PipelineCreate {
 	_c.mutation.SetID(v)
@@ -88,14 +80,6 @@ func (_c *PipelineCreate) SetNillableID(v *uuid.UUID) *PipelineCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *PipelineCreate) SetTenantID(id uuid.UUID) *PipelineCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *PipelineCreate) SetNillableTenantID(id *uuid.UUID) *PipelineCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -126,9 +110,7 @@ func (_c *PipelineCreate) Mutation() *PipelineMutation {
 
 // Save creates the Pipeline in the database.
 func (_c *PipelineCreate) Save(ctx context.Context) (*Pipeline, error) {
-	if err := _c.defaults(); err != nil {
-		return nil, err
-	}
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -155,33 +137,26 @@ func (_c *PipelineCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *PipelineCreate) defaults() error {
+func (_c *PipelineCreate) defaults() {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
-		if pipeline.DefaultCreatedAt == nil {
-			return fmt.Errorf("ent: uninitialized pipeline.DefaultCreatedAt (forgotten import ent/runtime?)")
-		}
 		v := pipeline.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		if pipeline.DefaultUpdatedAt == nil {
-			return fmt.Errorf("ent: uninitialized pipeline.DefaultUpdatedAt (forgotten import ent/runtime?)")
-		}
 		v := pipeline.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := _c.mutation.ID(); !ok {
-		if pipeline.DefaultID == nil {
-			return fmt.Errorf("ent: uninitialized pipeline.DefaultID (forgotten import ent/runtime?)")
-		}
 		v := pipeline.DefaultID()
 		_c.mutation.SetID(v)
 	}
-	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *PipelineCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Pipeline.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Pipeline.name"`)}
 	}
@@ -195,6 +170,9 @@ func (_c *PipelineCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Pipeline.updatedAt"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Pipeline.tenant"`)}
 	}
 	return nil
 }

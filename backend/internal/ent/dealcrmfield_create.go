@@ -24,6 +24,12 @@ type DealCrmFieldCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *DealCrmFieldCreate) SetTenantId(v uuid.UUID) *DealCrmFieldCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetValue sets the "value" field.
 func (_c *DealCrmFieldCreate) SetValue(v string) *DealCrmFieldCreate {
 	_c.mutation.SetValue(v)
@@ -54,20 +60,6 @@ func (_c *DealCrmFieldCreate) SetUpdatedAt(v time.Time) *DealCrmFieldCreate {
 func (_c *DealCrmFieldCreate) SetNillableUpdatedAt(v *time.Time) *DealCrmFieldCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *DealCrmFieldCreate) SetTenantId(v uuid.UUID) *DealCrmFieldCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *DealCrmFieldCreate) SetNillableTenantId(v *uuid.UUID) *DealCrmFieldCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
 	}
 	return _c
 }
@@ -111,14 +103,6 @@ func (_c *DealCrmFieldCreate) SetCrmField(v *CrmField) *DealCrmFieldCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *DealCrmFieldCreate) SetTenantID(id uuid.UUID) *DealCrmFieldCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *DealCrmFieldCreate) SetNillableTenantID(id *uuid.UUID) *DealCrmFieldCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -178,6 +162,9 @@ func (_c *DealCrmFieldCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *DealCrmFieldCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "DealCrmField.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "DealCrmField.value"`)}
 	}
@@ -197,6 +184,9 @@ func (_c *DealCrmFieldCreate) check() error {
 	}
 	if len(_c.mutation.CrmFieldIDs()) == 0 {
 		return &ValidationError{Name: "crmField", err: errors.New(`ent: missing required edge "DealCrmField.crmField"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "DealCrmField.tenant"`)}
 	}
 	return nil
 }

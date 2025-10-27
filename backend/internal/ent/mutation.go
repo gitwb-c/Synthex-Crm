@@ -191,6 +191,42 @@ func (m *ChatMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *ChatMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *ChatMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Chat entity.
+// If the Chat object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ChatMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *ChatMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetTitle sets the "title" field.
 func (m *ChatMutation) SetTitle(s string) {
 	m.title = &s
@@ -371,55 +407,6 @@ func (m *ChatMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *ChatMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *ChatMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Chat entity.
-// If the Chat object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *ChatMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[chat.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *ChatMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[chat.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *ChatMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, chat.FieldTenantId)
-}
-
 // SetDealID sets the "deal" edge to the Deal entity by id.
 func (m *ChatMutation) SetDealID(id uuid.UUID) {
 	m.deal = &id
@@ -580,7 +567,7 @@ func (m *ChatMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *ChatMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -642,6 +629,9 @@ func (m *ChatMutation) Type() string {
 // AddedFields().
 func (m *ChatMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.tenant != nil {
+		fields = append(fields, chat.FieldTenantId)
+	}
 	if m.title != nil {
 		fields = append(fields, chat.FieldTitle)
 	}
@@ -657,9 +647,6 @@ func (m *ChatMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, chat.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, chat.FieldTenantId)
-	}
 	return fields
 }
 
@@ -668,6 +655,8 @@ func (m *ChatMutation) Fields() []string {
 // schema.
 func (m *ChatMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case chat.FieldTenantId:
+		return m.TenantId()
 	case chat.FieldTitle:
 		return m.Title()
 	case chat.FieldAccepted:
@@ -678,8 +667,6 @@ func (m *ChatMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case chat.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case chat.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -689,6 +676,8 @@ func (m *ChatMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ChatMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case chat.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case chat.FieldTitle:
 		return m.OldTitle(ctx)
 	case chat.FieldAccepted:
@@ -699,8 +688,6 @@ func (m *ChatMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCreatedAt(ctx)
 	case chat.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case chat.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Chat field %s", name)
 }
@@ -710,6 +697,13 @@ func (m *ChatMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *ChatMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case chat.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case chat.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
@@ -745,13 +739,6 @@ func (m *ChatMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case chat.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Chat field %s", name)
 }
@@ -781,11 +768,7 @@ func (m *ChatMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ChatMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(chat.FieldTenantId) {
-		fields = append(fields, chat.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -798,11 +781,6 @@ func (m *ChatMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ChatMutation) ClearField(name string) error {
-	switch name {
-	case chat.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Chat nullable field %s", name)
 }
 
@@ -810,6 +788,9 @@ func (m *ChatMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ChatMutation) ResetField(name string) error {
 	switch name {
+	case chat.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case chat.FieldTitle:
 		m.ResetTitle()
 		return nil
@@ -824,9 +805,6 @@ func (m *ChatMutation) ResetField(name string) error {
 		return nil
 	case chat.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case chat.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Chat field %s", name)
@@ -2882,6 +2860,42 @@ func (m *CostumerMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *CostumerMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *CostumerMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Costumer entity.
+// If the Costumer object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CostumerMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *CostumerMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *CostumerMutation) SetName(s string) {
 	m.name = &s
@@ -3062,55 +3076,6 @@ func (m *CostumerMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *CostumerMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *CostumerMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Costumer entity.
-// If the Costumer object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CostumerMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *CostumerMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[costumer.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *CostumerMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[costumer.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *CostumerMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, costumer.FieldTenantId)
-}
-
 // SetTenantID sets the "tenant" edge to the Company entity by id.
 func (m *CostumerMutation) SetTenantID(id uuid.UUID) {
 	m.tenant = &id
@@ -3124,7 +3089,7 @@ func (m *CostumerMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *CostumerMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -3240,6 +3205,9 @@ func (m *CostumerMutation) Type() string {
 // AddedFields().
 func (m *CostumerMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.tenant != nil {
+		fields = append(fields, costumer.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, costumer.FieldName)
 	}
@@ -3255,9 +3223,6 @@ func (m *CostumerMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, costumer.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, costumer.FieldTenantId)
-	}
 	return fields
 }
 
@@ -3266,6 +3231,8 @@ func (m *CostumerMutation) Fields() []string {
 // schema.
 func (m *CostumerMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case costumer.FieldTenantId:
+		return m.TenantId()
 	case costumer.FieldName:
 		return m.Name()
 	case costumer.FieldPhone:
@@ -3276,8 +3243,6 @@ func (m *CostumerMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case costumer.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case costumer.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -3287,6 +3252,8 @@ func (m *CostumerMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CostumerMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case costumer.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case costumer.FieldName:
 		return m.OldName(ctx)
 	case costumer.FieldPhone:
@@ -3297,8 +3264,6 @@ func (m *CostumerMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case costumer.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case costumer.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Costumer field %s", name)
 }
@@ -3308,6 +3273,13 @@ func (m *CostumerMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *CostumerMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case costumer.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case costumer.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -3343,13 +3315,6 @@ func (m *CostumerMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case costumer.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Costumer field %s", name)
 }
@@ -3379,11 +3344,7 @@ func (m *CostumerMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CostumerMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(costumer.FieldTenantId) {
-		fields = append(fields, costumer.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3396,11 +3357,6 @@ func (m *CostumerMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CostumerMutation) ClearField(name string) error {
-	switch name {
-	case costumer.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Costumer nullable field %s", name)
 }
 
@@ -3408,6 +3364,9 @@ func (m *CostumerMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CostumerMutation) ResetField(name string) error {
 	switch name {
+	case costumer.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case costumer.FieldName:
 		m.ResetName()
 		return nil
@@ -3422,9 +3381,6 @@ func (m *CostumerMutation) ResetField(name string) error {
 		return nil
 	case costumer.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case costumer.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Costumer field %s", name)
@@ -3661,6 +3617,42 @@ func (m *CrmFieldMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *CrmFieldMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *CrmFieldMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the CrmField entity.
+// If the CrmField object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CrmFieldMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *CrmFieldMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *CrmFieldMutation) SetName(s string) {
 	m.name = &s
@@ -3841,55 +3833,6 @@ func (m *CrmFieldMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *CrmFieldMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *CrmFieldMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the CrmField entity.
-// If the CrmField object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CrmFieldMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *CrmFieldMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[crmfield.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *CrmFieldMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[crmfield.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *CrmFieldMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, crmfield.FieldTenantId)
-}
-
 // AddDropdownListIDs adds the "dropdownList" edge to the DropdownList entity by ids.
 func (m *CrmFieldMutation) AddDropdownListIDs(ids ...uuid.UUID) {
 	if m.dropdownList == nil {
@@ -4011,7 +3954,7 @@ func (m *CrmFieldMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *CrmFieldMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -4073,6 +4016,9 @@ func (m *CrmFieldMutation) Type() string {
 // AddedFields().
 func (m *CrmFieldMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.tenant != nil {
+		fields = append(fields, crmfield.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, crmfield.FieldName)
 	}
@@ -4088,9 +4034,6 @@ func (m *CrmFieldMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, crmfield.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, crmfield.FieldTenantId)
-	}
 	return fields
 }
 
@@ -4099,6 +4042,8 @@ func (m *CrmFieldMutation) Fields() []string {
 // schema.
 func (m *CrmFieldMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case crmfield.FieldTenantId:
+		return m.TenantId()
 	case crmfield.FieldName:
 		return m.Name()
 	case crmfield.FieldSection:
@@ -4109,8 +4054,6 @@ func (m *CrmFieldMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case crmfield.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case crmfield.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -4120,6 +4063,8 @@ func (m *CrmFieldMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CrmFieldMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case crmfield.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case crmfield.FieldName:
 		return m.OldName(ctx)
 	case crmfield.FieldSection:
@@ -4130,8 +4075,6 @@ func (m *CrmFieldMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case crmfield.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case crmfield.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown CrmField field %s", name)
 }
@@ -4141,6 +4084,13 @@ func (m *CrmFieldMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *CrmFieldMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case crmfield.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case crmfield.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -4176,13 +4126,6 @@ func (m *CrmFieldMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case crmfield.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
-		return nil
 	}
 	return fmt.Errorf("unknown CrmField field %s", name)
 }
@@ -4212,11 +4155,7 @@ func (m *CrmFieldMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CrmFieldMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(crmfield.FieldTenantId) {
-		fields = append(fields, crmfield.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -4229,11 +4168,6 @@ func (m *CrmFieldMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CrmFieldMutation) ClearField(name string) error {
-	switch name {
-	case crmfield.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown CrmField nullable field %s", name)
 }
 
@@ -4241,6 +4175,9 @@ func (m *CrmFieldMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CrmFieldMutation) ResetField(name string) error {
 	switch name {
+	case crmfield.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case crmfield.FieldName:
 		m.ResetName()
 		return nil
@@ -4255,9 +4192,6 @@ func (m *CrmFieldMutation) ResetField(name string) error {
 		return nil
 	case crmfield.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case crmfield.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown CrmField field %s", name)
@@ -4522,6 +4456,42 @@ func (m *DealMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DealMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DealMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Deal entity.
+// If the Deal object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DealMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DealMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetTitle sets the "title" field.
 func (m *DealMutation) SetTitle(s string) {
 	m.title = &s
@@ -4666,55 +4636,6 @@ func (m *DealMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *DealMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *DealMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Deal entity.
-// If the Deal object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DealMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *DealMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[deal.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *DealMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[deal.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *DealMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, deal.FieldTenantId)
-}
-
 // SetTenantID sets the "tenant" edge to the Company entity by id.
 func (m *DealMutation) SetTenantID(id uuid.UUID) {
 	m.tenant = &id
@@ -4728,7 +4649,7 @@ func (m *DealMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *DealMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -4961,6 +4882,9 @@ func (m *DealMutation) Type() string {
 // AddedFields().
 func (m *DealMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.tenant != nil {
+		fields = append(fields, deal.FieldTenantId)
+	}
 	if m.title != nil {
 		fields = append(fields, deal.FieldTitle)
 	}
@@ -4973,9 +4897,6 @@ func (m *DealMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, deal.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, deal.FieldTenantId)
-	}
 	return fields
 }
 
@@ -4984,6 +4905,8 @@ func (m *DealMutation) Fields() []string {
 // schema.
 func (m *DealMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case deal.FieldTenantId:
+		return m.TenantId()
 	case deal.FieldTitle:
 		return m.Title()
 	case deal.FieldSource:
@@ -4992,8 +4915,6 @@ func (m *DealMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case deal.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case deal.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -5003,6 +4924,8 @@ func (m *DealMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *DealMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case deal.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case deal.FieldTitle:
 		return m.OldTitle(ctx)
 	case deal.FieldSource:
@@ -5011,8 +4934,6 @@ func (m *DealMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCreatedAt(ctx)
 	case deal.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case deal.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Deal field %s", name)
 }
@@ -5022,6 +4943,13 @@ func (m *DealMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *DealMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case deal.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case deal.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
@@ -5049,13 +4977,6 @@ func (m *DealMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case deal.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Deal field %s", name)
@@ -5086,11 +5007,7 @@ func (m *DealMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DealMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(deal.FieldTenantId) {
-		fields = append(fields, deal.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -5103,11 +5020,6 @@ func (m *DealMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DealMutation) ClearField(name string) error {
-	switch name {
-	case deal.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Deal nullable field %s", name)
 }
 
@@ -5115,6 +5027,9 @@ func (m *DealMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *DealMutation) ResetField(name string) error {
 	switch name {
+	case deal.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case deal.FieldTitle:
 		m.ResetTitle()
 		return nil
@@ -5126,9 +5041,6 @@ func (m *DealMutation) ResetField(name string) error {
 		return nil
 	case deal.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case deal.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Deal field %s", name)
@@ -5415,6 +5327,42 @@ func (m *DealCrmFieldMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DealCrmFieldMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DealCrmFieldMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the DealCrmField entity.
+// If the DealCrmField object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DealCrmFieldMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DealCrmFieldMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetValue sets the "value" field.
 func (m *DealCrmFieldMutation) SetValue(s string) {
 	m.value = &s
@@ -5523,55 +5471,6 @@ func (m *DealCrmFieldMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *DealCrmFieldMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *DealCrmFieldMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the DealCrmField entity.
-// If the DealCrmField object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DealCrmFieldMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *DealCrmFieldMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[dealcrmfield.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *DealCrmFieldMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[dealcrmfield.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *DealCrmFieldMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, dealcrmfield.FieldTenantId)
-}
-
 // SetDealID sets the "deal" edge to the Deal entity by id.
 func (m *DealCrmFieldMutation) SetDealID(id uuid.UUID) {
 	m.deal = &id
@@ -5663,7 +5562,7 @@ func (m *DealCrmFieldMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *DealCrmFieldMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -5725,6 +5624,9 @@ func (m *DealCrmFieldMutation) Type() string {
 // AddedFields().
 func (m *DealCrmFieldMutation) Fields() []string {
 	fields := make([]string, 0, 4)
+	if m.tenant != nil {
+		fields = append(fields, dealcrmfield.FieldTenantId)
+	}
 	if m.value != nil {
 		fields = append(fields, dealcrmfield.FieldValue)
 	}
@@ -5734,9 +5636,6 @@ func (m *DealCrmFieldMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, dealcrmfield.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, dealcrmfield.FieldTenantId)
-	}
 	return fields
 }
 
@@ -5745,14 +5644,14 @@ func (m *DealCrmFieldMutation) Fields() []string {
 // schema.
 func (m *DealCrmFieldMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case dealcrmfield.FieldTenantId:
+		return m.TenantId()
 	case dealcrmfield.FieldValue:
 		return m.Value()
 	case dealcrmfield.FieldCreatedAt:
 		return m.CreatedAt()
 	case dealcrmfield.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case dealcrmfield.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -5762,14 +5661,14 @@ func (m *DealCrmFieldMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *DealCrmFieldMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case dealcrmfield.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case dealcrmfield.FieldValue:
 		return m.OldValue(ctx)
 	case dealcrmfield.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case dealcrmfield.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case dealcrmfield.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown DealCrmField field %s", name)
 }
@@ -5779,6 +5678,13 @@ func (m *DealCrmFieldMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *DealCrmFieldMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case dealcrmfield.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case dealcrmfield.FieldValue:
 		v, ok := value.(string)
 		if !ok {
@@ -5799,13 +5705,6 @@ func (m *DealCrmFieldMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case dealcrmfield.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown DealCrmField field %s", name)
@@ -5836,11 +5735,7 @@ func (m *DealCrmFieldMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DealCrmFieldMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(dealcrmfield.FieldTenantId) {
-		fields = append(fields, dealcrmfield.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -5853,11 +5748,6 @@ func (m *DealCrmFieldMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DealCrmFieldMutation) ClearField(name string) error {
-	switch name {
-	case dealcrmfield.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown DealCrmField nullable field %s", name)
 }
 
@@ -5865,6 +5755,9 @@ func (m *DealCrmFieldMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *DealCrmFieldMutation) ResetField(name string) error {
 	switch name {
+	case dealcrmfield.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case dealcrmfield.FieldValue:
 		m.ResetValue()
 		return nil
@@ -5873,9 +5766,6 @@ func (m *DealCrmFieldMutation) ResetField(name string) error {
 		return nil
 	case dealcrmfield.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case dealcrmfield.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown DealCrmField field %s", name)
@@ -6121,6 +6011,42 @@ func (m *DepartmentMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DepartmentMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DepartmentMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Department entity.
+// If the Department object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DepartmentMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DepartmentMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *DepartmentMutation) SetName(s string) {
 	m.name = &s
@@ -6229,55 +6155,6 @@ func (m *DepartmentMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *DepartmentMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *DepartmentMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Department entity.
-// If the Department object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DepartmentMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *DepartmentMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[department.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *DepartmentMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[department.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *DepartmentMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, department.FieldTenantId)
-}
-
 // SetTenantID sets the "tenant" edge to the Company entity by id.
 func (m *DepartmentMutation) SetTenantID(id uuid.UUID) {
 	m.tenant = &id
@@ -6291,7 +6168,7 @@ func (m *DepartmentMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *DepartmentMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -6515,6 +6392,9 @@ func (m *DepartmentMutation) Type() string {
 // AddedFields().
 func (m *DepartmentMutation) Fields() []string {
 	fields := make([]string, 0, 4)
+	if m.tenant != nil {
+		fields = append(fields, department.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, department.FieldName)
 	}
@@ -6524,9 +6404,6 @@ func (m *DepartmentMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, department.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, department.FieldTenantId)
-	}
 	return fields
 }
 
@@ -6535,14 +6412,14 @@ func (m *DepartmentMutation) Fields() []string {
 // schema.
 func (m *DepartmentMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case department.FieldTenantId:
+		return m.TenantId()
 	case department.FieldName:
 		return m.Name()
 	case department.FieldCreatedAt:
 		return m.CreatedAt()
 	case department.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case department.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -6552,14 +6429,14 @@ func (m *DepartmentMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *DepartmentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case department.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case department.FieldName:
 		return m.OldName(ctx)
 	case department.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case department.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case department.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Department field %s", name)
 }
@@ -6569,6 +6446,13 @@ func (m *DepartmentMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case department.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case department.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -6589,13 +6473,6 @@ func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case department.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Department field %s", name)
@@ -6626,11 +6503,7 @@ func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DepartmentMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(department.FieldTenantId) {
-		fields = append(fields, department.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -6643,11 +6516,6 @@ func (m *DepartmentMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DepartmentMutation) ClearField(name string) error {
-	switch name {
-	case department.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Department nullable field %s", name)
 }
 
@@ -6655,6 +6523,9 @@ func (m *DepartmentMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *DepartmentMutation) ResetField(name string) error {
 	switch name {
+	case department.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case department.FieldName:
 		m.ResetName()
 		return nil
@@ -6663,9 +6534,6 @@ func (m *DepartmentMutation) ResetField(name string) error {
 		return nil
 	case department.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case department.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Department field %s", name)
@@ -6949,6 +6817,42 @@ func (m *DropdownListMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *DropdownListMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *DropdownListMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the DropdownList entity.
+// If the DropdownList object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DropdownListMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *DropdownListMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetValue sets the "value" field.
 func (m *DropdownListMutation) SetValue(s string) {
 	m.value = &s
@@ -7057,55 +6961,6 @@ func (m *DropdownListMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *DropdownListMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *DropdownListMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the DropdownList entity.
-// If the DropdownList object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DropdownListMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *DropdownListMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[dropdownlist.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *DropdownListMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[dropdownlist.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *DropdownListMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, dropdownlist.FieldTenantId)
-}
-
 // AddCrmFieldIDs adds the "crmField" edge to the CrmField entity by ids.
 func (m *DropdownListMutation) AddCrmFieldIDs(ids ...uuid.UUID) {
 	if m.crmField == nil {
@@ -7173,7 +7028,7 @@ func (m *DropdownListMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *DropdownListMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -7235,6 +7090,9 @@ func (m *DropdownListMutation) Type() string {
 // AddedFields().
 func (m *DropdownListMutation) Fields() []string {
 	fields := make([]string, 0, 4)
+	if m.tenant != nil {
+		fields = append(fields, dropdownlist.FieldTenantId)
+	}
 	if m.value != nil {
 		fields = append(fields, dropdownlist.FieldValue)
 	}
@@ -7244,9 +7102,6 @@ func (m *DropdownListMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, dropdownlist.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, dropdownlist.FieldTenantId)
-	}
 	return fields
 }
 
@@ -7255,14 +7110,14 @@ func (m *DropdownListMutation) Fields() []string {
 // schema.
 func (m *DropdownListMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case dropdownlist.FieldTenantId:
+		return m.TenantId()
 	case dropdownlist.FieldValue:
 		return m.Value()
 	case dropdownlist.FieldCreatedAt:
 		return m.CreatedAt()
 	case dropdownlist.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case dropdownlist.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -7272,14 +7127,14 @@ func (m *DropdownListMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *DropdownListMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case dropdownlist.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case dropdownlist.FieldValue:
 		return m.OldValue(ctx)
 	case dropdownlist.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case dropdownlist.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case dropdownlist.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown DropdownList field %s", name)
 }
@@ -7289,6 +7144,13 @@ func (m *DropdownListMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *DropdownListMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case dropdownlist.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case dropdownlist.FieldValue:
 		v, ok := value.(string)
 		if !ok {
@@ -7309,13 +7171,6 @@ func (m *DropdownListMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case dropdownlist.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown DropdownList field %s", name)
@@ -7346,11 +7201,7 @@ func (m *DropdownListMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DropdownListMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(dropdownlist.FieldTenantId) {
-		fields = append(fields, dropdownlist.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -7363,11 +7214,6 @@ func (m *DropdownListMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DropdownListMutation) ClearField(name string) error {
-	switch name {
-	case dropdownlist.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown DropdownList nullable field %s", name)
 }
 
@@ -7375,6 +7221,9 @@ func (m *DropdownListMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *DropdownListMutation) ResetField(name string) error {
 	switch name {
+	case dropdownlist.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case dropdownlist.FieldValue:
 		m.ResetValue()
 		return nil
@@ -7383,9 +7232,6 @@ func (m *DropdownListMutation) ResetField(name string) error {
 		return nil
 	case dropdownlist.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case dropdownlist.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown DropdownList field %s", name)
@@ -7628,6 +7474,42 @@ func (m *EmployeeMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *EmployeeMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *EmployeeMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Employee entity.
+// If the Employee object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EmployeeMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *EmployeeMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *EmployeeMutation) SetName(s string) {
 	m.name = &s
@@ -7772,55 +7654,6 @@ func (m *EmployeeMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *EmployeeMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *EmployeeMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Employee entity.
-// If the Employee object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EmployeeMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *EmployeeMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[employee.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *EmployeeMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[employee.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *EmployeeMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, employee.FieldTenantId)
-}
-
 // SetEmployeeAuthID sets the "employeeAuth" edge to the EmployeeAuth entity by id.
 func (m *EmployeeMutation) SetEmployeeAuthID(id uuid.UUID) {
 	m.employeeAuth = &id
@@ -7873,7 +7706,7 @@ func (m *EmployeeMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *EmployeeMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -8136,6 +7969,9 @@ func (m *EmployeeMutation) Type() string {
 // AddedFields().
 func (m *EmployeeMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.tenant != nil {
+		fields = append(fields, employee.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, employee.FieldName)
 	}
@@ -8148,9 +7984,6 @@ func (m *EmployeeMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, employee.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, employee.FieldTenantId)
-	}
 	return fields
 }
 
@@ -8159,6 +7992,8 @@ func (m *EmployeeMutation) Fields() []string {
 // schema.
 func (m *EmployeeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case employee.FieldTenantId:
+		return m.TenantId()
 	case employee.FieldName:
 		return m.Name()
 	case employee.FieldEmploymentStatus:
@@ -8167,8 +8002,6 @@ func (m *EmployeeMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case employee.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case employee.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -8178,6 +8011,8 @@ func (m *EmployeeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *EmployeeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case employee.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case employee.FieldName:
 		return m.OldName(ctx)
 	case employee.FieldEmploymentStatus:
@@ -8186,8 +8021,6 @@ func (m *EmployeeMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case employee.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case employee.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Employee field %s", name)
 }
@@ -8197,6 +8030,13 @@ func (m *EmployeeMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *EmployeeMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case employee.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case employee.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -8224,13 +8064,6 @@ func (m *EmployeeMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case employee.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Employee field %s", name)
@@ -8261,11 +8094,7 @@ func (m *EmployeeMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *EmployeeMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(employee.FieldTenantId) {
-		fields = append(fields, employee.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -8278,11 +8107,6 @@ func (m *EmployeeMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *EmployeeMutation) ClearField(name string) error {
-	switch name {
-	case employee.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Employee nullable field %s", name)
 }
 
@@ -8290,6 +8114,9 @@ func (m *EmployeeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *EmployeeMutation) ResetField(name string) error {
 	switch name {
+	case employee.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case employee.FieldName:
 		m.ResetName()
 		return nil
@@ -8301,9 +8128,6 @@ func (m *EmployeeMutation) ResetField(name string) error {
 		return nil
 	case employee.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case employee.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Employee field %s", name)
@@ -8624,6 +8448,42 @@ func (m *EmployeeAuthMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *EmployeeAuthMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *EmployeeAuthMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the EmployeeAuth entity.
+// If the EmployeeAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EmployeeAuthMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *EmployeeAuthMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *EmployeeAuthMutation) SetName(s string) {
 	m.name = &s
@@ -8804,42 +8664,6 @@ func (m *EmployeeAuthMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *EmployeeAuthMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *EmployeeAuthMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the EmployeeAuth entity.
-// If the EmployeeAuth object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EmployeeAuthMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *EmployeeAuthMutation) ResetTenantId() {
-	m.tenant = nil
-}
-
 // SetEmployeeID sets the "employee" edge to the Employee entity by id.
 func (m *EmployeeAuthMutation) SetEmployeeID(id uuid.UUID) {
 	m.employee = &id
@@ -8954,6 +8778,9 @@ func (m *EmployeeAuthMutation) Type() string {
 // AddedFields().
 func (m *EmployeeAuthMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.tenant != nil {
+		fields = append(fields, employeeauth.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, employeeauth.FieldName)
 	}
@@ -8969,9 +8796,6 @@ func (m *EmployeeAuthMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, employeeauth.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, employeeauth.FieldTenantId)
-	}
 	return fields
 }
 
@@ -8980,6 +8804,8 @@ func (m *EmployeeAuthMutation) Fields() []string {
 // schema.
 func (m *EmployeeAuthMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case employeeauth.FieldTenantId:
+		return m.TenantId()
 	case employeeauth.FieldName:
 		return m.Name()
 	case employeeauth.FieldEmail:
@@ -8990,8 +8816,6 @@ func (m *EmployeeAuthMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case employeeauth.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case employeeauth.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -9001,6 +8825,8 @@ func (m *EmployeeAuthMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *EmployeeAuthMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case employeeauth.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case employeeauth.FieldName:
 		return m.OldName(ctx)
 	case employeeauth.FieldEmail:
@@ -9011,8 +8837,6 @@ func (m *EmployeeAuthMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldCreatedAt(ctx)
 	case employeeauth.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case employeeauth.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown EmployeeAuth field %s", name)
 }
@@ -9022,6 +8846,13 @@ func (m *EmployeeAuthMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *EmployeeAuthMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case employeeauth.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case employeeauth.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -9056,13 +8887,6 @@ func (m *EmployeeAuthMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case employeeauth.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown EmployeeAuth field %s", name)
@@ -9113,6 +8937,9 @@ func (m *EmployeeAuthMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *EmployeeAuthMutation) ResetField(name string) error {
 	switch name {
+	case employeeauth.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case employeeauth.FieldName:
 		m.ResetName()
 		return nil
@@ -9127,9 +8954,6 @@ func (m *EmployeeAuthMutation) ResetField(name string) error {
 		return nil
 	case employeeauth.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case employeeauth.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown EmployeeAuth field %s", name)
@@ -9351,6 +9175,42 @@ func (m *FileMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *FileMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *FileMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *FileMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetURL sets the "url" field.
 func (m *FileMutation) SetURL(s string) {
 	m.url = &s
@@ -9508,55 +9368,6 @@ func (m *FileMutation) ResetFileName() {
 	m.fileName = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *FileMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *FileMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the File entity.
-// If the File object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FileMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *FileMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[file.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *FileMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[file.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *FileMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, file.FieldTenantId)
-}
-
 // SetMessageID sets the "message" edge to the Message entity by id.
 func (m *FileMutation) SetMessageID(id uuid.UUID) {
 	m.message = &id
@@ -9609,7 +9420,7 @@ func (m *FileMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *FileMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -9671,6 +9482,9 @@ func (m *FileMutation) Type() string {
 // AddedFields().
 func (m *FileMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.tenant != nil {
+		fields = append(fields, file.FieldTenantId)
+	}
 	if m.url != nil {
 		fields = append(fields, file.FieldURL)
 	}
@@ -9683,9 +9497,6 @@ func (m *FileMutation) Fields() []string {
 	if m.fileName != nil {
 		fields = append(fields, file.FieldFileName)
 	}
-	if m.tenant != nil {
-		fields = append(fields, file.FieldTenantId)
-	}
 	return fields
 }
 
@@ -9694,6 +9505,8 @@ func (m *FileMutation) Fields() []string {
 // schema.
 func (m *FileMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case file.FieldTenantId:
+		return m.TenantId()
 	case file.FieldURL:
 		return m.URL()
 	case file.FieldCaption:
@@ -9702,8 +9515,6 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 		return m.MimeType()
 	case file.FieldFileName:
 		return m.FileName()
-	case file.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -9713,6 +9524,8 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case file.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case file.FieldURL:
 		return m.OldURL(ctx)
 	case file.FieldCaption:
@@ -9721,8 +9534,6 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldMimeType(ctx)
 	case file.FieldFileName:
 		return m.OldFileName(ctx)
-	case file.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown File field %s", name)
 }
@@ -9732,6 +9543,13 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *FileMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case file.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case file.FieldURL:
 		v, ok := value.(string)
 		if !ok {
@@ -9759,13 +9577,6 @@ func (m *FileMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFileName(v)
-		return nil
-	case file.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)
@@ -9800,9 +9611,6 @@ func (m *FileMutation) ClearedFields() []string {
 	if m.FieldCleared(file.FieldCaption) {
 		fields = append(fields, file.FieldCaption)
 	}
-	if m.FieldCleared(file.FieldTenantId) {
-		fields = append(fields, file.FieldTenantId)
-	}
 	return fields
 }
 
@@ -9820,9 +9628,6 @@ func (m *FileMutation) ClearField(name string) error {
 	case file.FieldCaption:
 		m.ClearCaption()
 		return nil
-	case file.FieldTenantId:
-		m.ClearTenantId()
-		return nil
 	}
 	return fmt.Errorf("unknown File nullable field %s", name)
 }
@@ -9831,6 +9636,9 @@ func (m *FileMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FileMutation) ResetField(name string) error {
 	switch name {
+	case file.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case file.FieldURL:
 		m.ResetURL()
 		return nil
@@ -9842,9 +9650,6 @@ func (m *FileMutation) ResetField(name string) error {
 		return nil
 	case file.FieldFileName:
 		m.ResetFileName()
-		return nil
-	case file.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)
@@ -10074,6 +9879,42 @@ func (m *MessageMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *MessageMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *MessageMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Message entity.
+// If the Message object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MessageMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *MessageMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetSentBy sets the "sentBy" field.
 func (m *MessageMutation) SetSentBy(mb message.SentBy) {
 	m.sentBy = &mb
@@ -10252,55 +10093,6 @@ func (m *MessageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err er
 // ResetUpdatedAt resets all changes to the "updatedAt" field.
 func (m *MessageMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
-}
-
-// SetTenantId sets the "tenantId" field.
-func (m *MessageMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *MessageMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Message entity.
-// If the Message object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MessageMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *MessageMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[message.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *MessageMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[message.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *MessageMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, message.FieldTenantId)
 }
 
 // SetChatID sets the "chat" edge to the Chat entity by id.
@@ -10487,7 +10279,7 @@ func (m *MessageMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *MessageMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -10549,6 +10341,9 @@ func (m *MessageMutation) Type() string {
 // AddedFields().
 func (m *MessageMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.tenant != nil {
+		fields = append(fields, message.FieldTenantId)
+	}
 	if m.sentBy != nil {
 		fields = append(fields, message.FieldSentBy)
 	}
@@ -10564,9 +10359,6 @@ func (m *MessageMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, message.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, message.FieldTenantId)
-	}
 	return fields
 }
 
@@ -10575,6 +10367,8 @@ func (m *MessageMutation) Fields() []string {
 // schema.
 func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case message.FieldTenantId:
+		return m.TenantId()
 	case message.FieldSentBy:
 		return m.SentBy()
 	case message.FieldPrivate:
@@ -10585,8 +10379,6 @@ func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case message.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case message.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -10596,6 +10388,8 @@ func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case message.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case message.FieldSentBy:
 		return m.OldSentBy(ctx)
 	case message.FieldPrivate:
@@ -10606,8 +10400,6 @@ func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCreatedAt(ctx)
 	case message.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case message.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Message field %s", name)
 }
@@ -10617,6 +10409,13 @@ func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *MessageMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case message.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case message.FieldSentBy:
 		v, ok := value.(message.SentBy)
 		if !ok {
@@ -10652,13 +10451,6 @@ func (m *MessageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case message.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
 }
@@ -10688,11 +10480,7 @@ func (m *MessageMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *MessageMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(message.FieldTenantId) {
-		fields = append(fields, message.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -10705,11 +10493,6 @@ func (m *MessageMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *MessageMutation) ClearField(name string) error {
-	switch name {
-	case message.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Message nullable field %s", name)
 }
 
@@ -10717,6 +10500,9 @@ func (m *MessageMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *MessageMutation) ResetField(name string) error {
 	switch name {
+	case message.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case message.FieldSentBy:
 		m.ResetSentBy()
 		return nil
@@ -10731,9 +10517,6 @@ func (m *MessageMutation) ResetField(name string) error {
 		return nil
 	case message.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case message.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
@@ -11019,6 +10802,42 @@ func (m *PipelineMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *PipelineMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *PipelineMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Pipeline entity.
+// If the Pipeline object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PipelineMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *PipelineMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *PipelineMutation) SetName(s string) {
 	m.name = &s
@@ -11127,55 +10946,6 @@ func (m *PipelineMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *PipelineMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *PipelineMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Pipeline entity.
-// If the Pipeline object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PipelineMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *PipelineMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[pipeline.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *PipelineMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[pipeline.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *PipelineMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, pipeline.FieldTenantId)
-}
-
 // SetTenantID sets the "tenant" edge to the Company entity by id.
 func (m *PipelineMutation) SetTenantID(id uuid.UUID) {
 	m.tenant = &id
@@ -11189,7 +10959,7 @@ func (m *PipelineMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *PipelineMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -11305,6 +11075,9 @@ func (m *PipelineMutation) Type() string {
 // AddedFields().
 func (m *PipelineMutation) Fields() []string {
 	fields := make([]string, 0, 4)
+	if m.tenant != nil {
+		fields = append(fields, pipeline.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, pipeline.FieldName)
 	}
@@ -11314,9 +11087,6 @@ func (m *PipelineMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, pipeline.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, pipeline.FieldTenantId)
-	}
 	return fields
 }
 
@@ -11325,14 +11095,14 @@ func (m *PipelineMutation) Fields() []string {
 // schema.
 func (m *PipelineMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case pipeline.FieldTenantId:
+		return m.TenantId()
 	case pipeline.FieldName:
 		return m.Name()
 	case pipeline.FieldCreatedAt:
 		return m.CreatedAt()
 	case pipeline.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case pipeline.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -11342,14 +11112,14 @@ func (m *PipelineMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *PipelineMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case pipeline.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case pipeline.FieldName:
 		return m.OldName(ctx)
 	case pipeline.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case pipeline.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case pipeline.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Pipeline field %s", name)
 }
@@ -11359,6 +11129,13 @@ func (m *PipelineMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *PipelineMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case pipeline.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case pipeline.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -11379,13 +11156,6 @@ func (m *PipelineMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case pipeline.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Pipeline field %s", name)
@@ -11416,11 +11186,7 @@ func (m *PipelineMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *PipelineMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(pipeline.FieldTenantId) {
-		fields = append(fields, pipeline.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -11433,11 +11199,6 @@ func (m *PipelineMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *PipelineMutation) ClearField(name string) error {
-	switch name {
-	case pipeline.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Pipeline nullable field %s", name)
 }
 
@@ -11445,6 +11206,9 @@ func (m *PipelineMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *PipelineMutation) ResetField(name string) error {
 	switch name {
+	case pipeline.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case pipeline.FieldName:
 		m.ResetName()
 		return nil
@@ -11453,9 +11217,6 @@ func (m *PipelineMutation) ResetField(name string) error {
 		return nil
 	case pipeline.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case pipeline.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Pipeline field %s", name)
@@ -11694,6 +11455,42 @@ func (m *QueueMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *QueueMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *QueueMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Queue entity.
+// If the Queue object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *QueueMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *QueueMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *QueueMutation) SetName(s string) {
 	m.name = &s
@@ -11836,55 +11633,6 @@ func (m *QueueMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err erro
 // ResetUpdatedAt resets all changes to the "updatedAt" field.
 func (m *QueueMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
-}
-
-// SetTenantId sets the "tenantId" field.
-func (m *QueueMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *QueueMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Queue entity.
-// If the Queue object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *QueueMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *QueueMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[queue.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *QueueMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[queue.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *QueueMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, queue.FieldTenantId)
 }
 
 // AddStageIDs adds the "stages" edge to the Stage entity by ids.
@@ -12062,7 +11810,7 @@ func (m *QueueMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *QueueMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -12124,6 +11872,9 @@ func (m *QueueMutation) Type() string {
 // AddedFields().
 func (m *QueueMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.tenant != nil {
+		fields = append(fields, queue.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, queue.FieldName)
 	}
@@ -12136,9 +11887,6 @@ func (m *QueueMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, queue.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, queue.FieldTenantId)
-	}
 	return fields
 }
 
@@ -12147,6 +11895,8 @@ func (m *QueueMutation) Fields() []string {
 // schema.
 func (m *QueueMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case queue.FieldTenantId:
+		return m.TenantId()
 	case queue.FieldName:
 		return m.Name()
 	case queue.FieldType:
@@ -12155,8 +11905,6 @@ func (m *QueueMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case queue.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case queue.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -12166,6 +11914,8 @@ func (m *QueueMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *QueueMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case queue.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case queue.FieldName:
 		return m.OldName(ctx)
 	case queue.FieldType:
@@ -12174,8 +11924,6 @@ func (m *QueueMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldCreatedAt(ctx)
 	case queue.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case queue.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Queue field %s", name)
 }
@@ -12185,6 +11933,13 @@ func (m *QueueMutation) OldField(ctx context.Context, name string) (ent.Value, e
 // type.
 func (m *QueueMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case queue.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case queue.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -12212,13 +11967,6 @@ func (m *QueueMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case queue.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Queue field %s", name)
@@ -12249,11 +11997,7 @@ func (m *QueueMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *QueueMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(queue.FieldTenantId) {
-		fields = append(fields, queue.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -12266,11 +12010,6 @@ func (m *QueueMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *QueueMutation) ClearField(name string) error {
-	switch name {
-	case queue.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Queue nullable field %s", name)
 }
 
@@ -12278,6 +12017,9 @@ func (m *QueueMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *QueueMutation) ResetField(name string) error {
 	switch name {
+	case queue.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case queue.FieldName:
 		m.ResetName()
 		return nil
@@ -12289,9 +12031,6 @@ func (m *QueueMutation) ResetField(name string) error {
 		return nil
 	case queue.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case queue.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Queue field %s", name)
@@ -12574,6 +12313,42 @@ func (m *RbacMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *RbacMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *RbacMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Rbac entity.
+// If the Rbac object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RbacMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *RbacMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetAccess sets the "access" field.
 func (m *RbacMutation) SetAccess(r rbac.Access) {
 	m.access = &r
@@ -12682,55 +12457,6 @@ func (m *RbacMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *RbacMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *RbacMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Rbac entity.
-// If the Rbac object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RbacMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *RbacMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[rbac.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *RbacMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[rbac.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *RbacMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, rbac.FieldTenantId)
-}
-
 // SetDepartmentID sets the "department" edge to the Department entity by id.
 func (m *RbacMutation) SetDepartmentID(id uuid.UUID) {
 	m.department = &id
@@ -12783,7 +12509,7 @@ func (m *RbacMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *RbacMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -12845,6 +12571,9 @@ func (m *RbacMutation) Type() string {
 // AddedFields().
 func (m *RbacMutation) Fields() []string {
 	fields := make([]string, 0, 4)
+	if m.tenant != nil {
+		fields = append(fields, rbac.FieldTenantId)
+	}
 	if m.access != nil {
 		fields = append(fields, rbac.FieldAccess)
 	}
@@ -12854,9 +12583,6 @@ func (m *RbacMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, rbac.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, rbac.FieldTenantId)
-	}
 	return fields
 }
 
@@ -12865,14 +12591,14 @@ func (m *RbacMutation) Fields() []string {
 // schema.
 func (m *RbacMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case rbac.FieldTenantId:
+		return m.TenantId()
 	case rbac.FieldAccess:
 		return m.Access()
 	case rbac.FieldCreatedAt:
 		return m.CreatedAt()
 	case rbac.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case rbac.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -12882,14 +12608,14 @@ func (m *RbacMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *RbacMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case rbac.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case rbac.FieldAccess:
 		return m.OldAccess(ctx)
 	case rbac.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case rbac.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case rbac.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Rbac field %s", name)
 }
@@ -12899,6 +12625,13 @@ func (m *RbacMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *RbacMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case rbac.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case rbac.FieldAccess:
 		v, ok := value.(rbac.Access)
 		if !ok {
@@ -12919,13 +12652,6 @@ func (m *RbacMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
-		return nil
-	case rbac.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Rbac field %s", name)
@@ -12956,11 +12682,7 @@ func (m *RbacMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RbacMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(rbac.FieldTenantId) {
-		fields = append(fields, rbac.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -12973,11 +12695,6 @@ func (m *RbacMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RbacMutation) ClearField(name string) error {
-	switch name {
-	case rbac.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Rbac nullable field %s", name)
 }
 
@@ -12985,6 +12702,9 @@ func (m *RbacMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *RbacMutation) ResetField(name string) error {
 	switch name {
+	case rbac.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case rbac.FieldAccess:
 		m.ResetAccess()
 		return nil
@@ -12993,9 +12713,6 @@ func (m *RbacMutation) ResetField(name string) error {
 		return nil
 	case rbac.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case rbac.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Rbac field %s", name)
@@ -13223,6 +12940,42 @@ func (m *StageMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *StageMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *StageMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Stage entity.
+// If the Stage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StageMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *StageMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetName sets the "name" field.
 func (m *StageMutation) SetName(s string) {
 	m.name = &s
@@ -13403,55 +13156,6 @@ func (m *StageMutation) ResetUpdatedAt() {
 	m.updatedAt = nil
 }
 
-// SetTenantId sets the "tenantId" field.
-func (m *StageMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *StageMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Stage entity.
-// If the Stage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StageMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *StageMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[stage.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *StageMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[stage.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *StageMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, stage.FieldTenantId)
-}
-
 // SetPipelineID sets the "pipeline" edge to the Pipeline entity by id.
 func (m *StageMutation) SetPipelineID(id uuid.UUID) {
 	m.pipeline = &id
@@ -13597,7 +13301,7 @@ func (m *StageMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *StageMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -13659,6 +13363,9 @@ func (m *StageMutation) Type() string {
 // AddedFields().
 func (m *StageMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.tenant != nil {
+		fields = append(fields, stage.FieldTenantId)
+	}
 	if m.name != nil {
 		fields = append(fields, stage.FieldName)
 	}
@@ -13674,9 +13381,6 @@ func (m *StageMutation) Fields() []string {
 	if m.updatedAt != nil {
 		fields = append(fields, stage.FieldUpdatedAt)
 	}
-	if m.tenant != nil {
-		fields = append(fields, stage.FieldTenantId)
-	}
 	return fields
 }
 
@@ -13685,6 +13389,8 @@ func (m *StageMutation) Fields() []string {
 // schema.
 func (m *StageMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case stage.FieldTenantId:
+		return m.TenantId()
 	case stage.FieldName:
 		return m.Name()
 	case stage.FieldColor:
@@ -13695,8 +13401,6 @@ func (m *StageMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case stage.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case stage.FieldTenantId:
-		return m.TenantId()
 	}
 	return nil, false
 }
@@ -13706,6 +13410,8 @@ func (m *StageMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *StageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case stage.FieldTenantId:
+		return m.OldTenantId(ctx)
 	case stage.FieldName:
 		return m.OldName(ctx)
 	case stage.FieldColor:
@@ -13716,8 +13422,6 @@ func (m *StageMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldCreatedAt(ctx)
 	case stage.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case stage.FieldTenantId:
-		return m.OldTenantId(ctx)
 	}
 	return nil, fmt.Errorf("unknown Stage field %s", name)
 }
@@ -13727,6 +13431,13 @@ func (m *StageMutation) OldField(ctx context.Context, name string) (ent.Value, e
 // type.
 func (m *StageMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case stage.FieldTenantId:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantId(v)
+		return nil
 	case stage.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -13762,13 +13473,6 @@ func (m *StageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case stage.FieldTenantId:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantId(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Stage field %s", name)
 }
@@ -13798,11 +13502,7 @@ func (m *StageMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *StageMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(stage.FieldTenantId) {
-		fields = append(fields, stage.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -13815,11 +13515,6 @@ func (m *StageMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *StageMutation) ClearField(name string) error {
-	switch name {
-	case stage.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Stage nullable field %s", name)
 }
 
@@ -13827,6 +13522,9 @@ func (m *StageMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *StageMutation) ResetField(name string) error {
 	switch name {
+	case stage.FieldTenantId:
+		m.ResetTenantId()
+		return nil
 	case stage.FieldName:
 		m.ResetName()
 		return nil
@@ -13841,9 +13539,6 @@ func (m *StageMutation) ResetField(name string) error {
 		return nil
 	case stage.FieldUpdatedAt:
 		m.ResetUpdatedAt()
-		return nil
-	case stage.FieldTenantId:
-		m.ResetTenantId()
 		return nil
 	}
 	return fmt.Errorf("unknown Stage field %s", name)
@@ -14108,6 +13803,42 @@ func (m *TextMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	}
 }
 
+// SetTenantId sets the "tenantId" field.
+func (m *TextMutation) SetTenantId(u uuid.UUID) {
+	m.tenant = &u
+}
+
+// TenantId returns the value of the "tenantId" field in the mutation.
+func (m *TextMutation) TenantId() (r uuid.UUID, exists bool) {
+	v := m.tenant
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantId returns the old "tenantId" field's value of the Text entity.
+// If the Text object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TextMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
+	}
+	return oldValue.TenantId, nil
+}
+
+// ResetTenantId resets all changes to the "tenantId" field.
+func (m *TextMutation) ResetTenantId() {
+	m.tenant = nil
+}
+
 // SetText sets the "text" field.
 func (m *TextMutation) SetText(s string) {
 	m.text = &s
@@ -14142,55 +13873,6 @@ func (m *TextMutation) OldText(ctx context.Context) (v string, err error) {
 // ResetText resets all changes to the "text" field.
 func (m *TextMutation) ResetText() {
 	m.text = nil
-}
-
-// SetTenantId sets the "tenantId" field.
-func (m *TextMutation) SetTenantId(u uuid.UUID) {
-	m.tenant = &u
-}
-
-// TenantId returns the value of the "tenantId" field in the mutation.
-func (m *TextMutation) TenantId() (r uuid.UUID, exists bool) {
-	v := m.tenant
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantId returns the old "tenantId" field's value of the Text entity.
-// If the Text object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TextMutation) OldTenantId(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantId is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantId requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantId: %w", err)
-	}
-	return oldValue.TenantId, nil
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (m *TextMutation) ClearTenantId() {
-	m.tenant = nil
-	m.clearedFields[text.FieldTenantId] = struct{}{}
-}
-
-// TenantIdCleared returns if the "tenantId" field was cleared in this mutation.
-func (m *TextMutation) TenantIdCleared() bool {
-	_, ok := m.clearedFields[text.FieldTenantId]
-	return ok
-}
-
-// ResetTenantId resets all changes to the "tenantId" field.
-func (m *TextMutation) ResetTenantId() {
-	m.tenant = nil
-	delete(m.clearedFields, text.FieldTenantId)
 }
 
 // SetMessageID sets the "message" edge to the Message entity by id.
@@ -14245,7 +13927,7 @@ func (m *TextMutation) ClearTenant() {
 
 // TenantCleared reports if the "tenant" edge to the Company entity was cleared.
 func (m *TextMutation) TenantCleared() bool {
-	return m.TenantIdCleared() || m.clearedtenant
+	return m.clearedtenant
 }
 
 // TenantID returns the "tenant" edge ID in the mutation.
@@ -14307,11 +13989,11 @@ func (m *TextMutation) Type() string {
 // AddedFields().
 func (m *TextMutation) Fields() []string {
 	fields := make([]string, 0, 2)
-	if m.text != nil {
-		fields = append(fields, text.FieldText)
-	}
 	if m.tenant != nil {
 		fields = append(fields, text.FieldTenantId)
+	}
+	if m.text != nil {
+		fields = append(fields, text.FieldText)
 	}
 	return fields
 }
@@ -14321,10 +14003,10 @@ func (m *TextMutation) Fields() []string {
 // schema.
 func (m *TextMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case text.FieldText:
-		return m.Text()
 	case text.FieldTenantId:
 		return m.TenantId()
+	case text.FieldText:
+		return m.Text()
 	}
 	return nil, false
 }
@@ -14334,10 +14016,10 @@ func (m *TextMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *TextMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case text.FieldText:
-		return m.OldText(ctx)
 	case text.FieldTenantId:
 		return m.OldTenantId(ctx)
+	case text.FieldText:
+		return m.OldText(ctx)
 	}
 	return nil, fmt.Errorf("unknown Text field %s", name)
 }
@@ -14347,19 +14029,19 @@ func (m *TextMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *TextMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case text.FieldText:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetText(v)
-		return nil
 	case text.FieldTenantId:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTenantId(v)
+		return nil
+	case text.FieldText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetText(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Text field %s", name)
@@ -14390,11 +14072,7 @@ func (m *TextMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *TextMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(text.FieldTenantId) {
-		fields = append(fields, text.FieldTenantId)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -14407,11 +14085,6 @@ func (m *TextMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *TextMutation) ClearField(name string) error {
-	switch name {
-	case text.FieldTenantId:
-		m.ClearTenantId()
-		return nil
-	}
 	return fmt.Errorf("unknown Text nullable field %s", name)
 }
 
@@ -14419,11 +14092,11 @@ func (m *TextMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *TextMutation) ResetField(name string) error {
 	switch name {
-	case text.FieldText:
-		m.ResetText()
-		return nil
 	case text.FieldTenantId:
 		m.ResetTenantId()
+		return nil
+	case text.FieldText:
+		m.ResetText()
 		return nil
 	}
 	return fmt.Errorf("unknown Text field %s", name)

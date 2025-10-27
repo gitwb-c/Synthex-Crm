@@ -17,9 +17,11 @@ import (
 
 // Chat is the model entity for the Chat schema.
 type Chat struct {
-	config `json:"-"`
+	config `json:"-" sql:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"-" sql:"not null"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Accepted holds the value of the "accepted" field.
@@ -30,8 +32,6 @@ type Chat struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// UpdatedAt holds the value of the "updatedAt" field.
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-	// TenantId holds the value of the "tenantId" field.
-	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ChatQuery when eager-loading is set.
 	Edges        ChatEdges `json:"edges"`
@@ -132,6 +132,12 @@ func (_m *Chat) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				_m.ID = *value
 			}
+		case chat.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case chat.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
@@ -161,12 +167,6 @@ func (_m *Chat) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updatedAt", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
-			}
-		case chat.FieldTenantId:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
-			} else if value != nil {
-				_m.TenantId = *value
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -224,6 +224,9 @@ func (_m *Chat) String() string {
 	var builder strings.Builder
 	builder.WriteString("Chat(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
+	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(_m.Title)
 	builder.WriteString(", ")
@@ -238,9 +241,6 @@ func (_m *Chat) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updatedAt=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("tenantId=")
-	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

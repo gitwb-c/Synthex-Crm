@@ -25,6 +25,12 @@ type QueueCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *QueueCreate) SetTenantId(v uuid.UUID) *QueueCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *QueueCreate) SetName(v string) *QueueCreate {
 	_c.mutation.SetName(v)
@@ -69,20 +75,6 @@ func (_c *QueueCreate) SetUpdatedAt(v time.Time) *QueueCreate {
 func (_c *QueueCreate) SetNillableUpdatedAt(v *time.Time) *QueueCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *QueueCreate) SetTenantId(v uuid.UUID) *QueueCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *QueueCreate) SetNillableTenantId(v *uuid.UUID) *QueueCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
 	}
 	return _c
 }
@@ -152,14 +144,6 @@ func (_c *QueueCreate) SetTenantID(id uuid.UUID) *QueueCreate {
 	return _c
 }
 
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *QueueCreate) SetNillableTenantID(id *uuid.UUID) *QueueCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
-	return _c
-}
-
 // SetTenant sets the "tenant" edge to the Company entity.
 func (_c *QueueCreate) SetTenant(v *Company) *QueueCreate {
 	return _c.SetTenantID(v.ID)
@@ -220,6 +204,9 @@ func (_c *QueueCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *QueueCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "Queue.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Queue.name"`)}
 	}
@@ -244,6 +231,9 @@ func (_c *QueueCreate) check() error {
 	}
 	if len(_c.mutation.DepartmentIDs()) == 0 {
 		return &ValidationError{Name: "department", err: errors.New(`ent: missing required edge "Queue.department"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "Queue.tenant"`)}
 	}
 	return nil
 }

@@ -338,12 +338,12 @@ func (_q *TextQuery) WithTenant(opts ...func(*CompanyQuery)) *TextQuery {
 // Example:
 //
 //	var v []struct {
-//		Text string `json:"text,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Text.Query().
-//		GroupBy(text.FieldText).
+//		GroupBy(text.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *TextQuery) GroupBy(field string, fields ...string) *TextGroupBy {
@@ -361,11 +361,11 @@ func (_q *TextQuery) GroupBy(field string, fields ...string) *TextGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Text string `json:"text,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Text.Query().
-//		Select(text.FieldText).
+//		Select(text.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *TextQuery) Select(fields ...string) *TextSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

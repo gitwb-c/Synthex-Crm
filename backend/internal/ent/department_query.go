@@ -413,12 +413,12 @@ func (_q *DepartmentQuery) WithRbacs(opts ...func(*RbacQuery)) *DepartmentQuery 
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Department.Query().
-//		GroupBy(department.FieldName).
+//		GroupBy(department.FieldTenantId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *DepartmentQuery) GroupBy(field string, fields ...string) *DepartmentGroupBy {
@@ -436,11 +436,11 @@ func (_q *DepartmentQuery) GroupBy(field string, fields ...string) *DepartmentGr
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		TenantId uuid.UUID `json:"-" sql:"not null"`
 //	}
 //
 //	client.Department.Query().
-//		Select(department.FieldName).
+//		Select(department.FieldTenantId).
 //		Scan(ctx, &v)
 func (_q *DepartmentQuery) Select(fields ...string) *DepartmentSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

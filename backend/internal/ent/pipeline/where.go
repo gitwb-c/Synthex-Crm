@@ -56,6 +56,11 @@ func IDLTE(id uuid.UUID) predicate.Pipeline {
 	return predicate.Pipeline(sql.FieldLTE(FieldID, id))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.Pipeline {
+	return predicate.Pipeline(sql.FieldEQ(FieldTenantId, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Pipeline {
 	return predicate.Pipeline(sql.FieldEQ(FieldName, v))
@@ -71,9 +76,24 @@ func UpdatedAt(v time.Time) predicate.Pipeline {
 	return predicate.Pipeline(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
-func TenantId(v uuid.UUID) predicate.Pipeline {
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.Pipeline {
 	return predicate.Pipeline(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.Pipeline {
+	return predicate.Pipeline(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.Pipeline {
+	return predicate.Pipeline(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.Pipeline {
+	return predicate.Pipeline(sql.FieldNotIn(FieldTenantId, vs...))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -219,36 +239,6 @@ func UpdatedAtLT(v time.Time) predicate.Pipeline {
 // UpdatedAtLTE applies the LTE predicate on the "updatedAt" field.
 func UpdatedAtLTE(v time.Time) predicate.Pipeline {
 	return predicate.Pipeline(sql.FieldLTE(FieldUpdatedAt, v))
-}
-
-// TenantIdEQ applies the EQ predicate on the "tenantId" field.
-func TenantIdEQ(v uuid.UUID) predicate.Pipeline {
-	return predicate.Pipeline(sql.FieldEQ(FieldTenantId, v))
-}
-
-// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
-func TenantIdNEQ(v uuid.UUID) predicate.Pipeline {
-	return predicate.Pipeline(sql.FieldNEQ(FieldTenantId, v))
-}
-
-// TenantIdIn applies the In predicate on the "tenantId" field.
-func TenantIdIn(vs ...uuid.UUID) predicate.Pipeline {
-	return predicate.Pipeline(sql.FieldIn(FieldTenantId, vs...))
-}
-
-// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
-func TenantIdNotIn(vs ...uuid.UUID) predicate.Pipeline {
-	return predicate.Pipeline(sql.FieldNotIn(FieldTenantId, vs...))
-}
-
-// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
-func TenantIdIsNil() predicate.Pipeline {
-	return predicate.Pipeline(sql.FieldIsNull(FieldTenantId))
-}
-
-// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
-func TenantIdNotNil() predicate.Pipeline {
-	return predicate.Pipeline(sql.FieldNotNull(FieldTenantId))
 }
 
 // HasTenant applies the HasEdge predicate on the "tenant" edge.

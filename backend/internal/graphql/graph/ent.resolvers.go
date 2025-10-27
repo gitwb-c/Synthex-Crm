@@ -19,12 +19,6 @@ func (r *chatResolver) ID(ctx context.Context, obj *ent.Chat) (string, error) {
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *chatResolver) TenantId(ctx context.Context, obj *ent.Chat) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *companyResolver) ID(ctx context.Context, obj *ent.Company) (string, error) {
 	return obj.ID.String(), nil
@@ -35,21 +29,9 @@ func (r *costumerResolver) ID(ctx context.Context, obj *ent.Costumer) (string, e
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *costumerResolver) TenantId(ctx context.Context, obj *ent.Costumer) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *crmFieldResolver) ID(ctx context.Context, obj *ent.CrmField) (string, error) {
 	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *crmFieldResolver) TenantId(ctx context.Context, obj *ent.CrmField) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
 }
 
 // ID is the resolver for the id field.
@@ -57,21 +39,9 @@ func (r *dealResolver) ID(ctx context.Context, obj *ent.Deal) (string, error) {
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *dealResolver) TenantId(ctx context.Context, obj *ent.Deal) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *dealCrmFieldResolver) ID(ctx context.Context, obj *ent.DealCrmField) (string, error) {
 	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *dealCrmFieldResolver) TenantId(ctx context.Context, obj *ent.DealCrmField) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
 }
 
 // ID is the resolver for the id field.
@@ -79,21 +49,9 @@ func (r *departmentResolver) ID(ctx context.Context, obj *ent.Department) (strin
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *departmentResolver) TenantId(ctx context.Context, obj *ent.Department) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *dropdownListResolver) ID(ctx context.Context, obj *ent.DropdownList) (string, error) {
 	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *dropdownListResolver) TenantId(ctx context.Context, obj *ent.DropdownList) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
 }
 
 // ID is the resolver for the id field.
@@ -101,19 +59,8 @@ func (r *employeeResolver) ID(ctx context.Context, obj *ent.Employee) (string, e
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *employeeResolver) TenantId(ctx context.Context, obj *ent.Employee) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *employeeAuthResolver) ID(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
-	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *employeeAuthResolver) TenantId(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -122,32 +69,14 @@ func (r *fileResolver) ID(ctx context.Context, obj *ent.File) (string, error) {
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *fileResolver) TenantId(ctx context.Context, obj *ent.File) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *messageResolver) ID(ctx context.Context, obj *ent.Message) (string, error) {
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *messageResolver) TenantId(ctx context.Context, obj *ent.Message) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *pipelineResolver) ID(ctx context.Context, obj *ent.Pipeline) (string, error) {
 	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *pipelineResolver) TenantId(ctx context.Context, obj *ent.Pipeline) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
 }
 
 // Node is the resolver for the node field.
@@ -329,21 +258,9 @@ func (r *queueResolver) ID(ctx context.Context, obj *ent.Queue) (string, error) 
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *queueResolver) TenantId(ctx context.Context, obj *ent.Queue) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *rbacResolver) ID(ctx context.Context, obj *ent.Rbac) (string, error) {
 	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *rbacResolver) TenantId(ctx context.Context, obj *ent.Rbac) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
 }
 
 // ID is the resolver for the id field.
@@ -351,21 +268,9 @@ func (r *stageResolver) ID(ctx context.Context, obj *ent.Stage) (string, error) 
 	return obj.ID.String(), nil
 }
 
-// TenantId is the resolver for the tenantid field.
-func (r *stageResolver) TenantId(ctx context.Context, obj *ent.Stage) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
-}
-
 // ID is the resolver for the id field.
 func (r *textResolver) ID(ctx context.Context, obj *ent.Text) (string, error) {
 	return obj.ID.String(), nil
-}
-
-// TenantId is the resolver for the tenantid field.
-func (r *textResolver) TenantId(ctx context.Context, obj *ent.Text) (*string, error) {
-	tenantID := obj.ID.String()
-	return &tenantID, nil
 }
 
 // ID is the resolver for the id field.
@@ -565,19 +470,6 @@ func (r *createChatInputResolver) MessageIDs(ctx context.Context, obj *ent.Creat
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createChatInputResolver) TenantID(ctx context.Context, obj *ent.CreateChatInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createCompanyInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateCompanyInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -770,19 +662,6 @@ func (r *createCompanyInputResolver) TextIDs(ctx context.Context, obj *ent.Creat
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createCostumerInputResolver) TenantID(ctx context.Context, obj *ent.CreateCostumerInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -819,19 +698,6 @@ func (r *createCrmFieldInputResolver) DealcrmfieldIDs(ctx context.Context, obj *
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateCrmFieldInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // DealID is the resolver for the dealID field.
 func (r *createDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -853,32 +719,6 @@ func (r *createDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *e
 
 	obj.CrmFieldID = id
 
-	return nil
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *createDealCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *createDealInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
 	return nil
 }
 
@@ -932,19 +772,6 @@ func (r *createDealInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.CreateDepartmentInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -993,19 +820,6 @@ func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createDropdownListInputResolver) TenantID(ctx context.Context, obj *ent.CreateDropdownListInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // EmployeeID is the resolver for the employeeID field.
 func (r *createEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data *string) error {
 	if data != nil {
@@ -1019,18 +833,6 @@ func (r *createEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *e
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createEmployeeAuthInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-
 // EmployeeauthID is the resolver for the employeeauthID field.
 func (r *createEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -1039,18 +841,6 @@ func (r *createEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *e
 	}
 
 	obj.EmployeeAuthID = id
-
-	return nil
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *createEmployeeInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeInput, data *string) error {
-	id, err := uuid.Parse(*data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = &id
 
 	return nil
 }
@@ -1112,18 +902,6 @@ func (r *createFileInputResolver) MessageID(ctx context.Context, obj *ent.Create
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createFileInputResolver) TenantID(ctx context.Context, obj *ent.CreateFileInput, data *string) error {
-	id, err := uuid.Parse(*data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = &id
-
-	return nil
-}
-
 // ChatID is the resolver for the chatID field.
 func (r *createMessageInputResolver) ChatID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
 	if data != nil {
@@ -1174,30 +952,6 @@ func (r *createMessageInputResolver) FileID(ctx context.Context, obj *ent.Create
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createMessageInputResolver) TenantID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
-	id, err := uuid.Parse(*data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = &id
-
-	return nil
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *createPipelineInputResolver) TenantID(ctx context.Context, obj *ent.CreatePipelineInput, data *string) error {
-	id, err := uuid.Parse(*data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = &id
-
-	return nil
-}
-
 // StageIDs is the resolver for the stageIDs field.
 func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -1242,19 +996,6 @@ func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.C
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createQueueInputResolver) TenantID(ctx context.Context, obj *ent.CreateQueueInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // DepartmentID is the resolver for the departmentID field.
 func (r *createRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.CreateRbacInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -1264,19 +1005,6 @@ func (r *createRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.Cre
 
 	obj.DepartmentID = id
 
-	return nil
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *createRbacInputResolver) TenantID(ctx context.Context, obj *ent.CreateRbacInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
 	return nil
 }
 
@@ -1316,19 +1044,6 @@ func (r *createStageInputResolver) QueueID(ctx context.Context, obj *ent.CreateS
 	return nil
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *createStageInputResolver) TenantID(ctx context.Context, obj *ent.CreateStageInput, data *string) error {
-	if data != nil {
-		id, err := uuid.Parse(*data)
-		if err != nil {
-			return fmt.Errorf("error: %v", err)
-		}
-
-		obj.TenantID = &id
-	}
-	return nil
-}
-
 // MessageID is the resolver for the messageID field.
 func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.CreateTextInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -1337,18 +1052,6 @@ func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.Create
 	}
 
 	obj.MessageID = id
-
-	return nil
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *createTextInputResolver) TenantID(ctx context.Context, obj *ent.CreateTextInput, data *string) error {
-	id, err := uuid.Parse(*data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = &id
 
 	return nil
 }
@@ -2218,11 +1921,6 @@ func (r *updateChatInputResolver) RemoveMessageIDs(ctx context.Context, obj *ent
 	panic(fmt.Errorf("not implemented: RemoveMessageIDs - removeMessageIDs"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateChatInputResolver) TenantID(ctx context.Context, obj *ent.UpdateChatInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // AddEmployeeIDs is the resolver for the addEmployeeIDs field.
 func (r *updateCompanyInputResolver) AddEmployeeIDs(ctx context.Context, obj *ent.UpdateCompanyInput, data []string) error {
 	panic(fmt.Errorf("not implemented: AddEmployeeIDs - addEmployeeIDs"))
@@ -2383,11 +2081,6 @@ func (r *updateCompanyInputResolver) RemoveTextIDs(ctx context.Context, obj *ent
 	panic(fmt.Errorf("not implemented: RemoveTextIDs - removeTextIDs"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateCostumerInputResolver) TenantID(ctx context.Context, obj *ent.UpdateCostumerInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // AddDealIDs is the resolver for the addDealIDs field.
 func (r *updateCostumerInputResolver) AddDealIDs(ctx context.Context, obj *ent.UpdateCostumerInput, data []string) error {
 	panic(fmt.Errorf("not implemented: AddDealIDs - addDealIDs"))
@@ -2418,11 +2111,6 @@ func (r *updateCrmFieldInputResolver) RemoveDealCrmFieldIDs(ctx context.Context,
 	panic(fmt.Errorf("not implemented: RemoveDealCrmFieldIDs - removeDealCrmFieldIDs"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.UpdateCrmFieldInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // DealID is the resolver for the dealID field.
 func (r *updateDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error {
 	panic(fmt.Errorf("not implemented: DealID - dealID"))
@@ -2431,16 +2119,6 @@ func (r *updateDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.U
 // CrmfieldID is the resolver for the crmfieldID field.
 func (r *updateDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error {
 	panic(fmt.Errorf("not implemented: CrmfieldID - crmfieldID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateDealCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.UpdateDealCrmFieldInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateDealInputResolver) TenantID(ctx context.Context, obj *ent.UpdateDealInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
 }
 
 // CostumerID is the resolver for the costumerID field.
@@ -2474,11 +2152,6 @@ func (r *updateDealInputResolver) AddDealCrmFieldIDs(ctx context.Context, obj *e
 // RemoveDealCrmFieldIDs is the resolver for the removeDealCrmFieldIDs field.
 func (r *updateDealInputResolver) RemoveDealCrmFieldIDs(ctx context.Context, obj *ent.UpdateDealInput, data []string) error {
 	panic(fmt.Errorf("not implemented: RemoveDealCrmFieldIDs - removeDealCrmFieldIDs"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.UpdateDepartmentInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
 }
 
 // AddEmployeeIDs is the resolver for the addEmployeeIDs field.
@@ -2521,29 +2194,14 @@ func (r *updateDropdownListInputResolver) RemoveCrmFieldIDs(ctx context.Context,
 	panic(fmt.Errorf("not implemented: RemoveCrmFieldIDs - removeCrmFieldIDs"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateDropdownListInputResolver) TenantID(ctx context.Context, obj *ent.UpdateDropdownListInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // EmployeeID is the resolver for the employeeID field.
 func (r *updateEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *ent.UpdateEmployeeAuthInput, data *string) error {
 	panic(fmt.Errorf("not implemented: EmployeeID - employeeID"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateEmployeeAuthInputResolver) TenantID(ctx context.Context, obj *ent.UpdateEmployeeAuthInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // EmployeeauthID is the resolver for the employeeauthID field.
 func (r *updateEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error {
 	panic(fmt.Errorf("not implemented: EmployeeauthID - employeeauthID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateEmployeeInputResolver) TenantID(ctx context.Context, obj *ent.UpdateEmployeeInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
 }
 
 // DepartmentID is the resolver for the departmentID field.
@@ -2586,11 +2244,6 @@ func (r *updateFileInputResolver) MessageID(ctx context.Context, obj *ent.Update
 	panic(fmt.Errorf("not implemented: MessageID - messageID"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateFileInputResolver) TenantID(ctx context.Context, obj *ent.UpdateFileInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // ChatID is the resolver for the chatID field.
 func (r *updateMessageInputResolver) ChatID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ChatID - chatID"))
@@ -2614,16 +2267,6 @@ func (r *updateMessageInputResolver) TextID(ctx context.Context, obj *ent.Update
 // FileID is the resolver for the fileID field.
 func (r *updateMessageInputResolver) FileID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error {
 	panic(fmt.Errorf("not implemented: FileID - fileID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateMessageInputResolver) TenantID(ctx context.Context, obj *ent.UpdateMessageInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updatePipelineInputResolver) TenantID(ctx context.Context, obj *ent.UpdatePipelineInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
 }
 
 // AddStageIDs is the resolver for the addStageIDs field.
@@ -2666,19 +2309,9 @@ func (r *updateQueueInputResolver) RemoveDepartmentIDs(ctx context.Context, obj 
 	panic(fmt.Errorf("not implemented: RemoveDepartmentIDs - removeDepartmentIDs"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateQueueInputResolver) TenantID(ctx context.Context, obj *ent.UpdateQueueInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // DepartmentID is the resolver for the departmentID field.
 func (r *updateRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.UpdateRbacInput, data *string) error {
 	panic(fmt.Errorf("not implemented: DepartmentID - departmentID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateRbacInputResolver) TenantID(ctx context.Context, obj *ent.UpdateRbacInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
 }
 
 // PipelineID is the resolver for the pipelineID field.
@@ -2701,19 +2334,9 @@ func (r *updateStageInputResolver) QueueID(ctx context.Context, obj *ent.UpdateS
 	panic(fmt.Errorf("not implemented: QueueID - queueID"))
 }
 
-// TenantID is the resolver for the tenantID field.
-func (r *updateStageInputResolver) TenantID(ctx context.Context, obj *ent.UpdateStageInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
-}
-
 // MessageID is the resolver for the messageID field.
 func (r *updateTextInputResolver) MessageID(ctx context.Context, obj *ent.UpdateTextInput, data *string) error {
 	panic(fmt.Errorf("not implemented: MessageID - messageID"))
-}
-
-// TenantID is the resolver for the tenantID field.
-func (r *updateTextInputResolver) TenantID(ctx context.Context, obj *ent.UpdateTextInput, data *string) error {
-	panic(fmt.Errorf("not implemented: TenantID - tenantID"))
 }
 
 // Chat returns ChatResolver implementation.
@@ -3052,3 +2675,220 @@ type updateQueueInputResolver struct{ *Resolver }
 type updateRbacInputResolver struct{ *Resolver }
 type updateStageInputResolver struct{ *Resolver }
 type updateTextInputResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *chatResolver) TenantId(ctx context.Context, obj *ent.Chat) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *costumerResolver) TenantId(ctx context.Context, obj *ent.Costumer) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *crmFieldResolver) TenantId(ctx context.Context, obj *ent.CrmField) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *dealResolver) TenantId(ctx context.Context, obj *ent.Deal) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *dealCrmFieldResolver) TenantId(ctx context.Context, obj *ent.DealCrmField) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *departmentResolver) TenantId(ctx context.Context, obj *ent.Department) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *dropdownListResolver) TenantId(ctx context.Context, obj *ent.DropdownList) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *employeeResolver) TenantId(ctx context.Context, obj *ent.Employee) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *employeeAuthResolver) TenantId(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *fileResolver) TenantId(ctx context.Context, obj *ent.File) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *messageResolver) TenantId(ctx context.Context, obj *ent.Message) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *pipelineResolver) TenantId(ctx context.Context, obj *ent.Pipeline) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *queueResolver) TenantId(ctx context.Context, obj *ent.Queue) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *rbacResolver) TenantId(ctx context.Context, obj *ent.Rbac) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *stageResolver) TenantId(ctx context.Context, obj *ent.Stage) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *textResolver) TenantId(ctx context.Context, obj *ent.Text) (string, error) {
+	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
+}
+func (r *createChatInputResolver) TenantID(ctx context.Context, obj *ent.CreateChatInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createCostumerInputResolver) TenantID(ctx context.Context, obj *ent.CreateCostumerInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateCrmFieldInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createDealCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createDealInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.CreateDepartmentInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createDropdownListInputResolver) TenantID(ctx context.Context, obj *ent.CreateDropdownListInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createEmployeeAuthInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createEmployeeInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createFileInputResolver) TenantID(ctx context.Context, obj *ent.CreateFileInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createMessageInputResolver) TenantID(ctx context.Context, obj *ent.CreateMessageInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createPipelineInputResolver) TenantID(ctx context.Context, obj *ent.CreatePipelineInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createQueueInputResolver) TenantID(ctx context.Context, obj *ent.CreateQueueInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createRbacInputResolver) TenantID(ctx context.Context, obj *ent.CreateRbacInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createStageInputResolver) TenantID(ctx context.Context, obj *ent.CreateStageInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+func (r *createTextInputResolver) TenantID(ctx context.Context, obj *ent.CreateTextInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+*/

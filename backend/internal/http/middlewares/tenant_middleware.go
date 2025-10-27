@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 	"github.com/google/uuid"
 )
 
@@ -26,6 +27,8 @@ func TenantMiddleware() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{TenantID: tenantID})
+		ctx.Request = ctx.Request.WithContext(reqCtx)
 		ctx.Next()
 	}
 }

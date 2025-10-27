@@ -16,9 +16,11 @@ import (
 
 // File is the model entity for the File schema.
 type File struct {
-	config `json:"-"`
+	config `json:"-" sql:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// TenantId holds the value of the "tenantId" field.
+	TenantId uuid.UUID `json:"-" sql:"not null"`
 	// URL holds the value of the "url" field.
 	URL string `json:"url,omitempty"`
 	// Caption holds the value of the "caption" field.
@@ -27,8 +29,6 @@ type File struct {
 	MimeType string `json:"mimeType,omitempty"`
 	// FileName holds the value of the "fileName" field.
 	FileName string `json:"fileName,omitempty"`
-	// TenantId holds the value of the "tenantId" field.
-	TenantId uuid.UUID `json:"tenantId,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
 	Edges        FileEdges `json:"edges"`
@@ -100,6 +100,12 @@ func (_m *File) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				_m.ID = *value
 			}
+		case file.FieldTenantId:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
+			} else if value != nil {
+				_m.TenantId = *value
+			}
 		case file.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
@@ -123,12 +129,6 @@ func (_m *File) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field fileName", values[i])
 			} else if value.Valid {
 				_m.FileName = value.String
-			}
-		case file.FieldTenantId:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field tenantId", values[i])
-			} else if value != nil {
-				_m.TenantId = *value
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -176,6 +176,9 @@ func (_m *File) String() string {
 	var builder strings.Builder
 	builder.WriteString("File(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("tenantId=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
+	builder.WriteString(", ")
 	builder.WriteString("url=")
 	builder.WriteString(_m.URL)
 	builder.WriteString(", ")
@@ -187,9 +190,6 @@ func (_m *File) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("fileName=")
 	builder.WriteString(_m.FileName)
-	builder.WriteString(", ")
-	builder.WriteString("tenantId=")
-	builder.WriteString(fmt.Sprintf("%v", _m.TenantId))
 	builder.WriteByte(')')
 	return builder.String()
 }

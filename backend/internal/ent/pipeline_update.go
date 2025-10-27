@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/company"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/predicate"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
@@ -51,45 +50,6 @@ func (_u *PipelineUpdate) SetUpdatedAt(v time.Time) *PipelineUpdate {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *PipelineUpdate) SetTenantId(v uuid.UUID) *PipelineUpdate {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *PipelineUpdate) SetNillableTenantId(v *uuid.UUID) *PipelineUpdate {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *PipelineUpdate) ClearTenantId() *PipelineUpdate {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *PipelineUpdate) SetTenantID(id uuid.UUID) *PipelineUpdate {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *PipelineUpdate) SetNillableTenantID(id *uuid.UUID) *PipelineUpdate {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *PipelineUpdate) SetTenant(v *Company) *PipelineUpdate {
-	return _u.SetTenantID(v.ID)
-}
-
 // AddStageIDs adds the "stages" edge to the Stage entity by IDs.
 func (_u *PipelineUpdate) AddStageIDs(ids ...uuid.UUID) *PipelineUpdate {
 	_u.mutation.AddStageIDs(ids...)
@@ -108,12 +68,6 @@ func (_u *PipelineUpdate) AddStages(v ...*Stage) *PipelineUpdate {
 // Mutation returns the PipelineMutation object of the builder.
 func (_u *PipelineUpdate) Mutation() *PipelineMutation {
 	return _u.mutation
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *PipelineUpdate) ClearTenant() *PipelineUpdate {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // ClearStages clears all "stages" edges to the Stage entity.
@@ -139,9 +93,7 @@ func (_u *PipelineUpdate) RemoveStages(v ...*Stage) *PipelineUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *PipelineUpdate) Save(ctx context.Context) (int, error) {
-	if err := _u.defaults(); err != nil {
-		return 0, err
-	}
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -168,15 +120,11 @@ func (_u *PipelineUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *PipelineUpdate) defaults() error {
+func (_u *PipelineUpdate) defaults() {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
-		if pipeline.UpdateDefaultUpdatedAt == nil {
-			return fmt.Errorf("ent: uninitialized pipeline.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
-		}
 		v := pipeline.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
-	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -185,6 +133,9 @@ func (_u *PipelineUpdate) check() error {
 		if err := pipeline.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Pipeline.name": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Pipeline.tenant"`)
 	}
 	return nil
 }
@@ -206,35 +157,6 @@ func (_u *PipelineUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(pipeline.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   pipeline.TenantTable,
-			Columns: []string{pipeline.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   pipeline.TenantTable,
-			Columns: []string{pipeline.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.StagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -321,45 +243,6 @@ func (_u *PipelineUpdateOne) SetUpdatedAt(v time.Time) *PipelineUpdateOne {
 	return _u
 }
 
-// SetTenantId sets the "tenantId" field.
-func (_u *PipelineUpdateOne) SetTenantId(v uuid.UUID) *PipelineUpdateOne {
-	_u.mutation.SetTenantId(v)
-	return _u
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_u *PipelineUpdateOne) SetNillableTenantId(v *uuid.UUID) *PipelineUpdateOne {
-	if v != nil {
-		_u.SetTenantId(*v)
-	}
-	return _u
-}
-
-// ClearTenantId clears the value of the "tenantId" field.
-func (_u *PipelineUpdateOne) ClearTenantId() *PipelineUpdateOne {
-	_u.mutation.ClearTenantId()
-	return _u
-}
-
-// SetTenantID sets the "tenant" edge to the Company entity by ID.
-func (_u *PipelineUpdateOne) SetTenantID(id uuid.UUID) *PipelineUpdateOne {
-	_u.mutation.SetTenantID(id)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_u *PipelineUpdateOne) SetNillableTenantID(id *uuid.UUID) *PipelineUpdateOne {
-	if id != nil {
-		_u = _u.SetTenantID(*id)
-	}
-	return _u
-}
-
-// SetTenant sets the "tenant" edge to the Company entity.
-func (_u *PipelineUpdateOne) SetTenant(v *Company) *PipelineUpdateOne {
-	return _u.SetTenantID(v.ID)
-}
-
 // AddStageIDs adds the "stages" edge to the Stage entity by IDs.
 func (_u *PipelineUpdateOne) AddStageIDs(ids ...uuid.UUID) *PipelineUpdateOne {
 	_u.mutation.AddStageIDs(ids...)
@@ -378,12 +261,6 @@ func (_u *PipelineUpdateOne) AddStages(v ...*Stage) *PipelineUpdateOne {
 // Mutation returns the PipelineMutation object of the builder.
 func (_u *PipelineUpdateOne) Mutation() *PipelineMutation {
 	return _u.mutation
-}
-
-// ClearTenant clears the "tenant" edge to the Company entity.
-func (_u *PipelineUpdateOne) ClearTenant() *PipelineUpdateOne {
-	_u.mutation.ClearTenant()
-	return _u
 }
 
 // ClearStages clears all "stages" edges to the Stage entity.
@@ -422,9 +299,7 @@ func (_u *PipelineUpdateOne) Select(field string, fields ...string) *PipelineUpd
 
 // Save executes the query and returns the updated Pipeline entity.
 func (_u *PipelineUpdateOne) Save(ctx context.Context) (*Pipeline, error) {
-	if err := _u.defaults(); err != nil {
-		return nil, err
-	}
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -451,15 +326,11 @@ func (_u *PipelineUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *PipelineUpdateOne) defaults() error {
+func (_u *PipelineUpdateOne) defaults() {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
-		if pipeline.UpdateDefaultUpdatedAt == nil {
-			return fmt.Errorf("ent: uninitialized pipeline.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
-		}
 		v := pipeline.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
-	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -468,6 +339,9 @@ func (_u *PipelineUpdateOne) check() error {
 		if err := pipeline.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Pipeline.name": %w`, err)}
 		}
+	}
+	if _u.mutation.TenantCleared() && len(_u.mutation.TenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Pipeline.tenant"`)
 	}
 	return nil
 }
@@ -506,35 +380,6 @@ func (_u *PipelineUpdateOne) sqlSave(ctx context.Context) (_node *Pipeline, err 
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(pipeline.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.TenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   pipeline.TenantTable,
-			Columns: []string{pipeline.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   pipeline.TenantTable,
-			Columns: []string{pipeline.TenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(company.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.StagesCleared() {
 		edge := &sqlgraph.EdgeSpec{

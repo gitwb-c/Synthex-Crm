@@ -3,6 +3,7 @@ package rule
 import (
 	"context"
 	"errors"
+	"log"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -17,7 +18,6 @@ func FilterTenantQuery() ent.Interceptor {
 			if view.TenantID == uuid.Nil {
 				return nil, errors.New("missing tenant")
 			}
-
 			qp, ok := query.(interface {
 				WhereP(...func(*sql.Selector))
 			})
@@ -41,6 +41,7 @@ func FilterTenantMutation() ent.Hook {
 			if view.TenantID == uuid.Nil {
 				return nil, errors.New("missing tenant")
 			}
+			log.Print(view.TenantID)
 
 			switch op {
 			case ent.OpCreate:
@@ -54,7 +55,7 @@ func FilterTenantMutation() ent.Hook {
 						return nil, err
 					}
 				}
-			case ent.OpUpdate, ent.OpUpdateOne, ent.OpDelete, ent.OpDeleteOne:
+			case ent.OpUpdate, ent.OpUpdateOne, ent.OpDelete:
 				mp, ok := mutation.(interface {
 					WhereP(...func(*sql.Selector))
 				})

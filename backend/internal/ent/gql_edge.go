@@ -45,7 +45,7 @@ func (_m *Chat) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Company) Employees(ctx context.Context) (result []*Employee, err error) {
@@ -245,7 +245,7 @@ func (_m *Costumer) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Costumer) Deals(ctx context.Context) (result []*Deal, err error) {
@@ -289,7 +289,7 @@ func (_m *CrmField) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Deal) Tenant(ctx context.Context) (*Company, error) {
@@ -297,7 +297,7 @@ func (_m *Deal) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Deal) Costumer(ctx context.Context) (*Costumer, error) {
@@ -357,7 +357,7 @@ func (_m *DealCrmField) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Department) Tenant(ctx context.Context) (*Company, error) {
@@ -365,7 +365,7 @@ func (_m *Department) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Department) Employee(ctx context.Context) (result []*Employee, err error) {
@@ -421,7 +421,7 @@ func (_m *DropdownList) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Employee) EmployeeAuth(ctx context.Context) (*EmployeeAuth, error) {
@@ -437,7 +437,7 @@ func (_m *Employee) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Employee) Department(ctx context.Context) (*Department, error) {
@@ -513,7 +513,7 @@ func (_m *File) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Message) Chat(ctx context.Context) (*Chat, error) {
@@ -557,7 +557,7 @@ func (_m *Message) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Pipeline) Tenant(ctx context.Context) (*Company, error) {
@@ -565,7 +565,7 @@ func (_m *Pipeline) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Pipeline) Stages(ctx context.Context) (result []*Stage, err error) {
@@ -621,7 +621,7 @@ func (_m *Queue) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Rbac) Department(ctx context.Context) (*Department, error) {
@@ -637,7 +637,7 @@ func (_m *Rbac) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Stage) Pipeline(ctx context.Context) (*Pipeline, error) {
@@ -673,7 +673,7 @@ func (_m *Stage) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (_m *Text) Message(ctx context.Context) (*Message, error) {
@@ -689,5 +689,5 @@ func (_m *Text) Tenant(ctx context.Context) (*Company, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTenant().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }

@@ -20,14 +20,13 @@ func (File) Fields() []ent.Field {
 		field.String("caption").Optional().Annotations(entgql.QueryField()),
 		field.String("mimeType").Annotations(entgql.QueryField()),
 		field.String("fileName").Annotations(entgql.QueryField()),
-		field.UUID("tenantId", uuid.UUID{}).Annotations(entgql.Type("ID")).Optional(),
 	}
 }
 
 func (File) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("message", Message.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("files").Field("tenantId").Unique(),
+		edge.From("tenant", Company.Type).Ref("files").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -37,7 +36,7 @@ func (File) Annotations() []schema.Annotation {
 	}
 }
 
-func (File) Mixins() []ent.Mixin {
+func (File) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TenantMixin{},
 	}

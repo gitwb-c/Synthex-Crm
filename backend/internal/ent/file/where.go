@@ -54,6 +54,11 @@ func IDLTE(id uuid.UUID) predicate.File {
 	return predicate.File(sql.FieldLTE(FieldID, id))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldTenantId, v))
+}
+
 // URL applies equality check predicate on the "url" field. It's identical to URLEQ.
 func URL(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldURL, v))
@@ -74,9 +79,24 @@ func FileName(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldFileName, v))
 }
 
-// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
-func TenantId(v uuid.UUID) predicate.File {
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.File {
+	return predicate.File(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.File {
+	return predicate.File(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.File {
+	return predicate.File(sql.FieldNotIn(FieldTenantId, vs...))
 }
 
 // URLEQ applies the EQ predicate on the "url" field.
@@ -347,36 +367,6 @@ func FileNameEqualFold(v string) predicate.File {
 // FileNameContainsFold applies the ContainsFold predicate on the "fileName" field.
 func FileNameContainsFold(v string) predicate.File {
 	return predicate.File(sql.FieldContainsFold(FieldFileName, v))
-}
-
-// TenantIdEQ applies the EQ predicate on the "tenantId" field.
-func TenantIdEQ(v uuid.UUID) predicate.File {
-	return predicate.File(sql.FieldEQ(FieldTenantId, v))
-}
-
-// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
-func TenantIdNEQ(v uuid.UUID) predicate.File {
-	return predicate.File(sql.FieldNEQ(FieldTenantId, v))
-}
-
-// TenantIdIn applies the In predicate on the "tenantId" field.
-func TenantIdIn(vs ...uuid.UUID) predicate.File {
-	return predicate.File(sql.FieldIn(FieldTenantId, vs...))
-}
-
-// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
-func TenantIdNotIn(vs ...uuid.UUID) predicate.File {
-	return predicate.File(sql.FieldNotIn(FieldTenantId, vs...))
-}
-
-// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
-func TenantIdIsNil() predicate.File {
-	return predicate.File(sql.FieldIsNull(FieldTenantId))
-}
-
-// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
-func TenantIdNotNil() predicate.File {
-	return predicate.File(sql.FieldNotNull(FieldTenantId))
 }
 
 // HasMessage applies the HasEdge predicate on the "message" edge.

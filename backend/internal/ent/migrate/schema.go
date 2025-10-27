@@ -16,7 +16,7 @@ var (
 		{Name: "locked", Type: field.TypeBool},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// ChatsTable holds the schema information for the "chats" table.
 	ChatsTable = &schema.Table{
@@ -28,7 +28,7 @@ var (
 				Symbol:     "chats_companies_chats",
 				Columns:    []*schema.Column{ChatsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -53,7 +53,7 @@ var (
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// CostumersTable holds the schema information for the "costumers" table.
 	CostumersTable = &schema.Table{
@@ -65,7 +65,7 @@ var (
 				Symbol:     "costumers_companies_costumers",
 				Columns:    []*schema.Column{CostumersColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -77,7 +77,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"txt", "date", "checkbox", "dropdownList"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// CrmFieldsTable holds the schema information for the "crm_fields" table.
 	CrmFieldsTable = &schema.Table{
@@ -89,7 +89,7 @@ var (
 				Symbol:     "crm_fields_companies_crmFields",
 				Columns:    []*schema.Column{CrmFieldsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -101,7 +101,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "chat_deal", Type: field.TypeUUID, Unique: true, Nullable: true},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "deal_costumer", Type: field.TypeUUID, Nullable: true},
 		{Name: "deal_stage", Type: field.TypeUUID},
 	}
@@ -121,7 +121,7 @@ var (
 				Symbol:     "deals_companies_deals",
 				Columns:    []*schema.Column{DealsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "deals_costumers_costumer",
@@ -143,7 +143,7 @@ var (
 		{Name: "value", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "deal_crm_field_deal", Type: field.TypeUUID},
 		{Name: "deal_crm_field_crm_field", Type: field.TypeUUID},
 	}
@@ -157,7 +157,7 @@ var (
 				Symbol:     "deal_crm_fields_companies_dealCrmFields",
 				Columns:    []*schema.Column{DealCrmFieldsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "deal_crm_fields_deals_deal",
@@ -179,7 +179,7 @@ var (
 		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// DepartmentsTable holds the schema information for the "departments" table.
 	DepartmentsTable = &schema.Table{
@@ -191,7 +191,7 @@ var (
 				Symbol:     "departments_companies_departments",
 				Columns:    []*schema.Column{DepartmentsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -201,7 +201,7 @@ var (
 		{Name: "value", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// DropdownListsTable holds the schema information for the "dropdown_lists" table.
 	DropdownListsTable = &schema.Table{
@@ -213,7 +213,7 @@ var (
 				Symbol:     "dropdown_lists_companies_dropdownLists",
 				Columns:    []*schema.Column{DropdownListsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -224,7 +224,7 @@ var (
 		{Name: "employment_status", Type: field.TypeEnum, Enums: []string{"active", "terminated", "onLeave"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "employee_department", Type: field.TypeUUID},
 	}
 	// EmployeesTable holds the schema information for the "employees" table.
@@ -237,7 +237,7 @@ var (
 				Symbol:     "employees_companies_employees",
 				Columns:    []*schema.Column{EmployeesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "employees_departments_department",
@@ -285,7 +285,7 @@ var (
 		{Name: "caption", Type: field.TypeString, Nullable: true},
 		{Name: "mime_type", Type: field.TypeString},
 		{Name: "file_name", Type: field.TypeString},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// FilesTable holds the schema information for the "files" table.
 	FilesTable = &schema.Table{
@@ -297,7 +297,7 @@ var (
 				Symbol:     "files_companies_files",
 				Columns:    []*schema.Column{FilesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -309,7 +309,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"text", "audio", "image", "file"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "file_message", Type: field.TypeUUID, Unique: true, Nullable: true},
 		{Name: "message_chat", Type: field.TypeUUID, Nullable: true},
 		{Name: "text_message", Type: field.TypeUUID, Unique: true, Nullable: true},
@@ -324,7 +324,7 @@ var (
 				Symbol:     "messages_companies_messages",
 				Columns:    []*schema.Column{MessagesColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "messages_files_message",
@@ -352,7 +352,7 @@ var (
 		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// PipelinesTable holds the schema information for the "pipelines" table.
 	PipelinesTable = &schema.Table{
@@ -364,7 +364,7 @@ var (
 				Symbol:     "pipelines_companies_pipelines",
 				Columns:    []*schema.Column{PipelinesColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -375,7 +375,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"ring"}, Default: "ring"},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// QueuesTable holds the schema information for the "queues" table.
 	QueuesTable = &schema.Table{
@@ -387,7 +387,7 @@ var (
 				Symbol:     "queues_companies_queues",
 				Columns:    []*schema.Column{QueuesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -397,7 +397,7 @@ var (
 		{Name: "access", Type: field.TypeEnum, Enums: []string{"view_all_deals", "view_responsible_chat_deals", "view_department_phase_deals", "delete_deals", "change_responsible_chat_or_business", "view_all_customer_data", "view_department_customer_data", "create_deal", "edit_deals", "approve_or_deny_deals", "view_chat_history", "view_advanced_reports", "manage_users", "manage_departments", "manage_system_settings", "manage_products_or_services", "export_data", "configure_workflows", "send_notifications", "view_notifications", "configure_integrations", "view_dashboard_analytics_data", "post_sale_actions"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "rbac_department", Type: field.TypeUUID},
 	}
 	// RbacsTable holds the schema information for the "rbacs" table.
@@ -410,7 +410,7 @@ var (
 				Symbol:     "rbacs_companies_rbacs",
 				Columns:    []*schema.Column{RbacsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "rbacs_departments_department",
@@ -428,7 +428,7 @@ var (
 		{Name: "loss_or_gain", Type: field.TypeBool},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 		{Name: "stage_pipeline", Type: field.TypeUUID},
 		{Name: "stage_queue", Type: field.TypeUUID, Nullable: true},
 	}
@@ -442,7 +442,7 @@ var (
 				Symbol:     "stages_companies_stages",
 				Columns:    []*schema.Column{StagesColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "stages_pipelines_pipeline",
@@ -462,7 +462,7 @@ var (
 	TextsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "text", Type: field.TypeString},
-		{Name: "tenant_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeUUID},
 	}
 	// TextsTable holds the schema information for the "texts" table.
 	TextsTable = &schema.Table{
@@ -474,7 +474,7 @@ var (
 				Symbol:     "texts_companies_texts",
 				Columns:    []*schema.Column{TextsColumns[2]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}

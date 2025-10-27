@@ -23,6 +23,12 @@ type DropdownListCreate struct {
 	hooks    []Hook
 }
 
+// SetTenantId sets the "tenantId" field.
+func (_c *DropdownListCreate) SetTenantId(v uuid.UUID) *DropdownListCreate {
+	_c.mutation.SetTenantId(v)
+	return _c
+}
+
 // SetValue sets the "value" field.
 func (_c *DropdownListCreate) SetValue(v string) *DropdownListCreate {
 	_c.mutation.SetValue(v)
@@ -53,20 +59,6 @@ func (_c *DropdownListCreate) SetUpdatedAt(v time.Time) *DropdownListCreate {
 func (_c *DropdownListCreate) SetNillableUpdatedAt(v *time.Time) *DropdownListCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetTenantId sets the "tenantId" field.
-func (_c *DropdownListCreate) SetTenantId(v uuid.UUID) *DropdownListCreate {
-	_c.mutation.SetTenantId(v)
-	return _c
-}
-
-// SetNillableTenantId sets the "tenantId" field if the given value is not nil.
-func (_c *DropdownListCreate) SetNillableTenantId(v *uuid.UUID) *DropdownListCreate {
-	if v != nil {
-		_c.SetTenantId(*v)
 	}
 	return _c
 }
@@ -103,14 +95,6 @@ func (_c *DropdownListCreate) AddCrmField(v ...*CrmField) *DropdownListCreate {
 // SetTenantID sets the "tenant" edge to the Company entity by ID.
 func (_c *DropdownListCreate) SetTenantID(id uuid.UUID) *DropdownListCreate {
 	_c.mutation.SetTenantID(id)
-	return _c
-}
-
-// SetNillableTenantID sets the "tenant" edge to the Company entity by ID if the given value is not nil.
-func (_c *DropdownListCreate) SetNillableTenantID(id *uuid.UUID) *DropdownListCreate {
-	if id != nil {
-		_c = _c.SetTenantID(*id)
-	}
 	return _c
 }
 
@@ -170,6 +154,9 @@ func (_c *DropdownListCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *DropdownListCreate) check() error {
+	if _, ok := _c.mutation.TenantId(); !ok {
+		return &ValidationError{Name: "tenantId", err: errors.New(`ent: missing required field "DropdownList.tenantId"`)}
+	}
 	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "DropdownList.value"`)}
 	}
@@ -186,6 +173,9 @@ func (_c *DropdownListCreate) check() error {
 	}
 	if len(_c.mutation.CrmFieldIDs()) == 0 {
 		return &ValidationError{Name: "crmField", err: errors.New(`ent: missing required edge "DropdownList.crmField"`)}
+	}
+	if len(_c.mutation.TenantIDs()) == 0 {
+		return &ValidationError{Name: "tenant", err: errors.New(`ent: missing required edge "DropdownList.tenant"`)}
 	}
 	return nil
 }

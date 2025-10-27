@@ -56,6 +56,11 @@ func IDLTE(id uuid.UUID) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldLTE(FieldID, id))
 }
 
+// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
+func TenantId(v uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldEQ(FieldTenantId, v))
+}
+
 // Value applies equality check predicate on the "value" field. It's identical to ValueEQ.
 func Value(v string) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldEQ(FieldValue, v))
@@ -71,9 +76,24 @@ func UpdatedAt(v time.Time) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// TenantId applies equality check predicate on the "tenantId" field. It's identical to TenantIdEQ.
-func TenantId(v uuid.UUID) predicate.DealCrmField {
+// TenantIdEQ applies the EQ predicate on the "tenantId" field.
+func TenantIdEQ(v uuid.UUID) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldEQ(FieldTenantId, v))
+}
+
+// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
+func TenantIdNEQ(v uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldNEQ(FieldTenantId, v))
+}
+
+// TenantIdIn applies the In predicate on the "tenantId" field.
+func TenantIdIn(vs ...uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldIn(FieldTenantId, vs...))
+}
+
+// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
+func TenantIdNotIn(vs ...uuid.UUID) predicate.DealCrmField {
+	return predicate.DealCrmField(sql.FieldNotIn(FieldTenantId, vs...))
 }
 
 // ValueEQ applies the EQ predicate on the "value" field.
@@ -219,36 +239,6 @@ func UpdatedAtLT(v time.Time) predicate.DealCrmField {
 // UpdatedAtLTE applies the LTE predicate on the "updatedAt" field.
 func UpdatedAtLTE(v time.Time) predicate.DealCrmField {
 	return predicate.DealCrmField(sql.FieldLTE(FieldUpdatedAt, v))
-}
-
-// TenantIdEQ applies the EQ predicate on the "tenantId" field.
-func TenantIdEQ(v uuid.UUID) predicate.DealCrmField {
-	return predicate.DealCrmField(sql.FieldEQ(FieldTenantId, v))
-}
-
-// TenantIdNEQ applies the NEQ predicate on the "tenantId" field.
-func TenantIdNEQ(v uuid.UUID) predicate.DealCrmField {
-	return predicate.DealCrmField(sql.FieldNEQ(FieldTenantId, v))
-}
-
-// TenantIdIn applies the In predicate on the "tenantId" field.
-func TenantIdIn(vs ...uuid.UUID) predicate.DealCrmField {
-	return predicate.DealCrmField(sql.FieldIn(FieldTenantId, vs...))
-}
-
-// TenantIdNotIn applies the NotIn predicate on the "tenantId" field.
-func TenantIdNotIn(vs ...uuid.UUID) predicate.DealCrmField {
-	return predicate.DealCrmField(sql.FieldNotIn(FieldTenantId, vs...))
-}
-
-// TenantIdIsNil applies the IsNil predicate on the "tenantId" field.
-func TenantIdIsNil() predicate.DealCrmField {
-	return predicate.DealCrmField(sql.FieldIsNull(FieldTenantId))
-}
-
-// TenantIdNotNil applies the NotNil predicate on the "tenantId" field.
-func TenantIdNotNil() predicate.DealCrmField {
-	return predicate.DealCrmField(sql.FieldNotNull(FieldTenantId))
 }
 
 // HasDeal applies the HasEdge predicate on the "deal" edge.

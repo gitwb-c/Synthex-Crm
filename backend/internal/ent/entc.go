@@ -20,6 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("creating entgql extension: %v", err)
 	}
+
 	err = entc.Generate("./schema", &gen.Config{
 		Features: []gen.Feature{
 			gen.FeaturePrivacy,
