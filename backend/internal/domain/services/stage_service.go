@@ -18,8 +18,8 @@ func NewStageService(repository *repositories.StageRepository) *StageService {
 	}
 }
 
-func (s *StageService) Read(ctx context.Context) ([]*ent.Stage, error) {
-	stage, err := s.repository.Read(ctx)
+func (s *StageService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Stage, error) {
+	stage, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -34,12 +34,12 @@ func (s *StageService) Create(ctx context.Context, input ent.CreateStageInput) (
 	return stage, nil
 }
 
-func (s *StageService) UpdateID(ctx context.Context, id string, input ent.UpdateStageInput) (*ent.Stage, error) {
-	stage, err := s.repository.UpdateID(ctx, id, input)
+func (s *StageService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateStageInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return stage, nil
+	return n, nil
 }
 func (s *StageService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

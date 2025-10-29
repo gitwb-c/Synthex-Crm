@@ -8,6 +8,7 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/domain/contracts"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/repositories"
+	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 	"github.com/gitwb-c/crm.saas/backend/pkg/auth"
 	"github.com/gitwb-c/crm.saas/backend/pkg/jwtpkg"
 	"github.com/google/uuid"
@@ -22,16 +23,18 @@ func NewEmployeeAuthService(repository *repositories.EmployeeAuthRepository) *Em
 		repository: repository,
 	}
 }
-func (s *EmployeeAuthService) Read(ctx context.Context) ([]*ent.EmployeeAuth, error) {
-	employeeAuth, err := s.repository.Read(ctx)
+func (s *EmployeeAuthService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.EmployeeAuth, error) {
+	employeeAuth, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
 	return employeeAuth, nil
 }
 
-func (s *EmployeeAuthService) ValidateLogin(ctx context.Context, email string, password string) (contracts.NewLogin, error) {
-	employeeAuth, err := s.repository.ReadEmail(ctx, email)
+func (s *EmployeeAuthService) ValidateLogin(ctx context.Context, email string, password string, tenantId uuid.UUID) (contracts.NewLogin, error) {
+	bootstrapSig := viewer.Login
+	reqCtx := viewer.NewContext(ctx, viewer.UserViewer{TenantID: tenantId, Signature: &bootstrapSig})
+	employeeAuth, err := s.repository.ReadEmail(reqCtx, email, tenantId)
 	if err != nil {
 		return contracts.NewLogin{}, err
 	}
@@ -53,7 +56,7 @@ func (s *EmployeeAuthService) ValidateLogin(ctx context.Context, email string, p
 	}, nil
 }
 
-func (s *EmployeeAuthService) Create(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
+func (s *EmployeeAuthService) Create(ctx context.Context, input ent.CreateEmployeeAuthInput, client *ent.Client) (*ent.EmployeeAuth, error) {
 	if _, err := auth.ValidateNameLenght(input.Name); err != nil {
 		return nil, err
 	}
@@ -68,18 +71,18 @@ func (s *EmployeeAuthService) Create(ctx context.Context, input ent.CreateEmploy
 		return nil, err
 	}
 	input.Password = hashedPassword
-	employeeAuth, err := s.repository.Create(ctx, input)
+	employeeAuth, err := s.repository.Create(ctx, input, client)
 	if err != nil {
 		return nil, err
 	}
 	return employeeAuth, nil
 }
-func (s *EmployeeAuthService) UpdateID(ctx context.Context, id string, input ent.UpdateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
-	employeeAuth, err := s.repository.UpdateID(ctx, id, input)
+func (s *EmployeeAuthService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateEmployeeAuthInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return employeeAuth, nil
+	return n, nil
 }
 
 func (s *EmployeeAuthService) Delete(ctx context.Context, ids []uuid.UUID) error {

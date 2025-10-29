@@ -6,16 +6,36 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/contrib/entgql"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/crmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/deal"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dealcrmfield"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/department"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/dropdownlist"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employee"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/employeeauth"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/message"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/pipeline"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/queue"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/rbac"
+	"github.com/gitwb-c/crm.saas/backend/internal/ent/stage"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/graph_helpers"
 	"github.com/google/uuid"
 )
 
 // ID is the resolver for the id field.
 func (r *chatResolver) ID(ctx context.Context, obj *ent.Chat) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *chatResolver) TenantId(ctx context.Context, obj *ent.Chat) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -29,8 +49,18 @@ func (r *costumerResolver) ID(ctx context.Context, obj *ent.Costumer) (string, e
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *costumerResolver) TenantId(ctx context.Context, obj *ent.Costumer) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *crmFieldResolver) ID(ctx context.Context, obj *ent.CrmField) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *crmFieldResolver) TenantId(ctx context.Context, obj *ent.CrmField) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -39,8 +69,18 @@ func (r *dealResolver) ID(ctx context.Context, obj *ent.Deal) (string, error) {
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *dealResolver) TenantId(ctx context.Context, obj *ent.Deal) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *dealCrmFieldResolver) ID(ctx context.Context, obj *ent.DealCrmField) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *dealCrmFieldResolver) TenantId(ctx context.Context, obj *ent.DealCrmField) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -49,8 +89,18 @@ func (r *departmentResolver) ID(ctx context.Context, obj *ent.Department) (strin
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *departmentResolver) TenantId(ctx context.Context, obj *ent.Department) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *dropdownListResolver) ID(ctx context.Context, obj *ent.DropdownList) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *dropdownListResolver) TenantId(ctx context.Context, obj *ent.DropdownList) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -59,8 +109,18 @@ func (r *employeeResolver) ID(ctx context.Context, obj *ent.Employee) (string, e
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *employeeResolver) TenantId(ctx context.Context, obj *ent.Employee) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *employeeAuthResolver) ID(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *employeeAuthResolver) TenantId(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -69,8 +129,18 @@ func (r *fileResolver) ID(ctx context.Context, obj *ent.File) (string, error) {
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *fileResolver) TenantId(ctx context.Context, obj *ent.File) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *messageResolver) ID(ctx context.Context, obj *ent.Message) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *messageResolver) TenantId(ctx context.Context, obj *ent.Message) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -79,9 +149,14 @@ func (r *pipelineResolver) ID(ctx context.Context, obj *ent.Pipeline) (string, e
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *pipelineResolver) TenantId(ctx context.Context, obj *ent.Pipeline) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, err
@@ -91,7 +166,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) 
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
 	var uuids []uuid.UUID
 	for _, id := range ids {
 		uid, err := uuid.Parse(id)
@@ -105,8 +180,12 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 
 // Chats is the resolver for the chats field.
 func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.ChatOrder, where *ent.ChatWhereInput) (*ent.ChatConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Chat.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Chat.Query().Where(chat.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithChatOrder(orderBy),
 			ent.WithChatFilter(where.Filter),
@@ -115,7 +194,7 @@ func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[uuid.UUI
 
 // Companies is the resolver for the companies field.
 func (r *queryResolver) Companies(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CompanyOrder, where *ent.CompanyWhereInput) (*ent.CompanyConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
 	return r.Client.Company.Query().
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithCompanyOrder(orderBy),
@@ -125,8 +204,12 @@ func (r *queryResolver) Companies(ctx context.Context, after *entgql.Cursor[uuid
 
 // Costumers is the resolver for the costumers field.
 func (r *queryResolver) Costumers(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CostumerOrder, where *ent.CostumerWhereInput) (*ent.CostumerConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Costumer.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Costumer.Query().Where(costumer.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithCostumerOrder(orderBy),
 			ent.WithCostumerFilter(where.Filter),
@@ -135,8 +218,12 @@ func (r *queryResolver) Costumers(ctx context.Context, after *entgql.Cursor[uuid
 
 // CrmFields is the resolver for the crmFields field.
 func (r *queryResolver) CrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CrmFieldOrder, where *ent.CrmFieldWhereInput) (*ent.CrmFieldConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.CrmField.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.CrmField.Query().Where(crmfield.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithCrmFieldOrder(orderBy),
 			ent.WithCrmFieldFilter(where.Filter),
@@ -145,18 +232,25 @@ func (r *queryResolver) CrmFields(ctx context.Context, after *entgql.Cursor[uuid
 
 // Deals is the resolver for the deals field.
 func (r *queryResolver) Deals(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealOrder, where *ent.DealWhereInput) (*ent.DealConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Deal.Query().
-		Paginate(queryCtx, after, first, before, last,
-			ent.WithDealOrder(orderBy),
-			ent.WithDealFilter(where.Filter),
-		)
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Deal.Query().Where(deal.TenantIdEQ(tenantId)).Paginate(queryCtx, after, first, before, last,
+		ent.WithDealOrder(orderBy),
+		ent.WithDealFilter(where.Filter),
+	)
 }
 
 // DealCrmFields is the resolver for the dealCrmFields field.
 func (r *queryResolver) DealCrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealCrmFieldOrder, where *ent.DealCrmFieldWhereInput) (*ent.DealCrmFieldConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.DealCrmField.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.DealCrmField.Query().Where(dealcrmfield.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithDealCrmFieldOrder(orderBy),
 			ent.WithDealCrmFieldFilter(where.Filter),
@@ -165,8 +259,12 @@ func (r *queryResolver) DealCrmFields(ctx context.Context, after *entgql.Cursor[
 
 // Departments is the resolver for the departments field.
 func (r *queryResolver) Departments(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DepartmentOrder, where *ent.DepartmentWhereInput) (*ent.DepartmentConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Department.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(queryCtx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Department.Query().Where(department.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithDepartmentOrder(orderBy),
 			ent.WithDepartmentFilter(where.Filter),
@@ -175,8 +273,12 @@ func (r *queryResolver) Departments(ctx context.Context, after *entgql.Cursor[uu
 
 // DropdownLists is the resolver for the dropdownLists field.
 func (r *queryResolver) DropdownLists(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DropdownListOrder, where *ent.DropdownListWhereInput) (*ent.DropdownListConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.DropdownList.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.DropdownList.Query().Where(dropdownlist.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithDropdownListOrder(orderBy),
 			ent.WithDropdownListFilter(where.Filter),
@@ -185,8 +287,12 @@ func (r *queryResolver) DropdownLists(ctx context.Context, after *entgql.Cursor[
 
 // Employees is the resolver for the employees field.
 func (r *queryResolver) Employees(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeOrder, where *ent.EmployeeWhereInput) (*ent.EmployeeConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Employee.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Employee.Query().Where(employee.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithEmployeeOrder(orderBy),
 			ent.WithEmployeeFilter(where.Filter),
@@ -195,8 +301,12 @@ func (r *queryResolver) Employees(ctx context.Context, after *entgql.Cursor[uuid
 
 // EmployeeAuths is the resolver for the employeeAuths field.
 func (r *queryResolver) EmployeeAuths(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeAuthOrder, where *ent.EmployeeAuthWhereInput) (*ent.EmployeeAuthConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.EmployeeAuth.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.EmployeeAuth.Query().Where(employeeauth.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithEmployeeAuthOrder(orderBy),
 			ent.WithEmployeeAuthFilter(where.Filter),
@@ -205,8 +315,12 @@ func (r *queryResolver) EmployeeAuths(ctx context.Context, after *entgql.Cursor[
 
 // Messages is the resolver for the messages field.
 func (r *queryResolver) Messages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.MessageOrder, where *ent.MessageWhereInput) (*ent.MessageConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Message.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Message.Query().Where(message.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithMessageOrder(orderBy),
 			ent.WithMessageFilter(where.Filter),
@@ -215,8 +329,12 @@ func (r *queryResolver) Messages(ctx context.Context, after *entgql.Cursor[uuid.
 
 // Pipelines is the resolver for the pipelines field.
 func (r *queryResolver) Pipelines(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.PipelineOrder, where *ent.PipelineWhereInput) (*ent.PipelineConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Pipeline.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Pipeline.Query().Where(pipeline.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithPipelineOrder(orderBy),
 			ent.WithPipelineFilter(where.Filter),
@@ -225,8 +343,12 @@ func (r *queryResolver) Pipelines(ctx context.Context, after *entgql.Cursor[uuid
 
 // Queues is the resolver for the queues field.
 func (r *queryResolver) Queues(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.QueueOrder, where *ent.QueueWhereInput) (*ent.QueueConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Queue.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Queue.Query().Where(queue.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithQueueOrder(orderBy),
 			ent.WithQueueFilter(where.Filter),
@@ -235,8 +357,12 @@ func (r *queryResolver) Queues(ctx context.Context, after *entgql.Cursor[uuid.UU
 
 // Rbacs is the resolver for the rbacs field.
 func (r *queryResolver) Rbacs(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.RbacOrder, where *ent.RbacWhereInput) (*ent.RbacConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Rbac.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Rbac.Query().Where(rbac.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithRbacOrder(orderBy),
 			ent.WithRbacFilter(where.Filter),
@@ -245,8 +371,12 @@ func (r *queryResolver) Rbacs(ctx context.Context, after *entgql.Cursor[uuid.UUI
 
 // Stages is the resolver for the stages field.
 func (r *queryResolver) Stages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.StageOrder, where *ent.StageWhereInput) (*ent.StageConnection, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Read")
-	return r.Client.Stage.Query().
+	queryCtx := graph_helpers.AddQuery(ctx, "Read")
+	ok, tenantId := graph_helpers.Tenant(ctx)
+	if !ok {
+		return nil, errors.New("tenantId not found")
+	}
+	return r.Client.Stage.Query().Where(stage.TenantIdEQ(tenantId)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithStageOrder(orderBy),
 			ent.WithStageFilter(where.Filter),
@@ -258,8 +388,18 @@ func (r *queueResolver) ID(ctx context.Context, obj *ent.Queue) (string, error) 
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *queueResolver) TenantId(ctx context.Context, obj *ent.Queue) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *rbacResolver) ID(ctx context.Context, obj *ent.Rbac) (string, error) {
+	return obj.ID.String(), nil
+}
+
+// TenantId is the resolver for the tenantid field.
+func (r *rbacResolver) TenantId(ctx context.Context, obj *ent.Rbac) (string, error) {
 	return obj.ID.String(), nil
 }
 
@@ -268,14 +408,32 @@ func (r *stageResolver) ID(ctx context.Context, obj *ent.Stage) (string, error) 
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *stageResolver) TenantId(ctx context.Context, obj *ent.Stage) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *textResolver) ID(ctx context.Context, obj *ent.Text) (string, error) {
 	return obj.ID.String(), nil
 }
 
+// TenantId is the resolver for the tenantid field.
+func (r *textResolver) TenantId(ctx context.Context, obj *ent.Text) (string, error) {
+	return obj.ID.String(), nil
+}
+
 // ID is the resolver for the id field.
 func (r *chatWhereInputResolver) ID(ctx context.Context, obj *ent.ChatWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -335,7 +493,15 @@ func (r *chatWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.Cha
 
 // ID is the resolver for the id field.
 func (r *companyWhereInputResolver) ID(ctx context.Context, obj *ent.CompanyWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -375,7 +541,15 @@ func (r *companyWhereInputResolver) IDLte(ctx context.Context, obj *ent.CompanyW
 
 // ID is the resolver for the id field.
 func (r *costumerWhereInputResolver) ID(ctx context.Context, obj *ent.CostumerWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -466,6 +640,18 @@ func (r *createChatInputResolver) MessageIDs(ctx context.Context, obj *ent.Creat
 	}
 
 	obj.MessageIDs = uuids
+
+	return nil
+}
+
+// TenantID is the resolver for the tenantID field.
+func (r *createChatInputResolver) TenantID(ctx context.Context, obj *ent.CreateChatInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
 
 	return nil
 }
@@ -662,6 +848,18 @@ func (r *createCompanyInputResolver) TextIDs(ctx context.Context, obj *ent.Creat
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createCostumerInputResolver) TenantID(ctx context.Context, obj *ent.CreateCostumerInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // DealIDs is the resolver for the dealIDs field.
 func (r *createCostumerInputResolver) DealIDs(ctx context.Context, obj *ent.CreateCostumerInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -698,6 +896,18 @@ func (r *createCrmFieldInputResolver) DealcrmfieldIDs(ctx context.Context, obj *
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateCrmFieldInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // DealID is the resolver for the dealID field.
 func (r *createDealCrmFieldInputResolver) DealID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -718,6 +928,30 @@ func (r *createDealCrmFieldInputResolver) CrmfieldID(ctx context.Context, obj *e
 	}
 
 	obj.CrmFieldID = id
+
+	return nil
+}
+
+// TenantID is the resolver for the tenantID field.
+func (r *createDealCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
+// TenantID is the resolver for the tenantID field.
+func (r *createDealInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
 
 	return nil
 }
@@ -772,6 +1006,18 @@ func (r *createDealInputResolver) DealcrmfieldIDs(ctx context.Context, obj *ent.
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.CreateDepartmentInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // EmployeeIDs is the resolver for the employeeIDs field.
 func (r *createDepartmentInputResolver) EmployeeIDs(ctx context.Context, obj *ent.CreateDepartmentInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -820,6 +1066,18 @@ func (r *createDropdownListInputResolver) CrmfieldIDs(ctx context.Context, obj *
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createDropdownListInputResolver) TenantID(ctx context.Context, obj *ent.CreateDropdownListInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // EmployeeID is the resolver for the employeeID field.
 func (r *createEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data *string) error {
 	if data != nil {
@@ -833,6 +1091,18 @@ func (r *createEmployeeAuthInputResolver) EmployeeID(ctx context.Context, obj *e
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createEmployeeAuthInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // EmployeeauthID is the resolver for the employeeauthID field.
 func (r *createEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -841,6 +1111,18 @@ func (r *createEmployeeInputResolver) EmployeeauthID(ctx context.Context, obj *e
 	}
 
 	obj.EmployeeAuthID = id
+
+	return nil
+}
+
+// TenantID is the resolver for the tenantID field.
+func (r *createEmployeeInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
 
 	return nil
 }
@@ -902,6 +1184,18 @@ func (r *createFileInputResolver) MessageID(ctx context.Context, obj *ent.Create
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createFileInputResolver) TenantID(ctx context.Context, obj *ent.CreateFileInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // ChatID is the resolver for the chatID field.
 func (r *createMessageInputResolver) ChatID(ctx context.Context, obj *ent.CreateMessageInput, data *string) error {
 	if data != nil {
@@ -952,6 +1246,30 @@ func (r *createMessageInputResolver) FileID(ctx context.Context, obj *ent.Create
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createMessageInputResolver) TenantID(ctx context.Context, obj *ent.CreateMessageInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
+// TenantID is the resolver for the tenantID field.
+func (r *createPipelineInputResolver) TenantID(ctx context.Context, obj *ent.CreatePipelineInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // StageIDs is the resolver for the stageIDs field.
 func (r *createPipelineInputResolver) StageIDs(ctx context.Context, obj *ent.CreatePipelineInput, data []string) error {
 	uuids, er := graph_helpers.UuidParser(data)
@@ -996,6 +1314,18 @@ func (r *createQueueInputResolver) DepartmentIDs(ctx context.Context, obj *ent.C
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createQueueInputResolver) TenantID(ctx context.Context, obj *ent.CreateQueueInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // DepartmentID is the resolver for the departmentID field.
 func (r *createRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.CreateRbacInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -1004,6 +1334,18 @@ func (r *createRbacInputResolver) DepartmentID(ctx context.Context, obj *ent.Cre
 	}
 
 	obj.DepartmentID = id
+
+	return nil
+}
+
+// TenantID is the resolver for the tenantID field.
+func (r *createRbacInputResolver) TenantID(ctx context.Context, obj *ent.CreateRbacInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
 
 	return nil
 }
@@ -1044,6 +1386,18 @@ func (r *createStageInputResolver) QueueID(ctx context.Context, obj *ent.CreateS
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createStageInputResolver) TenantID(ctx context.Context, obj *ent.CreateStageInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // MessageID is the resolver for the messageID field.
 func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.CreateTextInput, data string) error {
 	id, err := uuid.Parse(data)
@@ -1056,9 +1410,29 @@ func (r *createTextInputResolver) MessageID(ctx context.Context, obj *ent.Create
 	return nil
 }
 
+// TenantID is the resolver for the tenantID field.
+func (r *createTextInputResolver) TenantID(ctx context.Context, obj *ent.CreateTextInput, data string) error {
+	id, err := uuid.Parse(data)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	obj.TenantID = id
+
+	return nil
+}
+
 // ID is the resolver for the id field.
 func (r *crmFieldWhereInputResolver) ID(ctx context.Context, obj *ent.CrmFieldWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1118,7 +1492,15 @@ func (r *crmFieldWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent
 
 // ID is the resolver for the id field.
 func (r *dealCrmFieldWhereInputResolver) ID(ctx context.Context, obj *ent.DealCrmFieldWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1178,7 +1560,15 @@ func (r *dealCrmFieldWhereInputResolver) TenantidNotIn(ctx context.Context, obj 
 
 // ID is the resolver for the id field.
 func (r *dealWhereInputResolver) ID(ctx context.Context, obj *ent.DealWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1238,7 +1628,15 @@ func (r *dealWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.Dea
 
 // ID is the resolver for the id field.
 func (r *departmentWhereInputResolver) ID(ctx context.Context, obj *ent.DepartmentWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1298,7 +1696,15 @@ func (r *departmentWhereInputResolver) TenantidNotIn(ctx context.Context, obj *e
 
 // ID is the resolver for the id field.
 func (r *dropdownListWhereInputResolver) ID(ctx context.Context, obj *ent.DropdownListWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1358,7 +1764,15 @@ func (r *dropdownListWhereInputResolver) TenantidNotIn(ctx context.Context, obj 
 
 // ID is the resolver for the id field.
 func (r *employeeAuthWhereInputResolver) ID(ctx context.Context, obj *ent.EmployeeAuthWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1418,7 +1832,15 @@ func (r *employeeAuthWhereInputResolver) TenantidNotIn(ctx context.Context, obj 
 
 // ID is the resolver for the id field.
 func (r *employeeWhereInputResolver) ID(ctx context.Context, obj *ent.EmployeeWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1478,7 +1900,15 @@ func (r *employeeWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent
 
 // ID is the resolver for the id field.
 func (r *fileWhereInputResolver) ID(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1538,7 +1968,15 @@ func (r *fileWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.Fil
 
 // ID is the resolver for the id field.
 func (r *messageWhereInputResolver) ID(ctx context.Context, obj *ent.MessageWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1598,7 +2036,15 @@ func (r *messageWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.
 
 // ID is the resolver for the id field.
 func (r *pipelineWhereInputResolver) ID(ctx context.Context, obj *ent.PipelineWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1658,7 +2104,15 @@ func (r *pipelineWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent
 
 // ID is the resolver for the id field.
 func (r *queueWhereInputResolver) ID(ctx context.Context, obj *ent.QueueWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1718,7 +2172,15 @@ func (r *queueWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.Qu
 
 // ID is the resolver for the id field.
 func (r *rbacWhereInputResolver) ID(ctx context.Context, obj *ent.RbacWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1778,7 +2240,15 @@ func (r *rbacWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.Rba
 
 // ID is the resolver for the id field.
 func (r *stageWhereInputResolver) ID(ctx context.Context, obj *ent.StageWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -1838,7 +2308,15 @@ func (r *stageWhereInputResolver) TenantidNotIn(ctx context.Context, obj *ent.St
 
 // ID is the resolver for the id field.
 func (r *textWhereInputResolver) ID(ctx context.Context, obj *ent.TextWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	id, err := uuid.Parse(*data)
+	if err != nil {
+		return err
+	}
+	obj.ID = &id
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.
@@ -2675,220 +3153,3 @@ type updateQueueInputResolver struct{ *Resolver }
 type updateRbacInputResolver struct{ *Resolver }
 type updateStageInputResolver struct{ *Resolver }
 type updateTextInputResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *chatResolver) TenantId(ctx context.Context, obj *ent.Chat) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *costumerResolver) TenantId(ctx context.Context, obj *ent.Costumer) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *crmFieldResolver) TenantId(ctx context.Context, obj *ent.CrmField) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *dealResolver) TenantId(ctx context.Context, obj *ent.Deal) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *dealCrmFieldResolver) TenantId(ctx context.Context, obj *ent.DealCrmField) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *departmentResolver) TenantId(ctx context.Context, obj *ent.Department) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *dropdownListResolver) TenantId(ctx context.Context, obj *ent.DropdownList) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *employeeResolver) TenantId(ctx context.Context, obj *ent.Employee) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *employeeAuthResolver) TenantId(ctx context.Context, obj *ent.EmployeeAuth) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *fileResolver) TenantId(ctx context.Context, obj *ent.File) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *messageResolver) TenantId(ctx context.Context, obj *ent.Message) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *pipelineResolver) TenantId(ctx context.Context, obj *ent.Pipeline) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *queueResolver) TenantId(ctx context.Context, obj *ent.Queue) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *rbacResolver) TenantId(ctx context.Context, obj *ent.Rbac) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *stageResolver) TenantId(ctx context.Context, obj *ent.Stage) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *textResolver) TenantId(ctx context.Context, obj *ent.Text) (string, error) {
-	panic(fmt.Errorf("not implemented: TenantId - tenantid"))
-}
-func (r *createChatInputResolver) TenantID(ctx context.Context, obj *ent.CreateChatInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createCostumerInputResolver) TenantID(ctx context.Context, obj *ent.CreateCostumerInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateCrmFieldInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createDealCrmFieldInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealCrmFieldInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createDealInputResolver) TenantID(ctx context.Context, obj *ent.CreateDealInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createDepartmentInputResolver) TenantID(ctx context.Context, obj *ent.CreateDepartmentInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createDropdownListInputResolver) TenantID(ctx context.Context, obj *ent.CreateDropdownListInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createEmployeeAuthInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeAuthInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createEmployeeInputResolver) TenantID(ctx context.Context, obj *ent.CreateEmployeeInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createFileInputResolver) TenantID(ctx context.Context, obj *ent.CreateFileInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createMessageInputResolver) TenantID(ctx context.Context, obj *ent.CreateMessageInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createPipelineInputResolver) TenantID(ctx context.Context, obj *ent.CreatePipelineInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createQueueInputResolver) TenantID(ctx context.Context, obj *ent.CreateQueueInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createRbacInputResolver) TenantID(ctx context.Context, obj *ent.CreateRbacInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createStageInputResolver) TenantID(ctx context.Context, obj *ent.CreateStageInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-func (r *createTextInputResolver) TenantID(ctx context.Context, obj *ent.CreateTextInput, data string) error {
-	id, err := uuid.Parse(data)
-	if err != nil {
-		return fmt.Errorf("error: %v", err)
-	}
-
-	obj.TenantID = id
-
-	return nil
-}
-*/

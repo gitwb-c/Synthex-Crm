@@ -5,9 +5,11 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 )
 
@@ -18,7 +20,7 @@ type Department struct {
 func (Department) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID"), entgql.QueryField()),
-		field.String("name").NotEmpty().Unique().Annotations().Annotations(entgql.OrderField("NAME")),
+		field.String("name").NotEmpty().Annotations(entgql.OrderField("NAME")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
 	}
@@ -26,10 +28,10 @@ func (Department) Fields() []ent.Field {
 
 func (Department) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("tenant", Company.Type).Ref("departments").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("departments").Field("tenantId").Unique().Required().Immutable(),
 		edge.From("employee", Employee.Type).Ref("department"),
-		edge.From("queues", Queue.Type).Ref("department"),
-		edge.From("rbacs", Rbac.Type).Ref("department"),
+		edge.From("queues", Queue.Type).Ref("department").Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.From("rbacs", Rbac.Type).Ref("department").Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
 	}
 }
 
@@ -39,6 +41,12 @@ func (Department) Annotations() []schema.Annotation {
 		entgql.MultiOrder(),
 		entgql.RelayConnection(),
 		entgql.QueryField(),
+	}
+}
+
+func DepartmentIndexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("name").Edges("tenant").Unique(),
 	}
 }
 

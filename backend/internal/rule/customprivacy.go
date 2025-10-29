@@ -3,7 +3,7 @@ package rule
 import (
 	"context"
 
-	"github.com/gitwb-c/crm.saas/backend/internal/ent/privacy"
+	"entgo.io/ent/privacy"
 	rulehelpers "github.com/gitwb-c/crm.saas/backend/internal/rule/rule_helpers"
 	"github.com/gitwb-c/crm.saas/backend/internal/viewer"
 )

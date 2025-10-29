@@ -18,8 +18,8 @@ func NewEmployeeService(repository *repositories.EmployeeRepository) *EmployeeSe
 	}
 }
 
-func (s *EmployeeService) Read(ctx context.Context) ([]*ent.Employee, error) {
-	employee, err := s.repository.Read(ctx)
+func (s *EmployeeService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Employee, error) {
+	employee, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -34,19 +34,19 @@ func (s *EmployeeService) ReadID(ctx context.Context, id uuid.UUID) (*ent.Employ
 	return employee, nil
 }
 
-func (s *EmployeeService) Create(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
-	employee, err := s.repository.Create(ctx, input)
+func (s *EmployeeService) Create(ctx context.Context, input ent.CreateEmployeeInput, client *ent.Client) (*ent.Employee, error) {
+	employee, err := s.repository.Create(ctx, input, client)
 	if err != nil {
 		return nil, err
 	}
 	return employee, nil
 }
-func (s *EmployeeService) UpdateID(ctx context.Context, id string, input ent.UpdateEmployeeInput) (*ent.Employee, error) {
-	employee, err := s.repository.UpdateID(ctx, id, input)
+func (s *EmployeeService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateEmployeeInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return employee, nil
+	return n, nil
 }
 func (s *EmployeeService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

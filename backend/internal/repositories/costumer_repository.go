@@ -19,20 +19,32 @@ func NewCostumerRepository(client *ent.Client) *CostumerRepository {
 	}
 }
 
-func (s *CostumerRepository) Read(ctx context.Context) ([]*ent.Costumer, error) {
-	return s.client.Costumer.Query().All(ctx)
+func (s *CostumerRepository) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Costumer, error) {
+	return s.client.Costumer.Query().Where(costumer.TenantIdEQ(tenantId)).All(ctx)
 }
 
 func (s *CostumerRepository) Create(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error) {
 	return s.client.Costumer.Create().SetInput(input).Save(ctx)
 }
 
-func (s *CostumerRepository) UpdateID(ctx context.Context, id string, input ent.UpdateCostumerInput) (*ent.Costumer, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *CostumerRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateCostumerInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.Costumer.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.Costumer.Update().Where(costumer.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 func (s *CostumerRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
 	tx, err := s.client.BeginTx(ctx, nil)

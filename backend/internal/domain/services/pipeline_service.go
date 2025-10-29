@@ -18,8 +18,8 @@ func NewPipelineService(repository *repositories.PipelineRepository) *PipelineSe
 	}
 }
 
-func (s *PipelineService) Read(ctx context.Context) ([]*ent.Pipeline, error) {
-	pipeline, err := s.repository.Read(ctx)
+func (s *PipelineService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Pipeline, error) {
+	pipeline, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -34,12 +34,12 @@ func (s *PipelineService) Create(ctx context.Context, input ent.CreatePipelineIn
 	return pipeline, nil
 }
 
-func (s *PipelineService) UpdateID(ctx context.Context, id string, input ent.UpdatePipelineInput) (*ent.Pipeline, error) {
-	pipeline, err := s.repository.UpdateID(ctx, id, input)
+func (s *PipelineService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdatePipelineInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return pipeline, nil
+	return n, nil
 }
 func (s *PipelineService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

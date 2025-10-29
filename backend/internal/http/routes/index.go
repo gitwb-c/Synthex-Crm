@@ -8,10 +8,12 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine, client *ent.Client, srv *handler.Server) {
-	employeeservice := wire.InitializeEmployeeService(client)
+	companyservice := wire.InitializeCompanyService(client)
 	departmentervice := wire.InitializeDepartmentService(client)
-	graphqlRouter(r, srv, employeeservice, departmentervice)
-
 	employeeauthservice := wire.InitializeEmployeeAuthService(client)
+	employeeservice := wire.InitializeEmployeeService(client)
+
+	graphqlRouter(r, srv, employeeservice, departmentervice)
 	loginRouter(r, employeeauthservice)
+	bootstrapRouter(r, client, companyservice, employeeauthservice, employeeservice, departmentervice)
 }

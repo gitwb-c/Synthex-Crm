@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -27,11 +28,11 @@ func (Deal) Fields() []ent.Field {
 
 func (Deal) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("tenant", Company.Type).Ref("deals").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("deals").Field("tenantId").Unique().Required().Immutable(),
 		edge.To("costumer", Costumer.Type).Unique(),
-		edge.From("chat", Chat.Type).Ref("deal").Unique(),
+		edge.From("chat", Chat.Type).Ref("deal").Unique().Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
 		edge.To("stage", Stage.Type).Required().Unique().Required(),
-		edge.From("dealCrmFields", DealCrmField.Type).Ref("deal"),
+		edge.From("dealCrmFields", DealCrmField.Type).Ref("deal").Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
 	}
 }
 

@@ -31,7 +31,7 @@ func (Stage) Edges() []ent.Edge {
 		edge.To("pipeline", Pipeline.Type).Required().Unique(),
 		edge.From("deals", Deal.Type).Ref("stage"),
 		edge.To("queue", Queue.Type).Unique(),
-		edge.From("tenant", Company.Type).Ref("stages").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("stages").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 

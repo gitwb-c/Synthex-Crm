@@ -28,7 +28,7 @@ var (
 				Symbol:     "chats_companies_chats",
 				Columns:    []*schema.Column{ChatsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -65,14 +65,14 @@ var (
 				Symbol:     "costumers_companies_costumers",
 				Columns:    []*schema.Column{CostumersColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
 	// CrmFieldsColumns holds the columns for the "crm_fields" table.
 	CrmFieldsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "section", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"txt", "date", "checkbox", "dropdownList"}},
 		{Name: "created_at", Type: field.TypeTime},
@@ -89,7 +89,7 @@ var (
 				Symbol:     "crm_fields_companies_crmFields",
 				Columns:    []*schema.Column{CrmFieldsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -121,7 +121,7 @@ var (
 				Symbol:     "deals_companies_deals",
 				Columns:    []*schema.Column{DealsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "deals_costumers_costumer",
@@ -157,7 +157,7 @@ var (
 				Symbol:     "deal_crm_fields_companies_dealCrmFields",
 				Columns:    []*schema.Column{DealCrmFieldsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "deal_crm_fields_deals_deal",
@@ -176,7 +176,7 @@ var (
 	// DepartmentsColumns holds the columns for the "departments" table.
 	DepartmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "tenant_id", Type: field.TypeUUID},
@@ -191,7 +191,7 @@ var (
 				Symbol:     "departments_companies_departments",
 				Columns:    []*schema.Column{DepartmentsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -213,14 +213,14 @@ var (
 				Symbol:     "dropdown_lists_companies_dropdownLists",
 				Columns:    []*schema.Column{DropdownListsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
 	// EmployeesColumns holds the columns for the "employees" table.
 	EmployeesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "employment_status", Type: field.TypeEnum, Enums: []string{"active", "terminated", "onLeave"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -237,7 +237,7 @@ var (
 				Symbol:     "employees_companies_employees",
 				Columns:    []*schema.Column{EmployeesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "employees_departments_department",
@@ -268,7 +268,7 @@ var (
 				Symbol:     "employee_auths_companies_employeeAuths",
 				Columns:    []*schema.Column{EmployeeAuthsColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "employee_auths_employees_employeeAuth",
@@ -297,7 +297,7 @@ var (
 				Symbol:     "files_companies_files",
 				Columns:    []*schema.Column{FilesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -324,7 +324,7 @@ var (
 				Symbol:     "messages_companies_messages",
 				Columns:    []*schema.Column{MessagesColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "messages_files_message",
@@ -349,7 +349,7 @@ var (
 	// PipelinesColumns holds the columns for the "pipelines" table.
 	PipelinesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "tenant_id", Type: field.TypeUUID},
@@ -364,14 +364,14 @@ var (
 				Symbol:     "pipelines_companies_pipelines",
 				Columns:    []*schema.Column{PipelinesColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
 	// QueuesColumns holds the columns for the "queues" table.
 	QueuesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"ring"}, Default: "ring"},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -387,7 +387,7 @@ var (
 				Symbol:     "queues_companies_queues",
 				Columns:    []*schema.Column{QueuesColumns[5]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -410,7 +410,7 @@ var (
 				Symbol:     "rbacs_companies_rbacs",
 				Columns:    []*schema.Column{RbacsColumns[4]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "rbacs_departments_department",
@@ -442,7 +442,7 @@ var (
 				Symbol:     "stages_companies_stages",
 				Columns:    []*schema.Column{StagesColumns[6]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "stages_pipelines_pipeline",
@@ -474,7 +474,7 @@ var (
 				Symbol:     "texts_companies_texts",
 				Columns:    []*schema.Column{TextsColumns[2]},
 				RefColumns: []*schema.Column{CompaniesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}

@@ -99,6 +99,11 @@ func (_q *ChatQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				selectedFields = append(selectedFields, chat.FieldTenantId)
 				fieldSeen[chat.FieldTenantId] = struct{}{}
 			}
+		case "tenantid":
+			if _, ok := fieldSeen[chat.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, chat.FieldTenantId)
+				fieldSeen[chat.FieldTenantId] = struct{}{}
+			}
 		case "title":
 			if _, ok := fieldSeen[chat.FieldTitle]; !ok {
 				selectedFields = append(selectedFields, chat.FieldTitle)
@@ -555,6 +560,11 @@ func (_q *CostumerQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			_q.WithNamedDeals(alias, func(wq *DealQuery) {
 				*wq = *query
 			})
+		case "tenantid":
+			if _, ok := fieldSeen[costumer.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, costumer.FieldTenantId)
+				fieldSeen[costumer.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[costumer.FieldName]; !ok {
 				selectedFields = append(selectedFields, costumer.FieldName)
@@ -707,6 +717,11 @@ func (_q *CrmFieldQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 				return err
 			}
 			_q.withTenant = query
+			if _, ok := fieldSeen[crmfield.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, crmfield.FieldTenantId)
+				fieldSeen[crmfield.FieldTenantId] = struct{}{}
+			}
+		case "tenantid":
 			if _, ok := fieldSeen[crmfield.FieldTenantId]; !ok {
 				selectedFields = append(selectedFields, crmfield.FieldTenantId)
 				fieldSeen[crmfield.FieldTenantId] = struct{}{}
@@ -887,6 +902,11 @@ func (_q *DealQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			_q.WithNamedDealCrmFields(alias, func(wq *DealCrmFieldQuery) {
 				*wq = *query
 			})
+		case "tenantid":
+			if _, ok := fieldSeen[deal.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, deal.FieldTenantId)
+				fieldSeen[deal.FieldTenantId] = struct{}{}
+			}
 		case "title":
 			if _, ok := fieldSeen[deal.FieldTitle]; !ok {
 				selectedFields = append(selectedFields, deal.FieldTitle)
@@ -1030,6 +1050,11 @@ func (_q *DealCrmFieldQuery) collectField(ctx context.Context, oneNode bool, opC
 				return err
 			}
 			_q.withTenant = query
+			if _, ok := fieldSeen[dealcrmfield.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, dealcrmfield.FieldTenantId)
+				fieldSeen[dealcrmfield.FieldTenantId] = struct{}{}
+			}
+		case "tenantid":
 			if _, ok := fieldSeen[dealcrmfield.FieldTenantId]; !ok {
 				selectedFields = append(selectedFields, dealcrmfield.FieldTenantId)
 				fieldSeen[dealcrmfield.FieldTenantId] = struct{}{}
@@ -1193,6 +1218,11 @@ func (_q *DepartmentQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			_q.WithNamedRbacs(alias, func(wq *RbacQuery) {
 				*wq = *query
 			})
+		case "tenantid":
+			if _, ok := fieldSeen[department.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, department.FieldTenantId)
+				fieldSeen[department.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[department.FieldName]; !ok {
 				selectedFields = append(selectedFields, department.FieldName)
@@ -1322,6 +1352,11 @@ func (_q *DropdownListQuery) collectField(ctx context.Context, oneNode bool, opC
 				return err
 			}
 			_q.withTenant = query
+			if _, ok := fieldSeen[dropdownlist.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, dropdownlist.FieldTenantId)
+				fieldSeen[dropdownlist.FieldTenantId] = struct{}{}
+			}
+		case "tenantid":
 			if _, ok := fieldSeen[dropdownlist.FieldTenantId]; !ok {
 				selectedFields = append(selectedFields, dropdownlist.FieldTenantId)
 				fieldSeen[dropdownlist.FieldTenantId] = struct{}{}
@@ -1507,6 +1542,11 @@ func (_q *EmployeeQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			_q.WithNamedMessages(alias, func(wq *MessageQuery) {
 				*wq = *query
 			})
+		case "tenantid":
+			if _, ok := fieldSeen[employee.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, employee.FieldTenantId)
+				fieldSeen[employee.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[employee.FieldName]; !ok {
 				selectedFields = append(selectedFields, employee.FieldName)
@@ -1643,6 +1683,11 @@ func (_q *EmployeeAuthQuery) collectField(ctx context.Context, oneNode bool, opC
 				selectedFields = append(selectedFields, employeeauth.FieldTenantId)
 				fieldSeen[employeeauth.FieldTenantId] = struct{}{}
 			}
+		case "tenantid":
+			if _, ok := fieldSeen[employeeauth.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, employeeauth.FieldTenantId)
+				fieldSeen[employeeauth.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[employeeauth.FieldName]; !ok {
 				selectedFields = append(selectedFields, employeeauth.FieldName)
@@ -1770,6 +1815,11 @@ func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			_q.withTenant = query
+			if _, ok := fieldSeen[file.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, file.FieldTenantId)
+				fieldSeen[file.FieldTenantId] = struct{}{}
+			}
+		case "tenantid":
 			if _, ok := fieldSeen[file.FieldTenantId]; !ok {
 				selectedFields = append(selectedFields, file.FieldTenantId)
 				fieldSeen[file.FieldTenantId] = struct{}{}
@@ -1939,6 +1989,11 @@ func (_q *MessageQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 				selectedFields = append(selectedFields, message.FieldTenantId)
 				fieldSeen[message.FieldTenantId] = struct{}{}
 			}
+		case "tenantid":
+			if _, ok := fieldSeen[message.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, message.FieldTenantId)
+				fieldSeen[message.FieldTenantId] = struct{}{}
+			}
 		case "sentby":
 			if _, ok := fieldSeen[message.FieldSentBy]; !ok {
 				selectedFields = append(selectedFields, message.FieldSentBy)
@@ -2082,6 +2137,11 @@ func (_q *PipelineQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			_q.WithNamedStages(alias, func(wq *StageQuery) {
 				*wq = *query
 			})
+		case "tenantid":
+			if _, ok := fieldSeen[pipeline.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, pipeline.FieldTenantId)
+				fieldSeen[pipeline.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[pipeline.FieldName]; !ok {
 				selectedFields = append(selectedFields, pipeline.FieldName)
@@ -2241,6 +2301,11 @@ func (_q *QueueQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 				selectedFields = append(selectedFields, queue.FieldTenantId)
 				fieldSeen[queue.FieldTenantId] = struct{}{}
 			}
+		case "tenantid":
+			if _, ok := fieldSeen[queue.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, queue.FieldTenantId)
+				fieldSeen[queue.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[queue.FieldName]; !ok {
 				selectedFields = append(selectedFields, queue.FieldName)
@@ -2373,6 +2438,11 @@ func (_q *RbacQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			_q.withTenant = query
+			if _, ok := fieldSeen[rbac.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, rbac.FieldTenantId)
+				fieldSeen[rbac.FieldTenantId] = struct{}{}
+			}
+		case "tenantid":
 			if _, ok := fieldSeen[rbac.FieldTenantId]; !ok {
 				selectedFields = append(selectedFields, rbac.FieldTenantId)
 				fieldSeen[rbac.FieldTenantId] = struct{}{}
@@ -2532,6 +2602,11 @@ func (_q *StageQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 				selectedFields = append(selectedFields, stage.FieldTenantId)
 				fieldSeen[stage.FieldTenantId] = struct{}{}
 			}
+		case "tenantid":
+			if _, ok := fieldSeen[stage.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, stage.FieldTenantId)
+				fieldSeen[stage.FieldTenantId] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[stage.FieldName]; !ok {
 				selectedFields = append(selectedFields, stage.FieldName)
@@ -2669,6 +2744,11 @@ func (_q *TextQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			_q.withTenant = query
+			if _, ok := fieldSeen[text.FieldTenantId]; !ok {
+				selectedFields = append(selectedFields, text.FieldTenantId)
+				fieldSeen[text.FieldTenantId] = struct{}{}
+			}
+		case "tenantid":
 			if _, ok := fieldSeen[text.FieldTenantId]; !ok {
 				selectedFields = append(selectedFields, text.FieldTenantId)
 				fieldSeen[text.FieldTenantId] = struct{}{}

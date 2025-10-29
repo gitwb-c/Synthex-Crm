@@ -19,8 +19,8 @@ func NewDealCrmFieldRepository(client *ent.Client) *DealCrmFieldRepository {
 	}
 }
 
-func (s *DealCrmFieldRepository) Read(ctx context.Context) ([]*ent.DealCrmField, error) {
-	return s.client.DealCrmField.Query().All(ctx)
+func (s *DealCrmFieldRepository) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.DealCrmField, error) {
+	return s.client.DealCrmField.Query().Where(dealcrmfield.TenantIdEQ(tenantId)).All(ctx)
 }
 
 func (s *DealCrmFieldRepository) Create(ctx context.Context, input ent.CreateDealCrmFieldInput) (*ent.DealCrmField, error) {
@@ -28,12 +28,24 @@ func (s *DealCrmFieldRepository) Create(ctx context.Context, input ent.CreateDea
 	return s.client.DealCrmField.Create().SetInput(input).Save(ctx)
 }
 
-func (s *DealCrmFieldRepository) UpdateID(ctx context.Context, id string, input ent.UpdateDealCrmFieldInput) (*ent.DealCrmField, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *DealCrmFieldRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateDealCrmFieldInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.DealCrmField.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.DealCrmField.Update().Where(dealcrmfield.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 
 func (s *DealCrmFieldRepository) Delete(ctx context.Context, ids []uuid.UUID) error {

@@ -18,8 +18,8 @@ func NewChatService(repository *repositories.ChatRepository) *ChatService {
 	}
 }
 
-func (s *ChatService) Read(ctx context.Context) ([]*ent.Chat, error) {
-	chat, err := s.repository.Read(ctx)
+func (s *ChatService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Chat, error) {
+	chat, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func (s *ChatService) Create(ctx context.Context, input ent.CreateChatInput) (*e
 	}
 	return chat, nil
 }
-func (s *ChatService) UpdateID(ctx context.Context, id string, input ent.UpdateChatInput) (*ent.Chat, error) {
-	chat, err := s.repository.UpdateID(ctx, id, input)
+func (s *ChatService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateChatInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return chat, nil
+	return n, nil
 }
 func (s *ChatService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

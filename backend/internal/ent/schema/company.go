@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -26,22 +27,22 @@ func (Company) Fields() []ent.Field {
 
 func (Company) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("employees", Employee.Type),
-		edge.To("costumers", Costumer.Type),
-		edge.To("deals", Deal.Type),
-		edge.To("chats", Chat.Type),
-		edge.To("departments", Department.Type),
-		edge.To("pipelines", Pipeline.Type),
-		edge.To("crmFields", CrmField.Type),
-		edge.To("dealCrmFields", DealCrmField.Type),
-		edge.To("dropdownLists", DropdownList.Type),
-		edge.To("employeeAuths", EmployeeAuth.Type),
-		edge.To("files", File.Type),
-		edge.To("messages", Message.Type),
-		edge.To("queues", Queue.Type),
-		edge.To("rbacs", Rbac.Type),
-		edge.To("stages", Stage.Type),
-		edge.To("texts", Text.Type),
+		edge.To("employees", Employee.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("costumers", Costumer.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("deals", Deal.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("chats", Chat.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("departments", Department.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("pipelines", Pipeline.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("crmFields", CrmField.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("dealCrmFields", DealCrmField.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("dropdownLists", DropdownList.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("employeeAuths", EmployeeAuth.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("files", File.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("messages", Message.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("queues", Queue.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("rbacs", Rbac.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("stages", Stage.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
+		edge.To("texts", Text.Type).Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
 	}
 }
 
@@ -53,20 +54,3 @@ func (Company) Annotations() []schema.Annotation {
 		entgql.QueryField(),
 	}
 }
-
-// func (Company) Policy() ent.Policy {
-// 	permissions := map[viewer.QueryType][]string{
-// 		viewer.Read:   {"manage_system_settings"},
-// 		viewer.Create: {"manage_system_settings"},
-// 		viewer.Update: {"manage_system_settings"},
-// 		viewer.Delete: {"manage_system_settings"},
-// 	}
-// 	return privacy.Policy{
-// 		Mutation: privacy.MutationPolicy{
-// 			rule.MutationRules(permissions),
-// 		},
-// 		Query: privacy.QueryPolicy{
-// 			rule.QueryRules(permissions),
-// 		},
-// 	}
-// }

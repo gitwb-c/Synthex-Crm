@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/graphql/graph/graph_helpers"
@@ -15,7 +14,7 @@ import (
 
 // CreateDeal is the resolver for the createDeal field.
 func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeDealService(r.Client)
 	deal, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -26,11 +25,12 @@ func (r *mutationResolver) CreateDeal(ctx context.Context, input ent.CreateDealI
 
 // DeleteDeal is the resolver for the deleteDeal field.
 func (r *mutationResolver) DeleteDeal(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeDealService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -39,14 +39,24 @@ func (r *mutationResolver) DeleteDeal(ctx context.Context, ids []string) (bool, 
 	return true, nil
 }
 
-// UpdateDealWhere is the resolver for the updateDealWhere field.
-func (r *mutationResolver) UpdateDealWhere(ctx context.Context, where ent.DealWhereInput, input ent.UpdateDealInput) ([]*ent.Deal, error) {
-	panic(fmt.Errorf("not implemented: UpdateDealWhere - updateDealWhere"))
+// UpdateDeal is the resolver for the updateDeal field.
+func (r *mutationResolver) UpdateDeal(ctx context.Context, ids []string, input ent.UpdateDealInput) (*int, error) {
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeDealService(r.Client)
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreatePipeline is the resolver for the createPipeline field.
 func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreatePipelineInput) (*ent.Pipeline, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializePipelineService(r.Client)
 	pipeline, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -57,11 +67,12 @@ func (r *mutationResolver) CreatePipeline(ctx context.Context, input ent.CreateP
 
 // DeletePipeline is the resolver for the deletePipeline field.
 func (r *mutationResolver) DeletePipeline(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializePipelineService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -70,14 +81,24 @@ func (r *mutationResolver) DeletePipeline(ctx context.Context, ids []string) (bo
 	return true, nil
 }
 
-// UpdatePipelineWhere is the resolver for the updatePipelineWhere field.
-func (r *mutationResolver) UpdatePipelineWhere(ctx context.Context, where ent.PipelineWhereInput, input ent.UpdatePipelineInput) ([]*ent.Pipeline, error) {
-	panic(fmt.Errorf("not implemented: UpdatePipelineWhere - updatePipelineWhere"))
+// UpdatePipeline is the resolver for the updatePipeline field.
+func (r *mutationResolver) UpdatePipeline(ctx context.Context, ids []string, input ent.UpdatePipelineInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializePipelineService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateCostumer is the resolver for the createCostumer field.
 func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateCostumerInput) (*ent.Costumer, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeCostumerService(r.Client)
 	costumer, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -88,11 +109,12 @@ func (r *mutationResolver) CreateCostumer(ctx context.Context, input ent.CreateC
 
 // DeleteCostumer is the resolver for the deleteCostumer field.
 func (r *mutationResolver) DeleteCostumer(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeCostumerService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -101,14 +123,24 @@ func (r *mutationResolver) DeleteCostumer(ctx context.Context, ids []string) (bo
 	return true, nil
 }
 
-// UpdateCostumerWhere is the resolver for the updateCostumerWhere field.
-func (r *mutationResolver) UpdateCostumerWhere(ctx context.Context, where ent.CostumerWhereInput, input ent.UpdateCostumerInput) ([]*ent.Costumer, error) {
-	panic(fmt.Errorf("not implemented: UpdateCostumerWhere - updateCostumerWhere"))
+// UpdateCostumer is the resolver for the updateCostumer field.
+func (r *mutationResolver) UpdateCostumer(ctx context.Context, ids []string, input ent.UpdateCostumerInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeCostumerService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateStage is the resolver for the createStage field.
 func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStageInput) (*ent.Stage, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeStageService(r.Client)
 	stage, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -119,11 +151,12 @@ func (r *mutationResolver) CreateStage(ctx context.Context, input ent.CreateStag
 
 // DeleteStage is the resolver for the deleteStage field.
 func (r *mutationResolver) DeleteStage(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeStageService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -132,14 +165,24 @@ func (r *mutationResolver) DeleteStage(ctx context.Context, ids []string) (bool,
 	return true, nil
 }
 
-// UpdateStageWhere is the resolver for the updateStageWhere field.
-func (r *mutationResolver) UpdateStageWhere(ctx context.Context, where ent.StageWhereInput, input ent.UpdateStageInput) ([]*ent.Stage, error) {
-	panic(fmt.Errorf("not implemented: UpdateStageWhere - updateStageWhere"))
+// UpdateStage is the resolver for the updateStage field.
+func (r *mutationResolver) UpdateStage(ctx context.Context, ids []string, input ent.UpdateStageInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeStageService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateChat is the resolver for the createChat field.
 func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatInput) (*ent.Chat, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeChatService(r.Client)
 	chat, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -150,11 +193,12 @@ func (r *mutationResolver) CreateChat(ctx context.Context, input ent.CreateChatI
 
 // DeleteChat is the resolver for the deleteChat field.
 func (r *mutationResolver) DeleteChat(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeChatService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -163,16 +207,26 @@ func (r *mutationResolver) DeleteChat(ctx context.Context, ids []string) (bool, 
 	return true, nil
 }
 
-// UpdateChatWhere is the resolver for the updateChatWhere field.
-func (r *mutationResolver) UpdateChatWhere(ctx context.Context, where ent.ChatWhereInput, input ent.UpdateChatInput) ([]*ent.Chat, error) {
-	panic(fmt.Errorf("not implemented: UpdateChatWhere - updateChatWhere"))
+// UpdateChat is the resolver for the updateChat field.
+func (r *mutationResolver) UpdateChat(ctx context.Context, ids []string, input ent.UpdateChatInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeChatService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateEmployee is the resolver for the createEmployee field.
 func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateEmployeeInput) (*ent.Employee, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeEmployeeService(r.Client)
-	employee, err := service.Create(queryCtx, input)
+	employee, err := service.Create(queryCtx, input, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -181,11 +235,12 @@ func (r *mutationResolver) CreateEmployee(ctx context.Context, input ent.CreateE
 
 // DeleteEmployee is the resolver for the deleteEmployee field.
 func (r *mutationResolver) DeleteEmployee(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeEmployeeService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -194,16 +249,26 @@ func (r *mutationResolver) DeleteEmployee(ctx context.Context, ids []string) (bo
 	return true, nil
 }
 
-// UpdateEmployeeWhere is the resolver for the updateEmployeeWhere field.
-func (r *mutationResolver) UpdateEmployeeWhere(ctx context.Context, where ent.EmployeeWhereInput, input ent.UpdateEmployeeInput) ([]*ent.Employee, error) {
-	panic(fmt.Errorf("not implemented: UpdateEmployeeWhere - updateEmployeeWhere"))
+// UpdateEmployee is the resolver for the updateEmployee field.
+func (r *mutationResolver) UpdateEmployee(ctx context.Context, ids []string, input ent.UpdateEmployeeInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeEmployeeService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateEmployeeAuth is the resolver for the createEmployeeAuth field.
 func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.CreateEmployeeAuthInput) (*ent.EmployeeAuth, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeEmployeeAuthService(r.Client)
-	employeeAuth, err := service.Create(queryCtx, input)
+	employeeAuth, err := service.Create(queryCtx, input, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -212,11 +277,12 @@ func (r *mutationResolver) CreateEmployeeAuth(ctx context.Context, input ent.Cre
 
 // DeleteEmployeeAuth is the resolver for the deleteEmployeeAuth field.
 func (r *mutationResolver) DeleteEmployeeAuth(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeEmployeeAuthService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -225,16 +291,26 @@ func (r *mutationResolver) DeleteEmployeeAuth(ctx context.Context, ids []string)
 	return true, nil
 }
 
-// UpdateEmployeeAuthWhere is the resolver for the updateEmployeeAuthWhere field.
-func (r *mutationResolver) UpdateEmployeeAuthWhere(ctx context.Context, where ent.EmployeeAuthWhereInput, input ent.UpdateEmployeeAuthInput) ([]*ent.EmployeeAuth, error) {
-	panic(fmt.Errorf("not implemented: UpdateEmployeeAuthWhere - updateEmployeeAuthWhere"))
+// UpdateEmployeeAuth is the resolver for the updateEmployeeAuth field.
+func (r *mutationResolver) UpdateEmployeeAuth(ctx context.Context, ids []string, input ent.UpdateEmployeeAuthInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeEmployeeAuthService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateDepartment is the resolver for the createDepartment field.
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeDepartmentService(r.Client)
-	department, err := service.Create(queryCtx, input)
+	department, err := service.Create(queryCtx, input, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -243,11 +319,12 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input ent.Creat
 
 // DeleteDepartment is the resolver for the deleteDepartment field.
 func (r *mutationResolver) DeleteDepartment(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeDepartmentService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -256,14 +333,24 @@ func (r *mutationResolver) DeleteDepartment(ctx context.Context, ids []string) (
 	return true, nil
 }
 
-// UpdateDepartmentWhere is the resolver for the updateDepartmentWhere field.
-func (r *mutationResolver) UpdateDepartmentWhere(ctx context.Context, where ent.DepartmentWhereInput, input ent.UpdateDepartmentInput) ([]*ent.Department, error) {
-	panic(fmt.Errorf("not implemented: UpdateDepartmentWhere - updateDepartmentWhere"))
+// UpdateDepartment is the resolver for the updateDepartment field.
+func (r *mutationResolver) UpdateDepartment(ctx context.Context, ids []string, input ent.UpdateDepartmentInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeDepartmentService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateMessage is the resolver for the createMessage field.
 func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMessageInput) (*ent.Message, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeMessageService(r.Client)
 	message, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -274,11 +361,12 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input ent.CreateMe
 
 // DeleteMessage is the resolver for the deleteMessage field.
 func (r *mutationResolver) DeleteMessage(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeMessageService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -287,14 +375,24 @@ func (r *mutationResolver) DeleteMessage(ctx context.Context, ids []string) (boo
 	return true, nil
 }
 
-// UpdateMessageWhere is the resolver for the updateMessageWhere field.
-func (r *mutationResolver) UpdateMessageWhere(ctx context.Context, where ent.MessageWhereInput, input ent.UpdateMessageInput) ([]*ent.Message, error) {
-	panic(fmt.Errorf("not implemented: UpdateMessageWhere - updateMessageWhere"))
+// UpdateMessage is the resolver for the updateMessage field.
+func (r *mutationResolver) UpdateMessage(ctx context.Context, ids []string, input ent.UpdateMessageInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeMessageService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateQueue is the resolver for the createQueue field.
 func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueueInput) (*ent.Queue, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeQueueService(r.Client)
 	queue, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -305,11 +403,12 @@ func (r *mutationResolver) CreateQueue(ctx context.Context, input ent.CreateQueu
 
 // DeleteQueue is the resolver for the deleteQueue field.
 func (r *mutationResolver) DeleteQueue(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeQueueService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -318,14 +417,24 @@ func (r *mutationResolver) DeleteQueue(ctx context.Context, ids []string) (bool,
 	return true, nil
 }
 
-// UpdateQueueWhere is the resolver for the updateQueueWhere field.
-func (r *mutationResolver) UpdateQueueWhere(ctx context.Context, where ent.QueueWhereInput, input ent.UpdateQueueInput) ([]*ent.Queue, error) {
-	panic(fmt.Errorf("not implemented: UpdateQueueWhere - updateQueueWhere"))
+// UpdateQueue is the resolver for the updateQueue field.
+func (r *mutationResolver) UpdateQueue(ctx context.Context, ids []string, input ent.UpdateQueueInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeQueueService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateCrmField is the resolver for the createCrmField field.
 func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateCrmFieldInput) (*ent.CrmField, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeCrmFieldService(r.Client)
 	crmField, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -336,11 +445,12 @@ func (r *mutationResolver) CreateCrmField(ctx context.Context, input ent.CreateC
 
 // DeleteCrmField is the resolver for the deleteCrmField field.
 func (r *mutationResolver) DeleteCrmField(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeCrmFieldService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -349,14 +459,24 @@ func (r *mutationResolver) DeleteCrmField(ctx context.Context, ids []string) (bo
 	return true, nil
 }
 
-// UpdateCrmFieldWhere is the resolver for the updateCrmFieldWhere field.
-func (r *mutationResolver) UpdateCrmFieldWhere(ctx context.Context, where ent.CrmFieldWhereInput, input ent.UpdateCrmFieldInput) ([]*ent.CrmField, error) {
-	panic(fmt.Errorf("not implemented: UpdateCrmFieldWhere - updateCrmFieldWhere"))
+// UpdateCrmField is the resolver for the updateCrmField field.
+func (r *mutationResolver) UpdateCrmField(ctx context.Context, ids []string, input ent.UpdateCrmFieldInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeCrmFieldService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateDealCrmField is the resolver for the createDealCrmField field.
 func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.CreateDealCrmFieldInput) (*ent.DealCrmField, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeDealCrmFieldService(r.Client)
 	dealCrmField, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -367,11 +487,12 @@ func (r *mutationResolver) CreateDealCrmField(ctx context.Context, input ent.Cre
 
 // DeleteDealCrmField is the resolver for the deleteDealCrmField field.
 func (r *mutationResolver) DeleteDealCrmField(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeCrmFieldService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -380,16 +501,26 @@ func (r *mutationResolver) DeleteDealCrmField(ctx context.Context, ids []string)
 	return true, nil
 }
 
-// UpdateDealCrmFieldWhere is the resolver for the updateDealCrmFieldWhere field.
-func (r *mutationResolver) UpdateDealCrmFieldWhere(ctx context.Context, where ent.DealCrmFieldWhereInput, input ent.UpdateDealCrmFieldInput) ([]*ent.DealCrmField, error) {
-	panic(fmt.Errorf("not implemented: UpdateDealCrmFieldWhere - updateDealCrmFieldWhere"))
+// UpdateDealCrmField is the resolver for the updateDealCrmField field.
+func (r *mutationResolver) UpdateDealCrmField(ctx context.Context, ids []string, input ent.UpdateDealCrmFieldInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeDealCrmFieldService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateCompany is the resolver for the createCompany field.
 func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeCompanyService(r.Client)
-	company, err := service.Create(queryCtx, input)
+	company, err := service.Create(queryCtx, input, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -398,7 +529,7 @@ func (r *mutationResolver) CreateCompany(ctx context.Context, input ent.CreateCo
 
 // DeleteCompany is the resolver for the deleteCompany field.
 func (r *mutationResolver) DeleteCompany(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
@@ -411,14 +542,24 @@ func (r *mutationResolver) DeleteCompany(ctx context.Context, ids []string) (boo
 	return true, nil
 }
 
-// UpdateCompanyWhere is the resolver for the updateCompanyWhere field.
-func (r *mutationResolver) UpdateCompanyWhere(ctx context.Context, where ent.CompanyWhereInput, input ent.UpdateCompanyInput) ([]*ent.Company, error) {
-	panic(fmt.Errorf("not implemented: UpdateCompanyWhere - updateCompanyWhere"))
+// UpdateCompany is the resolver for the updateCompany field.
+func (r *mutationResolver) UpdateCompany(ctx context.Context, ids []string, input ent.UpdateCompanyInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeCompanyService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // CreateRbac is the resolver for the createRbac field.
 func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacInput) (*ent.Rbac, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Create")
+	queryCtx := graph_helpers.AddQuery(ctx, "Create")
 	service := wire.InitializeRbacService(r.Client)
 	rbac, err := service.Create(queryCtx, input)
 	if err != nil {
@@ -429,11 +570,12 @@ func (r *mutationResolver) CreateRbac(ctx context.Context, input ent.CreateRbacI
 
 // DeleteRbac is the resolver for the deleteRbac field.
 func (r *mutationResolver) DeleteRbac(ctx context.Context, ids []string) (bool, error) {
-	queryCtx := graph_helpers.AddQueryTypeCtx(ctx, "Delete")
+	queryCtx := graph_helpers.AddQuery(ctx, "Delete")
 	uuids, er := graph_helpers.UuidParser(ids)
 	if er != nil {
 		return false, er
 	}
+
 	service := wire.InitializeRbacService(r.Client)
 	err := service.Delete(queryCtx, uuids)
 	if err != nil {
@@ -442,9 +584,19 @@ func (r *mutationResolver) DeleteRbac(ctx context.Context, ids []string) (bool, 
 	return true, nil
 }
 
-// UpdateRbacWhere is the resolver for the updateRbacWhere field.
-func (r *mutationResolver) UpdateRbacWhere(ctx context.Context, where ent.RbacWhereInput, input ent.UpdateRbacInput) ([]*ent.Rbac, error) {
-	panic(fmt.Errorf("not implemented: UpdateRbacWhere - updateRbacWhere"))
+// UpdateRbac is the resolver for the updateRbac field.
+func (r *mutationResolver) UpdateRbac(ctx context.Context, ids []string, input ent.UpdateRbacInput) (*int, error) {
+	queryCtx := graph_helpers.AddQuery(ctx, "Update")
+	service := wire.InitializeRbacService(r.Client)
+	uuids, err := graph_helpers.UuidParser(ids)
+	if err != nil {
+		return nil, err
+	}
+	n, err := service.Update(queryCtx, uuids, input)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // Mutation returns MutationResolver implementation.

@@ -18,8 +18,8 @@ func NewDealCrmFieldService(repository *repositories.DealCrmFieldRepository) *De
 	}
 }
 
-func (s *DealCrmFieldService) Read(ctx context.Context) ([]*ent.DealCrmField, error) {
-	dealCrmField, err := s.repository.Read(ctx)
+func (s *DealCrmFieldService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.DealCrmField, error) {
+	dealCrmField, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func (s *DealCrmFieldService) Create(ctx context.Context, input ent.CreateDealCr
 	}
 	return dealCrmField, nil
 }
-func (s *DealCrmFieldService) UpdateID(ctx context.Context, id string, input ent.UpdateDealCrmFieldInput) (*ent.DealCrmField, error) {
-	dealCrmField, err := s.repository.UpdateID(ctx, id, input)
+func (s *DealCrmFieldService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateDealCrmFieldInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return dealCrmField, nil
+	return n, nil
 }
 func (s *DealCrmFieldService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

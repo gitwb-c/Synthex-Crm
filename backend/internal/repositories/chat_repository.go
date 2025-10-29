@@ -19,19 +19,31 @@ func NewChatRepository(client *ent.Client) *ChatRepository {
 	}
 }
 
-func (s *ChatRepository) Read(ctx context.Context) ([]*ent.Chat, error) {
-	return s.client.Chat.Query().All(ctx)
+func (s *ChatRepository) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Chat, error) {
+	return s.client.Chat.Query().Where(chat.TenantIdEQ(tenantId)).All(ctx)
 }
 
 func (s *ChatRepository) Create(ctx context.Context, input ent.CreateChatInput) (*ent.Chat, error) {
 	return s.client.Chat.Create().SetInput(input).Save(ctx)
 }
-func (s *ChatRepository) UpdateID(ctx context.Context, id string, input ent.UpdateChatInput) (*ent.Chat, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *ChatRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateChatInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.Chat.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.Chat.Update().Where(chat.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 func (s *ChatRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
 	tx, err := s.client.BeginTx(ctx, nil)

@@ -97,7 +97,7 @@ func (Rbac) Fields() []ent.Field {
 func (Rbac) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("department", Department.Type).Required().Unique(),
-		edge.From("tenant", Company.Type).Ref("rbacs").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("rbacs").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 

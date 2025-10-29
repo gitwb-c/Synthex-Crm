@@ -27,7 +27,7 @@ func (DropdownList) Fields() []ent.Field {
 func (DropdownList) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("crmField", CrmField.Type).Required(),
-		edge.From("tenant", Company.Type).Ref("dropdownLists").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("dropdownLists").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 

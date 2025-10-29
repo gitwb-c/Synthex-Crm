@@ -19,20 +19,32 @@ func NewPipelineRepository(client *ent.Client) *PipelineRepository {
 	}
 }
 
-func (s *PipelineRepository) Read(ctx context.Context) ([]*ent.Pipeline, error) {
-	return s.client.Pipeline.Query().All(ctx)
+func (s *PipelineRepository) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Pipeline, error) {
+	return s.client.Pipeline.Query().Where(pipeline.TenantIdEQ(tenantId)).All(ctx)
 }
 
 func (s *PipelineRepository) Create(ctx context.Context, input ent.CreatePipelineInput) (*ent.Pipeline, error) {
 	return s.client.Pipeline.Create().SetInput(input).Save(ctx)
 }
 
-func (s *PipelineRepository) UpdateID(ctx context.Context, id string, input ent.UpdatePipelineInput) (*ent.Pipeline, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *PipelineRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdatePipelineInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.Pipeline.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.Pipeline.Update().Where(pipeline.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 func (s *PipelineRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
 	tx, err := s.client.BeginTx(ctx, nil)
