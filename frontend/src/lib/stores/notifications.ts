@@ -1,17 +1,10 @@
+import { browser } from "$app/environment";
+import type { Notification } from "$lib/models/types/notification";
 import { writable } from "svelte/store";
 
-export type Notification = {
-    id:  number,
-    message: string,
-    textColor: string,
-    backgroundColor: string,
-    onClick?: () => void,
-    timeToSkip?: number,
-    fading: boolean
-}
 
 const createPersistedNotifications = () => {
-    const stored = localStorage.getItem("notifications");
+    const stored = browser? localStorage.getItem("notifications"):null;
     const initialNotifications = stored ? JSON.parse(stored): [];
     
     const {set, subscribe, update} = writable<Notification[]>(initialNotifications);
@@ -19,10 +12,10 @@ const createPersistedNotifications = () => {
     const delay = (seconds: number) => new Promise(resolve => setTimeout(resolve, seconds*1000));
 
     subscribe((value) => {
-        localStorage.setItem("notifications", JSON.stringify(value));
+        if (browser) localStorage.setItem("notifications", JSON.stringify(value));
     });
 
-    const addNotification = async({message, textColor, backgroundColor, onClick, timeToSkip}: Notification) => {
+    const addNotification = async({message, textColor, backgroundColor, onClick, timeToSkip}: Omit<Notification, "id" | "fading">) => {
         const id = Date.now();
         update((n) => [...n, {id, message, textColor, backgroundColor, onClick, timeToSkip, fading: false}]);
 
@@ -37,7 +30,7 @@ const createPersistedNotifications = () => {
 
                 updated[index] = {...updated[index], fading: true};
 
-                return current;
+                return updated;
             })
 
             await delay(1);
@@ -48,7 +41,18 @@ const createPersistedNotifications = () => {
 
 
 
-    const deleteNotification = (id: number) => {
+    const deleteNotification = async(id: number) => {
+        update((current) => {
+                const index = current.findIndex((c) => c.id == id);
+
+                if (index == -1) return current;
+                const updated = [...current];
+
+                updated[index] = {...updated[index], fading: true};
+
+                return updated;
+            });
+        await delay(1);
         update((current) => current.filter(c => c.id != id));
     }
 
