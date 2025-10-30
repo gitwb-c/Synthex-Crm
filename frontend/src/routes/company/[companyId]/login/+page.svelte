@@ -4,8 +4,19 @@
   import Input from "$lib/components/input.svelte";
   import { Mail } from "lucide-svelte";
   import Button from "$lib/components/button.svelte";
+  import { notifications } from "$lib/stores/notifications";
 
   let { data, params }: PageProps = $props();
+
+  const addNotification = async () => {
+    const not = notifications;
+    not.addNotification({
+      message: Date.now().toLocaleString(),
+      textColor: "white",
+      backgroundColor: "red",
+      timeToSkip: 2,
+    });
+  };
 </script>
 
 <main>
@@ -15,7 +26,7 @@
     <img src={logo} alt="logo" />
   </section>
   <section id="forms">
-    <form on:submit={() => console}>
+    <form on:submit={addNotification}>
       <h1>Login</h1>
       <label>Email</label>
       <Input
