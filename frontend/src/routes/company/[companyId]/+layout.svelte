@@ -8,16 +8,20 @@
   let { data, children }: LayoutProps = $props();
 </script>
 
-<div id="wrapper">
-  <Header pathname={path} width="6%"></Header>
-  <main>
-    {#if !data.exists}
-      <h1>Empresa não encontrada!</h1>
-    {:else}
-      {@render children()}
-    {/if}
-  </main>
-</div>
+{#if path.includes("/login")}
+  {@render children()}
+{:else}
+  <div id="wrapper">
+    <Header pathname={path} width="12%"></Header>
+    <main>
+      {#if !data.exists}
+        <h1>Empresa não encontrada!</h1>
+      {:else}
+        {@render children()}
+      {/if}
+    </main>
+  </div>
+{/if}
 
 <style>
   #wrapper {
@@ -26,8 +30,11 @@
     display: flex;
 
     & > main {
-      width: 50%;
+      width: 88%;
       padding: 1.3rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background-color: var(--azul-palido);
     }
   }
 </style>
