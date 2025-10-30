@@ -4,45 +4,26 @@
   export let width: string;
   export let pathname: string;
 
-  $: reactiveWidth = width;
-
   $: pages = {
     kanban: pathname.includes("etapa"),
     chat: pathname.includes("chat"),
     departments: pathname.includes("department"),
   };
-
-  $: notHovered = reactiveWidth == width;
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<header
-  style={`width: ${reactiveWidth}`}
-  onmouseenter={() =>
-    (reactiveWidth = (parseInt(width.replace("%", "")) * 2.6).toString() + "%")}
-  onmouseleave={() => (reactiveWidth = width)}
->
+<header style={`width: ${width}`}>
   <img src={logo} alt="logo" width="45px" />
   <ul>
-    {#if notHovered}
-      <li class:active={pages.kanban}><Kanban width="100%"></Kanban></li>
-      <li class:active={pages.chat}>
-        <MessageCircle width="100%"></MessageCircle>
-      </li>
-      <li class:active={pages.departments}>
-        <Building width="100%"></Building>
-      </li>
-    {:else}
-      <li class:active={pages.kanban} class="hovered">
-        <Kanban width="100%"></Kanban> Kanban
-      </li>
-      <li class:active={pages.chat} class="hovered">
-        <MessageCircle width="100%"></MessageCircle> Chats
-      </li>
-      <li class:active={pages.departments} class="hovered">
-        <Building width="100%"></Building> Departamentos
-      </li>
-    {/if}
+    <li class:active={pages.kanban} class="hovered">
+      <Kanban size="1.3rem"></Kanban>
+      Kanban
+    </li>
+    <li class:active={pages.chat} class="hovered">
+      <MessageCircle size="1.3rem"></MessageCircle> Chats
+    </li>
+    <li class:active={pages.departments} class="hovered">
+      <Building size="1.3rem"></Building> Departamentos
+    </li>
   </ul>
 </header>
 
@@ -52,7 +33,7 @@
     background-color: var(--azul-primario);
     display: flex;
     flex-direction: column;
-    padding-inline: 1rem;
+    padding-inline: 0.7rem;
     padding-block: 1rem;
     align-items: center;
     gap: 2rem;
@@ -68,18 +49,16 @@
   li {
     width: 100%;
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.7rem;
     cursor: pointer;
+    font-size: 0.75rem;
   }
 
   li:hover {
     color: white;
     transform: scale(0.98);
-  }
-
-  li.hovered {
-    justify-content: flex-start;
   }
 
   li.active {
