@@ -6,28 +6,29 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gitwb-c/crm.saas/backend/internal/db/cache"
 )
 
 var SecretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 type TokenClaims struct {
-	EmployeeId   string
-	CompanyId    string
-	DepartmentID string
+	SessionId string
 }
 
-func GenerateToken(employeeId string, companyId string, departmentId string) (string, error) {
+func GenerateToken() (string, string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["employeeId"] = employeeId
-	claims["companyId"] = companyId
-	claims["departmentId"] = departmentId
+	sessionId, err := cache.GenerateSessionID()
+	if err != nil {
+		return "", "", err
+	}
+	claims["sessionId"] = sessionId
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	tokenStr, err := token.SignedString(SecretKey)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return tokenStr, nil
+	return tokenStr, sessionId, nil
 }
 
 func ParseToken(tokenStr string) (TokenClaims, error) {
@@ -38,13 +39,10 @@ func ParseToken(tokenStr string) (TokenClaims, error) {
 		return TokenClaims{}, fmt.Errorf("invalid token or missing claims")
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		employeeId := claims["employeeId"].(string)
-		companyId := claims["companyId"].(string)
-		departmentId := claims["departmentId"].(string)
+		sessionId := claims["sessionId"].(string)
 		return TokenClaims{
-			EmployeeId:   employeeId,
-			CompanyId:    companyId,
-			DepartmentID: departmentId}, nil
+			SessionId: sessionId,
+		}, nil
 	}
 	return TokenClaims{}, fmt.Errorf("invalid token or missing claims")
 }

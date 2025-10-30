@@ -23,6 +23,10 @@ func (s *EmployeeAuthRepository) Read(ctx context.Context, tenantId uuid.UUID) (
 	return s.client.EmployeeAuth.Query().Where(employeeauth.TenantIdEQ(tenantId)).All(ctx)
 }
 
+func (s *EmployeeAuthRepository) ReadID(ctx context.Context, id uuid.UUID) (*ent.EmployeeAuth, error) {
+	return s.client.EmployeeAuth.Query().Where(employeeauth.IDEQ(id)).Only(ctx)
+}
+
 func (s *EmployeeAuthRepository) ReadEmail(ctx context.Context, email string, tenantId uuid.UUID) (*ent.EmployeeAuth, error) {
 	return s.client.EmployeeAuth.Query().Where(employeeauth.Email(email), employeeauth.TenantIdEQ(tenantId)).WithEmployee(func(q *ent.EmployeeQuery) {
 		q.WithTenant().WithDepartment()
