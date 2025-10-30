@@ -13,17 +13,16 @@ import (
 )
 
 func main() {
-	err := env.InitEnv()
-	if err != nil {
+	if err := env.InitEnv(); err != nil {
 		return
 	}
-	client, er := db.NewClient()
-	if er != nil {
-		log.Fatalf("failed to init Ent client: %v", er)
+	client, e := db.NewClient()
+	if e != nil {
+		log.Fatalf("failed to init Ent client: %v", e)
 		return
 	}
 	cacheClient, er := cache.NewCacheClient()
-	if err != nil {
+	if er != nil {
 		log.Fatalf("failed to init redis client: %v", er)
 		return
 	}
