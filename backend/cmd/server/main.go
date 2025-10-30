@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/gitwb-c/crm.saas/backend/internal/db"
 	"github.com/gitwb-c/crm.saas/backend/internal/db/cache"
@@ -32,5 +34,5 @@ func main() {
 	defer db.Close(client)
 
 	r := http.GlobalRouter(client, cacheClient, srv)
-	r.Run(":8080")
+	r.Run(fmt.Sprintf(":%v", os.Getenv("SERVER_PORT")))
 }
