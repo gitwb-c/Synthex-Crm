@@ -18,8 +18,8 @@ func NewCostumerService(repository *repositories.CostumerRepository) *CostumerSe
 	}
 }
 
-func (s *CostumerService) Read(ctx context.Context) ([]*ent.Costumer, error) {
-	costumer, err := s.repository.Read(ctx)
+func (s *CostumerService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Costumer, error) {
+	costumer, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func (s *CostumerService) Create(ctx context.Context, input ent.CreateCostumerIn
 	return costumer, nil
 }
 
-func (s *CostumerService) UpdateID(ctx context.Context, id string, input ent.UpdateCostumerInput) (*ent.Costumer, error) {
-	costumer, err := s.repository.UpdateID(ctx, id, input)
+func (s *CostumerService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateCostumerInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return costumer, nil
+	return n, nil
 }
 
 func (s *CostumerService) Delete(ctx context.Context, ids []uuid.UUID) error {

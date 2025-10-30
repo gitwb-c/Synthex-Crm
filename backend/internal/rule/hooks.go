@@ -3,7 +3,6 @@ package rule
 import (
 	"context"
 	"errors"
-	"log"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -11,37 +10,21 @@ import (
 	"github.com/google/uuid"
 )
 
-func FilterTenantQuery() ent.Interceptor {
-	return ent.InterceptFunc(func(next ent.Querier) ent.Querier {
-		return ent.QuerierFunc(func(ctx context.Context, query ent.Query) (ent.Value, error) {
-			view := viewer.FromContext(ctx)
-			if view.TenantID == uuid.Nil {
-				return nil, errors.New("missing tenant")
-			}
-			qp, ok := query.(interface {
-				WhereP(...func(*sql.Selector))
-			})
-			if ok {
-				qp.WhereP(func(s *sql.Selector) {
-					s.Where(sql.EQ(s.C("tenant_id"), view.TenantID))
-				})
-			}
-
-			return next.Query(ctx, query)
-		})
-	})
-}
-
 func FilterTenantMutation() ent.Hook {
 	return func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, mutation ent.Mutation) (ent.Value, error) {
 			op := mutation.Op()
 
 			view := viewer.FromContext(ctx)
+			if view.Signature != nil {
+				switch *view.Signature {
+				case viewer.Bootstrap:
+					return next.Mutate(ctx, mutation)
+				}
+			}
 			if view.TenantID == uuid.Nil {
 				return nil, errors.New("missing tenant")
 			}
-			log.Print(view.TenantID)
 
 			switch op {
 			case ent.OpCreate:
@@ -55,15 +38,16 @@ func FilterTenantMutation() ent.Hook {
 						return nil, err
 					}
 				}
-			case ent.OpUpdate, ent.OpUpdateOne, ent.OpDelete:
+			case ent.OpUpdate, ent.OpUpdateOne, ent.OpDelete, ent.OpDeleteOne:
 				mp, ok := mutation.(interface {
 					WhereP(...func(*sql.Selector))
 				})
-				if ok {
-					mp.WhereP(func(s *sql.Selector) {
-						s.Where(sql.EQ(s.C("tenant_id"), view.TenantID))
-					})
+				if !ok {
+					return nil, errors.New("unsupported mutation type")
 				}
+				mp.WhereP(func(s *sql.Selector) {
+					s.Where(sql.EQ(s.C("tenant_id"), view.TenantID))
+				})
 			}
 
 			return next.Mutate(ctx, mutation)

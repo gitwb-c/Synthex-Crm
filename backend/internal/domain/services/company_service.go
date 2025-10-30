@@ -18,27 +18,27 @@ func NewCompanyService(repository *repositories.CompanyRepository) *CompanyServi
 	}
 }
 
-func (s *CompanyService) Read(ctx context.Context) ([]*ent.Company, error) {
-	chat, err := s.repository.Read(ctx)
+func (s *CompanyService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Company, error) {
+	company, err := s.repository.Read(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return chat, nil
+	return company, nil
 }
 
-func (s *CompanyService) Create(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error) {
-	chat, err := s.repository.Create(ctx, input)
+func (s *CompanyService) Create(ctx context.Context, input ent.CreateCompanyInput, client *ent.Client) (*ent.Company, error) {
+	company, err := s.repository.Create(ctx, input, client)
 	if err != nil {
 		return nil, err
 	}
-	return chat, nil
+	return company, nil
 }
-func (s *CompanyService) UpdateID(ctx context.Context, id string, input ent.UpdateCompanyInput) (*ent.Company, error) {
-	chat, err := s.repository.UpdateID(ctx, id, input)
+func (s *CompanyService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateCompanyInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return chat, nil
+	return n, nil
 }
 func (s *CompanyService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

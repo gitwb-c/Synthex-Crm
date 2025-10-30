@@ -18,8 +18,8 @@ func NewRbacService(repository *repositories.RbacRepository) *RbacService {
 	}
 }
 
-func (s *RbacService) Read(ctx context.Context) ([]*ent.Rbac, error) {
-	chat, err := s.repository.Read(ctx)
+func (s *RbacService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Rbac, error) {
+	chat, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func (s *RbacService) Create(ctx context.Context, input ent.CreateRbacInput) (*e
 	}
 	return chat, nil
 }
-func (s *RbacService) UpdateID(ctx context.Context, id string, input ent.UpdateRbacInput) (*ent.Rbac, error) {
-	chat, err := s.repository.UpdateID(ctx, id, input)
+func (s *RbacService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateRbacInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return chat, nil
+	return n, nil
 }
 func (s *RbacService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

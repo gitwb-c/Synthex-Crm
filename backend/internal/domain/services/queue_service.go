@@ -18,8 +18,8 @@ func NewQueueService(repository *repositories.QueueRepository) *QueueService {
 	}
 }
 
-func (s *QueueService) Read(ctx context.Context) ([]*ent.Queue, error) {
-	queue, err := s.repository.Read(ctx)
+func (s *QueueService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Queue, error) {
+	queue, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func (s *QueueService) Create(ctx context.Context, input ent.CreateQueueInput) (
 	}
 	return queue, nil
 }
-func (s *QueueService) UpdateID(ctx context.Context, id string, input ent.UpdateQueueInput) (*ent.Queue, error) {
-	queue, err := s.repository.UpdateID(ctx, id, input)
+func (s *QueueService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateQueueInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return queue, nil
+	return n, nil
 }
 func (s *QueueService) Delete(ctx context.Context, ids []uuid.UUID) error {
 	err := s.repository.Delete(ctx, ids)

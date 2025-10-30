@@ -19,19 +19,31 @@ func NewRbacRepository(client *ent.Client) *RbacRepository {
 	}
 }
 
-func (s *RbacRepository) Read(ctx context.Context) ([]*ent.Rbac, error) {
-	return s.client.Rbac.Query().All(ctx)
+func (s *RbacRepository) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Rbac, error) {
+	return s.client.Rbac.Query().Where(rbac.TenantIdEQ(tenantId)).All(ctx)
 }
 
 func (s *RbacRepository) Create(ctx context.Context, input ent.CreateRbacInput) (*ent.Rbac, error) {
 	return s.client.Rbac.Create().SetInput(input).Save(ctx)
 }
-func (s *RbacRepository) UpdateID(ctx context.Context, id string, input ent.UpdateRbacInput) (*ent.Rbac, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *RbacRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateRbacInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.Rbac.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.Rbac.Update().Where(rbac.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 func (s *RbacRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
 	tx, err := s.client.BeginTx(ctx, nil)

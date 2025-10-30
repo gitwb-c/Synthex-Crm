@@ -18,8 +18,8 @@ func NewMessageService(repository *repositories.MessageRepository) *MessageServi
 	}
 }
 
-func (s *MessageService) Read(ctx context.Context) ([]*ent.Message, error) {
-	message, err := s.repository.Read(ctx)
+func (s *MessageService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Message, error) {
+	message, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func (s *MessageService) Create(ctx context.Context, input ent.CreateMessageInpu
 	}
 	return message, nil
 }
-func (s *MessageService) UpdateID(ctx context.Context, id string, input ent.UpdateMessageInput) (*ent.Message, error) {
-	message, err := s.repository.UpdateID(ctx, id, input)
+func (s *MessageService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateMessageInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return message, nil
+	return n, nil
 }
 
 func (s *MessageService) Delete(ctx context.Context, ids []uuid.UUID) error {

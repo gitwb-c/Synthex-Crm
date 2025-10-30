@@ -18,8 +18,8 @@ func NewDepartmentService(repository *repositories.DepartmentRepository) *Depart
 	}
 }
 
-func (s *DepartmentService) Read(ctx context.Context) ([]*ent.Department, error) {
-	department, err := s.repository.Read(ctx)
+func (s *DepartmentService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Department, error) {
+	department, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -33,19 +33,19 @@ func (s *DepartmentService) ReadRbacs(ctx context.Context, uuid uuid.UUID) (*ent
 	return department, nil
 }
 
-func (s *DepartmentService) Create(ctx context.Context, input ent.CreateDepartmentInput) (*ent.Department, error) {
-	department, err := s.repository.Create(ctx, input)
+func (s *DepartmentService) Create(ctx context.Context, input ent.CreateDepartmentInput, client *ent.Client) (*ent.Department, error) {
+	department, err := s.repository.Create(ctx, input, client)
 	if err != nil {
 		return nil, err
 	}
 	return department, nil
 }
-func (s *DepartmentService) UpdateID(ctx context.Context, id string, input ent.UpdateDepartmentInput) (*ent.Department, error) {
-	department, err := s.repository.UpdateID(ctx, id, input)
+func (s *DepartmentService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateDepartmentInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return department, nil
+	return n, nil
 }
 
 func (s *DepartmentService) Delete(ctx context.Context, ids []uuid.UUID) error {

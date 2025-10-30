@@ -18,8 +18,8 @@ func NewDealService(repository *repositories.DealRepository) *DealService {
 	}
 }
 
-func (s *DealService) Read(ctx context.Context) ([]*ent.Deal, error) {
-	deal, err := s.repository.Read(ctx)
+func (s *DealService) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Deal, error) {
+	deal, err := s.repository.Read(ctx, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -34,12 +34,12 @@ func (s *DealService) Create(ctx context.Context, input ent.CreateDealInput) (*e
 	return deal, nil
 }
 
-func (s *DealService) UpdateID(ctx context.Context, id string, input ent.UpdateDealInput) (*ent.Deal, error) {
-	deal, err := s.repository.UpdateID(ctx, id, input)
+func (s *DealService) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateDealInput) (int, error) {
+	n, err := s.repository.Update(ctx, ids, input)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return deal, nil
+	return n, nil
 }
 
 func (s *DealService) Delete(ctx context.Context, ids []uuid.UUID) error {

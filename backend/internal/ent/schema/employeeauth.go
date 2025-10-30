@@ -29,7 +29,7 @@ func (EmployeeAuth) Fields() []ent.Field {
 func (EmployeeAuth) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("employee", Employee.Type).Ref("employeeAuth").Unique(),
-		edge.From("tenant", Company.Type).Ref("employeeAuths").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)).Required(),
+		edge.From("tenant", Company.Type).Ref("employeeAuths").Field("tenantId").Unique().Required().Immutable().Required(),
 	}
 }
 

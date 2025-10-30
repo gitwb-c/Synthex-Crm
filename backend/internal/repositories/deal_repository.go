@@ -19,20 +19,32 @@ func NewDealRepository(client *ent.Client) *DealRepository {
 	}
 }
 
-func (s *DealRepository) Read(ctx context.Context) ([]*ent.Deal, error) {
-	return s.client.Deal.Query().All(ctx)
+func (s *DealRepository) Read(ctx context.Context, tenantId uuid.UUID) ([]*ent.Deal, error) {
+	return s.client.Deal.Query().Where(deal.TenantIdEQ(tenantId)).All(ctx)
 }
 
 func (s *DealRepository) Create(ctx context.Context, input ent.CreateDealInput) (*ent.Deal, error) {
 	return s.client.Deal.Create().SetInput(input).Save(ctx)
 }
 
-func (s *DealRepository) UpdateID(ctx context.Context, id string, input ent.UpdateDealInput) (*ent.Deal, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *DealRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateDealInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.Deal.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.Deal.Update().Where(deal.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 
 func (s *DealRepository) Delete(ctx context.Context, ids []uuid.UUID) error {

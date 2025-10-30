@@ -28,7 +28,7 @@ func (DealCrmField) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("deal", Deal.Type).Unique().Required(),
 		edge.To("crmField", CrmField.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("dealCrmFields").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("dealCrmFields").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 

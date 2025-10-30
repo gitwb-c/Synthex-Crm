@@ -23,7 +23,7 @@ func (Text) Fields() []ent.Field {
 func (Text) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("message", Message.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("texts").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("texts").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 

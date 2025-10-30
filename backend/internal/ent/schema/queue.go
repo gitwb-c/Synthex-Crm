@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 )
 
@@ -18,7 +19,7 @@ type Queue struct {
 func (Queue) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New).Immutable().Annotations(entgql.Type("ID"), entgql.QueryField()),
-		field.String("name").NotEmpty().Unique().Annotations(entgql.OrderField("NAME")),
+		field.String("name").NotEmpty().Annotations(entgql.OrderField("NAME")),
 		field.Enum("type").Values("ring").Default("ring").Annotations(entgql.OrderField("TYPE")),
 		field.Time("createdAt").Default(time.Now).Immutable().Annotations(entgql.OrderField("CREATED_AT")),
 		field.Time("updatedAt").Default(time.Now).UpdateDefault(time.Now).Annotations(entgql.OrderField("UPDATED_AT")),
@@ -30,7 +31,7 @@ func (Queue) Edges() []ent.Edge {
 		edge.From("stages", Stage.Type).Ref("queue"),
 		edge.From("employees", Employee.Type).Ref("queues"),
 		edge.To("department", Department.Type).Required(),
-		edge.From("tenant", Company.Type).Ref("queues").Field("tenantId").Unique().Required().Immutable().Annotations(entgql.Skip(entgql.SkipMutationCreateInput | entgql.SkipMutationUpdateInput)),
+		edge.From("tenant", Company.Type).Ref("queues").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 
@@ -40,6 +41,12 @@ func (Queue) Annotations() []schema.Annotation {
 		entgql.MultiOrder(),
 		entgql.RelayConnection(),
 		entgql.QueryField(),
+	}
+}
+
+func QueueIndexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("name").Edges("tenant").Unique(),
 	}
 }
 

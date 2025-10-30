@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/mixin"
@@ -14,8 +13,6 @@ type TenantMixin struct {
 
 func (TenantMixin) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("tenantId", uuid.UUID{}).Immutable().StructTag(`json:"-" sql:"not null"`).Annotations(
-			entgql.Skip(entgql.SkipType),
-		),
+		field.UUID("tenantId", uuid.UUID{}).Immutable().StructTag(`json:"-" sql:"not null"`),
 	}
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/gitwb-c/crm.saas/backend/internal/http/middlewares/helpers"
 	"github.com/gitwb-c/crm.saas/backend/pkg/jwtpkg"
 )
 
@@ -32,9 +33,22 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			ctx.Set("employeeId", claims["employeeId"])
-			ctx.Set("tenantId", claims["companyId"])
-			ctx.Set("departmentId", claims["departmentId"])
+			sessionId, exists := claims["sessionId"]
+			if !exists {
+				ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid claims"})
+				ctx.Abort()
+				return
+			}
+			session, status, err := helpers.GetSessionInfo(ctx.Request.Context(), sessionId.(string))
+			if err != nil {
+				ctx.JSON(status, gin.H{"error": err.Error()})
+				ctx.Abort()
+				return
+			}
+			ctx.Set("employeeId", session.EmployeeId)
+			ctx.Set("tenantId", session.TenantId)
+			ctx.Set("departmentId", session.DepartmentId)
+
 		} else {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid claims"})
 			ctx.Abort()

@@ -3,7 +3,6 @@ package viewer
 import (
 	"context"
 
-	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/google/uuid"
 )
 
@@ -16,20 +15,29 @@ const (
 	Delete QueryType = "Delete"
 )
 
+type Signature string
+
+const (
+	Bootstrap Signature = "Bootstrap"
+	Login     Signature = "Login"
+	Common    Signature = "Common"
+)
+
 type UserViewer struct {
 	TenantID    uuid.UUID
-	Permissions []*ent.Rbac
+	Permissions *[]string
+	Signature   *Signature
 }
 
 type key int
 
-const viewerKey key = 0
+const ViewerKey key = 0
 
 func NewContext(ctx context.Context, v UserViewer) context.Context {
-	return context.WithValue(ctx, viewerKey, v)
+	return context.WithValue(ctx, ViewerKey, v)
 }
 
 func FromContext(ctx context.Context) UserViewer {
-	v, _ := ctx.Value(viewerKey).(UserViewer)
+	v, _ := ctx.Value(ViewerKey).(UserViewer)
 	return v
 }

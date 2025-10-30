@@ -9,15 +9,13 @@ import (
 )
 
 func graphqlRouter(r *gin.Engine, srv *handler.Server, employeeservice *services.EmployeeService, departmentservice *services.DepartmentService) {
-	r.POST("/query/:tenantId", middlewares.AuthMiddleware(), middlewares.TenantMiddleware(), middlewares.RbacMiddleware(employeeservice, departmentservice), func(ctx *gin.Context) {
+	graphql := r.Group("/graphql")
+
+	graphql.POST("/query/:tenantId", middlewares.AuthMiddleware(), middlewares.TenantMiddleware(), middlewares.RbacMiddleware(employeeservice, departmentservice), func(ctx *gin.Context) {
 		srv.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
-	r.POST("/query", func(ctx *gin.Context) {
-		srv.ServeHTTP(ctx.Writer, ctx.Request)
-	})
-
-	r.GET("/playground", func(ctx *gin.Context) {
+	graphql.GET("/playground", func(ctx *gin.Context) {
 		playground.Handler("Playground", "/query").ServeHTTP(ctx.Writer, ctx.Request)
 	})
 }

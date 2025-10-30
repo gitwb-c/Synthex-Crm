@@ -23,15 +23,30 @@ func (s *CompanyRepository) Read(ctx context.Context) ([]*ent.Company, error) {
 	return s.client.Company.Query().All(ctx)
 }
 
-func (s *CompanyRepository) Create(ctx context.Context, input ent.CreateCompanyInput) (*ent.Company, error) {
+func (s *CompanyRepository) Create(ctx context.Context, input ent.CreateCompanyInput, client *ent.Client) (*ent.Company, error) {
+	if client != nil {
+		return client.Company.Create().SetInput(input).Save(ctx)
+	}
 	return s.client.Company.Create().SetInput(input).Save(ctx)
 }
-func (s *CompanyRepository) UpdateID(ctx context.Context, id string, input ent.UpdateCompanyInput) (*ent.Company, error) {
-	uuidId, err := uuid.Parse(id)
+func (s *CompanyRepository) Update(ctx context.Context, ids []uuid.UUID, input ent.UpdateCompanyInput) (int, error) {
+	tx, err := s.client.BeginTx(ctx, nil)
 	if err != nil {
-		return nil, err
+		return 0, fmt.Errorf("error: %w", err)
 	}
-	return s.client.Company.UpdateOneID(uuidId).SetInput(input).Save(ctx)
+
+	n, err := tx.Company.Update().Where(company.IDIn(ids...)).SetInput(input).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	return n, nil
 }
 func (s *CompanyRepository) Delete(ctx context.Context, ids []uuid.UUID) error {
 	tx, err := s.client.BeginTx(ctx, nil)
