@@ -5,33 +5,57 @@
   import { Mail, Building } from "lucide-svelte";
   import Button from "$lib/components/button.svelte";
   import { notifications } from "$lib/stores/notifications";
+  import { goto } from "$app/navigation";
+  import type { Notification } from "$lib/models/types/notification";
 
   let { data, params }: PageProps = $props();
 
-  const addNotification = async () => {
-    const not = notifications;
-    not.addNotification({
-      message: Date.now().toLocaleString(),
-      textColor: "white",
-      backgroundColor: "red",
-      timeToSkip: 2,
-    });
+  let loadingSubmit = $state(false);
+
+  const delay = (seconds: number) =>
+    new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
+  const submit = async () => {
+    if (loadingSubmit) return;
+
+    loadingSubmit = true;
+
+    await delay(3);
+
+    if (email != "vini@gmail.com" || password != "123456") {
+      notifications.addNotification({
+        message: "Credenciais inválidas!",
+        textColor: "white",
+        backgroundColor: "var(--vermelho)",
+        timeToSkip: 2,
+      });
+      loadingSubmit = false;
+      return;
+    }
+
+    goto(`/company/${params.companyId}/pipeline/Qualificação`);
+
+    loadingSubmit = false;
   };
+
+  let email, password;
 </script>
 
 <main>
   <section id="company">
-    <h1>Synthax CRM</h1>
-    <div>
+    <h1>Synthex CRM</h1>
+    <!-- <div>
       <Building size="5rem"></Building>
       <h2>
         {params.companyId}
       </h2>
-    </div>
+    </div> -->
   </section>
   <section id="forms">
-    <form on:submit={addNotification}>
+    <!-- svelte-ignore event_directive_deprecated -->
+    <form on:submit={submit}>
       <h1>Login</h1>
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label>Email</label>
       <Input
         border="solid black 1px"
@@ -40,8 +64,10 @@
         width="100%"
         iconWidth="6%"
         inputWidth="94%"
+        bindValue={email}
       />
 
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label>Senha</label>
       <Input
         isPassword={true}
@@ -50,12 +76,13 @@
         width="100%"
         iconWidth="6%"
         inputWidth="94%"
+        bindValue={password}
       />
       <Button
         type="submit"
         fontSize=".9rem"
         fontWeight="600"
-        title="Entrar"
+        title={loadingSubmit ? "Carregando..." : "Entrar"}
         backgroundColor="var(--azul-marinho)"
         textColor="white"
       ></Button>
