@@ -28,15 +28,19 @@ func GetQuery(ctx context.Context) (bool, string) {
 	return true, querytypeStr
 }
 
-func Tenant(ctx context.Context) (bool, uuid.UUID) {
+func GetViewer(ctx context.Context) (bool, *viewer.UserViewer) {
 	v, ok := ctx.Value(viewer.ViewerKey).(viewer.UserViewer)
 	if !ok {
-		return false, uuid.Nil
+		return false, nil
 	}
 
 	if v.TenantID == uuid.Nil {
-		return false, uuid.Nil
+		return false, nil
 	}
 
-	return true, v.TenantID
+	if v.SessionID == "" {
+		return false, nil
+	}
+
+	return true, &v
 }

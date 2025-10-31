@@ -45,6 +45,7 @@ func AuthMiddleware() gin.HandlerFunc {
 				ctx.Abort()
 				return
 			}
+			ctx.Set("sessionId", sessionId.(string))
 			ctx.Set("employeeId", session.EmployeeId)
 			ctx.Set("tenantId", session.TenantId)
 			ctx.Set("departmentId", session.DepartmentId)
