@@ -1,11 +1,11 @@
 <script lang="ts">
   import Header from "$lib/components/header.svelte";
   import type { LayoutProps } from "../../[companyId]/$types";
-  import { page } from "$app/state";
+  import { page } from "$app/stores";
   import { notifications } from "$lib/stores/notifications";
   import NotidficationCard from "$lib/components/notidficationCard.svelte";
 
-  const path = page.url.pathname;
+  const path = $derived($page.url.pathname);
 
   let { data, children }: LayoutProps = $props();
 

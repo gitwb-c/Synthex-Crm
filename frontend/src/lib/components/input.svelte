@@ -13,6 +13,10 @@
   export let border: string = "";
 
   export let isPassword: boolean = false;
+  export let iconWidth: string = "3%";
+  export let inputWidth: string = "97%";
+
+  export let value: string = "";
 
   $: searchBackground = "transparent";
 
@@ -31,7 +35,7 @@
     <span
       style:background={searchBackground}
       style:height="100%"
-      style:width="3%"
+      style:width={iconWidth}
       on:mouseenter={() => (searchBackground = "rgba(0,0,0,.05)")}
       on:mouseleave={() => (searchBackground = "transparent")}
       on:click={() => (visible = !visible)}
@@ -39,9 +43,10 @@
       <svelte:component this={visible ? EyeClosed : Eye}></svelte:component>
     </span>
     <input
-      style:width="97%"
+      style:width={inputWidth}
       type={visible ? "text" : "password"}
       style:color={textColor}
+      bind:value
     />
   {:else if leftIcon}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -49,16 +54,16 @@
     <span
       style:background={searchBackground}
       style:height="100%"
-      style:width="3%"
+      style:width={iconWidth}
       on:mouseenter={() => (searchBackground = "rgba(0,0,0,.05)")}
       on:mouseleave={() => (searchBackground = "transparent")}
       on:click={onLeftIconPressed}
     >
       <svelte:component this={leftIcon}></svelte:component>
     </span>
-    <input style:width="97%" {type} style:color={textColor} />
+    <input style:width={inputWidth} {type} style:color={textColor} bind:value />
   {:else}
-    <input {type} style:color={textColor} />
+    <input {type} style:color={textColor} bind:value />
   {/if}
 </div>
 

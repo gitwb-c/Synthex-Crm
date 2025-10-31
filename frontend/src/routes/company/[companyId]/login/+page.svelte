@@ -33,12 +33,13 @@
       return;
     }
 
-    goto(`/company/${params.companyId}/pipeline/Qualificação`);
+    goto(`/company/${params.companyId}/etapa/Qualificação`);
 
     loadingSubmit = false;
   };
 
-  let email, password;
+  let email = $state(""),
+    password = $state("");
 </script>
 
 <main>
@@ -64,7 +65,7 @@
         width="100%"
         iconWidth="6%"
         inputWidth="94%"
-        bindValue={email}
+        bind:value={email}
       />
 
       <!-- svelte-ignore a11y_label_has_associated_control -->
@@ -76,7 +77,7 @@
         width="100%"
         iconWidth="6%"
         inputWidth="94%"
-        bindValue={password}
+        bind:value={password}
       />
       <Button
         type="submit"
