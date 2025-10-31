@@ -63,7 +63,7 @@
     width: 16rem;
     display: flex;
     flex-direction: column;
-    height: 9rem;
+    height: 60vh;
     overflow-y: auto;
     gap: 1rem;
     overflow-x: hidden;
