@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"entgo.io/contrib/entgql"
+	"github.com/gitwb-c/crm.saas/backend/internal/db/cache"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/chat"
 	"github.com/gitwb-c/crm.saas/backend/internal/ent/costumer"
@@ -181,15 +182,27 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 // Chats is the resolver for the chats field.
 func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.ChatOrder, where *ent.ChatWhereInput) (*ent.ChatConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Chat.Query().Where(chat.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.ChatConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:chats"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Chat.Query().Where(chat.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithChatOrder(orderBy),
 			ent.WithChatFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:chats"), output)
+	return output, nil
 }
 
 // Companies is the resolver for the companies field.
@@ -205,182 +218,338 @@ func (r *queryResolver) Companies(ctx context.Context, after *entgql.Cursor[uuid
 // Costumers is the resolver for the costumers field.
 func (r *queryResolver) Costumers(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CostumerOrder, where *ent.CostumerWhereInput) (*ent.CostumerConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Costumer.Query().Where(costumer.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.CostumerConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:costumers"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Costumer.Query().Where(costumer.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithCostumerOrder(orderBy),
 			ent.WithCostumerFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:costumers"), output)
+	return output, nil
 }
 
 // CrmFields is the resolver for the crmFields field.
 func (r *queryResolver) CrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.CrmFieldOrder, where *ent.CrmFieldWhereInput) (*ent.CrmFieldConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.CrmField.Query().Where(crmfield.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.CrmFieldConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:crmfields"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.CrmField.Query().Where(crmfield.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithCrmFieldOrder(orderBy),
 			ent.WithCrmFieldFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:crmfields"), output)
+	return output, nil
 }
 
 // Deals is the resolver for the deals field.
 func (r *queryResolver) Deals(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealOrder, where *ent.DealWhereInput) (*ent.DealConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Deal.Query().Where(deal.TenantIdEQ(tenantId)).Paginate(queryCtx, after, first, before, last,
+	cachedQuery, err := cache.GetQuery[ent.DealConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:deals"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Deal.Query().Where(deal.TenantIdEQ(viewer.TenantID)).Paginate(queryCtx, after, first, before, last,
 		ent.WithDealOrder(orderBy),
 		ent.WithDealFilter(where.Filter),
 	)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:employees"), output)
+	return output, nil
 }
 
 // DealCrmFields is the resolver for the dealCrmFields field.
 func (r *queryResolver) DealCrmFields(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DealCrmFieldOrder, where *ent.DealCrmFieldWhereInput) (*ent.DealCrmFieldConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.DealCrmField.Query().Where(dealcrmfield.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.DealCrmFieldConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:dealcrmfieds"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.DealCrmField.Query().Where(dealcrmfield.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithDealCrmFieldOrder(orderBy),
 			ent.WithDealCrmFieldFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:dealcrmfieds"), output)
+	return output, nil
 }
 
 // Departments is the resolver for the departments field.
 func (r *queryResolver) Departments(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DepartmentOrder, where *ent.DepartmentWhereInput) (*ent.DepartmentConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(queryCtx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Department.Query().Where(department.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.DepartmentConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:departments"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Department.Query().Where(department.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithDepartmentOrder(orderBy),
 			ent.WithDepartmentFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:departments"), output)
+	return output, nil
 }
 
 // DropdownLists is the resolver for the dropdownLists field.
 func (r *queryResolver) DropdownLists(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.DropdownListOrder, where *ent.DropdownListWhereInput) (*ent.DropdownListConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.DropdownList.Query().Where(dropdownlist.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.DropdownListConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:dropdownlists"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.DropdownList.Query().Where(dropdownlist.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithDropdownListOrder(orderBy),
 			ent.WithDropdownListFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:dropdownlists"), output)
+	return output, nil
 }
 
 // Employees is the resolver for the employees field.
 func (r *queryResolver) Employees(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeOrder, where *ent.EmployeeWhereInput) (*ent.EmployeeConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Employee.Query().Where(employee.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.EmployeeConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:employees"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Employee.Query().Where(employee.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithEmployeeOrder(orderBy),
 			ent.WithEmployeeFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:employees"), output)
+	return output, nil
 }
 
 // EmployeeAuths is the resolver for the employeeAuths field.
 func (r *queryResolver) EmployeeAuths(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.EmployeeAuthOrder, where *ent.EmployeeAuthWhereInput) (*ent.EmployeeAuthConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.EmployeeAuth.Query().Where(employeeauth.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.EmployeeAuthConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:employeeauths"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.EmployeeAuth.Query().Where(employeeauth.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithEmployeeAuthOrder(orderBy),
 			ent.WithEmployeeAuthFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:employeeauths"), output)
+	return output, nil
 }
 
 // Messages is the resolver for the messages field.
 func (r *queryResolver) Messages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.MessageOrder, where *ent.MessageWhereInput) (*ent.MessageConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Message.Query().Where(message.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.MessageConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:messages"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Message.Query().Where(message.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithMessageOrder(orderBy),
 			ent.WithMessageFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:messages"), output)
+	return output, nil
 }
 
 // Pipelines is the resolver for the pipelines field.
 func (r *queryResolver) Pipelines(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.PipelineOrder, where *ent.PipelineWhereInput) (*ent.PipelineConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Pipeline.Query().Where(pipeline.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.PipelineConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:pipelines"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Pipeline.Query().Where(pipeline.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithPipelineOrder(orderBy),
 			ent.WithPipelineFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:pipelines"), output)
+	return output, nil
 }
 
 // Queues is the resolver for the queues field.
 func (r *queryResolver) Queues(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.QueueOrder, where *ent.QueueWhereInput) (*ent.QueueConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Queue.Query().Where(queue.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.QueueConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:queues"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Queue.Query().Where(queue.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithQueueOrder(orderBy),
 			ent.WithQueueFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:queues"), output)
+	return output, nil
 }
 
 // Rbacs is the resolver for the rbacs field.
 func (r *queryResolver) Rbacs(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.RbacOrder, where *ent.RbacWhereInput) (*ent.RbacConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Rbac.Query().Where(rbac.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.RbacConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:rbac"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Rbac.Query().Where(rbac.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithRbacOrder(orderBy),
 			ent.WithRbacFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:rbac"), output)
+	return output, nil
 }
 
 // Stages is the resolver for the stages field.
 func (r *queryResolver) Stages(ctx context.Context, after *entgql.Cursor[uuid.UUID], first *int, before *entgql.Cursor[uuid.UUID], last *int, orderBy []*ent.StageOrder, where *ent.StageWhereInput) (*ent.StageConnection, error) {
 	queryCtx := graph_helpers.AddQuery(ctx, "Read")
-	ok, tenantId := graph_helpers.Tenant(ctx)
+	ok, viewer := graph_helpers.GetViewer(ctx)
 	if !ok {
-		return nil, errors.New("tenantId not found")
+		return nil, errors.New("viewer not found")
 	}
-	return r.Client.Stage.Query().Where(stage.TenantIdEQ(tenantId)).
+	cachedQuery, err := cache.GetQuery[ent.StageConnection](queryCtx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:stages"))
+	if err != nil {
+		return nil, err
+	}
+	if cachedQuery != nil {
+		return cachedQuery, nil
+	}
+	output, e := r.Client.Stage.Query().Where(stage.TenantIdEQ(viewer.TenantID)).
 		Paginate(queryCtx, after, first, before, last,
 			ent.WithStageOrder(orderBy),
 			ent.WithStageFilter(where.Filter),
 		)
+	if e != nil {
+		return nil, e
+	}
+	cache.SaveQuery(ctx, fmt.Sprintf("%v:%v=%v", viewer.TenantID, viewer.SessionID, "query:stages"), output)
+	return output, nil
 }
 
 // ID is the resolver for the id field.

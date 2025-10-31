@@ -11,10 +11,9 @@ import (
 	"github.com/gitwb-c/crm.saas/backend/internal/domain/contracts"
 	"github.com/gitwb-c/crm.saas/backend/internal/domain/services"
 	"github.com/google/uuid"
-	"github.com/redis/go-redis/v9"
 )
 
-func loginRouter(r *gin.Engine, cacheClient *redis.Client, service *services.EmployeeAuthService) {
+func loginRouter(r *gin.Engine, service *services.EmployeeAuthService) {
 	auth := r.Group("/auth")
 
 	auth.POST("/login/:tenantId", func(ctx *gin.Context) {
@@ -41,7 +40,7 @@ func loginRouter(r *gin.Engine, cacheClient *redis.Client, service *services.Emp
 			TenantId:     newLogin.TenantId,
 			DepartmentId: newLogin.DepartmentId,
 			IP:           ctx.ClientIP(),
-			ExpiresAt:    time.Now().Add(7 * 24 * time.Hour)}, cacheClient); err != nil {
+			ExpiresAt:    time.Now().Add(7 * 24 * time.Hour)}); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}

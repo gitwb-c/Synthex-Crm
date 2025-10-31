@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -38,7 +39,7 @@ func NewCacheClient() (*redis.Client, error) {
 		ReadTimeout:  3 * time.Second,
 		WriteTimeout: 3 * time.Second,
 		PoolSize:     10,
-		MinIdleConns: 2,
+		MinIdleConns: 4,
 	})
 
 	if _, err := CacheClient.Ping(ctx).Result(); err != nil {
@@ -57,17 +58,54 @@ func GenerateSessionID() (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
-func SaveSession(ctx context.Context, sessionID string, sess Session, cacheClient *redis.Client) error {
+func SaveSession(ctx context.Context, sessionID string, sess Session) error {
+	if CacheClient == nil {
+		return fmt.Errorf("could not connect to cache client")
+	}
 	data, _ := json.Marshal(sess)
-	return cacheClient.Set(ctx, "sess:"+sessionID, data, time.Until(sess.ExpiresAt)).Err()
+	log.Print(data)
+	return CacheClient.Set(ctx, "sess:"+sessionID, data, time.Until(sess.ExpiresAt)).Err()
 }
 
-func GetSession(ctx context.Context, sessionID string, cacheClient *redis.Client) (*Session, error) {
-	data, err := cacheClient.Get(ctx, "sess:"+sessionID).Bytes()
+func SaveQuery(ctx context.Context, key string, response interface{}) error {
+	if CacheClient == nil {
+		return fmt.Errorf("could not connect to cache client")
+	}
+	data, _ := json.Marshal(response)
+	return CacheClient.Set(ctx, key, data, time.Until(time.Now().Add(1*time.Minute))).Err()
+}
+
+func GetSession(ctx context.Context, sessionID string) (*Session, error) {
+	if CacheClient == nil {
+		return nil, fmt.Errorf("could not connect to cache client")
+	}
+	data, err := CacheClient.Get(ctx, "sess:"+sessionID).Bytes()
 	if err != nil {
 		return nil, err
 	}
 	var sess Session
 	json.Unmarshal(data, &sess)
 	return &sess, nil
+}
+
+func GetQuery[T any](ctx context.Context, key string) (*T, error) {
+	data, err := CacheClient.Get(ctx, key).Bytes()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var result T
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func DeleteQuery(ctx context.Context, key string) error {
+	if CacheClient == nil {
+		return fmt.Errorf("could not connect to cache client")
+	}
+	return CacheClient.Del(ctx, key).Err()
 }

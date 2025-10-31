@@ -30,8 +30,16 @@ func RbacMiddleware(employeeservice *services.EmployeeService, departmentservice
 			permissions = append(permissions, string(rbac.Access))
 		}
 
+		sessionId, exists := ctx.Get("sessionId")
+		if !exists {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "missing session"})
+			ctx.Abort()
+			return
+		}
+
 		reqCtx := viewer.NewContext(ctx.Request.Context(), viewer.UserViewer{
 			TenantID:    employee.TenantId,
+			SessionID:   sessionId.(string),
 			Permissions: &permissions,
 		})
 

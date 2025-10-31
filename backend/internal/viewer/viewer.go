@@ -25,6 +25,7 @@ const (
 
 type UserViewer struct {
 	TenantID    uuid.UUID
+	SessionID   string
 	Permissions *[]string
 	Signature   *Signature
 }

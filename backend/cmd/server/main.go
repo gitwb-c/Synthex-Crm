@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("failed to init Ent client: %v", e)
 		return
 	}
-	cacheClient, er := cache.NewCacheClient()
+	_, er := cache.NewCacheClient()
 	if er != nil {
 		log.Fatalf("failed to init redis client: %v", er)
 		return
@@ -32,6 +32,6 @@ func main() {
 	}
 	defer db.Close(client)
 
-	r := http.GlobalRouter(client, cacheClient, srv)
+	r := http.GlobalRouter(client, srv)
 	r.Run(fmt.Sprintf(":%v", os.Getenv("SERVER_PORT")))
 }

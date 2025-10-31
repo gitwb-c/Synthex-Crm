@@ -13,7 +13,7 @@ func GetSessionInfo(ctx context.Context, sessionId string) (*cache.Session, int,
 		return nil, http.StatusInternalServerError, fmt.Errorf("failed to connect")
 	}
 
-	session, err := cache.GetSession(ctx, sessionId, cache.CacheClient)
+	session, err := cache.GetSession(ctx, sessionId)
 	if err != nil {
 		return nil, http.StatusInternalServerError, fmt.Errorf("session expired, please login again")
 	}
