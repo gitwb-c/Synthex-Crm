@@ -29,11 +29,12 @@ func (Employee) Fields() []ent.Field {
 func (Employee) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("employeeAuth", EmployeeAuth.Type).Unique().Required(),
-		edge.From("tenant", Company.Type).Ref("employees").Field("tenantId").Unique().Required().Immutable(),
+		edge.From("deals", Company.Type).Ref("employee"),
 		edge.To("department", Department.Type).Required().Unique(),
 		edge.From("chat", Chat.Type).Ref("employees"),
 		edge.To("queues", Queue.Type),
 		edge.From("messages", Message.Type).Ref("employee"),
+		edge.From("tenant", Company.Type).Ref("deals").Field("tenantId").Unique().Required().Immutable(),
 	}
 }
 

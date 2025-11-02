@@ -9,6 +9,7 @@ import (
 
 func GlobalRouter(client *ent.Client, srv *handler.Server) *gin.Engine {
 	r := gin.Default()
+
 	routes.RegisterRoutes(r, client, srv)
 
 	return r

@@ -20,8 +20,6 @@ func NewClient() (*ent.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	client = client.Debug()
-
 	client.Use(rule.FilterTenantMutation())
 
 	return client, nil
