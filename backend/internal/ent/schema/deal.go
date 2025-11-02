@@ -30,8 +30,9 @@ func (Deal) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("tenant", Company.Type).Ref("deals").Field("tenantId").Unique().Required().Immutable(),
 		edge.To("costumer", Costumer.Type).Unique(),
+		edge.To("employee", Employee.Type).Unique().Required(),
 		edge.From("chat", Chat.Type).Ref("deal").Unique().Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
-		edge.To("stage", Stage.Type).Required().Unique().Required(),
+		edge.To("stage", Stage.Type).Required().Unique(),
 		edge.From("dealCrmFields", DealCrmField.Type).Ref("deal").Annotations(entsql.Annotation{OnDelete: entsql.Cascade}),
 	}
 }
