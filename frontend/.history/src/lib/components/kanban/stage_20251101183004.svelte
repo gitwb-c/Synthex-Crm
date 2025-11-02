@@ -1,0 +1,27 @@
+<script lang="ts">
+  import type Deal from "$lib/models/entity/deal";
+
+  export let width: string = "20%";
+
+  export let dealParams: Deal;
+</script>
+
+<div id="deal" style:width>
+  <div id="first">
+    <img src={dealParams.costumer.photo} alt="" />
+    <h1>{dealParams.costumer.name}</h1>
+  </div>
+  <i>{dealParams.chat.messages[dealParams.chat.messages.length - 1]}</i>
+  <div id="bottom">
+    <h2>Negócio criado em {dealParams.createdAt}</h2>
+  </div>
+</div>
+
+<style>
+  #first {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+  }
+</style>
